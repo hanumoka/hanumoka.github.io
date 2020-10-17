@@ -245,7 +245,7 @@ gtag('config', 'UA-100596920-1');
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
-    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2019/08/17/ubuntu-20190817-ubuntu-virtualbox-unity-tweak-tool/">
+    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2019/10/13/docker-20191013-docker-compose-ubuntu-jenkins/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -259,7 +259,7 @@ gtag('config', 'UA-100596920-1');
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
           
-            <a href="/2019/08/17/ubuntu-20190817-ubuntu-virtualbox-unity-tweak-tool/" class="post-title-link" itemprop="url">Ubuntu1804 Unity tweak tool 설치 및 테마변경</a>
+            <a href="/2019/10/13/docker-20191013-docker-compose-ubuntu-jenkins/" class="post-title-link" itemprop="url">docker compose로 ubuntu에 jenkins 설치하기</a>
         </h1>
 
         <div class="post-meta">
@@ -269,7 +269,413 @@ gtag('config', 'UA-100596920-1');
               </span>
               <span class="post-meta-item-text">작성일</span>
 
-              <time title="Post created: 2019-08-17 19:04:36" itemprop="dateCreated datePublished" datetime="2019-08-17T19:04:36+09:00">2019-08-17</time>
+              <time title="Post created: 2019-10-13 01:54:15" itemprop="dateCreated datePublished" datetime="2019-10-13T01:54:15+09:00">2019-10-13</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Updated at: 2020-04-16 01:50:11" itemprop="dateModified" datetime="2020-04-16T01:50:11+09:00">2020-04-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/docker/" itemprop="url" rel="index">
+                    <span itemprop="name">docker</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 20200427hexo_post_head -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h1><p>가상머신 ubuntu 18.04 에 docker compose를 이용해서 jenkins를 설치해보도록 하겠다.</p>
+<p>기본적으로 ubuntu에 docker와 docker-compose 가 설치되어 있어야 한다.</p>
+<h1 id="1-docker-관리용-폴더구조-만들기"><a href="#1-docker-관리용-폴더구조-만들기" class="headerlink" title="1.docker 관리용 폴더구조 만들기"></a>1.docker 관리용 폴더구조 만들기</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">docker</span><br><span class="line">|-- jenkins</span><br><span class="line">  |-- jenkins-home</span><br><span class="line">  |-- docker-compose.yml</span><br></pre></td></tr></table></figure>
+<p>jenkins-home은 jenkins 컨테이어의 볼륨을 연결할 호스트 디렉토리이다.</p>
+<p>컨테이너가 동작하면서 jenkins-home에 파일을 작성할 텐데 혹시나 발생할 문제에 대비해 jenkins-home 권한을 풀어주자.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chmod -R 777 jenkins-home</span><br></pre></td></tr></table></figure>
+<h1 id="2-docker-compose-yml-파일-생성"><a href="#2-docker-compose-yml-파일-생성" class="headerlink" title="2.docker-compose.yml 파일 생성"></a>2.docker-compose.yml 파일 생성</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">version: &#39;2&#39;</span><br><span class="line"></span><br><span class="line">services:</span><br><span class="line">  jenkins:</span><br><span class="line">    image: &#39;jenkins&#x2F;jenkins:latest&#39;</span><br><span class="line">    container_name: &#39;jenkins&#39;</span><br><span class="line">    restart: always</span><br><span class="line">    ports:</span><br><span class="line">      - &#39;8100:8080&#39;</span><br><span class="line">      - &#39;50100:50000&#39;</span><br><span class="line">    expose:</span><br><span class="line">      - &#39;8080&#39;</span><br><span class="line">      - &#39;50000&#39;</span><br><span class="line">    volumes:</span><br><span class="line">      - &#39;.&#x2F;jenkins_home:&#x2F;var&#x2F;jenkins_home&#39;</span><br><span class="line">    environment:</span><br><span class="line">      TZ: &quot;Asia&#x2F;Seoul&quot;</span><br><span class="line">networks:</span><br><span class="line">  default:</span><br><span class="line">    external:</span><br><span class="line">      name: devops</span><br></pre></td></tr></table></figure>
+<p>혹시나 사용할까 해서 docker network를 생성하자.</p>
+<p>아래 명령으로 명령으로 docker network를 생성할 수 있다.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo docker network create devops</span><br></pre></td></tr></table></figure>
+<p>아래처럼 생성한 docker network 를 확인 할 수 있다.</p>
+<p><img src="/images/2019/Untitled-b65ee70b-82ae-4951-afe4-0bbc4c72d754.png" alt></p>
+<h1 id="3-jenkins-docker-컨테이너-생성"><a href="#3-jenkins-docker-컨테이너-생성" class="headerlink" title="3. jenkins docker 컨테이너 생성"></a>3. jenkins docker 컨테이너 생성</h1><p>docker-compose.yml이 있는 경로에서 아래 명령으로 컨테이너를 생성하자.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo docker-compose up -d</span><br></pre></td></tr></table></figure>
+<p><img src="/images/2019/Untitled-be77d754-1528-40b1-828c-7404f9a1ecc5.png" alt></p>
+<p>위처럼 젠킨스 실행을 확인했다.</p>
+<p>브라우저에서 <a href="http://localhost:8100" target="_blank" rel="external nofollow noopener noreferrer">http://localhost:8100</a> 으로 접근해보자.</p>
+<p><img src="/images/2019/Untitled-ba370f07-b265-4094-bb60-e2924dfc757e.png" alt></p>
+<p>젠킨스 동작을 확인 할 수 있다.</p>
+<p>docker/jenkins-home/secrets/initialAdminPassword 파일을 열어보면 초기화 비밀번호를 확인 할수 있다.</p>
+<p>해당 파일을 찾아 비밀번호를 입력해주자.</p>
+<p>이 다음부터는 일반적인 젠킨스와 동일하다.</p>
+<p><img src="/images/2019/Untitled-488bc5ef-82aa-4dc7-b9ab-755a1f760dee.png" alt></p>
+<p><img src="/images/2019/Untitled-42525c0f-7ff4-493f-aba8-f164dffb8f2d.png" alt></p>
+<p>끝!!!</p>
+
+      
+      
+          
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+      
+
+
+  
+  
+  
+  
+
+        
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2019/10/13/docker-20191013-docker-compose-gitlab/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Hanumoka">
+      <meta itemprop="description" content="아마추어 개발자의 블로그">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hanumoka, IT Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/10/13/docker-20191013-docker-compose-gitlab/" class="post-title-link" itemprop="url">ubuntu18.04에 docker compose로 gitlab 설치하기</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">작성일</span>
+
+              <time title="Post created: 2019-10-13 00:41:08" itemprop="dateCreated datePublished" datetime="2019-10-13T00:41:08+09:00">2019-10-13</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Updated at: 2020-04-16 01:50:11" itemprop="dateModified" datetime="2020-04-16T01:50:11+09:00">2020-04-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/docker/" itemprop="url" rel="index">
+                    <span itemprop="name">docker</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 20200427hexo_post_head -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="ubuntu에-docker-compose로-gitlab-설치하기"><a href="#ubuntu에-docker-compose로-gitlab-설치하기" class="headerlink" title="ubuntu에 docker compose로 gitlab 설치하기"></a>ubuntu에 docker compose로 gitlab 설치하기</h1><h1 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h1><p>가상머신의 ubuntu18.04에 docker compose를 통해서 gitlab 서버를 설치해 보겠다.</p>
+<p>ubuntu에 미리 docker, docker-compose 가 설치되어 있어야 한다.</p>
+<h1 id="1-docker-관리-폴더-만들기"><a href="#1-docker-관리-폴더-만들기" class="headerlink" title="1.docker 관리 폴더 만들기"></a>1.docker 관리 폴더 만들기</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">docker</span><br><span class="line">|-- gitlab</span><br><span class="line">  |-- gitlab-data</span><br><span class="line">  |    | -- backups</span><br><span class="line">  |    | -- config</span><br><span class="line">  |    | -- data</span><br><span class="line">  |    | -- logs </span><br><span class="line">  |-- docker-compose.yml</span><br></pre></td></tr></table></figure>
+
+<p>docker-compose.yml 파일과 컨테이너와 연결할 호스트 볼륨을 저장할 gitlab-data 폴더를 생성했다.</p>
+<h1 id="2-docker-compose-yml"><a href="#2-docker-compose-yml" class="headerlink" title="2. docker-compose.yml"></a>2. docker-compose.yml</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">web:</span><br><span class="line">  image: &#39;gitlab&#x2F;gitlab-ce:latest&#39;</span><br><span class="line">  restart: always</span><br><span class="line">  container_name: &#39;gitlab&#39;</span><br><span class="line">  hostname: &#39;127.0.0.1&#39;</span><br><span class="line">  environment:</span><br><span class="line">    GITLAB_OMNIBUS_CONFIG: |</span><br><span class="line">      external_url &#39;http:&#x2F;&#x2F;127.0.0.1:8929&#39;</span><br><span class="line">      gitlab_rails[&#39;gitlab_shell_ssh_port&#39;] &#x3D; 2224</span><br><span class="line">  ports:</span><br><span class="line">    - &#39;8929:8929&#39;</span><br><span class="line">    - &#39;2224:22&#39;</span><br><span class="line">  volumes:</span><br><span class="line">    - &#39;.&#x2F;gitlab-data&#x2F;config:&#x2F;etc&#x2F;gitlab&#39;</span><br><span class="line">    - &#39;.&#x2F;gitlab-data&#x2F;logs:&#x2F;var&#x2F;log&#x2F;gitlab&#39;</span><br><span class="line">    - &#39;.&#x2F;gitlab-data&#x2F;data:&#x2F;var&#x2F;opt&#x2F;gitlab&#39;</span><br><span class="line">    - &#39;.&#x2F;gitlab-data&#x2F;backups:&#x2F;var&#x2F;opt&#x2F;gitlab&#x2F;backups&#39;</span><br></pre></td></tr></table></figure>
+
+<p>gitlab 공식 사이트에 가면 gitlab을 위한 docker-compose 파일을 제공한다.</p>
+<p>그걸 받아서 볼륨과 포트정도만 수정했다.</p>
+<p>위 127.0.0.1로 설정된 부분은 필요한데로 고정아이피를 넣어주면 된다. </p>
+<p>지금은 실습을 위해 그냥 로컬호스트아이피로 박았다.</p>
+<p>참고로 external_url에 설정된 ULR은 나중에 gitlab서버에서 생성된 리파지토리의 clone할 URL로 제공된다.</p>
+<h1 id="3-혹시나-해서-gitlab-data-권한부여"><a href="#3-혹시나-해서-gitlab-data-권한부여" class="headerlink" title="3.혹시나 해서 gitlab-data 권한부여"></a>3.혹시나 해서 gitlab-data 권한부여</h1><p>이건 내가 공부가 적어 잘 모르겠다.</p>
+<p>혹시 컨테이너 실행시 볼륨에 파일을 쓰면서 권한 오류가 발생할까 싶어, gitlab-data 폴더에 777권한을 부여 할 것이다.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chmod -R 777 gitlab-data</span><br></pre></td></tr></table></figure>
+<p>-R 옵션은 gitlab-data폴더와 하위 폴더 모두에 한꺼번에 권한을 주는 옵션이다.</p>
+<p><img src="/images/2019/Untitled-4acbcbd0-73e5-4710-891b-7166d109aa71.png" alt></p>
+<h1 id="4-gitlab-도커-컨테이너-올리기"><a href="#4-gitlab-도커-컨테이너-올리기" class="headerlink" title="4. gitlab 도커 컨테이너 올리기"></a>4. gitlab 도커 컨테이너 올리기</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo docker-compose up -d</span><br></pre></td></tr></table></figure>
+<p>위 명령어로 gitlab 도커 컨테이너를 올리자.</p>
+<p><img src="/images/2019/Untitled-3f064605-782c-4f8d-a9ed-a1009c37ff20.png" alt></p>
+<p>위처럼 빨리 done이라 나오지만 gitlab은 컨테이너가 부트가 되는 시간이 좀 길다.</p>
+<p>로그를 확인해보자.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo docker-compose logs -f -t --tail&#x3D;&quot;all&quot;</span><br></pre></td></tr></table></figure>
+<p><img src="/images/2019/Untitled-4f6a3199-467a-4f8f-9bd0-7225d5b950ee.png" alt></p>
+<p>한참 로그가 나오다가 위처럼 http에 관한 로그가 나오기 시작하면 접속이 가능한 상태가 된다.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo docker-compose ps</span><br></pre></td></tr></table></figure>
+<p>위 명령어로 컨테이너 상태를 확인해보자.</p>
+<p><img src="/images/2019/Untitled-fc936bcf-cc1c-4e7c-952b-bbbfc824ccc7.png" alt></p>
+<p>status가 up으로 되어있으면 정상인 것이다. </p>
+<p>문제가 있는경우 계속 starting 인 경우가 있으니, 그땐 로그를 보고 해결책을 찾아야 한다.</p>
+<h1 id="5-gitlab에-접속해서-컨테이너-동작-확인하기"><a href="#5-gitlab에-접속해서-컨테이너-동작-확인하기" class="headerlink" title="5. gitlab에 접속해서 컨테이너 동작 확인하기."></a>5. gitlab에 접속해서 컨테이너 동작 확인하기.</h1><p>브라우저에 <a href="http://127.0.0.1:8928" target="_blank" rel="external nofollow noopener noreferrer">http://127.0.0.1:8928</a> 로 접속해보자.</p>
+<p><img src="/images/2019/Untitled-e27e4082-3782-4052-a6a8-7acde856c114.png" alt></p>
+<p>root 계정의 비밀번호를 입력해주자.</p>
+<p><img src="/images/2019/Untitled-9e112f2d-52f2-433a-8fa7-87c814b80b8d.png" alt></p>
+<p>그 다음 root/방금생성한 비멀번호 를 입력해서 로그인하자.</p>
+<p>그러면 Administrator 로 로그인 하게 된다.</p>
+<p>아래는 테스트 프로젝트를 push 해서 동작을 확인한 화면이다.</p>
+<p><img src="/images/2019/Untitled-717368c4-f393-471a-b9f7-60e1f3b7bb50.png" alt></p>
+
+      
+      
+          
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+      
+
+
+  
+  
+  
+  
+
+        
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2019/10/12/docker-20191012-docker-compose-ubuntu-nexus/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Hanumoka">
+      <meta itemprop="description" content="아마추어 개발자의 블로그">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hanumoka, IT Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/10/12/docker-20191012-docker-compose-ubuntu-nexus/" class="post-title-link" itemprop="url">dockercompose로 ubuntu에 nexus 설치하기</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">작성일</span>
+
+              <time title="Post created: 2019-10-12 22:01:46" itemprop="dateCreated datePublished" datetime="2019-10-12T22:01:46+09:00">2019-10-12</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Updated at: 2020-04-16 01:50:11" itemprop="dateModified" datetime="2020-04-16T01:50:11+09:00">2020-04-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/docker/" itemprop="url" rel="index">
+                    <span itemprop="name">docker</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 20200427hexo_post_head -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="ubuntu-1804-dockercompose-nexus-설치"><a href="#ubuntu-1804-dockercompose-nexus-설치" class="headerlink" title="ubuntu 1804 dockercompose nexus 설치"></a>ubuntu 1804 dockercompose nexus 설치</h1><h1 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h1><p>ubuntu 18.04 버전에 docker compose를 사용해서 nexus를 도커로 설치하고 실행해 보려 한다.</p>
+<p>미리 ubuntu에 docker와 docker compose 가 미리 설치되어 있어야 한다. 해당 내용은 이 글에 포함되어 있지 않다.</p>
+<h1 id="실습"><a href="#실습" class="headerlink" title="실습"></a>실습</h1><h2 id="1-도커-관리용-폴더-만들기"><a href="#1-도커-관리용-폴더-만들기" class="headerlink" title="1. 도커 관리용 폴더 만들기"></a>1. 도커 관리용 폴더 만들기</h2><p>생성할 도커 컨테이너의 설정파일과 볼륨을 관리하기 위해 폴더를 만들 것이다.</p>
+<p>나느 아래처럼 홈디렉토리에 생성할 것이다.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p ~&#x2F;docker&#x2F;nexus&#x2F;nexus-data</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/2019/Untitled-70ca2a61-754c-4167-94e9-4ec44da6b194.png" alt></p>
+<p>그리고 nexus폴더 내부에 docker-compose.yml 파일을 생성하고, 그 내용을 아래처럼 만들어 준다.</p>
+<h1 id="2-docker-compose-yml-파일"><a href="#2-docker-compose-yml-파일" class="headerlink" title="2. docker-compose.yml 파일"></a>2. docker-compose.yml 파일</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">version: &#39;2&#39;</span><br><span class="line"></span><br><span class="line">services:</span><br><span class="line">  nexus3:</span><br><span class="line">    image: &#39;sonatype&#x2F;nexus3:latest&#39;</span><br><span class="line">    container_name: &#39;nexus3&#39;</span><br><span class="line">    restart: always</span><br><span class="line">    expose:</span><br><span class="line">      - &#39;8081&#39;</span><br><span class="line">    ports:</span><br><span class="line">      - &#39;8081:8081&#39;</span><br><span class="line">    volumes:</span><br><span class="line">      - &#39;.&#x2F;nexus-data:&#x2F;nexus-data&#39;</span><br><span class="line">    environment:</span><br><span class="line">      TZ: &quot;Asia&#x2F;Seoul&quot;</span><br><span class="line">networks:</span><br><span class="line">  default:</span><br><span class="line">    external:</span><br><span class="line">      name: devops</span><br></pre></td></tr></table></figure>
+
+<p>포트를 8081로 셋팅하였고, nexus-data를 /home/docker/nexus-data 에 볼륨으로 연결 하였다.</p>
+<p>네트워크를 쓸지는 모르겠지만 devops로 설정했다. </p>
+<p>다음 명령어로 devops라는 docker network를 생성하자.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo docker network create devops</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/2019/Untitled-b3949388-6c87-4d76-9cff-53be3d0aae86.png" alt></p>
+<h2 id="3-docker-compose-yml로-nexus-컨테이너-생성"><a href="#3-docker-compose-yml로-nexus-컨테이너-생성" class="headerlink" title="3. docker-compose.yml로 nexus 컨테이너 생성"></a>3. docker-compose.yml로 nexus 컨테이너 생성</h2><p>아래 명령어를 docker-compose.yml이 있는 경로에서 실행하자.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo docker-compose up -d</span><br></pre></td></tr></table></figure>
+
+<p>위 명령얼 실행하면 자동으로 nexus 이미지를 다운받고 nexus 컨테이너를 실행 시킬 것이다.</p>
+<p><img src="/images/2019/Untitled-6d1f7ace-7f56-4e50-9433-8331ea513494.png" alt></p>
+<p>아래 명령으로 docker compose로 실행한 컨테이너를 확인하자.</p>
+<p>물론 docker-compose.yml 이 있는 경로에서 명령어를 입력해야 한다.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo docker-compose ps</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/2019/Untitled-2862e07c-78ec-4d50-a737-5f759e95fa4f.png" alt></p>
+<p>state에 up으로 컨티에너가 실행 되었다는 것을 알 수 있다.</p>
+<p>docker-compose.yml 파일이 있는 경로에서 아래 명령어를 치면 해당 컨테이너의 log를 볼수도 있다. 만약 컨테이너에 문제가 있다고 생각하면 로그를 확인 하자.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo docker-compose logs -f -t --tail&#x3D;&quot;all&quot;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/2019/Untitled-6f653713-f6c7-47a6-acde-02b79834e0ac.png" alt></p>
+<p>음 브라우저에 아래 주소로</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http:&#x2F;&#x2F;localhost:8081</span><br></pre></td></tr></table></figure>
+
+<p>접근했는데 페이지가 열리지 않아서 로그를 확인해보니 위와 같은 오류가 로그로 나오고 있다.</p>
+<p>아마 nexus컨테이너가 동작하면서 호스트의 nexus-data 에 파일을 생성해야 하는데 권한 문제가 있나보다.</p>
+<p>일단 실행중인 컨테이너를 멈추고 해당 폴더에 권한을 부여해봐야 겠다.</p>
+<p>아래 명령어로 실행시킨 nexus 컨테이너를 정지 시키자.</p>
+<p>물론 docker-compose.yml 이 있는 경로에서 실행하자.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo docker-compose down</span><br></pre></td></tr></table></figure>
+
+<p>위 명령어로 해당 컨테이너를 종료하고 이미지를 삭제한다.</p>
+<p>그리고 아까 생성했던 /home/docker/nexus/nexus-data 폴더의 권한을 수정해보자.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo chmod 777 &#x2F;home&#x2F;docker&#x2F;nexus&#x2F;nexus-data</span><br></pre></td></tr></table></figure>
+
+<p>무언가 도커에 다른 방법이 있을거 같은데, 나는 공부가 적어 위처럼 모든 권한을 다 부여했다.</p>
+<p><img src="/images/2019/Untitled-a01c1e7b-d781-4ab0-b263-0c4eb82e99fc.png" alt></p>
+<p>다시 도커 컨테이너를 올려보자.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo docker-compose up -d</span><br></pre></td></tr></table></figure>
+
+<p>그리고 로그를 확인해보자.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo docker-compose logs -f -t --tail&#x3D;&quot;all&quot;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/2019/Untitled-2b91f682-0a09-4ee5-b30b-c2f91e0a7935.png" alt></p>
+<p>뭔가 에러 없이 넥서스가 실행 되었다고 나온다.</p>
+<p>이제 브라우저에서 <a href="http://localhost:8081" target="_blank" rel="external nofollow noopener noreferrer">http://localhost:8081</a>로 접근해보자.</p>
+<p><img src="/images/2019/Untitled-c93cc593-fb0e-435a-a1e1-d32689faa5d1.png" alt></p>
+<p>위 처럼 동작을 확인 할 수 있다.</p>
+<p>우측 오른쪽의 sign in 을 클릭하면 다음처럼 나온다.</p>
+<p><img src="/images/2019/Untitled-2859049b-05c1-4a71-8277-dd2f83453e2d.png" alt></p>
+<p>/nexus-data/admin.password 파일을 확인해서 admin의 비밀번호를 확인해 보라고 한다.</p>
+<p>예전 버전의 nexus는 기본으로 admin/1234 인데 요즘 버전은 이렇게 나온다.</p>
+<p>초기에 생성한 볼륨 폴더인 /home/docker/nexus/nexus-data 폴더로 이동해보자.</p>
+<p><img src="/images/2019/Untitled-6858174d-4044-4f89-a284-30072790b543.png" alt></p>
+<p>admin.password 파일이 있다. 해당 파일을 열어보면 admin 초기 비밀번호가 나온다.</p>
+<p>admin/초기비밀번호를 입력하면 새로 생성한 넥서스에 관리자로 로그인 할 수 있다.</p>
+<p>로그인에 성공하면 다음처럼 나온다.</p>
+<p><img src="/images/2019/Untitled-b1c4ba78-aa53-465a-9981-16bbb19314af.png" alt></p>
+<p>새 비밀번호를 입력한다.</p>
+<p><img src="/images/2019/Untitled-421a9f44-549a-4a33-a3a5-f48e4e2fe97a.png" alt></p>
+<p>그리고 대충 next 버튼을 눌러주면 된다. </p>
+<h2 id="4-이제-관리는-어떻게"><a href="#4-이제-관리는-어떻게" class="headerlink" title="4. 이제 관리는 어떻게?"></a>4. 이제 관리는 어떻게?</h2><p>도커 컨테이너의 볼륨을 호스트와 연결했으니, 컨테이너를 지워도 호스트 볼륨이 살아 있으니, 문제 없다.</p>
+<p>나중에 백업을 하거나 컨테이너를 다른곳으로 옮겨야 할 경우 /home/docker 폴더를 전체 복사해서 이동시켜 컨테이너를 올리면 작업중엔 넥서스의 상태를 보존할수 있을거 같다.</p>
+<h2 id="5-docker-compose-명령어-요약"><a href="#5-docker-compose-명령어-요약" class="headerlink" title="5. docker compose 명령어 요약"></a>5. docker compose 명령어 요약</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">docker-compose up -d      &#x2F;&#x2F; 도커컴포즈 컨테이너 생성 및 실행   </span><br><span class="line">docker-compose down       &#x2F;&#x2F; 도커컴포즈 컨테이너 종료 및 삭제</span><br><span class="line"></span><br><span class="line">docker-compose start      &#x2F;&#x2F; 도커컴포즈 컨테이너 실행</span><br><span class="line">docker-compose stop       &#x2F;&#x2F; 도커컴포즈 컨테이너 종료</span><br><span class="line"></span><br><span class="line">docker-compose ps         &#x2F;&#x2F; 도커컴포즈 프로스스 확인</span><br><span class="line">docker-compsos logs -f -t --tail&#x3D;&quot;all&quot;  &#x2F;&#x2F;도커컴포즈 로그 확인</span><br></pre></td></tr></table></figure>
+      
+      
+          
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+      
+
+
+  
+  
+  
+  
+
+        
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2019/10/05/ubuntu-20191005-ubuntu-docker-compose-install/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Hanumoka">
+      <meta itemprop="description" content="아마추어 개발자의 블로그">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hanumoka, IT Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/10/05/ubuntu-20191005-ubuntu-docker-compose-install/" class="post-title-link" itemprop="url">ubuntu 18.04 docker compose install</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">작성일</span>
+
+              <time title="Post created: 2019-10-05 22:15:54" itemprop="dateCreated datePublished" datetime="2019-10-05T22:15:54+09:00">2019-10-05</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
@@ -307,73 +713,17 @@ gtag('config', 'UA-100596920-1');
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h3><p>우분투 데스크탑을 설치한 김에 나도 테마같은걸 바꿔보고 싶었다.</p>
-<p>이번에는 Unity twak tool 과 기타 익스텐션을 이용해서 우분투 테마등을 변경해 보겠다.</p>
-<h3 id="Unity-tweak-tool-란"><a href="#Unity-tweak-tool-란" class="headerlink" title="Unity tweak tool 란?"></a>Unity tweak tool 란?</h3><p>유니티 트윅은 윈도우로 치자면 제어판과 유사한 역할을 하는 프로그램이다.</p>
-<p>특히 우분투 데스크탑의 테바변경에서 핵심적으로 사용된다.</p>
-<p>테마를 설정할 수 있고, 폰트변경, 아이콘 변경, 프로그램 메뉴의 크기조정, 바로가기 및 전처 설정 등을 할 수 있다.</p>
-<p>우분투에 기본적으로 설정이 있지만 그것에 강화판 제어판 정도로 생각이된다.</p>
-<h3 id="Unity-tweak-tool-설치"><a href="#Unity-tweak-tool-설치" class="headerlink" title="Unity tweak tool 설치"></a>Unity tweak tool 설치</h3><p>우선 터미널을 열고 아래 명령어를 입력해서 Unity tweak tool을 설치하자.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install gnome-tweak-tool</span><br></pre></td></tr></table></figure>
-
-<p><img src="/images/2019/2/Untitled-a899ecea-645a-4b1d-b063-9f02cbf3f58c.png" alt></p>
-<p>설치가 완료되면 아래처럼 기능개선 이라는 프로그램을 확인 할 수 있다.</p>
-<p><img src="/images/2019/2/Untitled-23ea743c-dcfe-4ee3-9357-985188c3eb26.png" alt></p>
-<p><img src="/images/2019/2/Untitled-bd05a3f7-3128-488d-9604-9264fab6c0dc.png" alt></p>
-<p>기능개선은 위와 같은 부가적인 환경설정 기능등을 제공한다.</p>
-<h3 id="Adapta-테마-설치하기"><a href="#Adapta-테마-설치하기" class="headerlink" title="Adapta 테마 설치하기"></a>Adapta 테마 설치하기</h3><p>터미널에서 아래명령어3줄을 차례로 입력하자</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get-repository ppa:tista&#x2F;adapta</span><br><span class="line">sudo apt-get update</span><br><span class="line">sudo apt-get inatall adapta-gtk-theme</span><br></pre></td></tr></table></figure>
-
-<p>아까 설치한 기능개선 프로그램을 종료하고 다시 킨다.</p>
-<p>모양새 → 테마→ 프로그램 에서 방금 설치한 Adapta 테마를 선택할수 있다. </p>
-<p><img src="/images/2019/2/Untitled-b8f0d0f1-db58-493b-bc5d-f364e482eb4f.png" alt></p>
-<p>위처럼 프로그램 창이 어두운 형태로 변한것을 확인 할 수 있다. </p>
-<p>여러 색상이 있으니 원하는 것을 선택하면 된다.</p>
-<h3 id="Gnome-shell-Extention-설치로-상단-봐-테마-변경"><a href="#Gnome-shell-Extention-설치로-상단-봐-테마-변경" class="headerlink" title="Gnome shell Extention 설치로 상단 봐 테마 변경"></a>Gnome shell Extention 설치로 상단 봐 테마 변경</h3><p>우분투 상단바 테마는 Gnome 쉘에 포함되어 있다고 한다.</p>
-<p>위 상단바 테마를 수정하려면 Gnome shell Extention 을 설치해야 한다.</p>
-<p>터미널에서 아래명령어를 입력하자.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install chrome-gnome-shell</span><br></pre></td></tr></table></figure>
-
-<p>패키지명이 왜 크롬인지는 잘 모르겠다.</p>
-<p>그리고 우분투에서 파이어폭스 브라우저를 열고 아래 링크에 접속하자.</p>
-<p><a href="https://extensions.gnome.org/extension/19/user-themes" target="_blank" rel="external nofollow noopener noreferrer">https://extensions.gnome.org/extension/19/user-themes</a></p>
-<p><img src="/images/2019/2/Untitled-20e83fc3-36f5-48d7-b339-7fafbb519c82.png" alt></p>
-<p>Click here install borwer extension을 클릭해서 브라우저 익스텐션을 설치하자.</p>
-<p><img src="/images/2019/2/Untitled-750d8935-e401-4617-ad4e-475ee481f662.png" alt></p>
-<p><img src="/images/2019/2/Untitled-b80becd2-2c58-48fa-b367-22e15b32c64c.png" alt></p>
-<p><a href="https://addons.mozilla.org/ko/firefox/addon/gnome-shell-integration/" target="_blank" rel="external nofollow noopener noreferrer">https://addons.mozilla.org/ko/firefox/addon/gnome-shell-integration/</a></p>
-<p>반드시 파이어폭스 브라우저를 사용해야 한다.</p>
-<p>설치가 끝난뒤 파이어폭스 브라우저에서 아래 처럼 User Themes로 접근한다.</p>
-<p><img src="/images/2019/2/Untitled-ac641281-1c0c-4946-b0b2-8043aa6e6610.png" alt></p>
-<p><img src="/images/2019/2/Untitled-73afb19e-70c5-4153-884c-cbca7048afe7.png" alt></p>
-<p>Off로 되어있던 설정을 On으로 변경해준다.</p>
-<p><img src="/images/2019/2/Untitled-90b3072f-38d3-46fb-a112-0274c3147090.png" alt></p>
-<p>설치하자.</p>
-<p>설치가 완료된 다음, 다시 기능개선 프로그램을 종료하고 다시 열자.</p>
-<p><img src="/images/2019/2/Untitled-add8aac2-9e1e-40f7-b75e-e57c1fcc1ae2.png" alt></p>
-<p>모양세에 다시 들어가보면 쉘 항목이 활성화 되어있다. </p>
-<p>여기서 이것저것 바꿔보면 우분투의 상단바의 테마가 변경하는 것을 알 수 있다.</p>
-<h3 id="Flat-remix-아이콘-테마-적용하기"><a href="#Flat-remix-아이콘-테마-적용하기" class="headerlink" title="Flat remix 아이콘 테마 적용하기"></a>Flat remix 아이콘 테마 적용하기</h3><p>Flat remix라는 패키지를 설치해서 우분투의 아이콘 테마도 변경 할 수 있다.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo add-apt-repository ppa:daniruiz&#x2F;flat-remix</span><br><span class="line">sudo apt-get update</span><br><span class="line">sudo apt-get install flat-remix</span><br></pre></td></tr></table></figure>
-
-<p>위 명령을 순차적으로 입력해서 flat remix를 설치하자.</p>
-<p>설치가 완료된되 기능개선을 재시작하면 아래처럼 아이콘 테마를 설정 할 수 있다.</p>
-<p><img src="/images/2019/2/Untitled-5ac33c1d-fa00-46e9-8457-b9fe5423319f.png" alt></p>
-<h3 id="Dash-to-Dock-설치고-Dock-테마-변경하기"><a href="#Dash-to-Dock-설치고-Dock-테마-변경하기" class="headerlink" title="Dash to Dock 설치고 Dock 테마 변경하기"></a>Dash to Dock 설치고 Dock 테마 변경하기</h3><p>아래 링크애 파이어폭스로 접근하자.</p>
-<p><a href="https://extensions.gnome.org/extension/307/dash-to-dock" target="_blank" rel="external nofollow noopener noreferrer">https://extensions.gnome.org/extension/307/dash-to-dock</a></p>
-<p><img src="/images/2019/2/Untitled-28ffa173-de0c-463a-a7fb-57be01b43d3c.png" alt></p>
-<p>상태를 on으로 변경하고 설치하자.</p>
-<p><img src="/images/2019/2/Untitled-714f30f2-0983-41df-a10a-72ddd9fa85f7.png" alt></p>
-<p>설치가 되면 벌써 왼쪽의 독의모양이 변경된 것을 확인 할 수있다.</p>
-<p>다시 기능개선에 들어가서 확장 → Dash to dock에 환경설정에 들어가자.</p>
-<p><img src="/images/2019/2/Untitled-e7b91086-2866-4fce-871a-1c95fd406c8e.png" alt></p>
-<p>위처럼 독의 위치를 왼쪽이 아니라 아래로 옮길수 있다.</p>
-<p>최종적으로 아래와 같은 화면을 만들었다. 바탕화면이 마음에 안들지만 그건 나중에 바꿔야 겠다.</p>
-<p><img src="/images/2019/2/Untitled-b94bd3e9-0691-48f4-9f3c-51e55b7fd426.png" alt></p>
-<p>끝!!!</p>
-<h3 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h3><p><a href="https://smartaedi.tistory.com/137" target="_blank" rel="external nofollow noopener noreferrer">https://smartaedi.tistory.com/137</a></p>
-<p><a href="https://programmingsummaries.tistory.com/389" target="_blank" rel="external nofollow noopener noreferrer">https://programmingsummaries.tistory.com/389</a></p>
-<p><a href="https://codevkr.tistory.com/89" target="_blank" rel="external nofollow noopener noreferrer">https://codevkr.tistory.com/89</a></p>
+          <h1 id="ubuntu-18-04-docker-compose-install"><a href="#ubuntu-18-04-docker-compose-install" class="headerlink" title="ubuntu 18.04 docker compose install"></a>ubuntu 18.04 docker compose install</h1><h1 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h1><p>이전에 ubuntu 18.04 가상머신에 docker 를 설치했다.</p>
+<p>윈도우에는 docker for windows로 설치하면 docker와 docker compose 가 한방에 설치되는데, ubuntu에서는 docker compose를 추가로 따로 설치해 줘야 한다.</p>
+<p>이번에는 docker compose를 설치 해보려 한다.</p>
+<h1 id="ubuntu-18-04-docker-compse-설치하기"><a href="#ubuntu-18-04-docker-compse-설치하기" class="headerlink" title="ubuntu 18.04 docker compse 설치하기"></a>ubuntu 18.04 docker compse 설치하기</h1><p><a href="https://github.com/docker/compose/releases" target="_blank" rel="external nofollow noopener noreferrer">https://github.com/docker/compose/releases</a></p>
+<p>일단 위 경로로 가서 최신 docker compose 버전을 살펴보자 rc 버전은(release candidate)로 일종의 베타 버전이라고 한다. </p>
+<p>원하는 버전을 선택해서 설치하면 된다.</p>
+<pre><code>sudo curl -L https://github.com/docker/compose/releases/download/1.21.2/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+docker-compose --version</code></pre><p><img src="/images/2019/Untitled-53125fd8-bb2f-42d8-b477-a8e35a8122f8.png" alt></p>
+<p>간단하게 설치를 할 수 있다.</p>
+<h3 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h3><p><a href="https://www.digitalocean.com/community/tutorials/how-to-install-docker-compose-on-ubuntu-18-04" target="_blank" rel="external nofollow noopener noreferrer">https://www.digitalocean.com/community/tutorials/how-to-install-docker-compose-on-ubuntu-18-04</a></p>
 
       
       
@@ -402,7 +752,7 @@ gtag('config', 'UA-100596920-1');
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
-    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2019/08/17/ubuntu-20190817-ubuntu-virtualbox-language-change-key/">
+    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2019/10/04/springBoot-20191004-springboot-gradle-multimodule/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -416,7 +766,7 @@ gtag('config', 'UA-100596920-1');
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
           
-            <a href="/2019/08/17/ubuntu-20190817-ubuntu-virtualbox-language-change-key/" class="post-title-link" itemprop="url">Virtualbox Ubunto1804 한영변경키</a>
+            <a href="/2019/10/04/springBoot-20191004-springboot-gradle-multimodule/" class="post-title-link" itemprop="url">springboot - gradle을 이용한 멀티모듈 프로젝트 만들기</a>
         </h1>
 
         <div class="post-meta">
@@ -426,7 +776,303 @@ gtag('config', 'UA-100596920-1');
               </span>
               <span class="post-meta-item-text">작성일</span>
 
-              <time title="Post created: 2019-08-17 19:02:44" itemprop="dateCreated datePublished" datetime="2019-08-17T19:02:44+09:00">2019-08-17</time>
+              <time title="Post created: 2019-10-04 01:54:26" itemprop="dateCreated datePublished" datetime="2019-10-04T01:54:26+09:00">2019-10-04</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Updated at: 2020-04-16 01:50:12" itemprop="dateModified" datetime="2020-04-16T01:50:12+09:00">2020-04-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/springBoot/" itemprop="url" rel="index">
+                    <span itemprop="name">springBoot</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 20200427hexo_post_head -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="springboot-gradle-멀티모듈-프로젝트-만들기"><a href="#springboot-gradle-멀티모듈-프로젝트-만들기" class="headerlink" title="springboot gradle 멀티모듈 프로젝트 만들기"></a>springboot gradle 멀티모듈 프로젝트 만들기</h1><h1 id="개발환경"><a href="#개발환경" class="headerlink" title="개발환경"></a>개발환경</h1><p>windows10</p>
+<p>intelliJ 커뮤니티 버전</p>
+<p>jdk1.8</p>
+<h1 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h1><p>intelliJ 에서 gradle 기반 springboot 멀티 모듈 프로젝트를 한번 만들어보자.</p>
+<p>멀티모듈을 어떻게 디자인 해야하는지는 다루지 않고, gradle을 이용해서 어떻게 모듈을 생성하고 모듈간의 의존성을 셋팅을 하는가에 중점을 둔 글이다.</p>
+<h3 id="1-인텔리J에서-gradle-프로젝트-생성"><a href="#1-인텔리J에서-gradle-프로젝트-생성" class="headerlink" title="1. 인텔리J에서 gradle 프로젝트 생성"></a>1. 인텔리J에서 gradle 프로젝트 생성</h3><p>일단 intelliJ 에서 gradle 프로젝트를 생성하자.</p>
+<p><a href="http://start.spring.io" target="_blank" rel="external nofollow noopener noreferrer">http://start.spring.io</a> 로 이동해서 spring boot gradle 프로젝트를 생성하자.</p>
+<p>(나는 인텔리J 커뮤니티 버전을 사용중이라 springboot 프로젝트를 생성할 때 주로 <a href="http://start.spring.io" target="_blank" rel="external nofollow noopener noreferrer">http://start.spring.io</a> 를 주로 사용한다.)</p>
+<p>아래처럼 설정하여 프로젝트를 생성하자.</p>
+<p><strong>Project</strong> : Gradle Project</p>
+<p><strong>Language</strong>: Java</p>
+<p><strong>Spring Boot</strong>: 2.1.9(현재 2점대 이상으로 선택하면 될듯)</p>
+<p><strong>Project Metadata</strong></p>
+<p><strong>Group</strong> : com.hanumoka.go</p>
+<p><strong>Artifact</strong> : go-modules</p>
+<p><strong>Option</strong> </p>
+<p><strong>Packaging</strong>: War</p>
+<p><strong>Java</strong> : 8</p>
+<p><strong>Dependencies</strong>: Spring web, Thymeleaf</p>
+<p>위에서 중요한 부분은 Group이다. </p>
+<p>com.hanumoka.go는 이 프로젝트의 공통 패키지이며, Artifact: go-modules 는 실제 생성되는 실행 프로그램을 구별하는 명칭이 아니라 모듈의 묶음일 뿐이다.</p>
+<p>개인적으로 프로젝트를 war로 설정해서 생성한 이유는 애시당초 war로 프로젝트를 생성하면 프로젝트 빌드시 war, jar 빌드가 쉽기 때문이다.</p>
+<p><img src="/images/2019/Untitled-5341e670-96cc-4c30-87ce-b3b5e1f8f70e.png" alt></p>
+<p><img src="/images/2019/Untitled-74760319-2255-4c62-8e0e-420b86d1ff1f.png" alt></p>
+<p><img src="/images/2019/Untitled-d9a4929d-6637-4b35-abe6-7f30e72831a3.png" alt></p>
+<p>Spring web은 필수이며  Thymeleaf 스프링 컨트롤러의 동작을 확인하기 위해 추가했다.</p>
+<p>설정된 값을을 이용해서 압축된 프로젝트를 다운로드 하자.</p>
+<p><img src="/images/2019/Untitled-b2e2e41a-d83f-42c6-8d3a-b8be0f1620e9.png" alt></p>
+<p>해당 파일을 압축을 풀고 intelliJ로 open하자.</p>
+<p><img src="/images/2019/Untitled-cb15ce0d-2329-42a8-a064-88a35931aa4f.png" alt></p>
+<p>위처럼 gradle 이 제대로 빌드 되는지 확인하자.</p>
+<p>컨트롤러와 html 페이지를 추가해서 스프링 컨트롤러 동작을 한번 시켜보자.</p>
+<p>com.hanumoka.go.gomodules 패키지를 선택하고 controller 패키지를 생성하고, HomeController를 생성하고 html을 리다이렉팅 할 수 있는 RequestMapping 메소드를 추가하자.</p>
+<p><img src="/images/2019/Untitled-1de55a38-69bf-4f45-aa47-c4b608000a3a.png" alt></p>
+<p><img src="/images/2019/Untitled-453cfccc-a5da-4ab9-bc06-32d1dd1da2d8.png" alt></p>
+<p>GoModulesApplication 를 선택하고 run 시켜서, <a href="http://localhost:8080" target="_blank" rel="external nofollow noopener noreferrer">http://localhost:8080</a> 로 접속해서 컨트롤러가 동작하는지 보자.</p>
+<p><img src="/images/2019/Untitled-a0b353dd-cff9-46b3-91e9-162e3b25cf80.png" alt></p>
+<p><img src="/images/2019/Untitled-c37042c7-7134-4ea7-a560-0d269625b277.png" alt></p>
+<p>스프링 컨트롤러가 정상 동작하는 것을 확인 할 수 있다.</p>
+<h3 id="2-모듈-추가하기"><a href="#2-모듈-추가하기" class="headerlink" title="2. 모듈 추가하기"></a>2. 모듈 추가하기</h3><p>1번에서 한 일은 그냥 gradle 기반 springboot 프로젝트를 생성하고 동작시킨 것이다.</p>
+<p>이제 실제 사용할 모듈을 구상하고 추가하고 셋팅해야 한다.</p>
+<p>이 글은 gradle환경에서 springboot 프로젝트에서 모듈을 추가하고 연결하는 설정을 기록하는데 초점을 두고 있다.</p>
+<p>따라서 간단하게 Service 모듈과 Controller 모듈을 생성하고 Controller 모듈이 Service 모듈을 사용하는 시나리오로 진행 하겠다.</p>
+<p>실제 모듈을 설계하고 구성하는 일은 많은 고심이 필요해 보인다.(이부분은 나중에 좀 연구해 봐야 겠다.)</p>
+<p><img src="/images/2019/Untitled-763d4bb6-6264-4ddd-ad37-e1bbf1583016.png" alt></p>
+<p>일단 프로젝트 루트 경로의 build.gradle, settigns.gradle 은 프로젝트 전체에 적용되는 설정 파일이다. </p>
+<p>사실 gradle을 잘 몰라 자세한 설명을 할 수가 없다. </p>
+<p>하지만 이후로 추가될 모듈에 관련된 공통적인 설정은 이 두 파일에 기술된다.</p>
+<p><img src="/images/2019/Untitled-0409dc23-9fe8-4d84-af69-622f0b2d146c.png" alt></p>
+<p>그리고 프로젝트 루트 경로의 src 폴더는 모듈을 추가함으로써 사라질 예정이다.</p>
+<p><img src="/images/2019/Untitled-1bf0b85f-d119-4e8d-8e5a-1ff8ff2e5f39.png" alt></p>
+<h3 id="일단-a-module-이라는-이름의-모듈을-추가해보자"><a href="#일단-a-module-이라는-이름의-모듈을-추가해보자" class="headerlink" title="일단 a-module 이라는 이름의 모듈을 추가해보자."></a>일단 a-module 이라는 이름의 모듈을 추가해보자.</h3><p>일단 루트 경로의 settings.gradle을  확인해보자.</p>
+<p>아래처럼 루트 프로젝트 네임만 있을 것이다. 나중에 모듈을 추가하면 모듈 정보가 추가될 것이다.</p>
+<p>일단 넘어가자.</p>
+<pre><code>rootProject.name = &apos;go-modules&apos;</code></pre><p>그리고 루트 경로의 build.gradle 파일을 열어서 내용물을 모두 지우고 아래 내용으로 치환하자.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">buildscript &#123;</span><br><span class="line">    ext &#123;</span><br><span class="line">        springBootVersion &#x3D; &#39;2.1.9.RELEASE&#39;</span><br><span class="line">    &#125;</span><br><span class="line">    repositories &#123;</span><br><span class="line">        mavenCentral()</span><br><span class="line">    &#125;</span><br><span class="line">    dependencies &#123;</span><br><span class="line">        classpath(&quot;org.springframework.boot:spring-boot-gradle-plugin:$&#123;springBootVersion&#125;&quot;)</span><br><span class="line">        classpath &quot;io.spring.gradle:dependency-management-plugin:1.0.8.RELEASE&quot;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">subprojects &#123;</span><br><span class="line"></span><br><span class="line">    apply plugin: &#39;java&#39;</span><br><span class="line">    apply plugin: &#39;eclipse&#39;</span><br><span class="line">    apply plugin: &#39;org.springframework.boot&#39;</span><br><span class="line">    apply plugin: &#39;io.spring.dependency-management&#39;</span><br><span class="line"></span><br><span class="line">    group &#x3D; &#39;com.hanumoka.go&#39;</span><br><span class="line">    version &#x3D; &#39;0.0.0&#39;</span><br><span class="line">    sourceCompatibility &#x3D; 1.8</span><br><span class="line"></span><br><span class="line">    repositories &#123;</span><br><span class="line">        mavenCentral()</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    task initSourceFolders &#123;</span><br><span class="line">        sourceSets*.java.srcDirs*.each &#123;</span><br><span class="line">            if( !it.exists() ) &#123;</span><br><span class="line">                it.mkdirs()</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        sourceSets*.resources.srcDirs*.each &#123;</span><br><span class="line">            if( !it.exists() ) &#123;</span><br><span class="line">                it.mkdirs()</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    dependencies &#123;</span><br><span class="line">        compileOnly(&#39;org.projectlombok:lombok&#39;)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>buildscript  부분에서 공통 스브링부트 버전등을 설정한다.</p>
+<p>subprojects 는 추가될 모듈둘에 공통적으로 적용될 내용들이 기술되어 있다.</p>
+<p>이제 a-module 을 추가해보자. 아래처럼 모듈을 클릭하자.</p>
+<p><img src="/images/2019/Untitled-64586004-bf5a-4a95-af5d-2c80215154e5.png" alt></p>
+<p>아래 내용을 확인하고 next 버튼을 클릭하자.</p>
+<p><img src="/images/2019/Untitled-728f02ae-0958-433b-aded-dfc20c6639c0.png" alt></p>
+<p>아래처럼 GroupId : com.hanumoka.go</p>
+<p>ArtifactId : a-module 를 입력하고 next 를 클릭하자.</p>
+<p><img src="/images/2019/Untitled-3919234e-a81d-45fa-a06c-07f35ff6d8c2.png" alt></p>
+<p>a-module 이라는 모듈명을 확인하고 Finish 버튼을 클릭하자.</p>
+<p><img src="/images/2019/Untitled-cdbb921e-edd1-48e7-8419-f4f584e6e5e6.png" alt></p>
+<p>아래처럼 a-module이 추가되었다. 하늘색 작은 상자가 표시 되어 있는데, 이것이 모듈을 의미한다.</p>
+<p><img src="/images/2019/Untitled-9e0e20d4-d3d0-4bfb-8da3-b0fa3b9190a0.png" alt></p>
+<p>모듈을 추가했으니 프로젝트 루트 경로의 settings.gradle 파일을 열어보자.</p>
+<p>아래처럼 include ‘a-module’ 이라는 내용이 자동으로 추가된 것을 확인 할 수 있다.</p>
+<p>만약 없다면, 추가해주자.</p>
+<p><img src="/images/2019/Untitled-d4e72ab9-3593-449c-8bcf-074294dda1a3.png" alt></p>
+<p>그리고 루트 경로의 settings.gradle 파일을 열어보자.</p>
+<p>그리고 아래 내용을 추가해주자. 프로젝트해당 모듈이 있다고 등록하는 것이다. 나중에 이 모듈에 대한 디펜던시도 추가할 것이다.</p>
+<pre><code>project(&apos;:a-module&apos;) {
+}</code></pre><p><img src="/images/2019/Untitled-8ef73c78-899a-4472-acd5-7c4fd6dab19c.png" alt></p>
+<p>이제 생성했던 a-module 폴더로 들어가서 a-module 폴더의 build.gradle 파일을 열어보자.</p>
+<p>기존의 내용들을 지우고 아래 내용으로 치환하자.</p>
+<p>이 파일은 a-module을 위한 독자적인 파일이다.</p>
+<pre><code>dependencies {
+    compile(&apos;org.springframework.boot:spring-boot-starter-thymeleaf&apos;)
+    compile(&apos;org.springframework.boot:spring-boot-starter-web&apos;)
+    testCompile(&apos;org.springframework.boot:spring-boot-starter-test&apos;)
+}</code></pre><p><img src="/images/2019/Untitled-4f8a1a40-e697-482a-8733-3e0c749dcf7b.png" alt></p>
+<p>그리고 아래처럼 모듈 내부의 패키지와 파일들을 구성하자.</p>
+<p><img src="/images/2019/Untitled-cc91f841-ef40-40ed-9499-79c23105eb78.png" alt></p>
+<p><strong>공통 패키지는 com.hanumoka.go 이다.</strong></p>
+<p><strong>BeanScan의 기준이 되는 AmoduleApp.class, ServletInitializer.class 는 이곳이 둬야 한다.</strong></p>
+<p>아래 AmoduleApp.class 파일이다.</p>
+<pre><code>package com.hanumoka.go;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class AmoduleApp {
+    public static void main(String[] args) {
+        SpringApplication.run(AmoduleApp.class, args);
+    }
+}</code></pre><p>아래 ServletInitializer.class 파일이다.</p>
+<pre><code>package com.hanumoka.go;
+
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
+
+public class ServletInitializer extends SpringBootServletInitializer {
+
+    @Override
+    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+        return application.sources(AmoduleApp.class);
+    }
+
+}</code></pre><p>아래 HomeController.class 이다.</p>
+<p>추가한 a-module을 다른 모듈과 구분하기 위해 amodule 을 추가했다.</p>
+<pre><code>package com.hanumoka.go.amodule.controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+@Controller
+public class HomeController {
+
+    @RequestMapping(&quot;/&quot;)
+    public String index(){
+        return &quot;index&quot;;
+    }
+}</code></pre><p>기존에 루트 경로에 있던 src 폴더 내부를 옮겨와서 AmoduleApp 파일명만 변경한 것이다.</p>
+<p>그리고 루트 경로의 src 폴더를 제거하자.</p>
+<p>지금까지 작업은 기존의 단일 프로젝트의 src를 a-module로 옮긴것이다.</p>
+<p>AmoduleApp 을 실행 하면, 스프링 앱이 동작하고 <a href="http://localhost:8080" target="_blank" rel="external nofollow noopener noreferrer">http://localhost:8080</a> 접근시 index.html 이 보여야 한다.</p>
+<p>지금까지 한 작업으로 springboot 단일 프로젝트를 springboot 모듈 프로젝트로 변경 되었다.</p>
+<p>이제 b-module을 추가하고 a-module에서 b-module을 사용하는 구조로 만들어보자.</p>
+<h3 id="b-module-이라는-모듈-추가하기"><a href="#b-module-이라는-모듈-추가하기" class="headerlink" title="b-module 이라는 모듈 추가하기"></a>b-module 이라는 모듈 추가하기</h3><p>앞서 a-module 추가하듯이 b-module도 추가하자.</p>
+<p>아래와 같은 구조가 될 것이고, src 폴더는 앞에서 말한것 처럼 제거 했다.</p>
+<p><img src="/images/2019/Untitled-eb7e58f7-4c94-4821-9647-63d58d52c801.png" alt></p>
+<p>루트 경로에 settings.gradle 폴더르르 보면 역시 b-module 이 추가된 것을 볼 수 있다.</p>
+<p><img src="/images/2019/Untitled-2a9d2015-3aa7-4c45-ae73-e04758fb8bcb.png" alt></p>
+<p>루트 경로의 build.gradle 에 가서 앞서 등록했던 a-module에 dependencies 를 방금 추가한 b-module 로 추가하자.</p>
+<p>해당 내용은 a-modul이 b-module에 의존성을 갖는다는 것이다.</p>
+<pre><code>project(&apos;:a-module&apos;) {
+    dependencies {
+        compile project(&apos;:b-module&apos;)
+    }
+}</code></pre><p><img src="/images/2019/Untitled-a5baeacc-585a-4ad5-90dd-24effcf2ab22.png" alt></p>
+<p>b-module을 열고 아래처럼 구성하자.</p>
+<p>b-module은 a-module에서 사용할 서비스로 Bservice.class를 제공한다.</p>
+<p><img src="/images/2019/Untitled-e2cf2f53-0c69-4946-b61f-ffb807c0fdfd.png" alt></p>
+<p>Bservice.class</p>
+<pre><code>package com.hanumoka.go.bmodule.service;
+
+import org.springframework.stereotype.Service;
+
+@Service
+public class Bservice {
+    public String test(){
+        return &quot;Bservice test()...&quot;;
+    }
+}</code></pre><p>그리고 b-module 하위이 build.gradle 을 아래로 치환 했다.</p>
+<pre><code>bootJar{
+    enabled = false;
+}
+jar {
+    enabled = true;
+}
+
+dependencies {
+    compile(&apos;org.springframework.boot:spring-boot-starter&apos;)
+}</code></pre><h3 id="A-module-컨트롤러에서-B-module-서비스를-사용해보자"><a href="#A-module-컨트롤러에서-B-module-서비스를-사용해보자" class="headerlink" title="A-module 컨트롤러에서 B-module 서비스를 사용해보자."></a>A-module 컨트롤러에서 B-module 서비스를 사용해보자.</h3><p>A-module의 HomeController.class를 아래처럼 수정하자.</p>
+<pre><code>package com.hanumoka.go.amodule.controller;
+
+import com.hanumoka.go.bmodule.service.Bservice;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+@Controller
+public class HomeController {
+
+    @Autowired
+    Bservice bservice;
+
+    @RequestMapping(&quot;/&quot;)
+    public String index(){
+
+        System.out.println(bservice.test());
+        return &quot;index&quot;;
+    }
+}</code></pre><p><img src="/images/2019/Untitled-c078d4ae-a987-432f-857e-3aa2797fcdbd.png" alt></p>
+<p>이제 a-module의 AmoduleApp을 실행해서 a-module의 컨트롤러가 동작할때 b-module의 서비스를 호출하는지 확인해보자.</p>
+<p>아래처럼 동작을 확인 할 수 있다.</p>
+<p><img src="/images/2019/Untitled-f2b2ebe0-c361-4915-86dc-2941cf8b1bfc.png" alt></p>
+<p>go-module 을 빌드하면 아래처럼 a-module 의 빌드 결과물을 확인 할 수 있다.</p>
+<p>화면에는 안 보이지만 b-module 역시 빌드 결과물이 생겼다.</p>
+<p>하지만 a-module에만 SpringBootApplication을 등록했으므로, 실제 실행 시킬수 있는 jar 파일은</p>
+<p>a-module-0.0.0.jar 이다.</p>
+<p><img src="/images/2019/Untitled-97d20444-23a5-49dc-b013-d79fa718d076.png" alt></p>
+<p>직접 jar를 실행시켜, 정상동작을 확인하자.</p>
+<pre><code>java -jar a-module-0.0.0.jar </code></pre><h3 id="마무리"><a href="#마무리" class="headerlink" title="마무리"></a>마무리</h3><p>이 글에서는 간단하게 gradle 기반으로 spring boot 멀티 모듈을 구축하는 방법을 정리하였다.</p>
+<p>사실 실제 멀티 모듈을 설계하고 구축하는 일은 어려운 일이고, 많은 고민이 필요해 보인다.</p>
+<p>하지만 나처럼 gradle 자체를 잘 모르는 사람은 실제 구축 자체가 어려운 일이므로 이렇게 기록해 놓는다.</p>
+<p><strong>해당 예제는 아래 github에 올려놓았다.</strong></p>
+<p><a href="https://github.com/hanumoka/springboot_gradle_multimodule" target="_blank" rel="external nofollow noopener noreferrer">https://github.com/hanumoka/springboot_gradle_multimodule</a></p>
+<h3 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h3><p><a href="https://bkjeon1614.tistory.com/38" target="_blank" rel="external nofollow noopener noreferrer">https://bkjeon1614.tistory.com/38</a></p>
+
+      
+      
+          
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+      
+
+
+  
+  
+  
+  
+
+        
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2019/09/26/ubuntu-20190926-ubuntu-grant-root/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Hanumoka">
+      <meta itemprop="description" content="아마추어 개발자의 블로그">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hanumoka, IT Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/09/26/ubuntu-20190926-ubuntu-grant-root/" class="post-title-link" itemprop="url">ubuntu 일반계정에 root권한 부여하기</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">작성일</span>
+
+              <time title="Post created: 2019-09-26 23:10:37" itemprop="dateCreated datePublished" datetime="2019-09-26T23:10:37+09:00">2019-09-26</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
@@ -464,33 +1110,41 @@ gtag('config', 'UA-100596920-1');
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>버추얼박스에 설치된 우분투에서 한영키를 눌렀을때 한영이 변경되지 않는다.</p>
-<p>이번에는 이 문제를 해결해보겠다.</p>
-<p>일단 Virtualbox Ubuntu에서 게스트 확장 프로그램을 설치해야한다.</p>
-<p>장치 - 게스트 확장 CD 이미지 삽입을 클릭하자.</p>
-<p><img src="/images/2019/1/Untitled-64ebf1d9-605e-4ccd-83f5-29c971289172.png" alt></p>
-<p>OS 업그레이드 완료후 재시작 하면, virtualbox에서 장치 → 게스트 확장 CD 이미지 삽입을 클릭하자.</p>
-<p><img src="/images/2019/1/Untitled-20a1651b-e860-41c4-9de2-30d9cc0ced26.png" alt></p>
-<p>위와 같은 창이 열린다 실행을 클릭하면 자동으로 터미널이 열리고 무언가 설치가 된다.</p>
-<p><img src="/images/2019/1/Untitled-3a61933d-32ad-437e-8533-95faaaed1e0d.png" alt></p>
-<p>위처럼 Press Return to close this windows 라는 문구가 나오면 터미널에서 엔터를 클릭해서 터미널을 닫아주자.</p>
-<p>그리고 우분투를 재시작 하자.</p>
-<p>그리고 우분투의 설정으로 들어가자.</p>
-<p><img src="/images/2019/1/Untitled-e0c96162-3ba4-4724-84cd-e3c8c974af28.png" alt></p>
-<p>지역 및 언어에서 입력소스에서 한국어(101/104키 호환)을 선택하고 마이너스(-)를 눌러 제거하자.</p>
-<p><img src="/images/2019/1/Untitled-fe05268f-f4db-481f-8fc2-36236c05a9a0.png" alt></p>
-<p>그리고 톱니바퀴 아이콘을 클릭하자.</p>
-<p><img src="/images/2019/1/Untitled-87c824be-838c-4ec3-b341-0f98fe941737.png" alt></p>
-<p>이처럼 현재 설정된 한영 변환키가 보인다.</p>
-<p>나는 현재 레오폴드 FC660c 키보드를 사용중인데, 보통 키보드보다 키가 적은 키보드다 보니 한영변환키 대신 오른쪽 Alt키를 사용해야 한다.</p>
-<p>위 화면에서 추가버튼을 누르자.</p>
-<p><img src="/images/2019/1/Untitled-407da2f7-c4c0-435d-9d4f-c65650c9be46.png" alt></p>
-<p>새로운 창이 나오는데 여기서 원하는 한영키를 입력하면 위처럼 해당 키가 보인다.</p>
-<p>확인을 누르자.</p>
-<p>터미널을 열고 한영키가 제대로 동작하는지 확인해보자.</p>
-<p><img src="/images/2019/1/Untitled-6e0de10a-67d4-42c2-9954-2703b12831d0.png" alt></p>
-<p>끝!!!</p>
-<h3 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h3><p>[<a href="https://webnautes.tistory.com/1199]" target="_blank" rel="external nofollow noopener noreferrer">https://webnautes.tistory.com/1199]</a>(</p>
+          <h3 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h3><p>ubuntu에서 이것저것 하다보면 관리자 권한으로 명령어를 실행해야 할 일이 많다.</p>
+<p>매번 sudo 명령어 형태로 명령어를 호출하기에는 불편하다.</p>
+<p>sudo su로 root 계정으로 로그인 하여 명령어를 호출하면 간단하지만, 이때 문제가</p>
+<p>cd ~ 명령어 사용히 /root 로 이동한다는 것이다.</p>
+<p>이런 경우 일반계정을 아예 root 계정의 그룹에 추가하면 해결이 된다.</p>
+<h3 id="일반계정에-root-계정-권한-부여"><a href="#일반계정에-root-계정-권한-부여" class="headerlink" title="일반계정에 root 계정 권한 부여"></a>일반계정에 root 계정 권한 부여</h3><p>나는 현재 가상머신 ubuntu에 hanumoka-ubuntu1804라는 일반계정을 가지고 있다. (아 계정명을 너무 길게 지었다.)</p>
+<p>일단, 환경설정 파일을 수정하기 위해 관리자로 로그인하자.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo su</span><br></pre></td></tr></table></figure>
+
+<p>그리고 /etc/sudoers 파일을 수정해야 한다.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">vim &#x2F;etc&#x2F;sudoers</span><br><span class="line"></span><br><span class="line">root All&#x3D;(ALL:ALL) ALL </span><br><span class="line">일반계정명 All&#x3D;(ALL:ALL) ALL   &lt;-  이렇게 추가하자.</span><br></pre></td></tr></table></figure>
+<p><img src="/images/2019/Untitled_20190928_ubuntu.png" alt></p>
+<p>파일을 저장하자.</p>
+<p>그리고 /etc/passwd 파일을 수정하자.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim &#x2F;etc&#x2F;passwd</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/2019/Untitled-eac0a2dd-be61-436b-bef2-f92f15a5d9be.png" alt></p>
+<p>맨 위에 보면 root:x 뒤에 0:0 가 보일것이다. </p>
+<p>앞의 0은 uid(유저아이디) 뒤의 0는 gid(그룹아이디)를 의미하는데, 슈퍼유저의 uid는 0 슈퍼유저의 gid도 0이다.</p>
+<p>root의 권한이 필요한 일반계정의 uid와 gid를 0:0으로 변경해주자.</p>
+<p><img src="/images/2019/Untitled-0872416e-0d60-4bdd-aa9a-98f71344151d.png" alt></p>
+<p>내 경우 hanumoka-ubuntu1804라는 계정의 uid:gid를 0:0으로 변경했다.</p>
+<p>해당 파일을 저장하자.</p>
+<p>그리고 root 그룹에 일반계정 hanumoka-ubuntu1804를 포함시키자.</p>
+<pre><code>vim /etc/group</code></pre><p><img src="/images/2019/Untitled-7b66a74d-647b-4a0d-bee0-d134d62e29a5.png" alt></p>
+<p>파일을 열면 맨위 root:x:0: 이렇게 되어 있을 것이다.</p>
+<pre><code>root:x:0: 를 root:x:0:일반계정명 으로 수정해주자.</code></pre><p><img src="/images/2019/Untitled-3465c469-7416-4de1-972b-834d642f3c4b.png" alt></p>
+<p>파일을 저장하고 나온 뒤, root 권한을 부여한 계정에 접속해서 sudo 없이 명령어가 실행되는지 확인해보자.</p>
+<p><img src="/images/2019/Untitled-82196000-db48-4c4f-977a-d24035d4f2e9.png" alt></p>
+<p>기존에는 sudo docker ps 로 실행 해야 했지만, 이제는 docker ps 로 바로 명령어가 실행되는 것을 확인 할 수 있다.</p>
+<p>끝.</p>
+<p>참고로 일반계정아 root 권한을 주면 우분투 로그인시 목록에 나오지 않는다.</p>
+<h3 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h3><p><a href="https://itgameworld.tistory.com/75" target="_blank" rel="external nofollow noopener noreferrer">https://itgameworld.tistory.com/75</a></p>
+<p><a href="https://crasy.tistory.com/149" target="_blank" rel="external nofollow noopener noreferrer">https://crasy.tistory.com/149</a></p>
+<p><a href="https://zetawiki.com/wiki/%EC%82%AC%EC%9A%A9%EC%9E%90%EC%95%84%EC%9D%B4%EB%94%94_UID,_%EA%B7%B8%EB%A3%B9%EC%95%84%EC%9D%B4%EB%94%94_GID" target="_blank" rel="external nofollow noopener noreferrer">https://zetawiki.com/wiki/사용자아이디_UID,_그룹아이디_GID</a></p>
 
       
       
@@ -519,7 +1173,7 @@ gtag('config', 'UA-100596920-1');
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
-    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2019/08/17/ubuntu-20190817-ubuntu-gnome-usage/">
+    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2019/09/21/spring-20190921-spring-mybatis-sqlinjectionsafe/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -533,7 +1187,7 @@ gtag('config', 'UA-100596920-1');
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
           
-            <a href="/2019/08/17/ubuntu-20190817-ubuntu-gnome-usage/" class="post-title-link" itemprop="url">Ubuntu1804 데스트탑 성능모니터링 gnome usage</a>
+            <a href="/2019/09/21/spring-20190921-spring-mybatis-sqlinjectionsafe/" class="post-title-link" itemprop="url">springboot mybatis ${} 사용시 sql injection 방어하기</a>
         </h1>
 
         <div class="post-meta">
@@ -543,7 +1197,158 @@ gtag('config', 'UA-100596920-1');
               </span>
               <span class="post-meta-item-text">작성일</span>
 
-              <time title="Post created: 2019-08-17 18:56:53" itemprop="dateCreated datePublished" datetime="2019-08-17T18:56:53+09:00">2019-08-17</time>
+              <time title="Post created: 2019-09-21 13:51:59" itemprop="dateCreated datePublished" datetime="2019-09-21T13:51:59+09:00">2019-09-21</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Updated at: 2020-04-16 01:50:12" itemprop="dateModified" datetime="2020-04-16T01:50:12+09:00">2020-04-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/spring/" itemprop="url" rel="index">
+                    <span itemprop="name">spring</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 20200427hexo_post_head -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="개발환경"><a href="#개발환경" class="headerlink" title="개발환경"></a>개발환경</h1><p>springboot</p>
+<p>jdk1.8</p>
+<p>mysql</p>
+<p>mybatis</p>
+<h1 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h1><p>spring 개발을 할때, 난 일반적으로 mybatis를 사용했다.</p>
+<p>음 빨리 JPA도 공부를 해야 할거 같다.</p>
+<p>일반적으로 mybatis를 사용할 경우 ${param1}, #{param2} 이렇게 두가지 방식으로  파라미터를 받을 수 있다.</p>
+<p>나는 보통 #{param2} 를 사용해서, 파라미터를 받는다.</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> *</span><br><span class="line"><span class="keyword">FROM</span> <span class="keyword">USERS</span></span><br><span class="line"><span class="keyword">WHERE</span> <span class="number">1</span>=<span class="number">1</span></span><br><span class="line"><span class="keyword">AND</span> USER_ID = <span class="comment">#&#123;userId&#125;</span></span><br></pre></td></tr></table></figure>
+
+
+<p>#{} 는 내부적으로 PreparedStatement를 사용하기 때문에  SQLInjection 공격에 안전하기 때문이다.</p>
+<p>참고로 PreparedStatement는 값을 바인딩 하는 시점에서 전달된 값에 대한 특수문자, 쿼리등을 필터링하여 SQLinjection을 막는다.</p>
+<p>이렇게 mybatis를 사용할때 보통 #{}를 사용하면 평화롭고, 안전한 코딩을 할 수 있다.</p>
+<p>하지만 간혹 ${}를 사용하고 싶을 때가 있다.</p>
+<p>바로 쿼리의 파라미터로 컬럼명을 화면에서 받고 싶은 경우인데,</p>
+<p>보통 select 쿼리에 호출시 정렬을 하고 싶을 때 이다.</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span></span><br><span class="line">    	USER_ID</span><br><span class="line">     ,USER_NAME</span><br><span class="line">     ,USER_AGE</span><br><span class="line">    <span class="keyword">FROM</span> <span class="keyword">USERS</span></span><br><span class="line"><span class="keyword">WHERE</span> <span class="number">1</span>=<span class="number">1</span></span><br><span class="line"><span class="keyword">ORDER</span> <span class="keyword">BY</span> $&#123;sort_column&#125; $&#123;sort_type&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>위처럼 동적으로 파라미터를 외부에 주입 받기 위해서는 #{}가 아닌 ${}를 사용 해야 한다.</p>
+<p>${}는 입력받은 파라미터를 쿼리에 직접 치환해주기 때문이다.</p>
+<p>하지만 여기에는 SQLInjection에 대한 위험이 존재한다.</p>
+<p>어떻게 하면 ${}를 사용하면서, SQL Injection을 방어 할 수 있을까?</p>
+<p>스프링 필터를 사용해야하나?  AOP를 사용해야 하나?</p>
+<p>고민하다가 인터넷에서 괜찮은 라이브리러를 찾았다.</p>
+<h1 id="어노테이션으로-SQL-Injection-방어"><a href="#어노테이션으로-SQL-Injection-방어" class="headerlink" title="어노테이션으로 SQL Injection 방어"></a>어노테이션으로 SQL Injection 방어</h1><p><a href="https://github.com/rkpunjal/sql-injection-safe/" target="_blank" rel="external nofollow noopener noreferrer">https://github.com/rkpunjal/sql-injection-safe/</a></p>
+<p>sql-injection-safe 라는 라이브러리이다. </p>
+<p>아이디어는 어노테이션으로 VO의 필드에 SqlInjection을 방어하는 방법이다.</p>
+<p>아래로 가보면 간단하게 테스트 할수 있는 예제 샘플도 있다.</p>
+<p><a href="https://github.com/rkpunjal/sql-safe-annotation-example" target="_blank" rel="external nofollow noopener noreferrer">https://github.com/rkpunjal/sql-safe-annotation-example</a></p>
+<p>일단 동적으로 sql의 컬럼을 받을 VO를 만들어보자.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">GridDto</span></span>&#123;</span><br><span class="line">	<span class="keyword">private</span> String sortColumn;</span><br><span class="line">  <span class="keyword">private</span> String sortType;</span><br><span class="line"></span><br><span class="line">  <span class="comment">//getter, setter 생략</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SomethingGridDto</span> <span class="keyword">extends</span> <span class="title">GridDto</span> </span>&#123;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">int</span> column_1;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">int</span> column_2;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">int</span> column_3;</span><br><span class="line">  <span class="comment">//getter, setter 생략</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<p>위처럼 대충 DTO를 만들었다. </p>
+<p>자 이제 라이브러리를 추가하자. pom.xml 아래처럼 추가하자.</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.github.rkpunjal.sqlsafe<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>sql-injection-safe<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.0.2<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+<p>라이브러리가 추가 되었다면, Sql Injection 위험이 있는 DTO의 필드에 @SQLInjectionSafe 어노테이션을 추가해준다.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">GridDto</span></span>&#123;</span><br><span class="line">    	<span class="keyword">private</span> <span class="meta">@SQLInjectionSafe</span> String sortColumn;</span><br><span class="line">      <span class="keyword">private</span> <span class="meta">@SQLInjectionSafe</span> String sortType;</span><br><span class="line">    </span><br><span class="line">      <span class="comment">//getter, setter 생략</span></span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>그리고 해당 DTO를 받은 컨트롤러에서 @valid를 적용해주면 된다.</p>
+<p>굉장히 간단하게 스프링 컨트롤러에서 전달되는 파라미터에 어노테이션으로 SQL Injection을 방어 할 수 있다.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RequestMapping</span>(value = <span class="string">"/queryGrid"</span>, produces=APPLICATION_JSON_UTF_8)</span><br><span class="line"><span class="keyword">public</span> <span class="meta">@ResponseBody</span> <span class="function">WebResponse <span class="title">queryGrid</span><span class="params">(@Valid @ModelAttribute()</span> SomethingGridDto paramDto) </span>&#123;</span><br><span class="line">    		<span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>@Valid 가 동작하면서 @SQLInjectionSafe 동작한다.</p>
+<p>만약 sortColumn 멤버변수에 SQL Injection의 위험이 되는 문구가 있는 경우 BindException 이 발생하게된다.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@ExceptionHandler</span>(BindException<span class="class">.<span class="keyword">class</span>)</span></span><br><span class="line"><span class="class"><span class="title">public</span> @<span class="title">ResponseBody</span> <span class="title">WebResponse</span> <span class="title">handleBindException</span>(<span class="title">BindException</span> <span class="title">be</span> )</span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> MyResponseObject(<span class="keyword">false</span>,</span><br><span class="line">  	getBindExceptionMessage(be) <span class="comment">// custom method to find and send an appropriate response</span></span><br><span class="line">  );</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<p><a href="https://github.com/rkpunjal/sql-safe-annotation-example" target="_blank" rel="external nofollow noopener noreferrer">https://github.com/rkpunjal/sql-safe-annotation-example</a></p>
+<p>위 예제 샘플을 받아서 구동해보면 아래처럼 @SQLInjectionSafe 내용을 확인 할 수 있다.</p>
+<p>SQLInjection을 정규식으로 잡아내는 것을 확인 할 수 있다.</p>
+<p>뭔가 부족하다면 커스텀 하면 될거 같다.</p>
+<p><img src="/images/2019/Untitled-f94f04e9-1bf2-441e-b4bd-370d5bd88c77.png" alt="SQLInjectionSafe"></p>
+<h3 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h3><p><a href="https://lng1982.tistory.com/246" target="_blank" rel="external nofollow noopener noreferrer">https://lng1982.tistory.com/246</a></p>
+<p><a href="https://m.blog.naver.com/PostView.nhn?blogId=blogpyh&logNo=220675109307&proxyReferer=https%3A%2F%2Fwww.google.com%2F" target="_blank" rel="external nofollow noopener noreferrer">https://m.blog.naver.com/PostView.nhn?blogId=blogpyh&amp;logNo=220675109307&amp;proxyReferer=https%3A%2F%2Fwww.google.com%2F</a></p>
+<p><a href="https://hackbyr0k.tistory.com/2" target="_blank" rel="external nofollow noopener noreferrer">https://hackbyr0k.tistory.com/2</a></p>
+
+      
+      
+          
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+      
+
+
+  
+  
+  
+  
+
+        
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2019/08/17/ubuntu-20190817-ubuntu-docker/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Hanumoka">
+      <meta itemprop="description" content="아마추어 개발자의 블로그">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hanumoka, IT Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/08/17/ubuntu-20190817-ubuntu-docker/" class="post-title-link" itemprop="url">Ubuntu1804에 docker 설치</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">작성일</span>
+
+              <time title="Post created: 2019-08-17 19:19:41" itemprop="dateCreated datePublished" datetime="2019-08-17T19:19:41+09:00">2019-08-17</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
@@ -581,15 +1386,13 @@ gtag('config', 'UA-100596920-1');
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h1><p>VirtualBox에 설치한 Ubuntu라 일반적으로 PC에 설치된 우분투 보다는 속도가 안나올 수 있다.</p>
-<p>이 우분투를 개발환경으로 사용하려 하는데, 속도가 너무 안나오면 이것 또한 문제이다.</p>
-<p>이번에는 우분투 데스크탑에서 실시간으로 성능 모니터링을 할수 있는 방법을 알아보겠다.</p>
-<p>우분투 18.04 에는 기본적으로 시스템 정보, 시스템 감시라는 프로그램이 있지만 나는 gnome usage라는 프로그램을 설치해서 사용해 보겠다.</p>
-<p><img src="/images/2019/Untitled-80b2ef3a-72fb-4f2b-8296-a3d4c702cfa4.png" alt></p>
-<p>우분투 소프트웨어에서 grome usage 를 검색해서 설치하자.</p>
-<p>설치하면 아래처럼 시스템 모니터링 화면이 실시간으로 나온다.</p>
-<p><img src="/images/2019/Untitled-813468bc-41f0-4346-9778-c3c50795e9ec.png" alt></p>
-<p>끝!!!</p>
+          <h1 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h1><p>음 docker는 상당히 편리한 녀석이다.</p>
+<p>VitualBox에 설치된 Ubuntu1804에 docker를 설치 해보려한다.</p>
+<p>솔직히 이게 재대로 될지 잘 모르지만, 일단 해보자.</p>
+<p>별거 없다. 아래 명령어를 한줄 한줄 주욱 입력해주자.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">sudo apt update</span><br><span class="line"></span><br><span class="line">sudo apt install apt-transport-https ca-certificates curl software-properties-common</span><br><span class="line"></span><br><span class="line">curl -fsSL https:&#x2F;&#x2F;download.docker.com&#x2F;linux&#x2F;ubuntu&#x2F;gpg | sudo apt-key add -</span><br><span class="line"></span><br><span class="line">sudo add-apt-repository &quot;deb [arch&#x3D;amd64] https:&#x2F;&#x2F;download.docker.com&#x2F;linux&#x2F;ubuntu bionic stable&quot;</span><br><span class="line"></span><br><span class="line">sudo apt update</span><br><span class="line"></span><br><span class="line">apt-cache policy docker-ce</span><br><span class="line"></span><br><span class="line">sudo apt install docker-ce</span><br><span class="line"></span><br><span class="line">sudo systemctl status docker</span><br></pre></td></tr></table></figure>
+
+<h3 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h3><p>[<a href="https://blog.cosmosfarm.com/archives/248/우분투-18-04-도커-docker-설치-방법/]" target="_blank" rel="external nofollow noopener noreferrer">https://blog.cosmosfarm.com/archives/248/우분투-18-04-도커-docker-설치-방법/]</a>(</p>
 
       
       
@@ -618,7 +1421,7 @@ gtag('config', 'UA-100596920-1');
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
-    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2019/08/17/ubuntu-20190817-ubuntu-chrome/">
+    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2019/08/17/ubuntu-20190817-ubuntu-nvm-node/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -632,7 +1435,7 @@ gtag('config', 'UA-100596920-1');
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
           
-            <a href="/2019/08/17/ubuntu-20190817-ubuntu-chrome/" class="post-title-link" itemprop="url">Ubuntu1804에 크롬브라우저 설치</a>
+            <a href="/2019/08/17/ubuntu-20190817-ubuntu-nvm-node/" class="post-title-link" itemprop="url">ubuntu nvm node</a>
         </h1>
 
         <div class="post-meta">
@@ -642,7 +1445,113 @@ gtag('config', 'UA-100596920-1');
               </span>
               <span class="post-meta-item-text">작성일</span>
 
-              <time title="Post created: 2019-08-17 18:54:52" itemprop="dateCreated datePublished" datetime="2019-08-17T18:54:52+09:00">2019-08-17</time>
+              <time title="Post created: 2019-08-17 19:18:16" itemprop="dateCreated datePublished" datetime="2019-08-17T19:18:16+09:00">2019-08-17</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Updated at: 2020-04-16 01:50:12" itemprop="dateModified" datetime="2020-04-16T01:50:12+09:00">2020-04-16</time>
+              </span>
+
+          
+
+        </div>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 20200427hexo_post_head -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h1><p>우분투에 nvm을 이용해서 node를 설치해보자.</p>
+<p>nvm은 Node.js version manager로 여러가지 버전을 손쉽게 설치하고 거기서 원하는 버전을 골라서 사용할수 있게 해준다.</p>
+<p>우분투 저장소에서 vnm에 필요한 패키지를 설치하자.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get update</span><br><span class="line">sudo apt-get install build-essential libssl-dev</span><br></pre></td></tr></table></figure>
+
+<p>그리고 nvm 설치 스크립트를 다운로드 후 실행하자.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">curl -sL https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;creationix&#x2F;nvm&#x2F;v0.31.0&#x2F;install.sh -o install_nvm.sh </span><br><span class="line">bash install_nvm.sh </span><br><span class="line">source ~&#x2F;.profile</span><br></pre></td></tr></table></figure>
+
+<p>nvm 설치가 완료가 되었다면, 아래 명령어를 입력하여 설치 가능한 node.js 버전들을 확인할 수 있다.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nvm ls-remote</span><br></pre></td></tr></table></figure>
+
+<p>현재 LTS 버전인 10.16.2 버전을 설치해보겠다.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nvm install 10.16.2</span><br></pre></td></tr></table></figure>
+
+<p>설치가 끝나면 </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">node -v</span><br></pre></td></tr></table></figure>
+
+<p>위 명령어로 설치된 node의 버전을 확인 할 수 있다.</p>
+<p>추가로 </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nvm use 6.0.0</span><br></pre></td></tr></table></figure>
+
+<p>위처럼 만약 다른 버전의 node가 설치되어 있다면 버전을 바꿔서 사용할 수도 있다.</p>
+<p>설치된 node 버전을 보려면 아래 명령어로 확인 할 수 있다.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nvm ls</span><br></pre></td></tr></table></figure>
+
+<h3 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h3><p><a href="https://itstory.tk/entry/Ubuntu-1604-nodejs-%EC%99%80-npm-%EC%84%A4%EC%B9%98" target="_blank" rel="external nofollow noopener noreferrer">https://itstory.tk/entry/Ubuntu-1604-nodejs-와-npm-설치</a></p>
+<p><a href="https://zetawiki.com/wiki/%EC%9A%B0%EB%B6%84%ED%88%AC_curl_%EC%84%A4%EC%B9%98" target="_blank" rel="external nofollow noopener noreferrer">https://zetawiki.com/wiki/우분투_curl_설치</a></p>
+
+      
+      
+          
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+      
+
+
+  
+  
+  
+  
+
+        
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2019/08/17/ubuntu-20190817-ubuntu-visual-studio-code/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Hanumoka">
+      <meta itemprop="description" content="아마추어 개발자의 블로그">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hanumoka, IT Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/08/17/ubuntu-20190817-ubuntu-visual-studio-code/" class="post-title-link" itemprop="url">Ubuntu1804 VisualStudioCode 설치</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">작성일</span>
+
+              <time title="Post created: 2019-08-17 19:15:20" itemprop="dateCreated datePublished" datetime="2019-08-17T19:15:20+09:00">2019-08-17</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
@@ -680,912 +1589,15 @@ gtag('config', 'UA-100596920-1');
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h1><p>우분투 데스크탑을 설치 했으니, 음 뭔가 일반적이 pc처럼 사용하기 위한 필수적인 프로그램들을 설치해보자.</p>
-<h3 id="우분투에-구글-크롬-설치하기"><a href="#우분투에-구글-크롬-설치하기" class="headerlink" title="우분투에 구글 크롬 설치하기"></a>우분투에 구글 크롬 설치하기</h3><p>기본적으로 파이어폭스가 있지만, 구글크롬만한 브라우저가 어디 있을까?</p>
-<p>일단 우분투에서 터미널을 열고 크롬 브라우저 패키지 설치용 인증키를 받자.</p>
-<p>아래 명령어를 입력하자.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget -q -O - https:&#x2F;&#x2F;dl-ssl.google.com&#x2F;linux&#x2F;linux_signing_key.pub | sudo apt-key add -</span><br></pre></td></tr></table></figure>
+          <p>이번에는 우분투에 VisualStudioCode를 설치해보겠다.</p>
+<p>다 필요 없고 아래 명령어를 순서대로 주욱 입력하면 된다.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">curl https:&#x2F;&#x2F;packages.microsoft.com&#x2F;keys&#x2F;microsoft.asc | gpg --dearmor &gt; microsoft.gpg</span><br><span class="line"></span><br><span class="line">sudo mv microsoft.gpg &#x2F;etc&#x2F;apt&#x2F;trusted.gpg.d&#x2F;microsoft.gpg</span><br><span class="line"></span><br><span class="line">sudo sh -c &#39;echo &quot;deb [arch&#x3D;amd64] https:&#x2F;&#x2F;packages.microsoft.com&#x2F;repos&#x2F;vscode stable main&quot; &gt; &#x2F;etc&#x2F;apt&#x2F;sources.list.d&#x2F;vscode.list&#39;</span><br><span class="line"></span><br><span class="line">sudo apt-get update</span><br><span class="line"></span><br><span class="line">sudo apt-get install code</span><br><span class="line"></span><br><span class="line">sudo rm &#x2F;etc&#x2F;apt&#x2F;sources.list.d&#x2F;vscode.list</span><br></pre></td></tr></table></figure>
 
-<p><img src="/images/2019/Untitled-bd83912f-0b74-48be-968e-9da370252ac3.png" alt></p>
-<p>그리고 아래 명령어도 입력해주자. 실제 구글크롬 패키지를 다운 받는 설정정보인듯 하다.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo sh -c &#39;echo &quot;deb [arch&#x3D;amd64] http:&#x2F;&#x2F;dl.google.com&#x2F;linux&#x2F;chrome&#x2F;deb&#x2F; stable main&quot; &gt;&gt; &#x2F;etc&#x2F;apt&#x2F;sources.list.d&#x2F;google.list&#39;</span><br></pre></td></tr></table></figure>
-
-<p><img src="/images/2019/Untitled-16d4a724-cdc7-451a-9c13-35510664b6c0.png" alt></p>
-<p>그리고 아래 명령으로 패키지 리스트를 업데이트 해준다.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get update</span><br></pre></td></tr></table></figure>
-
-<p><img src="/images/2019/Untitled-dc322d97-d21f-4554-90a0-84e2f2b026db.png" alt></p>
-<p>아래 명령으로 크롬을 설치하자.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install google-chrome-stable</span><br></pre></td></tr></table></figure>
-
-<p><img src="/images/2019/Untitled-89e4b1f6-2db4-4f8f-9f77-2e065aa0c80c.png" alt></p>
-<p>설치를 위해 생성햇던 파일을 지워주자.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ls &#x2F;etc&#x2F;apt&#x2F;sources.list.d&#x2F;google*</span><br><span class="line">sudo rm -rf &#x2F;etc&#x2F;apt&#x2F;sources.list.d&#x2F;google.list</span><br></pre></td></tr></table></figure>
-
-<p><img src="/images/2019/Untitled-b1f19b2c-8dbf-498a-9ff4-6e534b84afb1.png" alt></p>
-<p>위 아이콘을 눌러 설치된 크롬을 확인하자.</p>
-<p><img src="/images/2019/Untitled-6fe37658-8910-48df-a200-07835c008fd8.png" alt></p>
+<p><img src="/images/2019/5/Untitled-98ac3bd7-2b8b-4b30-a077-884178fb9ce6.png" alt></p>
+<p>위처럼 설치를 확인 할 수 있다.</p>
 <p>끝!!!</p>
-<h3 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h3><p><a href="https://webnautes.tistory.com/1184" target="_blank" rel="external nofollow noopener noreferrer">https://webnautes.tistory.com/1184</a></p>
-
-      
-      
-          
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-
-  
-      
-
-
-  
-  
-  
-  
-
-        
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
-    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2019/08/17/ubuntu-20190817-ubuntu-vim/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Hanumoka">
-      <meta itemprop="description" content="아마추어 개발자의 블로그">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hanumoka, IT Blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/08/17/ubuntu-20190817-ubuntu-vim/" class="post-title-link" itemprop="url">ubuntu1804 vim설치</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">작성일</span>
-
-              <time title="Post created: 2019-08-17 18:52:25" itemprop="dateCreated datePublished" datetime="2019-08-17T18:52:25+09:00">2019-08-17</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Updated at: 2020-04-16 01:50:12" itemprop="dateModified" datetime="2020-04-16T01:50:12+09:00">2020-04-16</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/ubuntu/" itemprop="url" rel="index">
-                    <span itemprop="name">ubuntu</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-      <!-- 20200427hexo_post_head -->
-      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
-      <script>
-          (adsbygoogle = window.adsbygoogle || []).push({});
-      </script>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="vim-설치하기"><a href="#vim-설치하기" class="headerlink" title="vim 설치하기"></a>vim 설치하기</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get update</span><br><span class="line">sudo apt-get install vim</span><br></pre></td></tr></table></figure>
-
-<p>위 두줄로 아주 간단하게 설치가 된다.</p>
-<p>하지만 vim을 제대로 사용하려면 vim 설정파일을 만들어 줘야 한다.</p>
-<h3 id="vim-설정파일-셋팅"><a href="#vim-설정파일-셋팅" class="headerlink" title="vim 설정파일 셋팅"></a>vim 설정파일 셋팅</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vi ~&#x2F;.vimrc</span><br></pre></td></tr></table></figure>
-
-<p>위 명령어로 home 디렉토리에 .vimrc라는 vim 설정파일을 생성하자.</p>
-<p>그리고 아래 내용을 복사 붙여넣기 하자.</p>
-<p>우분투에 붙여 넣기 할때에는 Shift+Insert 키를 눌러주면 된다.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">set number    &quot; line 표시</span><br><span class="line">set ai    &quot; auto indent</span><br><span class="line">set si &quot; smart indent</span><br><span class="line">set cindent    &quot; c style indent</span><br><span class="line">set shiftwidth&#x3D;4    &quot; 자동 공백 채움 시 4칸</span><br><span class="line">set tabstop&#x3D;4    &quot; tab을 4칸 공백으로</span><br><span class="line">set ignorecase    &quot; 검색 시 대소문자 무시</span><br><span class="line">set hlsearch    &quot; 검색 시 하이라이트</span><br><span class="line">set nocompatible    &quot; 방향키로 이동 가능</span><br><span class="line">set fileencodings&#x3D;utf-8,euc-kr    &quot; 파일 저장 인코딩 : utf-8, euc-kr</span><br><span class="line">set fencs&#x3D;ucs-bom,utf-8,euc-kr    &quot; 한글 파일은 euc-kr, 유니코드는 유니코드</span><br><span class="line">set bs&#x3D;indent,eol,start    &quot; backspace 사용가능</span><br><span class="line">set ruler    &quot; 상태 표시줄에 커서 위치 표시</span><br><span class="line">set title    &quot; 제목 표시</span><br><span class="line">set showmatch    &quot; 다른 코딩 프로그램처럼 매칭되는 괄호 보여줌</span><br><span class="line">set wmnu    &quot; tab 을 눌렀을 때 자동완성 가능한 목록</span><br><span class="line">syntax on    &quot; 문법 하이라이트 on</span><br><span class="line">filetype indent on    &quot; 파일 종류에 따른 구문 강조</span><br><span class="line">set mouse&#x3D;a    &quot; 커서 이동을 마우스로 가능하도록</span><br></pre></td></tr></table></figure>
-
-<p>끝!!!</p>
-<h3 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h3><p><a href="https://gabii.tistory.com/entry/Ubuntu-vim-%EC%84%A4%EC%B9%98-%EB%B0%8F-%EC%84%A4%EC%A0%95" target="_blank" rel="external nofollow noopener noreferrer">https://gabii.tistory.com/entry/Ubuntu-vim-설치-및-설정</a></p>
-
-      
-      
-          
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-
-  
-      
-
-
-  
-  
-  
-  
-
-        
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
-    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2019/08/17/ubuntu-20190817-ubuntu-virtualbox-ftp/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Hanumoka">
-      <meta itemprop="description" content="아마추어 개발자의 블로그">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hanumoka, IT Blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/08/17/ubuntu-20190817-ubuntu-virtualbox-ftp/" class="post-title-link" itemprop="url">virtualbox ubuntu1804 ftp 설치 및 접근(sftp)</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">작성일</span>
-
-              <time title="Post created: 2019-08-17 18:47:55" itemprop="dateCreated datePublished" datetime="2019-08-17T18:47:55+09:00">2019-08-17</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Updated at: 2020-04-16 01:50:12" itemprop="dateModified" datetime="2020-04-16T01:50:12+09:00">2020-04-16</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/ubuntu/" itemprop="url" rel="index">
-                    <span itemprop="name">ubuntu</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-      <!-- 20200427hexo_post_head -->
-      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
-      <script>
-          (adsbygoogle = window.adsbygoogle || []).push({});
-      </script>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h1><p>개발환경 용도로 사용하려는 ubuntu 1804 이미지에 ftp를 설치하고 호스트PC인 windows에서 파일질라로 접근해서 파일을 전송 해보려 한다.</p>
-<p>아 별것 아닌데, 리눅스를 잘 몰라서 엄청난 시간을 헤매었다.</p>
-<p>결론으로 sftp 접근으로 성공하였다.</p>
-<p>해당 내용은 실 서버로 사용하는 ubuntu ftp 접근 설명이 아니라, 로컬에서 virtualbox에 설치된 개발환경용 ubuntu 1804에 ftp 설치 방법을 설명하는 것이다.</p>
-<p>ftp 사용이 되는것이 목적이므로, 방화벽 설명등 기타 내용은 포함하고 있지 않다.</p>
-<hr>
-<h3 id="virtualbox에서-ubuntu-ftp-포트포워딩-설정"><a href="#virtualbox에서-ubuntu-ftp-포트포워딩-설정" class="headerlink" title="virtualbox에서 ubuntu ftp 포트포워딩 설정"></a>virtualbox에서 ubuntu ftp 포트포워딩 설정</h3><p>일단 virtualbox에서 해당 이미지의 설정으로 들어가 아래처럼 ftp 용 포트포워딩 설정을 해주자.</p>
-<p>아 참고로 난 NAT 네트워크 설정으로 사용중이다.</p>
-<p><img src="/images/2019/Untitled-eeb9f885-a11e-41d7-9969-f928484bbdff.png" alt></p>
-<p>말 그대로 호스트PC에 22포트로 요청을 게스트IP 10.0.2.15:22로 포트포워딩 한다는 설정이다.</p>
-<p>게스트IP는 ifconfig로 확인하시길, 별다른 설정을 안했다면 위와 동일 할 것이다.</p>
-<h3 id="우분투에-FTP-설치하기"><a href="#우분투에-FTP-설치하기" class="headerlink" title="우분투에 FTP 설치하기"></a>우분투에 FTP 설치하기</h3><p>이제 해당 우분투 이미지를 실행하고 FTP 서버를 설치하자.</p>
-<p>아래 명령어로 패키지를 최신화 하고 업그레이드를 일단 하자.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt update</span><br><span class="line">sudo apt upgrade</span><br></pre></td></tr></table></figure>
-
-<p>그리고 아래 명령어로 ftp를 설치하자.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install vsftpd</span><br></pre></td></tr></table></figure>
-
-<p><img src="/images/2019/Untitled-f2a71105-92bc-4ee7-bd5c-14d62553157f.png" alt></p>
-<p>이제  ftp설정을 해주자</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo gedit &#x2F;etc&#x2F;vsftpd.conf</span><br></pre></td></tr></table></figure>
-
-<p>그리고 그 내용을 모두 지우고 아래 내용으로 치환하자.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">listen&#x3D;NO</span><br><span class="line">listen_ipv6&#x3D;YES</span><br><span class="line">anonymous_enable&#x3D;NO</span><br><span class="line">local_enable&#x3D;YES</span><br><span class="line">write_enable&#x3D;YES</span><br><span class="line">local_umask&#x3D;022</span><br><span class="line">dirmessage_enable&#x3D;YES</span><br><span class="line">use_localtime&#x3D;YES</span><br><span class="line">xferlog_enable&#x3D;YES</span><br><span class="line">connect_from_port_20&#x3D;YES</span><br><span class="line">chroot_local_user&#x3D;YES</span><br><span class="line">allow_writeable_chroot&#x3D;YES</span><br><span class="line">secure_chroot_dir&#x3D;&#x2F;var&#x2F;run&#x2F;vsftpd&#x2F;empty</span><br><span class="line">pam_service_name&#x3D;vsftpd</span><br><span class="line">pasv_enable&#x3D;Yes</span><br><span class="line">pasv_min_port&#x3D;10000</span><br><span class="line">pasv_max_port&#x3D;11000</span><br><span class="line">user_sub_token&#x3D;$USER</span><br></pre></td></tr></table></figure>
-
-<p>vsftpd.conf 파일을 저장하고, ftp를 재시작하고 서비스가 항상 동작하도록 설정하자. </p>
-<p>아래 명령어를 순차적으로 입력하자.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo systemctl stop vsftpd.service</span><br><span class="line">sudo systemctl start vsftpd.service</span><br><span class="line">sudo systemctl enable vsftpd.service</span><br></pre></td></tr></table></figure>
-
-<p>그리고 아래 명령어로 서비스가 재대로 동작중인지 확인하자.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo systemctl status vsftpd</span><br></pre></td></tr></table></figure>
-
-<p><img src="/images/2019/Untitled-810ab2cd-673d-490b-825e-517fe4494f60.png" alt></p>
-<p>이제 virtualbox ubuntu18.04에서 ftp로 접속해서 동작을 하는지 한번 보자.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ftp 127.0.0.1</span><br></pre></td></tr></table></figure>
-
-<p>터미널 창에 위 명령어로 접속을 시도해보자.</p>
-<p><img src="/images/2019/Untitled-03c99918-2621-4950-b406-bf0470a40590.png" alt></p>
-<p>위처럼 접근이 가능한지 확인 할수 있다.</p>
-<h3 id="호스트-PC-windows10-에서-파일질라로-게스트PC-Ubuntu1804-에-접근하기"><a href="#호스트-PC-windows10-에서-파일질라로-게스트PC-Ubuntu1804-에-접근하기" class="headerlink" title="호스트 PC(windows10)에서 파일질라로 게스트PC(Ubuntu1804)에 접근하기"></a>호스트 PC(windows10)에서 파일질라로 게스트PC(Ubuntu1804)에 접근하기</h3><p>파일질라는 무료라 구글에서 검색해서 받으면 된다.</p>
-<p>파일질라를 열자.</p>
-<p>프로토콜을 SFTP로 설정하고 계정정보를 입력하고 연결해보자.</p>
-<p><img src="/images/2019/Untitled-46e85a25-25d9-43aa-8ad6-5fab34b09cce.png" alt></p>
-<p><img src="/images/2019/Untitled-0d1abfd8-32a2-4ea2-891d-f0fd75294b09.png" alt></p>
-<p>위처럼 접속을 된 것을 확인했다.</p>
-<p>파일 업로드 다운로드 모두 확인함. </p>
-<p>끝!!!</p>
-<h3 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h3><p><a href="https://dejavuqa.tistory.com/251" target="_blank" rel="external nofollow noopener noreferrer">https://dejavuqa.tistory.com/251</a></p>
-<p><a href="https://nov19.tistory.com/64" target="_blank" rel="external nofollow noopener noreferrer">https://nov19.tistory.com/64</a></p>
-
-      
-      
-          
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-
-  
-      
-
-
-  
-  
-  
-  
-
-        
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
-    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2019/08/17/ubuntu-20190817-ubuntu-virtualbox-ssh/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Hanumoka">
-      <meta itemprop="description" content="아마추어 개발자의 블로그">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hanumoka, IT Blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/08/17/ubuntu-20190817-ubuntu-virtualbox-ssh/" class="post-title-link" itemprop="url">ubuntu virtualbox ssh</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">작성일</span>
-
-              <time title="Post created: 2019-08-17 18:40:28" itemprop="dateCreated datePublished" datetime="2019-08-17T18:40:28+09:00">2019-08-17</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Updated at: 2020-04-16 01:50:12" itemprop="dateModified" datetime="2020-04-16T01:50:12+09:00">2020-04-16</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/ubuntu/" itemprop="url" rel="index">
-                    <span itemprop="name">ubuntu</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-      <!-- 20200427hexo_post_head -->
-      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
-      <script>
-          (adsbygoogle = window.adsbygoogle || []).push({});
-      </script>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h1><p>virtualbox에 설치한 ubuntu1804에 ssh를 설치하고 호스트PC에서 putty로 접근하는 접을 알아보자.</p>
-<h3 id="virtualbox-network-설정"><a href="#virtualbox-network-설정" class="headerlink" title="virtualbox network 설정"></a>virtualbox network 설정</h3><p>나는 virtualbox ubuntu 네트워크 설정을 nat로 설정하고 사용중이다.</p>
-<p>일단 virtualbox ubuntu 에 접속해서 아이피를 확인해보자.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ifconfig</span><br></pre></td></tr></table></figure>
-
-<p><img src="/images/2019/Untitled-27e68e51-b5a1-4425-b309-8e90bc43ba60.png" alt></p>
-<p>위를 보면 디폴트로 10.0.2.15로 지정되어 있는 것을 확인 할 수 있다.</p>
-<p>VirtualBox에서 해당 이미지으 설정에 네트워크로 들어가자.</p>
-<p><img src="/images/2019/Untitled-43075031-83dd-49e8-9b14-6e186f6b1007.png" alt></p>
-<p>고급을 눌러주자.</p>
-<p>참고로 가상머신 OS를 종료하지 않고 설정해도 바로 적용된다.</p>
-<p><img src="/images/2019/Untitled-7084f1e4-7e42-4a9a-a07e-ddea670f8933.png" alt></p>
-<p>포트 포워딩을 클릭하자.</p>
-<p><img src="/images/2019/Untitled-afa803a6-b917-4019-b56a-540004d08d2c.png" alt></p>
-<p>위 처럼 입력해주자.</p>
-<p>의미는 127.0.0.1:22로 접근시도시 Virtualbox에 가상머신의 10.0.2.15:22 로 포트포워딩 해준다는 의미이다.</p>
-<p>확인 버튼으로 설정을 저장하자.</p>
-<h3 id="Ubuntu18-04-ssh-설치하기"><a href="#Ubuntu18-04-ssh-설치하기" class="headerlink" title="Ubuntu18.04 ssh 설치하기"></a>Ubuntu18.04 ssh 설치하기</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install ssh</span><br></pre></td></tr></table></figure>
-
-<p><img src="/images/2019/Untitled-73f72e7a-2a36-4d4f-9111-fa35d0daf141.png" alt></p>
-<p>위 명령으로 ubuntu에 ssh를 설치하자.</p>
-<p>설치된 ssh에 상세 설정을 변경하려면 아래 내용으로 수정해주자.</p>
-<p>나는 그냥 디폴트 설정을 쓰려 하기때문에 생략하겠다.(포트 변경등을 하려면 수정해야한다.)</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo vim &#x2F;etc&#x2F;ssh&#x2F;sshd_config</span><br></pre></td></tr></table></figure>
-
-<p><img src="/images/2019/Untitled-8d467d52-fc52-4474-ad7f-b82d45210575.png" alt></p>
-<p>해당 파일을 보면 디폴트 설정이 보이며 수정하려면 주석을 해제하고 수정하면 된다.</p>
-<h3 id="호스트PC에서-게스트-Ubuntu에-ssh-접속하기"><a href="#호스트PC에서-게스트-Ubuntu에-ssh-접속하기" class="headerlink" title="호스트PC에서 게스트 Ubuntu에 ssh 접속하기"></a>호스트PC에서 게스트 Ubuntu에 ssh 접속하기</h3><p>호스트 pc인 windows10에서 putty라는 ssh 접속 프로그램을 사용할 것이다.</p>
-<p>putty는 무료 프로그램이니 구글에서 검색해서 다운 받으면 된다.</p>
-<p><img src="/images/2019/Untitled-3646d9ff-8a3a-4a6a-af2b-1f17c4c650e5.png" alt></p>
-<p>위처럼 로컬호스트에 22번 포트로 접속경로를 입력하고 open을 눌러주자.</p>
-<p><img src="/images/2019/Untitled-efcf3fe5-a26f-419f-a039-18260ef96aee.png" alt></p>
-<p>정상적으로 접속이 된다면 위처럼 화면이 나올것이다 예를 눌러주자.</p>
-<p><img src="/images/2019/Untitled-3a3bfc19-75b3-4eca-8544-76d6ae44d1ff.png" alt></p>
-<p>위처럼 접속이 되는 것을 확인 할 수 있다.</p>
-<p>아 참고로 ubuntu18.04 에서 root에 대한 정책이 변경되었는지, 디폴트로 접속이 되질 않는다.</p>
-<p>뭔가 설정으로 root계정을 강제로 활성화 시켜줘야 사용이 가능한가보다.</p>
-<p>그냥 아래 명령어로 ubuntu에 접속 계정을 확인한 다음에 접속하면 된다.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">whoami</span><br></pre></td></tr></table></figure>
-
-<p>끝!!!</p>
-<h3 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h3><p><a href="https://sancs.tistory.com/110" target="_blank" rel="external nofollow noopener noreferrer">https://sancs.tistory.com/110</a></p>
-<p><a href="https://thdev.net/555" target="_blank" rel="external nofollow noopener noreferrer">https://thdev.net/555</a></p>
-
-      
-      
-          
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-
-  
-      
-
-
-  
-  
-  
-  
-
-        
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
-    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2019/08/17/ubuntu-20190817-ubuntu-virtualbox-copy-paste/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Hanumoka">
-      <meta itemprop="description" content="아마추어 개발자의 블로그">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hanumoka, IT Blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/08/17/ubuntu-20190817-ubuntu-virtualbox-copy-paste/" class="post-title-link" itemprop="url">버추얼박스 ubuntu에 복사 붙여넣기(클립보드)</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">작성일</span>
-
-              <time title="Post created: 2019-08-17 18:32:30" itemprop="dateCreated datePublished" datetime="2019-08-17T18:32:30+09:00">2019-08-17</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Updated at: 2020-04-16 01:50:12" itemprop="dateModified" datetime="2020-04-16T01:50:12+09:00">2020-04-16</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/ubuntu/" itemprop="url" rel="index">
-                    <span itemprop="name">ubuntu</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-      <!-- 20200427hexo_post_head -->
-      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
-      <script>
-          (adsbygoogle = window.adsbygoogle || []).push({});
-      </script>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>Virtualbox에 Ubuntu1804를 설치했다.</p>
-<p>호스트 PC인 Windows10에서 복사한 내용을 게스트PC인 Virtualbox의 Ubuntu에 붙여넣기가 하고 싶은데, 되지가 않는다. </p>
-<p>인터넷을 찾아보니 아주 간단하게 해결이 된다.</p>
-<p>일단 Virtualbox Ubuntu에서 게스트 확장 프로그램을 설치해야한다.</p>
-<p>장치 - 게스트 확장 CD 이미지 삽입을 클릭하자.</p>
-<p><img src="/images/2019/Untitled-64ebf1d9-605e-4ccd-83f5-29c971289172.png" alt></p>
-<p>OS 업그레이드 완료후 재시작 하면, virtualbox에서 장치 → 게스트 확장 CD 이미지 삽입을 클릭하자.</p>
-<p><img src="/images/2019/Untitled-20a1651b-e860-41c4-9de2-30d9cc0ced26.png" alt></p>
-<p>위와 같은 창이 열린다 실행을 클릭하면 자동으로 터미널이 열리고 무언가 설치가 된다.</p>
-<p><img src="/images/2019/Untitled-3a61933d-32ad-437e-8533-95faaaed1e0d.png" alt></p>
-<p>위처럼 Press Return to close this windows 라는 문구가 나오면 터미널에서 엔터를 클릭해서 터미널을 닫아주자.</p>
-<p>그리고 우분투를 종료하자.</p>
-<p>그리고 이미지의 설정에 들어가서 클립보드 공유를 양방향으로 설정하면 된다.</p>
-<p><img src="/images/2019/Untitled-b0ca558c-612f-4882-8b91-d93540817187.png" alt></p>
-<p>아래처럼 윈도우의 note에서 텍스트를 복사해서 게스트 우분투 터미널에 복사가 되는 것을 확인 할 수 있다.</p>
-<p><img src="/images/2019/Untitled-de71bf43-65aa-4424-abc7-95d326d55d9a.png" alt></p>
-<p><img src="/images/2019/Untitled-8affdab9-eb74-4b42-a5cb-352b5b05a019.png" alt></p>
-<p>끝!!!</p>
-<h3 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h3><p><a href="https://extrememanual.net/8257" target="_blank" rel="external nofollow noopener noreferrer">https://extrememanual.net/8257</a></p>
-
-      
-      
-          
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-
-  
-      
-
-
-  
-  
-  
-  
-
-        
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
-    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2019/08/15/ubuntu-20190815-ubuntu-1084-virtualbox/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Hanumoka">
-      <meta itemprop="description" content="아마추어 개발자의 블로그">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hanumoka, IT Blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/08/15/ubuntu-20190815-ubuntu-1084-virtualbox/" class="post-title-link" itemprop="url">VirtualBox에 Ubuntu 18.04 설치하기</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">작성일</span>
-
-              <time title="Post created: 2019-08-15 16:04:05" itemprop="dateCreated datePublished" datetime="2019-08-15T16:04:05+09:00">2019-08-15</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Updated at: 2020-04-16 01:50:12" itemprop="dateModified" datetime="2020-04-16T01:50:12+09:00">2020-04-16</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/ubuntu/" itemprop="url" rel="index">
-                    <span itemprop="name">ubuntu</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-      <!-- 20200427hexo_post_head -->
-      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
-      <script>
-          (adsbygoogle = window.adsbygoogle || []).push({});
-      </script>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h1><p>내가 VirtualBox에 Ubuntu 18.04를 설치하려는 이유는…</p>
-<p>VirtualBox에 Ubuntu OS에 개발환경을 셋팅을 하려 하기 때문이다.</p>
-<p>VirtualBox에 Ubuntu 개발환경을 이미지로 만들면, 회사에서 인터넷 망이든 개발망이든 자유롭게 내가 원하는 상태의 개발환경을 가질수 있을거라 생각된다.(지금은… 일단 구축해보고, 성능과 문제점, 사용상 불편함 등을 체크해 봐야 할것 같다.)</p>
-<hr>
-<h3 id="준비물"><a href="#준비물" class="headerlink" title="준비물"></a>준비물</h3><p>Vitualbox (공짜이니 구글에서 검색해서 windows10에 설치)</p>
-<p>Ubuntu18.04.iso 파일(역시 구글에 금색해서 다운로드)</p>
-<hr>
-<h1 id="virtualbox에-Ubuntu1804-설치하기"><a href="#virtualbox에-Ubuntu1804-설치하기" class="headerlink" title="virtualbox에 Ubuntu1804 설치하기"></a>virtualbox에 Ubuntu1804 설치하기</h1><h3 id="virtualbox-이미지를-준비하자"><a href="#virtualbox-이미지를-준비하자" class="headerlink" title="virtualbox 이미지를 준비하자."></a>virtualbox 이미지를 준비하자.</h3><p>일단 먼저 설치된 virtualbox를 열고 머신 → 새로만들기를 클릭하자.</p>
-<p><img src="/images/2019/Untitled-29b6f9a6-216a-4645-abb5-87db7e0b63b2.png" alt></p>
-<p>그러면 다음과 같은 창이 열릴것이다.</p>
-<p><img src="/images/2019/Untitled-7393009b-2b34-45b6-8d3b-c817fe930e99.png" alt></p>
-<p>머신폴더는 여유공간이 넉넉한 드라이브를 선택해야 한다.</p>
-<p>나는 50GB의 이미지를 생성할 예정이다.</p>
-<p>종류와 버전은 그냥 두고 다음을 누르자.</p>
-<p><img src="/images/2019/Untitled-9d1722ab-a739-475d-8733-075189a579d5.png" alt></p>
-<p>메모리 크기를 8192MB로 잡았다. 나중에 수정이 가능하니 상황에 따라 적절하게 잡아주자.</p>
-<p>다음을 눌러주자.</p>
-<p><img src="/images/2019/Untitled-5559f8b2-4110-45b6-976e-221bde82f672.png" alt></p>
-<p>지금 새 가상 하드 디스크 만들기를 선택하고 만들기를 클릭하자.</p>
-<p><img src="/images/2019/Untitled-b007f218-c903-429f-99ad-da0367089374.png" alt></p>
-<p>VDI를 선택하고 다음을 클릭하자.</p>
-<p><img src="/images/2019/Untitled-8218d459-2e1b-49de-8a2d-e096a0d2132b.png" alt></p>
-<p>고정 크기를 선택하고 다음을 누르자.</p>
-<p><img src="/images/2019/Untitled-8d9ea907-aae8-48a6-9e7a-f5809137708e.png" alt></p>
-<p>내 경우에는 개발환경을 위해 어느정도 넉넉한 공간이 필요할 것이라 생각되어 50GB를 고정으로 잡았다.</p>
-<p>만들기를 클릭하자.</p>
-<p><img src="/images/2019/Untitled-cdb526e2-48d8-4c5b-b366-1bef208f5c8f.png" alt></p>
-<p>위 화면이 나오면서 이미지를 만들기 시작한다. 시간이 20분 정도 걸리니 커피를 한잔 하고 오자.</p>
-<p><img src="/images/2019/Untitled-49c89ee1-535a-4602-85c2-23742375ace8.png" alt></p>
-<p>시간이 지나면 이미지가 완성되고 위처럼 이미지가 생성된 것을 확인 할 수 있다.</p>
-<p><img src="/images/2019/Untitled-85c0459e-e668-48ef-be24-1583862c8a47.png" alt></p>
-<p>혹시 모르니 일단 안전을 위해 이미지 스냅샷을 만들어 놓자.</p>
-<p><img src="/images/2019/Untitled-ac21b6bd-2fd3-4c52-8b1c-e9dba6a405fd.png" alt></p>
-<p>스냅산 이름을 입력하고 확인을 누르자.</p>
-<p><img src="/images/2019/Untitled-bf1cd512-0bd2-4379-b4f9-9abee85bbd6b.png" alt></p>
-<p>위처럼 스냅샷을 확인 할수있다.</p>
-<p>시간이 오래걸리는 작업등은 virtualbox의 스냅샷을 이용해 미리미리 저장해 놓다.</p>
-<p>혹시나 뭔가 작업하다가 망가졌을 경우 아주 편리하다.</p>
-<h3 id="우분투-설치전-이미지의-설정-조정"><a href="#우분투-설치전-이미지의-설정-조정" class="headerlink" title="우분투 설치전 이미지의 설정 조정."></a>우분투 설치전 이미지의 설정 조정.</h3><p><img src="/images/2019/Untitled-729249a5-e65b-4da7-86b2-316e8d80257d.png" alt></p>
-<p>생성된 이미지를 마우스 우클릭 후 설정을 선택하자.</p>
-<p><img src="/images/2019/Untitled-8bfd7ed4-4f7b-434c-bd7b-51d4c426770b.png" alt></p>
-<p>설정 창에서 시스템으로 이동해서 마더보드 탭으로 진입하고 부팅순서에 플로피 디스크 항목을 선택 해재하자.</p>
-<p><img src="/images/2019/Untitled-c2d7233f-05ea-42dd-ab0b-ca96eb83ba21.png" alt></p>
-<p>프로세서 탭으로 이동해서 프로세서 개수를 최대치로 올려준다.</p>
-<p>위에서 이미지 프로세스 설정으로 호스트 컴퓨터의 프로세스를 공유해서 같이 사용한다고 한다.</p>
-<p><img src="/images/2019/Untitled-4c116825-11d9-4342-aee3-549a5f24009b.png" alt></p>
-<p>디스플레이 항목으로 이동해서 화면탭으로 이동 후 비디오 메모리를 최대치로 올려준다.</p>
-<p>그리고 확인을 눌러 설정창을 닫아 설정을 저장하자.</p>
-<h3 id="이미지에-Ubuntu1804-설치하기"><a href="#이미지에-Ubuntu1804-설치하기" class="headerlink" title="이미지에 Ubuntu1804 설치하기"></a>이미지에 Ubuntu1804 설치하기</h3><p><img src="/images/2019/Untitled-507dc6c2-60ca-40cd-9881-440a23c3a5c7.png" alt></p>
-<p>이미지를 우클릭후 시작 → 일반시작을 선택하자.</p>
-<p><img src="/images/2019/Untitled-2e748880-2771-4c36-8319-0c3baa68dca6.png" alt></p>
-<p>위처럼 이미지가 시동되면서 시동디스크를 선택하라는 창이 나온다. </p>
-<p>미리 다운 받은 Ubuntu18.04.iso 파일을 선택하고 시작을 눌러주자.</p>
-<p><img src="/images/2019/Untitled-84ff1b7f-1efb-4cb8-b5f1-5cd48054f884.png" alt></p>
-<p>언어에서 한국어를 설치하고 Ubuntu 체험하기를 선택하자.</p>
-<p>바로 Ubuntu를 설치하지 않고 체험하기를 선택하는 이유는 virtualbox에서 ubuntu를 설치할때 해상도가 맞지 않아 문제가 있기 때문에, 미리 해상도를 조절하고 설치하기 위함이다.</p>
-<p><img src="/images/2019/Untitled-3a016c5c-33d8-47fa-b385-8fd5dfcde503.png" alt></p>
-<p>위처럼 체험용 우분투가 열리고 파란식 표시를 따라서 환경설정으로 이동하자.</p>
-<p><img src="/images/2019/Untitled-847b5a5a-2dae-4e0c-b25e-7ec456b2c327.png" alt></p>
-<p>위처럼 환경 설정 창이 열리는데, 오른쪽 위의 네모를 선택해서 창을 작은창으로 변경한다.</p>
-<p><img src="/images/2019/Untitled-43bd09da-f10e-48b6-8dee-4cf094dfaea9.png" alt></p>
-<p>작아진 설정창에서 Devices를 찾아 선택하자.</p>
-<p><img src="/images/2019/Untitled-6bc246fd-4c56-4e11-a4bf-c6472ef159cd.png" alt></p>
-<p>Resolution을 선택하고 1360 x 768을 선택하자. 임시로 설치를 위한 해상도 이다 나중에 호스트 머신에 딱맞는 해상도 셋팅을 따로 할 것이다.</p>
-<p><img src="/images/2019/Untitled-898b0944-0259-41c1-943c-5dcfe7e98e5c.png" alt></p>
-<p>이 환경설정 창이 너무 커서 화면에 잘 안보이는 경우가 있는데 앞서 창의 크기를 작게 만들었기 때문에 창의 크기를 마우스로 적절하게 이동 시켜서 내용을 입력하고 적용 버튼을 클릭하자.</p>
-<p><img src="/images/2019/Untitled-fcc302ad-e4e3-4cc4-a85a-b9d4a2fb4228.png" alt></p>
-<p>위처럼 해상도가 변경된 것을 확인할 수 있다. Keep Changes를 클릭하자.</p>
-<p><img src="/images/2019/Untitled-13090dd9-a216-449d-a527-c731012efa63.png" alt></p>
-<p>바탕화면에 있는 Ubuntu 설치 아이콘을 선택하자.</p>
-<p><img src="/images/2019/Untitled-a8506d71-4435-4f5d-9735-1f86dd848aba.png" alt></p>
-<p>다시 언어 선택창이 나오는데, 한국어를 선택하고 계속하기를 클릭하자.</p>
-<p><img src="/images/2019/Untitled-377d379b-33b7-4fa8-933d-449406b9f1b4.png" alt></p>
-<p>키보드 레이아웃이 나오는데 기본설정을 그대로 두고 계속하기를 클릭하자.</p>
-<p><img src="/images/2019/Untitled-3d5286c7-ab43-4110-81a7-5861b47462a9.png" alt></p>
-<p>일반설치 선택을 유지하고 계속하기를 클릭하자.</p>
-<p><img src="/images/2019/Untitled-4f81c62d-e35a-46f4-9714-c13a6b039d08.png" alt></p>
-<p>설치형식에서 기타를 선택하고 계속하기를 누르자</p>
-<p><img src="/images/2019/Untitled-bad2e82b-c643-44c0-a72f-c3281f6fe9c3.png" alt></p>
-<p>/dev/sda 를 우클릭후 새 파티션 테이블을 선택하자.</p>
-<p><img src="/images/2019/Untitled-d8de05f8-dbb7-4197-956d-2d7c226c672d.png" alt></p>
-<p>계속하기를 클릭하자.</p>
-<p><img src="/images/2019/Untitled-1aab587b-31fb-4e81-8f97-4909610da099.png" alt></p>
-<p>위처럼 남은공간이라는 것이 생성된다.</p>
-<p>우클릭 하고 추가를 눌러주자.</p>
-<p><img src="/images/2019/Untitled-0c6f7598-0462-4e3a-96b4-237b4f849a43.png" alt></p>
-<p>510mb, 주, 이공간이 시작되는 지점, EXT4 저널링 파일 시스템, /boot를 선택하고 OK를 클릭하자.</p>
-<p><img src="/images/2019/Untitled-67ceb2ed-2ad5-4917-ab7f-8fce7cf2a050.png" alt></p>
-<p>위처럼 /boot 마운트가 생성 되었다. </p>
-<p>여기서 잠깐 버그 같은것이 있는데, 적용된 내용이 잘 안보이는 경우가 있다. 마우스 커서를 문질러주면 화면이 갱신되면서 보인다.</p>
-<p><img src="/images/2019/Untitled-a7ed1d3e-0196-41b7-a8d5-d2944fb0136a.png" alt></p>
-<p>다시 남은 공간을 우클릭하고 추가를 누른뒤 8192mb, 주, 이  공간이 시작되는 지점, 스왑영역을 선택하고 OK를 클릭하자.</p>
-<p>이 설정은 가상메모리를 설정하는 부분이다. 일반적으로 메모리의 2배를 지정하지만 그냥 8192로 셋팅했다. 이미지의 메모리 셋팅을 8gb이상으로 사용할 예정이라 별 무리가 없어보인다.</p>
-<p><img src="/images/2019/Untitled-d5c013a0-bcb1-4b2d-ade8-fce856dd7adc.png" alt></p>
-<p>또 남은공간을 우클릭 → 추가를 누르고 10078, 논리, 이공간이 시작되는 지점 EXT4저널링 파일 시스템, /home 을 선택하고 OK를 눌러주자.</p>
-<p><img src="/images/2019/Untitled-4e8dc80a-b3f4-4c76-988c-ca6d4bc49e23.png" alt></p>
-<p>남은 공간을 마우스 우클릭 → 추가 후 크기는 손대지 않고, 주, 이공간이 시작되는 지점</p>
-<p>EXT4 저널링 파일 시스템, / 를 선택하고 OK를 눌러주자.</p>
-<p><img src="/images/2019/Untitled-51b92880-5238-4ed9-a0c7-754bd269c095.png" alt></p>
-<p>위처럼 설정이 완료가 되었다.</p>
-<p>지금 설치를 클릭하자.(화면에는 비활성화 처럼 보이는데 클릭하면 클릭이 된다.)</p>
-<p><img src="/images/2019/Untitled-638dc4a3-5bf1-4084-931e-4a957f9dda9f.png" alt></p>
-<p>위처럼 창이 열리고 계속하기를 클릭하자.</p>
-<p><img src="/images/2019/Untitled-37c49464-4001-49e6-8dc9-d3cacc4b0c4c.png" alt></p>
-<p>여기서 버그가 좀 있는데 우분투의 pc 이름과 root 비밀번호 입력창이 나오는데 위처럼 잘 안나오는 버그가 있다. </p>
-<p><img src="/images/2019/Untitled-0aa88e53-7935-430a-823f-ddd0c2928b75.png" alt></p>
-<p>왼쪽 상단에 파란색 아이콘을 선택하면 위처럼 재대로 보인다.</p>
-<p>이름을 작성하고 root 비밀번호를 작성하고 로그인할때 암호입력을 선택하고 계속하기를 클릭하자.</p>
-<p>그러면 이제 우분투 설치가 진행된다.</p>
-<p>이것도 약 20~30분 걸리니 또 커피나 마시러 다녀오자.</p>
-<p><img src="/images/2019/Untitled-fde8c7e6-08ec-4b7e-afbf-e40c9bd8192b.png" alt></p>
-<p>설치가 완료되면 위처럼 창이 뜨는데 지금 다시시작을 클릭하여 리부트 하자.</p>
-<p><img src="/images/2019/Untitled-19b7952a-290b-4054-b1e5-392065b29a94.png" alt></p>
-<p>가상머신이 리부트 되면서 위처럼 Error가 발생하긴 하는데, 정상적으로 우분투가 시작되니 걱정하지 말자 위 error는 나중에 잡을 것이다.</p>
-<p><img src="/images/2019/Untitled-b633b552-5c04-4a63-a763-92feba157ac6.png" alt></p>
-<p>설치전 입력했던 root 비밀번호를 입력하고 로그인을 클릭하자.</p>
-<p><img src="/images/2019/Untitled-f7a73600-7809-4498-91bd-c3638298fc3c.png" alt></p>
-<p>위처럼 설치된 우분투가 실행된다.</p>
-<p>이제 바로 할 것은, 우분투의 업그레이드다.</p>
-<p><img src="/images/2019/Untitled-7ae3e4d9-edbd-4f63-b020-a0c33d6569b2.png" alt></p>
-<p>보통 위처럼 소프트웨어 업데이터가 열리는데 지금 설치를 눌러 설치하자.</p>
-<p>만약 수동으로 업데이트를 하려면 터미널을 열고 아래 명령어로 업데이트를 할 수 있다.</p>
-<p><img src="/images/2019/Untitled-3af7d2d3-4099-4814-8ef7-2247c5b9ca8d.png" alt></p>
-<p>터미널 창은 바탕화면을 마우스 우클릭하면 실행할수 있는 항목이 나온다.</p>
-<pre><code>sudo apt-get update
-sudo apt-get upgrade</code></pre><p><img src="/images/2019/Untitled-82b6b3ce-f242-4601-aa64-8215ca5d0e18.png" alt></p>
-<p><img src="/images/2019/Untitled-9e2c1e49-483a-45e8-9e79-db5e62f594bd.png" alt></p>
-<p>upgrade명령 이후 위처럼 물어본다. y를 눌러 진행시키자.</p>
-<p>upgrade 명령으로 실제 OS가 업데이트가 되는데, 이것도 시간이 한참 걸린다.</p>
-<p>upgrade 도중 뭔가 문제가 있다고 나올수가 있는데</p>
-<p>나의 경우 아래 명령어를 한번씩 더해서 다시 업데이트를 해주니 정상적으로 완료가 되었다.</p>
-<pre><code>sudo apt-get update
-sudo apt-get upgrade</code></pre><p><img src="/images/2019/Untitled-8e694a7f-b2bc-4cb4-ad00-0ca219b9dca2.png" alt></p>
-<p>OS가 업그레이드가 완료되면 우분투를 재시작 하자.</p>
-<h3 id="VirtualBox-Ubuntu1804의-해상도-셋팅"><a href="#VirtualBox-Ubuntu1804의-해상도-셋팅" class="headerlink" title="VirtualBox Ubuntu1804의 해상도 셋팅"></a>VirtualBox Ubuntu1804의 해상도 셋팅</h3><p><img src="/images/2019/Untitled-64ebf1d9-605e-4ccd-83f5-29c971289172.png" alt></p>
-<p>OS 업그레이드 완료후 재시작 하면, virtualbox에서 장치 → 게스트 확장 CD 이미지 삽입을 클릭하자.</p>
-<p><img src="/images/2019/Untitled-20a1651b-e860-41c4-9de2-30d9cc0ced26.png" alt></p>
-<p>위와 같은 창이 열린다 실행을 클릭하면 자동으로 터미널이 열리고 무언가 설치가 된다.</p>
-<p><img src="/images/2019/Untitled-3a61933d-32ad-437e-8533-95faaaed1e0d.png" alt></p>
-<p>위처럼 Press Return to close this windows 라는 문구가 나오면 터미널에서 엔터를 클릭해서 터미널을 닫아주자.</p>
-<p>그리고 우분투를 종료하자.</p>
-<p><img src="/images/2019/Untitled-0a0e5383-0d79-4fc2-9eff-3fc36f5bfacc.png" alt></p>
-<p>virtualbox에서 이미지 설정으로 진입해서 디스플레이항목으로 들어가자.</p>
-<p>그래픽 컨트롤러에서 VBoxVGA를 선택하고 확인을 눌러주자.</p>
-<p>그리고 다시 이미지를 시작 시키자.</p>
-<p><img src="/images/2019/Untitled-d67a4216-3aae-4b46-a8ab-3d2a94baebb3.png" alt></p>
-<p>이번에 이미지가 시동될 때에는 아까 처음에 발생했던 error 메세지 문구가 사라졌다.</p>
-<p><img src="/images/2019/Untitled-92169f2d-d1ac-4109-a9f3-2eca82860b57.png" alt></p>
-<p>그리고 부팅이 완료되면 자동으로 virtualbox창의 크기에 맞게 자동으로 해상도가 변경되는 것을 확인 할 수 있다.</p>
-<p>이제 virtualbox에서 우분투를 사용할 준비가 되어있다.</p>
-<p>완료가 된 김에 virtualbox에서 스냅샷을 찍어 두도록 하자.</p>
-<p>끝!!!!</p>
-
-      
-      
-          
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-
-  
-      
-
-
-  
-  
-  
-  
-
-        
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
-    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2019/04/27/react-20190427-react-setting-up-react-devloment-enviroment/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Hanumoka">
-      <meta itemprop="description" content="아마추어 개발자의 블로그">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hanumoka, IT Blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/04/27/react-20190427-react-setting-up-react-devloment-enviroment/" class="post-title-link" itemprop="url">리엑트(react) windows10 개발환경 셋팅</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">작성일</span>
-
-              <time title="Post created: 2019-04-27 16:33:39" itemprop="dateCreated datePublished" datetime="2019-04-27T16:33:39+09:00">2019-04-27</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Updated at: 2020-04-16 01:50:12" itemprop="dateModified" datetime="2020-04-16T01:50:12+09:00">2020-04-16</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/react/" itemprop="url" rel="index">
-                    <span itemprop="name">react</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-      <!-- 20200427hexo_post_head -->
-      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
-      <script>
-          (adsbygoogle = window.adsbygoogle || []).push({});
-      </script>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h1><p>windows10에 react 개발환경 설정을 하는법을 설명하는 글이다.</p>
-<p>순서는 다음과 같다.</p>
-<ol>
-<li>nodeJs, npm 설치</li>
-<li>yarn 설치</li>
-<li>visual studio code 설치</li>
-<li>react 개발용 visual studio code 확자 플러그인 설치</li>
-<li>create-react-app 도구 설치</li>
-<li>create-react-app 도구로 react 프로젝트 생성하고 실행 확인</li>
-</ol>
-<h1 id="NodeJs와-npm-설치"><a href="#NodeJs와-npm-설치" class="headerlink" title="NodeJs와 npm 설치"></a>NodeJs와 npm 설치</h1><p><a href="https://nodejs.org/ko/" target="_blank" rel="external nofollow noopener noreferrer">https://nodejs.org/ko/</a> </p>
-<p>위 사이트에서 LTS 버전 node를 다운 받아서 설치하자.</p>
-<p>설치한 뒤 powershell에서 다음 명령으로 node, npm의 버전을 확인해보자.</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">node -v</span><br><span class="line">npm -v</span><br></pre></td></tr></table></figure>
-
-<p>버전 정보가 잘 나온다면 설치가 잘 된 것이다.</p>
-<h1 id="yarn-설치"><a href="#yarn-설치" class="headerlink" title="yarn 설치"></a>yarn 설치</h1><p>yarn이란 npm과 비슷한 패키지 관리자이다. </p>
-<p>다만 npm의 느린 속도등의 단점을 조금더 보안한 패키지 매니저 라고 한다.</p>
-<p>npm만으로도 이번 실습을 진행할 수 있지만, yarn명령어를 사용할 예정이므로 설치해보자.</p>
-<p><a href="https://yarnpkg.com/lang/en/" target="_blank" rel="external nofollow noopener noreferrer">https://yarnpkg.com/lang/en/</a></p>
-<p>위 사이트로 이동해서 yarn을 다운 받아서 설치하자.<br>설치가 끝난 뒤에 powershell에서 다음 명령으로 yarn 버전을 확인해보자</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yarn -v</span><br></pre></td></tr></table></figure>
-
-<p>버전 정보가 잘 나온다면 설치가 잘 된 것이다.</p>
-<h1 id="Visual-Studio-code-설치"><a href="#Visual-Studio-code-설치" class="headerlink" title="Visual Studio code 설치"></a>Visual Studio code 설치</h1><p><a href="https://code.visualstudio.com/" target="_blank" rel="external nofollow noopener noreferrer">https://code.visualstudio.com/</a></p>
-<p>위 사이트로 이동하여 visual studio code를 설치하자.</p>
-<h1 id="crate-react-app-도구-설치"><a href="#crate-react-app-도구-설치" class="headerlink" title="crate-react-app 도구 설치"></a>crate-react-app 도구 설치</h1><p>powershell에서 다음 명령으로 create-react-app 도구를 설치하자.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yarn global add create-react-app</span><br></pre></td></tr></table></figure>
-
-<p>위 명령을 입력하면 powershell에서 무언가 다운받고 설치하게 된다. 완료를 기다리자.</p>
-<h1 id="create-react-app-도구를-이용해서-react-프로젝트를-생성하고-실행해보자"><a href="#create-react-app-도구를-이용해서-react-프로젝트를-생성하고-실행해보자" class="headerlink" title="create-react-app 도구를 이용해서 react 프로젝트를 생성하고 실행해보자."></a>create-react-app 도구를 이용해서 react 프로젝트를 생성하고 실행해보자.</h1><p>이제 모든 준비는 끝났다.</p>
-<p>powershell에서 다음 명령을 입력해서 react 프로젝트를 생성하자.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">create-react-app hello-react</span><br></pre></td></tr></table></figure>
-
-<p>위 명령을 실행하면 무언가 진행이 되며, 완료가 되면 현재 경로에 hello-react 폴더가 생길 것이다.</p>
-<p>만약 위 명령어가 동작하지 않는다면 다음 명령어로 시도해 보자.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm create-react-app hello-react</span><br></pre></td></tr></table></figure>
-
-<p>혹시 위 명령어도 안된다면 아래 명령어로 프로젝트를 생성해보자.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npx create-react-app hello-react</span><br></pre></td></tr></table></figure>
-
-
-
-<p>파워쉘에서 생성된 hello-react 폴더로 진입하고 다음명령어로 visual studio code를 실행하자.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">code .</span><br></pre></td></tr></table></figure>
-
-<p>다음과 같이 create-react-app 도구가 생성산 react 프로젝트의 내부가 보일 것이다.</p>
-<p><img src="/images/2019/20190427-react-setting-up-react-devloment-enviroment_1.png" alt="생성한 react 프로젝트 내부"></p>
-<p>비주얼 스튜디오에서 터미널을 열고 아래 명령어를 실행하자.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yarn start</span><br></pre></td></tr></table></figure>
-
-<p>그러면 자동으로 dev 웹서버가 동작하면서 지금 생성한 리액트 프로젝트구 구동된다.</p>
-<p>그리고 역시 자동으로 기본 브라우저가 열리며 다음처럼 초기 화면이 나올것이다.</p>
-<p><img src="/images/2019/20190427-react-setting-up-react-devloment-enviroment_2.png" alt="react 프로젝트 실행결과"></p>
-<p>기본 포트는 3000번으로 설정 되어있다.</p>
-<h1 id="react개발용-visual-studio-code-플러그인-설치"><a href="#react개발용-visual-studio-code-플러그인-설치" class="headerlink" title="react개발용 visual studio code 플러그인 설치"></a>react개발용 visual studio code 플러그인 설치</h1><p>설치 할 플러그인 항목</p>
-<ul>
-<li>EsLint : 자바스크립트 문법 체크</li>
-<li>Relative Path : 상대 경로에 있는 파일경로를 편하게 작성</li>
-<li>Guides : 들여쓰기 가이드라인 그려줌</li>
-<li>ReactJs code snippents : 리액테 관련 스니펫 모음</li>
-</ul>
-<p>끝!!!</p>
+<h3 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h3><p><a href="https://yjcode.tistory.com/1" target="_blank" rel="external nofollow noopener noreferrer">https://yjcode.tistory.com/1</a></p>
+<p>[<a href="https://lukelee91.github.io/blog/vscode-installation-on-ubuntu/]" target="_blank" rel="external nofollow noopener noreferrer">https://lukelee91.github.io/blog/vscode-installation-on-ubuntu/]</a>(</p>
 
       
       
@@ -1613,7 +1625,7 @@ sudo apt-get upgrade</code></pre><p><img src="/images/2019/Untitled-8e694a7f-b2b
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/3/"><i class="fa fa-angle-left" aria-label="이전 페이지"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/21/">21</a><a class="extend next" rel="next" href="/page/5/"><i class="fa fa-angle-right" aria-label="다음 페이지"></i></a>
+    <a class="extend prev" rel="prev" href="/page/3/"><i class="fa fa-angle-left" aria-label="이전 페이지"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/22/">22</a><a class="extend next" rel="next" href="/page/5/"><i class="fa fa-angle-right" aria-label="다음 페이지"></i></a>
   </nav>
 
 
@@ -1679,7 +1691,7 @@ sudo apt-get upgrade</code></pre><p><img src="/images/2019/Untitled-8e694a7f-b2b
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">202</span>
+          <span class="site-state-item-count">214</span>
           <span class="site-state-item-name">포스트</span>
         </a>
       </div>
@@ -1692,7 +1704,7 @@ sudo apt-get upgrade</code></pre><p><img src="/images/2019/Untitled-8e694a7f-b2b
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">566</span>
+        <span class="site-state-item-count">585</span>
         <span class="site-state-item-name">태그</span></a>
       </div>
   </nav>

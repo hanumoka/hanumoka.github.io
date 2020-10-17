@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.hanumoka.net/"/>
-  <updated>2020-05-21T14:29:12.187Z</updated>
+  <updated>2020-10-17T10:32:57.965Z</updated>
   <id>https://www.hanumoka.net/</id>
   
   <author>
@@ -15,6 +15,425 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Windows10에 maven 설치 및 설정</title>
+    <link href="https://www.hanumoka.net/2020/10/17/maven-20201017-maven-install-maven-on-windows10/"/>
+    <id>https://www.hanumoka.net/2020/10/17/maven-20201017-maven-install-maven-on-windows10/</id>
+    <published>2020-10-17T10:27:57.000Z</published>
+    <updated>2020-10-17T10:32:57.965Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;들어가기&quot;&gt;&lt;a href=&quot;#들어가기&quot; class=&quot;headerlink&quot; title=&quot;들어가기&quot;&gt;&lt;/a&gt;들어가기&lt;/h1&gt;&lt;p&gt;windows10에서 cmd에서 mvn -v를 입력하면 maven의 버전이 나와야 하지만, 설치가 안된
+        
+      
+    
+    </summary>
+    
+    
+      <category term="maven" scheme="https://www.hanumoka.net/categories/maven/"/>
+    
+    
+      <category term="maven" scheme="https://www.hanumoka.net/tags/maven/"/>
+    
+      <category term="hanumoka" scheme="https://www.hanumoka.net/tags/hanumoka/"/>
+    
+      <category term="install" scheme="https://www.hanumoka.net/tags/install/"/>
+    
+      <category term="windows10" scheme="https://www.hanumoka.net/tags/windows10/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>elasticsearch7을 ubuntu18에설치하기(virtualbox)</title>
+    <link href="https://www.hanumoka.net/2020/08/01/elasticsearch-20200801-elasticsearch7-ubuntu18/"/>
+    <id>https://www.hanumoka.net/2020/08/01/elasticsearch-20200801-elasticsearch7-ubuntu18/</id>
+    <published>2020-08-01T02:11:29.000Z</published>
+    <updated>2020-10-17T10:26:38.411Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;들어가기&quot;&gt;&lt;a href=&quot;#들어가기&quot; class=&quot;headerlink&quot; title=&quot;들어가기&quot;&gt;&lt;/a&gt;들어가기&lt;/h1&gt;&lt;p&gt;ubuntu 18.04가 설치된 virtual box에 elasticsearch7을
+        
+      
+    
+    </summary>
+    
+    
+      <category term="Elasticsearch" scheme="https://www.hanumoka.net/categories/Elasticsearch/"/>
+    
+    
+      <category term="Elasticsearch" scheme="https://www.hanumoka.net/tags/Elasticsearch/"/>
+    
+      <category term="basic" scheme="https://www.hanumoka.net/tags/basic/"/>
+    
+      <category term="기본개념" scheme="https://www.hanumoka.net/tags/%EA%B8%B0%EB%B3%B8%EA%B0%9C%EB%85%90/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Scrapy와 Selenium을 연동하기</title>
+    <link href="https://www.hanumoka.net/2020/07/11/python-20200711-python-scrapy-selenium/"/>
+    <id>https://www.hanumoka.net/2020/07/11/python-20200711-python-scrapy-selenium/</id>
+    <published>2020-07-11T07:01:34.000Z</published>
+    <updated>2020-10-17T10:26:38.411Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;들어가기&quot;&gt;&lt;a href=&quot;#들어가기&quot; class=&quot;headerlink&quot; title=&quot;들어가기&quot;&gt;&lt;/a&gt;들어가기&lt;/h1&gt;&lt;p&gt;scrapy만으로는 크롤링 결과물에 동적인 이벤트를 발생해서 그 결과물을 크롤링 할 수
+        
+      
+    
+    </summary>
+    
+    
+      <category term="python" scheme="https://www.hanumoka.net/categories/python/"/>
+    
+    
+      <category term="hanumoka" scheme="https://www.hanumoka.net/tags/hanumoka/"/>
+    
+      <category term="python" scheme="https://www.hanumoka.net/tags/python/"/>
+    
+      <category term="scrapy" scheme="https://www.hanumoka.net/tags/scrapy/"/>
+    
+      <category term="selenium" scheme="https://www.hanumoka.net/tags/selenium/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>scrapy 크롤링 실습</title>
+    <link href="https://www.hanumoka.net/2020/07/07/python-20200707-python-scrapy-example/"/>
+    <id>https://www.hanumoka.net/2020/07/07/python-20200707-python-scrapy-example/</id>
+    <published>2020-07-07T12:31:15.000Z</published>
+    <updated>2020-07-09T12:37:40.067Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;들어가기&quot;&gt;&lt;a href=&quot;#들어가기&quot; class=&quot;headerlink&quot; title=&quot;들어가기&quot;&gt;&lt;/a&gt;들어가기&lt;/h1&gt;&lt;p&gt;저번에 anaconda에 scrapy를 설치 했었다. (windows와 호환성에 문제가 있는지 좀 고생을
+        
+      
+    
+    </summary>
+    
+    
+      <category term="python" scheme="https://www.hanumoka.net/categories/python/"/>
+    
+    
+      <category term="hanumoka" scheme="https://www.hanumoka.net/tags/hanumoka/"/>
+    
+      <category term="python" scheme="https://www.hanumoka.net/tags/python/"/>
+    
+      <category term="scrapy" scheme="https://www.hanumoka.net/tags/scrapy/"/>
+    
+      <category term="spider" scheme="https://www.hanumoka.net/tags/spider/"/>
+    
+      <category term="example" scheme="https://www.hanumoka.net/tags/example/"/>
+    
+      <category term="robot.txt" scheme="https://www.hanumoka.net/tags/robot-txt/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>selenium headless기능 적용하기</title>
+    <link href="https://www.hanumoka.net/2020/07/06/python-20200706-python-selenium-headless/"/>
+    <id>https://www.hanumoka.net/2020/07/06/python-20200706-python-selenium-headless/</id>
+    <published>2020-07-06T03:29:47.000Z</published>
+    <updated>2020-07-09T12:37:40.067Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;들어가기&quot;&gt;&lt;a href=&quot;#들어가기&quot; class=&quot;headerlink&quot; title=&quot;들어가기&quot;&gt;&lt;/a&gt;들어가기&lt;/h1&gt;&lt;p&gt;저번에 Selenium과 chrom web driver를 사용해서 naver bike에서 바이크 브랜드 정보를
+        
+      
+    
+    </summary>
+    
+    
+      <category term="python" scheme="https://www.hanumoka.net/categories/python/"/>
+    
+    
+      <category term="hanumoka" scheme="https://www.hanumoka.net/tags/hanumoka/"/>
+    
+      <category term="python" scheme="https://www.hanumoka.net/tags/python/"/>
+    
+      <category term="selenium" scheme="https://www.hanumoka.net/tags/selenium/"/>
+    
+      <category term="headless" scheme="https://www.hanumoka.net/tags/headless/"/>
+    
+      <category term="webdriver" scheme="https://www.hanumoka.net/tags/webdriver/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Selenium 설치하기 및 크롤링 예제</title>
+    <link href="https://www.hanumoka.net/2020/07/05/python-20200705-python-selenium-install-start/"/>
+    <id>https://www.hanumoka.net/2020/07/05/python-20200705-python-selenium-install-start/</id>
+    <published>2020-07-05T06:02:02.000Z</published>
+    <updated>2020-07-09T12:37:40.067Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;들어가기&quot;&gt;&lt;a href=&quot;#들어가기&quot; class=&quot;headerlink&quot; title=&quot;들어가기&quot;&gt;&lt;/a&gt;들어가기&lt;/h1&gt;&lt;p&gt;python으로 크롤링을 할 때, 크롤링 대상인 웹 페이지에 동적인 동작을 곁들여서 크롤링을 할 수 있게
+        
+      
+    
+    </summary>
+    
+    
+      <category term="python" scheme="https://www.hanumoka.net/categories/python/"/>
+    
+    
+      <category term="hanumoka" scheme="https://www.hanumoka.net/tags/hanumoka/"/>
+    
+      <category term="python" scheme="https://www.hanumoka.net/tags/python/"/>
+    
+      <category term="selenium" scheme="https://www.hanumoka.net/tags/selenium/"/>
+    
+      <category term="crawling" scheme="https://www.hanumoka.net/tags/crawling/"/>
+    
+      <category term="크롤링" scheme="https://www.hanumoka.net/tags/%ED%81%AC%EB%A1%A4%EB%A7%81/"/>
+    
+      <category term="파이썬" scheme="https://www.hanumoka.net/tags/%ED%8C%8C%EC%9D%B4%EC%8D%AC/"/>
+    
+      <category term="셀레니움" scheme="https://www.hanumoka.net/tags/%EC%85%80%EB%A0%88%EB%8B%88%EC%9B%80/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>intelliJ terminal git bash 사용하기</title>
+    <link href="https://www.hanumoka.net/2020/07/02/intelliJ-20200702-intellij-git-bash/"/>
+    <id>https://www.hanumoka.net/2020/07/02/intelliJ-20200702-intellij-git-bash/</id>
+    <published>2020-07-02T11:51:49.000Z</published>
+    <updated>2020-07-09T12:37:40.065Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;p&gt;별건 아니지만, 할 때마다 까먹고 짜증나서 정리한다.&lt;/p&gt;
+&lt;p&gt;기본적으로 windows10에 intelliJ를 설치하면 디폴트 terminal로 cmd.exe를 사용한다.&lt;/p&gt;
+&lt;p&gt;cmd가 짜증나는 부분은 아래처럼 git 명령어가 잘
+        
+      
+    
+    </summary>
+    
+    
+      <category term="intelliJ" scheme="https://www.hanumoka.net/categories/intelliJ/"/>
+    
+    
+      <category term="hanumoka" scheme="https://www.hanumoka.net/tags/hanumoka/"/>
+    
+      <category term="gitbash" scheme="https://www.hanumoka.net/tags/gitbash/"/>
+    
+      <category term="intellij" scheme="https://www.hanumoka.net/tags/intellij/"/>
+    
+      <category term="terminal" scheme="https://www.hanumoka.net/tags/terminal/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>springboot 비동기 서비스 만들기(Async)</title>
+    <link href="https://www.hanumoka.net/2020/07/02/springBoot-20200702-sringboot-async-service/"/>
+    <id>https://www.hanumoka.net/2020/07/02/springBoot-20200702-sringboot-async-service/</id>
+    <published>2020-07-02T11:31:31.000Z</published>
+    <updated>2020-07-09T12:37:40.068Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;들어가기&quot;&gt;&lt;a href=&quot;#들어가기&quot; class=&quot;headerlink&quot; title=&quot;들어가기&quot;&gt;&lt;/a&gt;들어가기&lt;/h1&gt;&lt;p&gt;springboot rest 서버에서 어떤 요청을 받으면, Shell command를 호출하는 기능을 구현해야
+        
+      
+    
+    </summary>
+    
+    
+      <category term="springBoot" scheme="https://www.hanumoka.net/categories/springBoot/"/>
+    
+    
+      <category term="hanumoka" scheme="https://www.hanumoka.net/tags/hanumoka/"/>
+    
+      <category term="비동기" scheme="https://www.hanumoka.net/tags/%EB%B9%84%EB%8F%99%EA%B8%B0/"/>
+    
+      <category term="springboot" scheme="https://www.hanumoka.net/tags/springboot/"/>
+    
+      <category term="async" scheme="https://www.hanumoka.net/tags/async/"/>
+    
+      <category term="sync" scheme="https://www.hanumoka.net/tags/sync/"/>
+    
+      <category term="enableasync" scheme="https://www.hanumoka.net/tags/enableasync/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>java에서 shell command 호출하기</title>
+    <link href="https://www.hanumoka.net/2020/07/01/java-20200701-java-shell-command/"/>
+    <id>https://www.hanumoka.net/2020/07/01/java-20200701-java-shell-command/</id>
+    <published>2020-07-01T11:56:19.000Z</published>
+    <updated>2020-07-09T12:37:40.066Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;들어가기&quot;&gt;&lt;a href=&quot;#들어가기&quot; class=&quot;headerlink&quot; title=&quot;들어가기&quot;&gt;&lt;/a&gt;들어가기&lt;/h1&gt;&lt;p&gt;회사에서 springboot 백엔드 서버에서 파이썬 코드를 shell command로 호출하고 뒤 그 응답을
+        
+      
+    
+    </summary>
+    
+    
+      <category term="java" scheme="https://www.hanumoka.net/categories/java/"/>
+    
+    
+      <category term="hanumoka" scheme="https://www.hanumoka.net/tags/hanumoka/"/>
+    
+      <category term="java" scheme="https://www.hanumoka.net/tags/java/"/>
+    
+      <category term="shell command" scheme="https://www.hanumoka.net/tags/shell-command/"/>
+    
+      <category term="ProcessBuilder" scheme="https://www.hanumoka.net/tags/ProcessBuilder/"/>
+    
+      <category term="Runtime" scheme="https://www.hanumoka.net/tags/Runtime/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>windows10 anaconda에 scrapy 설치(와 실패기)</title>
+    <link href="https://www.hanumoka.net/2020/06/23/python-20200623-python-windows10-conda-install-scrapy/"/>
+    <id>https://www.hanumoka.net/2020/06/23/python-20200623-python-windows10-conda-install-scrapy/</id>
+    <published>2020-06-23T14:05:54.000Z</published>
+    <updated>2020-07-09T12:37:40.066Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;들어가기&quot;&gt;&lt;a href=&quot;#들어가기&quot; class=&quot;headerlink&quot; title=&quot;들어가기&quot;&gt;&lt;/a&gt;들어가기&lt;/h1&gt;&lt;p&gt;토이프로젝트를 만드는 중, 웹 크롤링 기능이 필요했다.&lt;/p&gt;
+&lt;p&gt;자료를 찾아보니 python 기반의
+        
+      
+    
+    </summary>
+    
+    
+      <category term="python" scheme="https://www.hanumoka.net/categories/python/"/>
+    
+    
+      <category term="install" scheme="https://www.hanumoka.net/tags/install/"/>
+    
+      <category term="windows10" scheme="https://www.hanumoka.net/tags/windows10/"/>
+    
+      <category term="python" scheme="https://www.hanumoka.net/tags/python/"/>
+    
+      <category term="conda" scheme="https://www.hanumoka.net/tags/conda/"/>
+    
+      <category term="anaconda" scheme="https://www.hanumoka.net/tags/anaconda/"/>
+    
+      <category term="scrapy" scheme="https://www.hanumoka.net/tags/scrapy/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>windows10에서 conda 명령어 안될때</title>
+    <link href="https://www.hanumoka.net/2020/06/16/python-20200616-python-windows10-conda-path/"/>
+    <id>https://www.hanumoka.net/2020/06/16/python-20200616-python-windows10-conda-path/</id>
+    <published>2020-06-16T11:29:59.000Z</published>
+    <updated>2020-06-23T11:27:21.895Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;추가-20200617&quot;&gt;&lt;a href=&quot;#추가-20200617&quot; class=&quot;headerlink&quot; title=&quot;추가 20200617&quot;&gt;&lt;/a&gt;추가 20200617&lt;/h1&gt;&lt;p&gt;conda를 windows10에 환경변수 path에
+        
+      
+    
+    </summary>
+    
+    
+      <category term="python" scheme="https://www.hanumoka.net/categories/python/"/>
+    
+    
+      <category term="windows10" scheme="https://www.hanumoka.net/tags/windows10/"/>
+    
+      <category term="path" scheme="https://www.hanumoka.net/tags/path/"/>
+    
+      <category term="python" scheme="https://www.hanumoka.net/tags/python/"/>
+    
+      <category term="conda" scheme="https://www.hanumoka.net/tags/conda/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>virtual box에 centos7.7 설치하기</title>
+    <link href="https://www.hanumoka.net/2020/06/06/centOs-20200606-oracle-virtualbox-centos7-7/"/>
+    <id>https://www.hanumoka.net/2020/06/06/centOs-20200606-oracle-virtualbox-centos7-7/</id>
+    <published>2020-06-06T12:02:40.000Z</published>
+    <updated>2020-06-23T11:27:21.894Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h3 id=&quot;가상머신을-생성하고-기초적인-설정하기&quot;&gt;&lt;a href=&quot;#가상머신을-생성하고-기초적인-설정하기&quot; class=&quot;headerlink&quot; title=&quot;가상머신을 생성하고 기초적인 설정하기&quot;&gt;&lt;/a&gt;가상머신을 생성하고 기초적인
+        
+      
+    
+    </summary>
+    
+    
+      <category term="centOs" scheme="https://www.hanumoka.net/categories/centOs/"/>
+    
+    
+      <category term="centos" scheme="https://www.hanumoka.net/tags/centos/"/>
+    
+      <category term="centos7" scheme="https://www.hanumoka.net/tags/centos7/"/>
+    
+      <category term="install" scheme="https://www.hanumoka.net/tags/install/"/>
+    
+      <category term="virtualbox" scheme="https://www.hanumoka.net/tags/virtualbox/"/>
+    
+  </entry>
   
   <entry>
     <title>Springboot에 thymeleaf-layout-dialect적용하기</title>
@@ -41,11 +460,11 @@
     
       <category term="layout" scheme="https://www.hanumoka.net/tags/layout/"/>
     
+      <category term="springboot" scheme="https://www.hanumoka.net/tags/springboot/"/>
+    
       <category term="thymeleaf-layout-dialect" scheme="https://www.hanumoka.net/tags/thymeleaf-layout-dialect/"/>
     
       <category term="thymeleaf" scheme="https://www.hanumoka.net/tags/thymeleaf/"/>
-    
-      <category term="springboot" scheme="https://www.hanumoka.net/tags/springboot/"/>
     
   </entry>
   
@@ -286,407 +705,6 @@
       <category term="local repository" scheme="https://www.hanumoka.net/tags/local-repository/"/>
     
       <category term="jar" scheme="https://www.hanumoka.net/tags/jar/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>React를 Nginx웹 서버에 배포하기</title>
-    <link href="https://www.hanumoka.net/2019/12/29/react-20191229-react-nginx-deploy/"/>
-    <id>https://www.hanumoka.net/2019/12/29/react-20191229-react-nginx-deploy/</id>
-    <published>2019-12-29T03:27:18.000Z</published>
-    <updated>2020-04-15T16:50:12.012Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        
-        
-          &lt;h1 id=&quot;개요&quot;&gt;&lt;a href=&quot;#개요&quot; class=&quot;headerlink&quot; title=&quot;개요&quot;&gt;&lt;/a&gt;개요&lt;/h1&gt;&lt;p&gt;Create React App으로 배포 테스트용 React 프로젝트를 만들고, 빌드하여 배포하는 실습을 진행해보도록
-        
-      
-    
-    </summary>
-    
-    
-      <category term="react" scheme="https://www.hanumoka.net/categories/react/"/>
-    
-    
-      <category term="ubuntu" scheme="https://www.hanumoka.net/tags/ubuntu/"/>
-    
-      <category term="deploy" scheme="https://www.hanumoka.net/tags/deploy/"/>
-    
-      <category term="nginx" scheme="https://www.hanumoka.net/tags/nginx/"/>
-    
-      <category term="react" scheme="https://www.hanumoka.net/tags/react/"/>
-    
-      <category term="react-create-app" scheme="https://www.hanumoka.net/tags/react-create-app/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>ubuntu18.04 포트 확인 및 열기</title>
-    <link href="https://www.hanumoka.net/2019/12/28/ubuntu-20191228-ubuntu-open-port/"/>
-    <id>https://www.hanumoka.net/2019/12/28/ubuntu-20191228-ubuntu-open-port/</id>
-    <published>2019-12-28T13:48:56.000Z</published>
-    <updated>2020-04-15T16:50:12.037Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        
-        
-          &lt;h1 id=&quot;개요&quot;&gt;&lt;a href=&quot;#개요&quot; class=&quot;headerlink&quot; title=&quot;개요&quot;&gt;&lt;/a&gt;개요&lt;/h1&gt;&lt;p&gt;ubuntu 에서 열려 있는 포트를 확인하고, 원하는 포트를 열어보자.&lt;/p&gt;
-&lt;h1 id=&quot;포트열기&quot;&gt;&lt;a
-        
-      
-    
-    </summary>
-    
-    
-      <category term="ubuntu" scheme="https://www.hanumoka.net/categories/ubuntu/"/>
-    
-    
-      <category term="ubuntu" scheme="https://www.hanumoka.net/tags/ubuntu/"/>
-    
-      <category term="port" scheme="https://www.hanumoka.net/tags/port/"/>
-    
-      <category term="iptables" scheme="https://www.hanumoka.net/tags/iptables/"/>
-    
-      <category term="netstat" scheme="https://www.hanumoka.net/tags/netstat/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Ubuntu18.04 Create react app 개발 환경</title>
-    <link href="https://www.hanumoka.net/2019/12/28/ubuntu-20191228-ubuntu-create-react-app/"/>
-    <id>https://www.hanumoka.net/2019/12/28/ubuntu-20191228-ubuntu-create-react-app/</id>
-    <published>2019-12-28T12:53:22.000Z</published>
-    <updated>2020-04-15T16:50:12.036Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        
-        
-          &lt;h1 id=&quot;개요&quot;&gt;&lt;a href=&quot;#개요&quot; class=&quot;headerlink&quot; title=&quot;개요&quot;&gt;&lt;/a&gt;개요&lt;/h1&gt;&lt;p&gt;ubuntu 18.04 에 NVM, node, npm 을 설치하고 react 를 개발할수 있는 create react
-        
-      
-    
-    </summary>
-    
-    
-      <category term="ubuntu" scheme="https://www.hanumoka.net/categories/ubuntu/"/>
-    
-    
-      <category term="ubuntu" scheme="https://www.hanumoka.net/tags/ubuntu/"/>
-    
-      <category term="node" scheme="https://www.hanumoka.net/tags/node/"/>
-    
-      <category term="nvm" scheme="https://www.hanumoka.net/tags/nvm/"/>
-    
-      <category term="create-react-app" scheme="https://www.hanumoka.net/tags/create-react-app/"/>
-    
-      <category term="npx" scheme="https://www.hanumoka.net/tags/npx/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Ubuntu18.04 NVM으로 NODE 설치하기</title>
-    <link href="https://www.hanumoka.net/2019/12/28/ubuntu-20191228-ubuntu-install-nvm/"/>
-    <id>https://www.hanumoka.net/2019/12/28/ubuntu-20191228-ubuntu-install-nvm/</id>
-    <published>2019-12-28T12:13:48.000Z</published>
-    <updated>2020-04-15T16:50:12.036Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        
-        
-          &lt;h1 id=&quot;개요&quot;&gt;&lt;a href=&quot;#개요&quot; class=&quot;headerlink&quot; title=&quot;개요&quot;&gt;&lt;/a&gt;개요&lt;/h1&gt;&lt;p&gt;ubuntu18.04에 NVM으로 Node를 설치해보겠다.&lt;/p&gt;
-&lt;p&gt;ubuntu에 node를 설치해보신 분들을 알겠지만,
-        
-      
-    
-    </summary>
-    
-    
-      <category term="ubuntu" scheme="https://www.hanumoka.net/categories/ubuntu/"/>
-    
-    
-      <category term="ubuntu" scheme="https://www.hanumoka.net/tags/ubuntu/"/>
-    
-      <category term="node" scheme="https://www.hanumoka.net/tags/node/"/>
-    
-      <category term="nvm" scheme="https://www.hanumoka.net/tags/nvm/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>OBS Studio 디스플레이 캡쳐 검은화면 설정</title>
-    <link href="https://www.hanumoka.net/2019/12/28/obsStudio-20191228-OBSstudio-nvidia-setting/"/>
-    <id>https://www.hanumoka.net/2019/12/28/obsStudio-20191228-OBSstudio-nvidia-setting/</id>
-    <published>2019-12-28T04:06:07.000Z</published>
-    <updated>2020-04-15T16:50:12.007Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        
-        
-          &lt;h1 id=&quot;문제발생&quot;&gt;&lt;a href=&quot;#문제발생&quot; class=&quot;headerlink&quot; title=&quot;문제발생&quot;&gt;&lt;/a&gt;문제발생&lt;/h1&gt;&lt;p&gt;나는 코딩 테스트나 개발환경 셋팅을 할때, 그것들을 기록하고 싶은경우 OBS Studio 라는 화면 녹화
-        
-      
-    
-    </summary>
-    
-    
-      <category term="OBSstudio" scheme="https://www.hanumoka.net/categories/OBSstudio/"/>
-    
-    
-      <category term="OBSstudio" scheme="https://www.hanumoka.net/tags/OBSstudio/"/>
-    
-      <category term="디스플레이캡쳐" scheme="https://www.hanumoka.net/tags/%EB%94%94%EC%8A%A4%ED%94%8C%EB%A0%88%EC%9D%B4%EC%BA%A1%EC%B3%90/"/>
-    
-      <category term="검은화면" scheme="https://www.hanumoka.net/tags/%EA%B2%80%EC%9D%80%ED%99%94%EB%A9%B4/"/>
-    
-      <category term="검은색" scheme="https://www.hanumoka.net/tags/%EA%B2%80%EC%9D%80%EC%83%89/"/>
-    
-      <category term="nvidia" scheme="https://www.hanumoka.net/tags/nvidia/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Elasticsearch-hello-Elasticsearch</title>
-    <link href="https://www.hanumoka.net/2019/12/25/elasticsearch-20191225-Elasticsearch-hello-Elasticsearch/"/>
-    <id>https://www.hanumoka.net/2019/12/25/elasticsearch-20191225-Elasticsearch-hello-Elasticsearch/</id>
-    <published>2019-12-25T08:53:26.000Z</published>
-    <updated>2020-04-15T16:50:11.980Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        
-        
-          &lt;h1 id=&quot;엘라스틱서치-입문과-활용&quot;&gt;&lt;a href=&quot;#엘라스틱서치-입문과-활용&quot; class=&quot;headerlink&quot; title=&quot;엘라스틱서치 입문과 활용&quot;&gt;&lt;/a&gt;엘라스틱서치 입문과 활용&lt;/h1&gt;&lt;h2 id=&quot;1-엘라스틱-서치-개요&quot;&gt;&lt;a
-        
-      
-    
-    </summary>
-    
-    
-      <category term="Elasticsearch" scheme="https://www.hanumoka.net/categories/Elasticsearch/"/>
-    
-    
-      <category term="Elasticsearch" scheme="https://www.hanumoka.net/tags/Elasticsearch/"/>
-    
-      <category term="basic" scheme="https://www.hanumoka.net/tags/basic/"/>
-    
-      <category term="기본개념" scheme="https://www.hanumoka.net/tags/%EA%B8%B0%EB%B3%B8%EA%B0%9C%EB%85%90/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Hexo 블로그 만들기</title>
-    <link href="https://www.hanumoka.net/2019/12/19/hexo-20191219-hello-hexo/"/>
-    <id>https://www.hanumoka.net/2019/12/19/hexo-20191219-hello-hexo/</id>
-    <published>2019-12-19T13:32:38.000Z</published>
-    <updated>2020-04-15T16:50:11.983Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        
-        
-          &lt;p&gt;hexo는 jekyll과 같은 정적 블로그 생성 프레임 워크이다. &lt;/p&gt;
-&lt;p&gt;다만 hexo는 루비가 아닌 javascript, node등을 기반으로한 정적 블로그 생성기이다.&lt;/p&gt;
-&lt;p&gt;hexo도 markdown으로 글을 작성하며,
-        
-      
-    
-    </summary>
-    
-    
-      <category term="hexo" scheme="https://www.hanumoka.net/categories/hexo/"/>
-    
-    
-      <category term="Hexo" scheme="https://www.hanumoka.net/tags/Hexo/"/>
-    
-      <category term="블로그" scheme="https://www.hanumoka.net/tags/%EB%B8%94%EB%A1%9C%EA%B7%B8/"/>
-    
-      <category term="Jekyll" scheme="https://www.hanumoka.net/tags/Jekyll/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>react 드래그 modal 예제</title>
-    <link href="https://www.hanumoka.net/2019/10/26/react-20191026-react-modal-draggable/"/>
-    <id>https://www.hanumoka.net/2019/10/26/react-20191026-react-modal-draggable/</id>
-    <published>2019-10-25T17:11:18.000Z</published>
-    <updated>2020-04-15T16:50:12.012Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        
-        
-          &lt;p&gt;windows에서 create-react-app으로 예제 프로젝트를 준비했다.&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;/images/2019/Untitled-15d005bb-ceac-4a63-8045-4b64d65db61a.png&quot;
-        
-      
-    
-    </summary>
-    
-    
-      <category term="react" scheme="https://www.hanumoka.net/categories/react/"/>
-    
-    
-      <category term="react" scheme="https://www.hanumoka.net/tags/react/"/>
-    
-      <category term="modal" scheme="https://www.hanumoka.net/tags/modal/"/>
-    
-      <category term="draggable" scheme="https://www.hanumoka.net/tags/draggable/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>jenkins에서 Gitlab연동하기(Gitlab계정사용)</title>
-    <link href="https://www.hanumoka.net/2019/10/23/jenkins-20191023-jenkins-connect-gitlab/"/>
-    <id>https://www.hanumoka.net/2019/10/23/jenkins-20191023-jenkins-connect-gitlab/</id>
-    <published>2019-10-23T12:33:41.000Z</published>
-    <updated>2020-04-15T16:50:12.001Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        
-        
-          &lt;h1 id=&quot;들어가기&quot;&gt;&lt;a href=&quot;#들어가기&quot; class=&quot;headerlink&quot; title=&quot;들어가기&quot;&gt;&lt;/a&gt;들어가기&lt;/h1&gt;&lt;p&gt;이번은 로컬에 docker로 올린 jenkins를 사용해서 Gitlab(online)에 연동하는 방법을
-        
-      
-    
-    </summary>
-    
-    
-      <category term="jenkins" scheme="https://www.hanumoka.net/categories/jenkins/"/>
-    
-    
-      <category term="jenkins" scheme="https://www.hanumoka.net/tags/jenkins/"/>
-    
-      <category term="gitlab" scheme="https://www.hanumoka.net/tags/gitlab/"/>
-    
-      <category term="연동" scheme="https://www.hanumoka.net/tags/%EC%97%B0%EB%8F%99/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Docker를 이용한 Jenkins 컨테이너 만들기(docker in docker)</title>
-    <link href="https://www.hanumoka.net/2019/10/14/docker-20191014-docker-jenkins-docker-in-docker/"/>
-    <id>https://www.hanumoka.net/2019/10/14/docker-20191014-docker-jenkins-docker-in-docker/</id>
-    <published>2019-10-14T13:01:11.000Z</published>
-    <updated>2020-04-15T16:50:11.979Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        
-        
-          &lt;h1 id=&quot;Docker를-이용한-Jenkins-컨테이너-만들기-docker-in-docker&quot;&gt;&lt;a href=&quot;#Docker를-이용한-Jenkins-컨테이너-만들기-docker-in-docker&quot; class=&quot;headerlink&quot;
-        
-      
-    
-    </summary>
-    
-    
-      <category term="docker" scheme="https://www.hanumoka.net/categories/docker/"/>
-    
-    
-      <category term="jenkins" scheme="https://www.hanumoka.net/tags/jenkins/"/>
-    
-      <category term="ubuntu" scheme="https://www.hanumoka.net/tags/ubuntu/"/>
-    
-      <category term="docker" scheme="https://www.hanumoka.net/tags/docker/"/>
-    
-      <category term="dockercompose" scheme="https://www.hanumoka.net/tags/dockercompose/"/>
-    
-      <category term="dockerindocker" scheme="https://www.hanumoka.net/tags/dockerindocker/"/>
-    
-      <category term="dockerfile" scheme="https://www.hanumoka.net/tags/dockerfile/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>docker compose로 ubuntu에 jenkins 설치하기</title>
-    <link href="https://www.hanumoka.net/2019/10/13/docker-20191013-docker-compose-ubuntu-jenkins/"/>
-    <id>https://www.hanumoka.net/2019/10/13/docker-20191013-docker-compose-ubuntu-jenkins/</id>
-    <published>2019-10-12T16:54:15.000Z</published>
-    <updated>2020-04-15T16:50:11.979Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        
-        
-          &lt;h1 id=&quot;들어가기&quot;&gt;&lt;a href=&quot;#들어가기&quot; class=&quot;headerlink&quot; title=&quot;들어가기&quot;&gt;&lt;/a&gt;들어가기&lt;/h1&gt;&lt;p&gt;가상머신 ubuntu 18.04 에 docker compose를 이용해서 jenkins를 설치해보도록
-        
-      
-    
-    </summary>
-    
-    
-      <category term="docker" scheme="https://www.hanumoka.net/categories/docker/"/>
-    
-    
-      <category term="jenkins" scheme="https://www.hanumoka.net/tags/jenkins/"/>
-    
-      <category term="ubuntu" scheme="https://www.hanumoka.net/tags/ubuntu/"/>
-    
-      <category term="docker" scheme="https://www.hanumoka.net/tags/docker/"/>
-    
-      <category term="dockercompose" scheme="https://www.hanumoka.net/tags/dockercompose/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>ubuntu18.04에 docker compose로 gitlab 설치하기</title>
-    <link href="https://www.hanumoka.net/2019/10/13/docker-20191013-docker-compose-gitlab/"/>
-    <id>https://www.hanumoka.net/2019/10/13/docker-20191013-docker-compose-gitlab/</id>
-    <published>2019-10-12T15:41:08.000Z</published>
-    <updated>2020-04-15T16:50:11.979Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        
-        
-          &lt;h1 id=&quot;ubuntu에-docker-compose로-gitlab-설치하기&quot;&gt;&lt;a href=&quot;#ubuntu에-docker-compose로-gitlab-설치하기&quot; class=&quot;headerlink&quot; title=&quot;ubuntu에 docker
-        
-      
-    
-    </summary>
-    
-    
-      <category term="docker" scheme="https://www.hanumoka.net/categories/docker/"/>
-    
-    
-      <category term="ubuntu" scheme="https://www.hanumoka.net/tags/ubuntu/"/>
-    
-      <category term="docker" scheme="https://www.hanumoka.net/tags/docker/"/>
-    
-      <category term="dockercompose" scheme="https://www.hanumoka.net/tags/dockercompose/"/>
-    
-      <category term="gitlab" scheme="https://www.hanumoka.net/tags/gitlab/"/>
     
   </entry>
   

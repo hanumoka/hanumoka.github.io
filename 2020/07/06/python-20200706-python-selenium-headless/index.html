@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('https://www.hanumoka.net').hostname,
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.6.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":true,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":true},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    comments: {"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
+
+<!-- 구글 애드센스 코드  -->
+<script data-ad-client="ca-pub-6388187282606796" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-100596920-1"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'UA-100596920-1');
+</script>
+ 
+<!-- 네이버 웹 마스터-->
+<meta name="naver-site-verification" content="74bc91ee61c53c02f7d87ab3a442f99823f4f5f9">
+  <meta name="description" content="들어가기저번에 Selenium과 chrom web driver를 사용해서 naver bike에서 바이크 브랜드 정보를 크롤링 하는 예제를 진행 했다. 뭔가 아쉬운 점은, 크롤링을 할 때마다, web driver에 의해서 크롬 브라우저가 열린다는 것이다. 아래처럼 크롤링 스크립트를 돌리면 크롬 브라우저가 열린다.  물론 디버깅 코드를 작성하는 동안 재대로 동">
+<meta property="og:type" content="article">
+<meta property="og:title" content="selenium headless기능 적용하기">
+<meta property="og:url" content="https://www.hanumoka.net/2020/07/06/python-20200706-python-selenium-headless/index.html">
+<meta property="og:site_name" content="Hanumoka, IT Blog">
+<meta property="og:description" content="들어가기저번에 Selenium과 chrom web driver를 사용해서 naver bike에서 바이크 브랜드 정보를 크롤링 하는 예제를 진행 했다. 뭔가 아쉬운 점은, 크롤링을 할 때마다, web driver에 의해서 크롬 브라우저가 열린다는 것이다. 아래처럼 크롤링 스크립트를 돌리면 크롬 브라우저가 열린다.  물론 디버깅 코드를 작성하는 동안 재대로 동">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:image" content="https://www.hanumoka.net/images/2020/selenium%20headless%203032c18b510e4d13bfb9c27587403f67/Untitled.png">
+<meta property="og:image" content="https://www.hanumoka.net/images/2020/selenium%20headless%203032c18b510e4d13bfb9c27587403f67/Untitled%201.png">
+<meta property="article:published_time" content="2020-07-06T03:29:47.000Z">
+<meta property="article:modified_time" content="2020-07-09T12:37:40.067Z">
+<meta property="article:author" content="Hanumoka">
+<meta property="article:tag" content="hanumoka">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="selenium">
+<meta property="article:tag" content="headless">
+<meta property="article:tag" content="webdriver">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.hanumoka.net/images/2020/selenium%20headless%203032c18b510e4d13bfb9c27587403f67/Untitled.png">
+
+<link rel="canonical" href="https://www.hanumoka.net/2020/07/06/python-20200706-python-selenium-headless/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>selenium headless기능 적용하기 | Hanumoka, IT Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Hanumoka, IT Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hanumoka, IT Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">그래봐야 코딩, 그래도 코딩</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>홈</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>태그</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>카테고리</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>아카이브</a>
+
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="fa fa-fw fa-calendar"></i>Schedule</a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-fw fa-sitemap"></i>Sitemap</a>
+
+  </li>
+        <li class="menu-item menu-item-rss">
+
+    <a href="/atom.xml" rel="section"><i class="fa fa-fw fa-rss"></i>rss</a>
+
+  </li>
+        <li class="menu-item menu-item-commonweal">
+
+    <a href="/404/" rel="section"><i class="fa fa-fw fa-heartbeat"></i>Commonweal 404</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>검색
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none" placeholder="Searching..." spellcheck="false" type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/hanumoka" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="external nofollow noopener noreferrer" target="_blank"><svg width="80" height="80" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2020/07/06/python-20200706-python-selenium-headless/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Hanumoka">
+      <meta itemprop="description" content="아마추어 개발자의 블로그">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hanumoka, IT Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          selenium headless기능 적용하기
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">작성일</span>
+
+              <time title="Post created: 2020-07-06 12:29:47" itemprop="dateCreated datePublished" datetime="2020-07-06T12:29:47+09:00">2020-07-06</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Updated at: 2020-07-09 21:37:40" itemprop="dateModified" datetime="2020-07-09T21:37:40+09:00">2020-07-09</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 20200427hexo_post_head -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h1><p>저번에 Selenium과 chrom web driver를 사용해서 naver bike에서 바이크 브랜드 정보를 크롤링 하는 예제를 진행 했다.</p>
+<p>뭔가 아쉬운 점은, 크롤링을 할 때마다, web driver에 의해서 크롬 브라우저가 열린다는 것이다.</p>
+<p>아래처럼 크롤링 스크립트를 돌리면 크롬 브라우저가 열린다.</p>
+<p><img src="/images/2020/selenium%20headless%203032c18b510e4d13bfb9c27587403f67/Untitled.png" alt="selenium%20headless%203032c18b510e4d13bfb9c27587403f67/Untitled.png"></p>
+<p>물론 디버깅 코드를 작성하는 동안 재대로 동작하는 지 확인 하기에 좋고, 크롤링 마지막 코드에</p>
+<p><strong>driver.quit() 명령으로 해당 web driver 브라우저를 종료 시킬 수 있다.</strong></p>
+<p>하지만 내가 원하는 것은 아예 web driver 브라우저가 열리지 않고 크롤링이 되는 것을 원한다.</p>
+<p>만약 실제 데몬서비스등으로 돌릴 때, 위 처럼 web driver 브라우저가 열릴 필요가 없기 때문이다.</p>
+<p>아직 해보지 않아서 정확히는 모르겠지만, 만약 리눅스 서버에서 스크립트를 돌릴 경우 desktop환경이 아닌경우 오류가 나라 수도 있을 것 같다.(내 추축이다. 아닐수도 있다.)</p>
+<p>Selenium에서는 headless 라는 기능을 통해 크롤링 할때 web driver의 브라우저가 화면에 직접 열리지 않고, 뒤에 숨어서 동작하게 할 수 있다고 한다.</p>
+<p>한번 해보자.</p>
+<h1 id="Selenium-headless-적용하기"><a href="#Selenium-headless-적용하기" class="headerlink" title="Selenium headless 적용하기"></a>Selenium headless 적용하기</h1><p>일단 기존의 Selenium 예제 코드를 준비하자.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> selenium <span class="keyword">import</span> webdriver</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line">chromedriver = <span class="string">'C:\dev_python\Webdriver\chromedriver.exe'</span></span><br><span class="line">driver = webdriver.Chrome(chromedriver)</span><br><span class="line"></span><br><span class="line">driver.get(<span class="string">'https://auto.naver.com/bike/mainList.nhn'</span>)</span><br><span class="line"></span><br><span class="line">print(<span class="string">"+"</span> * <span class="number">100</span>)</span><br><span class="line">print(driver.title)</span><br><span class="line">print(driver.current_url)</span><br><span class="line">print(<span class="string">"바이크 브랜드 크롤링"</span>)</span><br><span class="line">print(<span class="string">"-"</span> * <span class="number">100</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 바이크 제조사 전체 페이지 버튼 클릭</span></span><br><span class="line">bikeCompanyAllBtn = driver.find_element_by_css_selector(<span class="string">"#container &gt; div.spot_main &gt; div.spot_aside &gt; div.tit &gt; a"</span>)</span><br><span class="line">bikeCompanyAllBtn.click()</span><br><span class="line"></span><br><span class="line">time.sleep(<span class="number">3</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 바이크 제조사 1번 페이지 진입해서 바이크 리스트 추출</span></span><br><span class="line">allBikeCompanyElement = driver.find_elements_by_css_selector(</span><br><span class="line">    <span class="string">"#_vendor_select_layer &gt; div &gt; div.maker_group div.emblem_area &gt; ul &gt; li"</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 바이크 첫 페이지 크롤링</span></span><br><span class="line"><span class="keyword">for</span> item <span class="keyword">in</span> allBikeCompanyElement:</span><br><span class="line">    bikeComName = item.find_element_by_tag_name(<span class="string">"span"</span>).text</span><br><span class="line">    <span class="keyword">if</span> (bikeComName != <span class="string">''</span>):</span><br><span class="line">        print(<span class="string">"바이크 회사명:"</span> + bikeComName)</span><br><span class="line">        ahref = item.find_element_by_tag_name(<span class="string">"a"</span>).get_attribute(<span class="string">"href"</span>)</span><br><span class="line">        print(<span class="string">'네이버 자동차 바이크제조사 홈 sub url:'</span>, ahref)</span><br><span class="line">        imgUrl = item.find_element_by_tag_name(<span class="string">"img"</span>).get_attribute(<span class="string">"src"</span>)</span><br><span class="line">        print(<span class="string">'바이크 회사 엠블럼:'</span>, imgUrl)</span><br><span class="line"></span><br><span class="line">time.sleep(<span class="number">3</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 바이크 제조사 리스트의 다음 페이지 버튼을 찾아서 클릭하자.</span></span><br><span class="line"></span><br><span class="line">nextBtn = driver.find_element_by_css_selector(</span><br><span class="line">    <span class="string">"#_vendor_select_layer &gt; div &gt; div.maker_group &gt; div.rolling_btn &gt; button.next"</span>)</span><br><span class="line"><span class="comment"># 다음 바이크 제조사 페이지 버튼이 활성화 여부</span></span><br><span class="line">isExistNextPage = nextBtn.is_enabled()</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (isExistNextPage == <span class="literal">True</span>):</span><br><span class="line">    print(<span class="string">"다음 페이지 존재함=======================================&gt;"</span>)</span><br><span class="line">    nextBtn.click()</span><br><span class="line">    allBikeCompanyElement = driver.find_elements_by_css_selector(</span><br><span class="line">        <span class="string">"#_vendor_select_layer &gt; div &gt; div.maker_group div.emblem_area &gt; ul &gt; li"</span>)</span><br><span class="line">    <span class="keyword">for</span> item <span class="keyword">in</span> allBikeCompanyElement:</span><br><span class="line">        bikeComName = item.find_element_by_tag_name(<span class="string">"span"</span>).text</span><br><span class="line">        <span class="keyword">if</span> (bikeComName != <span class="string">''</span>):</span><br><span class="line">            print(<span class="string">"바이크 회사명:"</span> + bikeComName)</span><br><span class="line">            ahref = item.find_element_by_tag_name(<span class="string">"a"</span>).get_attribute(<span class="string">"href"</span>)</span><br><span class="line">            print(<span class="string">'네이버 자동차 바이크제조사 홈 sub url:'</span>, ahref)</span><br><span class="line">            imgUrl = item.find_element_by_tag_name(<span class="string">"img"</span>).get_attribute(<span class="string">"src"</span>)</span><br><span class="line">            print(<span class="string">'바이크 회사 엠블럼:'</span>, imgUrl)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 크롤링이 끝나면 webdriver 브라우저를 종료한다.</span></span><br><span class="line">driver.quit()</span><br></pre></td></tr></table></figure>
+
+<p>위 코드에 headless 기능을 적용해보자. 방법은 아주 간단하다.</p>
+<p>headless를 기능을 사용하겠다고, web driver에게 알려주기만 하면 된다.</p>
+<p>headless 기능을 활성화 하는 코드는 아래와 같다.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># webdirver옵션에서 headless기능을 사용하겠다 라는 내용</span></span><br><span class="line">webdriver_options = webdriver.ChromeOptions()</span><br><span class="line">webdriver_options .add_argument(<span class="string">'headless'</span>)</span><br><span class="line"></span><br><span class="line">chromedriver = <span class="string">'C:/dev_python/Webdriver/chromedriver.exe'</span></span><br><span class="line">driver = webdriver.Chrome(chromedriver, options=webdriver_options )</span><br></pre></td></tr></table></figure>
+
+<p>위 크롤링 코드에 적용 하면 아래처럼 된다.</p>
+<p><strong>headless가 적용된 예제코드</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> selenium <span class="keyword">import</span> webdriver</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line"><span class="comment"># webdirver옵션에서 headless기능을 사용하겠다 라는 내용</span></span><br><span class="line">webdriver_options = webdriver.ChromeOptions()</span><br><span class="line">webdriver_options .add_argument(<span class="string">'headless'</span>)</span><br><span class="line"></span><br><span class="line">chromedriver = <span class="string">'C:\dev_python\Webdriver\chromedriver.exe'</span></span><br><span class="line">driver = webdriver.Chrome(chromedriver, options=webdriver_options )</span><br><span class="line"></span><br><span class="line">driver.get(<span class="string">'https://auto.naver.com/bike/mainList.nhn'</span>)</span><br><span class="line"></span><br><span class="line">print(<span class="string">"+"</span> * <span class="number">100</span>)</span><br><span class="line">print(driver.title)</span><br><span class="line">print(driver.current_url)</span><br><span class="line">print(<span class="string">"바이크 브랜드 크롤링"</span>)</span><br><span class="line">print(<span class="string">"-"</span> * <span class="number">100</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 바이크 제조사 전체 페이지 버튼 클릭</span></span><br><span class="line">bikeCompanyAllBtn = driver.find_element_by_css_selector(<span class="string">"#container &gt; div.spot_main &gt; div.spot_aside &gt; div.tit &gt; a"</span>)</span><br><span class="line">bikeCompanyAllBtn.click()</span><br><span class="line"></span><br><span class="line">time.sleep(<span class="number">3</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 바이크 제조사 1번 페이지 진입해서 바이크 리스트 추출</span></span><br><span class="line">allBikeCompanyElement = driver.find_elements_by_css_selector(</span><br><span class="line">    <span class="string">"#_vendor_select_layer &gt; div &gt; div.maker_group div.emblem_area &gt; ul &gt; li"</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 바이크 첫 페이지 크롤링</span></span><br><span class="line"><span class="keyword">for</span> item <span class="keyword">in</span> allBikeCompanyElement:</span><br><span class="line">    bikeComName = item.find_element_by_tag_name(<span class="string">"span"</span>).text</span><br><span class="line">    <span class="keyword">if</span> (bikeComName != <span class="string">''</span>):</span><br><span class="line">        print(<span class="string">"바이크 회사명:"</span> + bikeComName)</span><br><span class="line">        ahref = item.find_element_by_tag_name(<span class="string">"a"</span>).get_attribute(<span class="string">"href"</span>)</span><br><span class="line">        print(<span class="string">'네이버 자동차 바이크제조사 홈 sub url:'</span>, ahref)</span><br><span class="line">        imgUrl = item.find_element_by_tag_name(<span class="string">"img"</span>).get_attribute(<span class="string">"src"</span>)</span><br><span class="line">        print(<span class="string">'바이크 회사 엠블럼:'</span>, imgUrl)</span><br><span class="line"></span><br><span class="line">time.sleep(<span class="number">3</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 바이크 제조사 리스트의 다음 페이지 버튼을 찾아서 클릭하자.</span></span><br><span class="line"></span><br><span class="line">nextBtn = driver.find_element_by_css_selector(</span><br><span class="line">    <span class="string">"#_vendor_select_layer &gt; div &gt; div.maker_group &gt; div.rolling_btn &gt; button.next"</span>)</span><br><span class="line"><span class="comment"># 다음 바이크 제조사 페이지 버튼이 활성화 여부</span></span><br><span class="line">isExistNextPage = nextBtn.is_enabled()</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (isExistNextPage == <span class="literal">True</span>):</span><br><span class="line">    print(<span class="string">"다음 페이지 존재함=======================================&gt;"</span>)</span><br><span class="line">    nextBtn.click()</span><br><span class="line">    allBikeCompanyElement = driver.find_elements_by_css_selector(</span><br><span class="line">        <span class="string">"#_vendor_select_layer &gt; div &gt; div.maker_group div.emblem_area &gt; ul &gt; li"</span>)</span><br><span class="line">    <span class="keyword">for</span> item <span class="keyword">in</span> allBikeCompanyElement:</span><br><span class="line">        bikeComName = item.find_element_by_tag_name(<span class="string">"span"</span>).text</span><br><span class="line">        <span class="keyword">if</span> (bikeComName != <span class="string">''</span>):</span><br><span class="line">            print(<span class="string">"바이크 회사명:"</span> + bikeComName)</span><br><span class="line">            ahref = item.find_element_by_tag_name(<span class="string">"a"</span>).get_attribute(<span class="string">"href"</span>)</span><br><span class="line">            print(<span class="string">'네이버 자동차 바이크제조사 홈 sub url:'</span>, ahref)</span><br><span class="line">            imgUrl = item.find_element_by_tag_name(<span class="string">"img"</span>).get_attribute(<span class="string">"src"</span>)</span><br><span class="line">            print(<span class="string">'바이크 회사 엠블럼:'</span>, imgUrl)</span><br></pre></td></tr></table></figure>
+
+<p>아래처럼 실행 하면, 이번에는 webdirver 브라우저 없이 크롤링이 진행되는 것을 확인 할 수 있다.</p>
+<p><img src="/images/2020/selenium%20headless%203032c18b510e4d13bfb9c27587403f67/Untitled%201.png" alt="selenium%20headless%203032c18b510e4d13bfb9c27587403f67/Untitled%201.png"></p>
+<p><strong>기타 webdirver 옵션</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 브라우저의 사이즈 지정(화면 사이즈에 따라서 동적으로 엘리멘트가 변하는 경우 필요할듯)</span></span><br><span class="line">webdriver_options .add_argument(<span class="string">'windows-size=1920x1080'</span>)</span><br><span class="line"><span class="comment"># 그래픽 카드 사용하지 않음</span></span><br><span class="line">webdriver_options .add_argument(<span class="string">'disable-gpu'</span>)</span><br><span class="line"><span class="comment"># http request header의 User-Agent 변조, 기본으로 크롤링 할 경우</span></span><br><span class="line"><span class="comment"># 이 정보는 크롬 헤드리스 웹드라이버로 넘어가므로 똑똑한 웹서버는</span></span><br><span class="line"><span class="comment"># 이 정보를 보고 응답을 안해줄수도 있는데 이걸 피하기 위해 변조할수있다.</span></span><br><span class="line">webdriver_options .add_arguemnt(<span class="string">'User-Agent: xxxxxxxxxxxxxxx'</span>)</span><br><span class="line"><span class="comment"># 사용자 언어</span></span><br><span class="line">webdriver_options .add_arguemnt(<span class="string">'lang=ko_KR'</span>)</span><br></pre></td></tr></table></figure>
+
+<h1 id="마무리"><a href="#마무리" class="headerlink" title="마무리"></a>마무리</h1><p>seleinum과 webdriver의 조합 말고도, Phantomjs라는 것을 사용해서도 크롤링을 할 수 있고 위 처럼 headless또한 적용이 가능하다고 한다.</p>
+<p>하지만 요즘 크롬이 워낙 대세라서, 유지보수가 될지 안될지 잘 모를 Phantomjs를 굳이 사용할 필요는 없어 보인다.</p>
+
+      
+          
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 20200427_post_footer -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="7565540074" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      <!-- Utterances 댓글 -->
+      <script src="https://utteranc.es/client.js" repo="hanumoka/hanumoka.github.io" issue-term="pathname" theme="github-light" crossorigin="anonymous" async>
+      </script>
+      <div style="font-size: 1rem;
+                  font-weight: 400;
+                  line-height: 1.5;
+                  text-align: left;
+                  box-sizing: border-box;
+                  position: relative;
+                  padding: .75rem 1.25rem;
+                  margin-bottom: 1rem;
+                  border: 1px solid transparent;
+                  border-radius: .25rem;
+                  color: #721c24;
+                  background-color: #f8d7da;
+                  border-color: #f5c6cb;
+                  margin-top: 1rem;">
+        Notice: 댓글을 사용하시려면, github에 로그인을 해주세요.(Utterances 댓글을 사용중입니다.)
+      </div>
+    <div>
+          <div class="post-tags">
+              <a href="/tags/hanumoka/" rel="tag"># hanumoka</a>
+              <a href="/tags/python/" rel="tag"># python</a>
+              <a href="/tags/selenium/" rel="tag"># selenium</a>
+              <a href="/tags/headless/" rel="tag"># headless</a>
+              <a href="/tags/webdriver/" rel="tag"># webdriver</a>
+          </div>
+        
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/07/05/python-20200705-python-selenium-install-start/" rel="prev" title="Selenium 설치하기 및 크롤링 예제">
+      <i class="fa fa-chevron-left"></i> Selenium 설치하기 및 크롤링 예제
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/07/07/python-20200707-python-scrapy-example/" rel="next" title="scrapy 크롤링 실습">
+      scrapy 크롤링 실습 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </div></footer>
+    
+  </article>
+
+  
+      
+
+
+  
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          목차
+        </li>
+        <li class="sidebar-nav-overview">
+          흝어보기
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#들어가기"><span class="nav-number">1.</span> <span class="nav-text">들어가기</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Selenium-headless-적용하기"><span class="nav-number">2.</span> <span class="nav-text">Selenium headless 적용하기</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#마무리"><span class="nav-number">3.</span> <span class="nav-text">마무리</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Hanumoka</p>
+  <div class="site-description" itemprop="description">아마추어 개발자의 블로그</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">214</span>
+          <span class="site-state-item-name">포스트</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">38</span>
+        <span class="site-state-item-name">카테고리</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">585</span>
+        <span class="site-state-item-name">태그</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/hanumoka" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;hanumoka" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:amagramer@gmail.com" title="E-Mail → mailto:amagramer@gmail.com" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    <div>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 왼쪽 사이드 광고 -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="9032012837" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+    </div>
+    </div>
+    
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Hanumoka</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="external nofollow noopener noreferrer" target="_blank">Hexo</a> v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://theme-next.org/" class="theme-link" rel="external nofollow noopener noreferrer" target="_blank">NexT.Gemini</a> v7.6.0
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('https://www.hanumoka.net').hostname,
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.6.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":true,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":true},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    comments: {"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
+
+<!-- 구글 애드센스 코드  -->
+<script data-ad-client="ca-pub-6388187282606796" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-100596920-1"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'UA-100596920-1');
+</script>
+ 
+<!-- 네이버 웹 마스터-->
+<meta name="naver-site-verification" content="74bc91ee61c53c02f7d87ab3a442f99823f4f5f9">
+  <meta name="description" content="들어가기회사에서 springboot 백엔드 서버에서 파이썬 코드를 shell command로 호출하고 뒤 그 응답을 stdout으로 받아서 db에 저장해야 기능을 만들어야 하는 일이 생겼다. 욕심 같아선 파이썬 스크립트를 마이크로 서비스로 만드는 것이 가장 좋은 방법 처럼 보이지만, 매일 시간에 쫒기는 입장이다보니 그냥 java에서 shell command">
+<meta property="og:type" content="article">
+<meta property="og:title" content="java에서 shell command 호출하기">
+<meta property="og:url" content="https://www.hanumoka.net/2020/07/01/java-20200701-java-shell-command/index.html">
+<meta property="og:site_name" content="Hanumoka, IT Blog">
+<meta property="og:description" content="들어가기회사에서 springboot 백엔드 서버에서 파이썬 코드를 shell command로 호출하고 뒤 그 응답을 stdout으로 받아서 db에 저장해야 기능을 만들어야 하는 일이 생겼다. 욕심 같아선 파이썬 스크립트를 마이크로 서비스로 만드는 것이 가장 좋은 방법 처럼 보이지만, 매일 시간에 쫒기는 입장이다보니 그냥 java에서 shell command">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:image" content="https://www.hanumoka.net/images/2020/java%20shell%20command%20cd59c192a52849578dde8f6c36ee8eb9/Untitled.png">
+<meta property="og:image" content="https://www.hanumoka.net/images/2020/java%20shell%20command%20cd59c192a52849578dde8f6c36ee8eb9/Untitled%201.png">
+<meta property="og:image" content="https://www.hanumoka.net/images/2020/java%20shell%20command%20cd59c192a52849578dde8f6c36ee8eb9/Untitled%202.png">
+<meta property="og:image" content="https://www.hanumoka.net/images/2020/java%20shell%20command%20cd59c192a52849578dde8f6c36ee8eb9/Untitled%203.png">
+<meta property="og:image" content="https://www.hanumoka.net/images/2020/java%20shell%20command%20cd59c192a52849578dde8f6c36ee8eb9/Untitled%204.png">
+<meta property="article:published_time" content="2020-07-01T11:56:19.000Z">
+<meta property="article:modified_time" content="2020-07-09T12:37:40.066Z">
+<meta property="article:author" content="Hanumoka">
+<meta property="article:tag" content="hanumoka">
+<meta property="article:tag" content="java">
+<meta property="article:tag" content="shell command">
+<meta property="article:tag" content="ProcessBuilder">
+<meta property="article:tag" content="Runtime">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.hanumoka.net/images/2020/java%20shell%20command%20cd59c192a52849578dde8f6c36ee8eb9/Untitled.png">
+
+<link rel="canonical" href="https://www.hanumoka.net/2020/07/01/java-20200701-java-shell-command/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>java에서 shell command 호출하기 | Hanumoka, IT Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Hanumoka, IT Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hanumoka, IT Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">그래봐야 코딩, 그래도 코딩</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>홈</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>태그</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>카테고리</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>아카이브</a>
+
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="fa fa-fw fa-calendar"></i>Schedule</a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-fw fa-sitemap"></i>Sitemap</a>
+
+  </li>
+        <li class="menu-item menu-item-rss">
+
+    <a href="/atom.xml" rel="section"><i class="fa fa-fw fa-rss"></i>rss</a>
+
+  </li>
+        <li class="menu-item menu-item-commonweal">
+
+    <a href="/404/" rel="section"><i class="fa fa-fw fa-heartbeat"></i>Commonweal 404</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>검색
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none" placeholder="Searching..." spellcheck="false" type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/hanumoka" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="external nofollow noopener noreferrer" target="_blank"><svg width="80" height="80" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2020/07/01/java-20200701-java-shell-command/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Hanumoka">
+      <meta itemprop="description" content="아마추어 개발자의 블로그">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hanumoka, IT Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          java에서 shell command 호출하기
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">작성일</span>
+
+              <time title="Post created: 2020-07-01 20:56:19" itemprop="dateCreated datePublished" datetime="2020-07-01T20:56:19+09:00">2020-07-01</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Updated at: 2020-07-09 21:37:40" itemprop="dateModified" datetime="2020-07-09T21:37:40+09:00">2020-07-09</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/java/" itemprop="url" rel="index">
+                    <span itemprop="name">java</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 20200427hexo_post_head -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h1><p>회사에서 springboot 백엔드 서버에서 파이썬 코드를 shell command로 호출하고 뒤 그 응답을 stdout으로 받아서 db에 저장해야 기능을 만들어야 하는 일이 생겼다.</p>
+<p>욕심 같아선 파이썬 스크립트를 마이크로 서비스로 만드는 것이 가장 좋은 방법 처럼 보이지만, 매일 시간에 쫒기는 입장이다보니 그냥 java에서 shell command 로 파이썬을 호출하는 방향으로 진행하기로 했다.</p>
+<p>이 글에서는 간단하게 java에서 shell command를 호출하고 호출결과(stdout)을 java에서 받아서 출력하는 예제를 정리한 글이다.</p>
+<h2 id="실행환경"><a href="#실행환경" class="headerlink" title="실행환경"></a>실행환경</h2><ul>
+<li>인텔리J</li>
+<li>jdk 1.8</li>
+<li>windows10</li>
+</ul>
+<h1 id="java-코드로-쉘-커멘드를-호출하는-방법을-알아보자"><a href="#java-코드로-쉘-커멘드를-호출하는-방법을-알아보자" class="headerlink" title="java 코드로 쉘 커멘드를 호출하는 방법을 알아보자."></a><strong>java 코드로 쉘 커멘드를 호출하는 방법을 알아보자.</strong></h1><p>java로 shell cmd를 호출하는 방법으로는 크게 두가지 방법이 있다고 한다.</p>
+<ul>
+<li>Runtime 를 사용하는 방법</li>
+<li>ProcessBuilder 를 사용하는 방법(<strong>이걸 더 추천하는듯 하다.</strong>)</li>
+</ul>
+<p>하지만 위 두가지 방법을 구현하기 전에 java에서 쉘 커멘드를 호출하기 전에 고려해야 할 점이 있다.</p>
+<h3 id="JVM-실행-환경-OS-구별하기"><a href="#JVM-실행-환경-OS-구별하기" class="headerlink" title="JVM 실행 환경(OS) 구별하기"></a>JVM 실행 환경(OS) 구별하기</h3><p>java에서 shell cmd를 호출할 때 os 마다 다르게 호출해 줘야 한다.</p>
+<p><strong>만약 windonws라면 cmd.exe 쉘을 호출해야 한다.</strong></p>
+<p><strong>그리고 그외의 OS의 경우에는 sh라는 표준 쉘을 실행해야 해야 한다.</strong></p>
+<p><strong>다음 코드로 JVM 실행환경 OS를 구별 할수 있다.</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.example.demo;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * java에서 쉘 커멘드 호출 예제</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestShellCmd</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">boolean</span> isWindows = System.getProperty(<span class="string">"os.name"</span>)</span><br><span class="line">                .toLowerCase().startsWith(<span class="string">"windows"</span>);</span><br><span class="line"></span><br><span class="line">        System.out.println(<span class="string">"실행환경이 윈도우인가? "</span> + isWindows);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>아래 처럼 간단한 예제 코드를 만들었다.</p>
+<p><img src="/images/2020/java%20shell%20command%20cd59c192a52849578dde8f6c36ee8eb9/Untitled.png" alt="java%20shell%20command%20cd59c192a52849578dde8f6c36ee8eb9/Untitled.png"></p>
+<p>windows 노트북에서 돌려보니 역시 windows라고 나온다.</p>
+<p><img src="/images/2020/java%20shell%20command%20cd59c192a52849578dde8f6c36ee8eb9/Untitled%201.png" alt="java%20shell%20command%20cd59c192a52849578dde8f6c36ee8eb9/Untitled%201.png"></p>
+<p>또 한가지 고려해야 할 점이 있다.</p>
+<p>앞서 말했듯이, 쉘 커멘드를 단순히 콜하고 끝나는 것이 아니다.</p>
+<p>쉘 커멘드로 그 호출에 대한 응답을 stdout으로 받아와야 한다.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">StreamGobbler</span> <span class="keyword">implements</span> <span class="title">Runnable</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> InputStream inputStream;</span><br><span class="line">    <span class="keyword">private</span> Consumer&lt;String&gt; consumer;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">StreamGobbler</span><span class="params">(InputStream inputStream, Consumer&lt;String&gt; consumer)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.inputStream = inputStream;</span><br><span class="line">        <span class="keyword">this</span>.consumer = consumer;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> InputStreamReader(inputStream)).lines()</span><br><span class="line">                .forEach(consumer);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>위 클래스는 별도의 스레드를 생성하는 클래스이다.</p>
+<p>생성자로 InputStream과 Consumer를 주입받는다.</p>
+<p>InputStream은 java에서 쉘 커멘드를 호출한 process로 부터 받아올 것이다.</p>
+<p>shell command를 호출하는 process와 연결된 이 InputStream을 사용해서 shell command의 stdout을 받아 올 수 있다.</p>
+<p>쓰레드의 실제 실행 로직인 run메소드를 보면 inputstream을 사용해서 한줄씩 BufferedReader로 읽어와서 consumer에 전달하는 것을 볼 수 있다.</p>
+<p>예제코드에 아래처럼 추가했다.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.example.demo;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.BufferedReader;</span><br><span class="line"><span class="keyword">import</span> java.io.InputStream;</span><br><span class="line"><span class="keyword">import</span> java.io.InputStreamReader;</span><br><span class="line"><span class="keyword">import</span> java.util.function.Consumer;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * java에서 쉘 커멘드 호출 예제</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestShellCmd</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">StreamGobbler</span> <span class="keyword">implements</span> <span class="title">Runnable</span> </span>&#123;</span><br><span class="line">        <span class="keyword">private</span> InputStream inputStream;</span><br><span class="line">        <span class="keyword">private</span> Consumer&lt;String&gt; consumer;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">StreamGobbler</span><span class="params">(InputStream inputStream, Consumer&lt;String&gt; consumer)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">this</span>.inputStream = inputStream;</span><br><span class="line">            <span class="keyword">this</span>.consumer = consumer;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> InputStreamReader(inputStream)).lines()</span><br><span class="line">                    .forEach(consumer);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">boolean</span> isWindows = System.getProperty(<span class="string">"os.name"</span>)</span><br><span class="line">                .toLowerCase().startsWith(<span class="string">"windows"</span>);</span><br><span class="line"></span><br><span class="line">        System.out.println(<span class="string">"실행환경이 윈도우인가? "</span> + isWindows);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>이제 Runtime 클래스를 사용해서 java에서 Shell command 를 호출해보자.</p>
+<h2 id="Runtime-클래스를-사용해서-shell-command-호출하기"><a href="#Runtime-클래스를-사용해서-shell-command-호출하기" class="headerlink" title="Runtime 클래스를 사용해서 shell command 호출하기."></a>Runtime 클래스를 사용해서 shell command 호출하기.</h2><p>일단 Runtime 클래스가 뭔지 간단히 알아보자.</p>
+<blockquote>
+<p>Java Runtime 클래스는 Java 런타임 환경과 상호 작용하는 데 사용된다. Java Runtime 클래스는 프로세스를 실행하고, GC를 호출하고, 총 메모리 및 여유 메모리를 얻는 방법을 제공한다. java.lang의 인스턴스는 하나뿐입니다.하나의 Java 응용프로그램에 대해 런타임 클래스를 사용할 수 있다.<br>Runtime.getRuntime() 메서드는 Runtime 클래스의 싱글톤 인스턴스를 반환한다.</p>
+</blockquote>
+<p>뭔소린지 말 모를 땐 예제를 보자.</p>
+<p>아래 예제는 운영체제에 따라서 현재 사용자의 디렉토리를 조회하는 쉘 커멘드를 호출하는 로직이다.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 간단하게 Runtime 클래스를 사용해서 현재 사용자 디렉토리 정보를 가져와 출력하는 쉘 커멘드를 호출하는 예제</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">String homeDirectory = System.getProperty(<span class="string">"user.home"</span>);</span><br><span class="line">Process process;</span><br><span class="line"><span class="keyword">if</span> (isWindows) &#123;</span><br><span class="line">    process = Runtime.getRuntime()</span><br><span class="line">            .exec(String.format(<span class="string">"cmd.exe /c dir %s"</span>, homeDirectory));</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    process = Runtime.getRuntime()</span><br><span class="line">            .exec(String.format(<span class="string">"sh -c ls %s"</span>, homeDirectory));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 쉘 프로세스를 실행하고 그 프로세스에 inputstream을 연결하고 컨슈머로 System.out::println를 넘긴다.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">String psRetMsg = <span class="string">""</span>;</span><br><span class="line">StreamGobbler streamGobbler =</span><br><span class="line">        <span class="keyword">new</span> StreamGobbler(process.getInputStream(), (item)-&gt;&#123;</span><br><span class="line">            System.out.println(item);</span><br><span class="line">        &#125;);</span><br><span class="line">Executors.newSingleThreadExecutor().submit(streamGobbler);</span><br><span class="line"><span class="keyword">int</span> exitCode = process.waitFor();</span><br><span class="line"><span class="keyword">assert</span> exitCode == <span class="number">0</span>;</span><br></pre></td></tr></table></figure>
+
+<p>아래에서 빨간 줄 부분이 Runtime에게 실행을 부탁하는 쉘 커멘더 명령어이다.(String)</p>
+<p><img src="/images/2020/java%20shell%20command%20cd59c192a52849578dde8f6c36ee8eb9/Untitled%202.png" alt="java%20shell%20command%20cd59c192a52849578dde8f6c36ee8eb9/Untitled%202.png"></p>
+<p>위 코드를 호출히면 Runtime 클래스는 자신이 동작하는 JVM외부 환경에 해당 빨간 명령어 실행을 요청하고, 그 명령어를 실행하는 process 인스턴스를 리턴 하게 된다.</p>
+<p>이 프로세스에서 InputStream을 가져와서 앞서 생성한 StreamGobbler를 생성하면, StreamGobbler를 통해서 해당 process의 stdout을 가져올 수 있다.</p>
+<p>아래는 최종 결과물이다.(한글이 깨져서 InputStreamReader의 파라미터가 추가 되었다.)</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.example.demo;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.*;</span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.Executors;</span><br><span class="line"><span class="keyword">import</span> java.util.function.Consumer;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * java에서 쉘 커멘드 호출 예제</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestShellCmd</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">StreamGobbler</span> <span class="keyword">implements</span> <span class="title">Runnable</span> </span>&#123;</span><br><span class="line">        <span class="keyword">private</span> InputStream inputStream;</span><br><span class="line">        <span class="keyword">private</span> Consumer&lt;String&gt; consumer;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">StreamGobbler</span><span class="params">(InputStream inputStream, Consumer&lt;String&gt; consumer)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">this</span>.inputStream = inputStream;</span><br><span class="line">            <span class="keyword">this</span>.consumer = consumer;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                <span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> InputStreamReader(inputStream, <span class="string">"euc-kr"</span>)).lines()</span><br><span class="line">                        .forEach(consumer);</span><br><span class="line">            &#125; <span class="keyword">catch</span> (UnsupportedEncodingException e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException, InterruptedException </span>&#123;</span><br><span class="line">        <span class="keyword">boolean</span> isWindows = System.getProperty(<span class="string">"os.name"</span>)</span><br><span class="line">                .toLowerCase().startsWith(<span class="string">"windows"</span>);</span><br><span class="line"></span><br><span class="line">        System.out.println(<span class="string">"실행환경이 윈도우인가? "</span> + isWindows);</span><br><span class="line"></span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 간단하게 Runtime 클래스를 사용해서 현재 사용자 디렉토리 정보를 가져와 출력하는 쉘 커멘드를 호출하는 예제</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        String homeDirectory = System.getProperty(<span class="string">"user.home"</span>);</span><br><span class="line">        Process process;</span><br><span class="line">        <span class="keyword">if</span> (isWindows) &#123;</span><br><span class="line">            process = Runtime.getRuntime()</span><br><span class="line">                    .exec(String.format(<span class="string">"cmd.exe /c dir %s"</span>, homeDirectory));</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            process = Runtime.getRuntime()</span><br><span class="line">                    .exec(String.format(<span class="string">"sh -c ls %s"</span>, homeDirectory));</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 쉘 프로세스를 실행하고 그 프로세스에 inputstream을 연결하고 컨슈머로 System.out::println를 넘긴다.</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        String psRetMsg = <span class="string">""</span>;</span><br><span class="line">        StreamGobbler streamGobbler =</span><br><span class="line">                <span class="keyword">new</span> StreamGobbler(process.getInputStream(), (item)-&gt;&#123;</span><br><span class="line">                    System.out.println(item);</span><br><span class="line">                &#125;);</span><br><span class="line">        Executors.newSingleThreadExecutor().submit(streamGobbler);</span><br><span class="line">        <span class="keyword">int</span> exitCode = process.waitFor();</span><br><span class="line">        <span class="keyword">assert</span> exitCode == <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>실행결과</strong></p>
+<p><img src="/images/2020/java%20shell%20command%20cd59c192a52849578dde8f6c36ee8eb9/Untitled%203.png" alt="java%20shell%20command%20cd59c192a52849578dde8f6c36ee8eb9/Untitled%203.png"></p>
+<p>위 처럼 쉘커멘더가 동작하고 그 결과를 java에서 가져와서 출력하는 것을 확인 할 수 있다.</p>
+<h2 id="ProcessBuilder를-사용해서-shell-command-호출하기"><a href="#ProcessBuilder를-사용해서-shell-command-호출하기" class="headerlink" title="ProcessBuilder를 사용해서 shell command 호출하기"></a>ProcessBuilder를 사용해서 shell command 호출하기</h2><p>ProcessBuilder는 RunTime 보다 선호된다고 한다.</p>
+<p>그 이유는 다음과 같다.</p>
+<ul>
+<li>builder.directory()를 사용해서 shell command가 동작하는 working directory를 바꿀 수 있다.</li>
+<li>builder.environment()를 사용해서 key-value map 형태의 사용자 정의 변수를 설정 할 수 있다.</li>
+<li>inputstream, outputstream을 커스텀으로 교체할 수 있다.</li>
+<li>inherit both of them to the streams of the current JVM process using builder.inheritIO() (이건 무슨말인지 모르겠다… 하위 프로세스의 IO를 현재 동작하는 JVM process와 동일하게 지정한다는 것 같은데…. 무슨 소리지?)</li>
+</ul>
+<p>아래는 RunTime대신 ProcessBuilder를 사용한 예제이다.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.example.demo;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.*;</span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.Executors;</span><br><span class="line"><span class="keyword">import</span> java.util.function.Consumer;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * java에서 쉘 커멘드 호출 예제</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestShellCmd</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">StreamGobbler</span> <span class="keyword">implements</span> <span class="title">Runnable</span> </span>&#123;</span><br><span class="line">        <span class="keyword">private</span> InputStream inputStream;</span><br><span class="line">        <span class="keyword">private</span> Consumer&lt;String&gt; consumer;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">StreamGobbler</span><span class="params">(InputStream inputStream, Consumer&lt;String&gt; consumer)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">this</span>.inputStream = inputStream;</span><br><span class="line">            <span class="keyword">this</span>.consumer = consumer;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                <span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> InputStreamReader(inputStream, <span class="string">"euc-kr"</span>)).lines()</span><br><span class="line">                        .forEach(consumer);</span><br><span class="line">            &#125; <span class="keyword">catch</span> (UnsupportedEncodingException e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException, InterruptedException </span>&#123;</span><br><span class="line">        <span class="keyword">boolean</span> isWindows = System.getProperty(<span class="string">"os.name"</span>)</span><br><span class="line">                .toLowerCase().startsWith(<span class="string">"windows"</span>);</span><br><span class="line"></span><br><span class="line">        System.out.println(<span class="string">"실행환경이 윈도우인가? "</span> + isWindows);</span><br><span class="line"></span><br><span class="line">        ProcessBuilder builder = <span class="keyword">new</span> ProcessBuilder();</span><br><span class="line">        <span class="keyword">if</span> (isWindows) &#123;</span><br><span class="line">            builder.command(<span class="string">"cmd.exe"</span>, <span class="string">"/c"</span>, <span class="string">"dir"</span>);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            builder.command(<span class="string">"sh"</span>, <span class="string">"-c"</span>, <span class="string">"ls"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        builder.directory(<span class="keyword">new</span> File(System.getProperty(<span class="string">"user.home"</span>)));</span><br><span class="line">        Process process = builder.start();</span><br><span class="line">        StreamGobbler streamGobbler =</span><br><span class="line">                <span class="keyword">new</span> StreamGobbler(process.getInputStream(), System.out::println);</span><br><span class="line">        Executors.newSingleThreadExecutor().submit(streamGobbler);</span><br><span class="line">        <span class="keyword">int</span> exitCode = process.waitFor();</span><br><span class="line">        <span class="keyword">assert</span> exitCode == <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>ProcessBuilder 클래스는 command로 입력 받은 명령어를 사용해서 builter.start()를 호출해서 서브 해당 명령어를 실행하는 서브 프로세스를 생성한다.</p>
+<p>실행결과</p>
+<p><img src="/images/2020/java%20shell%20command%20cd59c192a52849578dde8f6c36ee8eb9/Untitled%204.png" alt="java%20shell%20command%20cd59c192a52849578dde8f6c36ee8eb9/Untitled%204.png"></p>
+<h1 id="마무리"><a href="#마무리" class="headerlink" title="마무리"></a>마무리</h1><p>위 예제는 단순히 java에서 쉘 커멘드를 호출하는 예제이다.</p>
+<p>java에서 shell command를 위처럼 단순히 호출하는 일은 거의 없을 것이다.</p>
+<p><strong>이런 다양한 요구 사항 또는 외부 전제 조건이 있을 수 있다.</strong></p>
+<ul>
+<li>java에서 shell command를 호출하고 그 응답으로 JSON String으로 받는다.</li>
+<li>java에서 응답 받은 String을 객체화 하여 DB에 저장해야 한다.</li>
+<li>java에서 호출하는 shell Command는 한번 호출하면 최소 5분 이상의 동작하고, 그 동작이 끝나야 응답을 한다.</li>
+<li>동작이 끝나지 않은 shell command가 존재하면, java에서 shell command를 호출 하면 안된다.</li>
+<li>동작이 끝나지 않은 shell command가 존재하더라도, java에서 shell command를 호출 할 수 있어야 한다.</li>
+</ul>
+<p>대충 위와 같은 경우의 수를 처리 하려면, 얼핏봐도 비동기, 쓰레드 코딩이 필요해 보인다.</p>
+<p>단순히 스크립트등을 shell command로 호출하고 결과를 받는 코딩을 하기에 너무 많은 의존성과 공수가 필요해 보인다.</p>
+<p>이럴 바에는 차라리 shell cmd로 호출할 로직을 간단한 MSA로 구축해서 서비스로 만드는 것이 좋아 보인다.</p>
+<p>날림으로 java를 공부해서 예제를 따라 만드는데도 이해가 잘 안가는 부분이 있다.</p>
+<p>java를 다시 공부해야 겠다.</p>
+<h1 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h1><p><a href="https://www.baeldung.com/run-shell-command-in-java" target="_blank" rel="external nofollow noopener noreferrer">https://www.baeldung.com/run-shell-command-in-java</a> (java로 shell command 호출)</p>
+<p><a href="https://m.blog.naver.com/PostView.nhn?blogId=jhnyang&logNo=221407227360&proxyReferer=https:%2F%2Fwww.google.com%2F" target="_blank" rel="external nofollow noopener noreferrer">https://m.blog.naver.com/PostView.nhn?blogId=jhnyang&amp;logNo=221407227360&amp;proxyReferer=https:%2F%2Fwww.google.com%2F</a> (java로 파이썬 실행)</p>
+<p><a href="https://d2.naver.com/helloworld/1113548" target="_blank" rel="external nofollow noopener noreferrer">https://d2.naver.com/helloworld/1113548</a> (java 에서 쉘 커멘드 호출 시 주의 사항)</p>
+<p><a href="https://www.javatpoint.com/java-runtime-class" target="_blank" rel="external nofollow noopener noreferrer">https://www.javatpoint.com/java-runtime-class</a> (java Runtime 클래스)</p>
+
+      
+          
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 20200427_post_footer -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="7565540074" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      <!-- Utterances 댓글 -->
+      <script src="https://utteranc.es/client.js" repo="hanumoka/hanumoka.github.io" issue-term="pathname" theme="github-light" crossorigin="anonymous" async>
+      </script>
+      <div style="font-size: 1rem;
+                  font-weight: 400;
+                  line-height: 1.5;
+                  text-align: left;
+                  box-sizing: border-box;
+                  position: relative;
+                  padding: .75rem 1.25rem;
+                  margin-bottom: 1rem;
+                  border: 1px solid transparent;
+                  border-radius: .25rem;
+                  color: #721c24;
+                  background-color: #f8d7da;
+                  border-color: #f5c6cb;
+                  margin-top: 1rem;">
+        Notice: 댓글을 사용하시려면, github에 로그인을 해주세요.(Utterances 댓글을 사용중입니다.)
+      </div>
+    <div>
+          <div class="post-tags">
+              <a href="/tags/hanumoka/" rel="tag"># hanumoka</a>
+              <a href="/tags/java/" rel="tag"># java</a>
+              <a href="/tags/shell-command/" rel="tag"># shell command</a>
+              <a href="/tags/ProcessBuilder/" rel="tag"># ProcessBuilder</a>
+              <a href="/tags/Runtime/" rel="tag"># Runtime</a>
+          </div>
+        
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/06/23/python-20200623-python-windows10-conda-install-scrapy/" rel="prev" title="windows10 anaconda에 scrapy 설치(와 실패기)">
+      <i class="fa fa-chevron-left"></i> windows10 anaconda에 scrapy 설치(와 실패기)
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/07/02/springBoot-20200702-sringboot-async-service/" rel="next" title="springboot 비동기 서비스 만들기(Async)">
+      springboot 비동기 서비스 만들기(Async) <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </div></footer>
+    
+  </article>
+
+  
+      
+
+
+  
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          목차
+        </li>
+        <li class="sidebar-nav-overview">
+          흝어보기
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#들어가기"><span class="nav-number">1.</span> <span class="nav-text">들어가기</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#실행환경"><span class="nav-number">1.1.</span> <span class="nav-text">실행환경</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#java-코드로-쉘-커멘드를-호출하는-방법을-알아보자"><span class="nav-number">2.</span> <span class="nav-text">java 코드로 쉘 커멘드를 호출하는 방법을 알아보자.</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#JVM-실행-환경-OS-구별하기"><span class="nav-number">2.0.1.</span> <span class="nav-text">JVM 실행 환경(OS) 구별하기</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Runtime-클래스를-사용해서-shell-command-호출하기"><span class="nav-number">2.1.</span> <span class="nav-text">Runtime 클래스를 사용해서 shell command 호출하기.</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ProcessBuilder를-사용해서-shell-command-호출하기"><span class="nav-number">2.2.</span> <span class="nav-text">ProcessBuilder를 사용해서 shell command 호출하기</span></a></li></ol><li class="nav-item nav-level-1"><a class="nav-link" href="#마무리"><span class="nav-number">3.</span> <span class="nav-text">마무리</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#참고자료"><span class="nav-number">4.</span> <span class="nav-text">참고자료</span></a></li></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Hanumoka</p>
+  <div class="site-description" itemprop="description">아마추어 개발자의 블로그</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">214</span>
+          <span class="site-state-item-name">포스트</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">38</span>
+        <span class="site-state-item-name">카테고리</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">585</span>
+        <span class="site-state-item-name">태그</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/hanumoka" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;hanumoka" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:amagramer@gmail.com" title="E-Mail → mailto:amagramer@gmail.com" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    <div>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 왼쪽 사이드 광고 -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="9032012837" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+    </div>
+    </div>
+    
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Hanumoka</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="external nofollow noopener noreferrer" target="_blank">Hexo</a> v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://theme-next.org/" class="theme-link" rel="external nofollow noopener noreferrer" target="_blank">NexT.Gemini</a> v7.6.0
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

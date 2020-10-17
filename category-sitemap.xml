@@ -8,8 +8,50 @@
     </url>
 
     <url>
+        <loc>https://www.hanumoka.net/categories/maven/</loc>
+        <lastmod>2020-10-17T10:32:57.965Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>https://www.hanumoka.net/categories/python/</loc>
+        <lastmod>2020-10-17T10:26:38.411Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>https://www.hanumoka.net/categories/Elasticsearch/</loc>
+        <lastmod>2020-10-17T10:26:38.411Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
         <loc>https://www.hanumoka.net/categories/springBoot/</loc>
-        <lastmod>2020-05-21T14:29:12.187Z</lastmod>
+        <lastmod>2020-07-09T12:37:40.068Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>https://www.hanumoka.net/categories/java/</loc>
+        <lastmod>2020-07-09T12:37:40.066Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>https://www.hanumoka.net/categories/intelliJ/</loc>
+        <lastmod>2020-07-09T12:37:40.065Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>https://www.hanumoka.net/categories/centOs/</loc>
+        <lastmod>2020-06-23T11:27:21.894Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
@@ -92,13 +134,6 @@
     </url>
 
     <url>
-        <loc>https://www.hanumoka.net/categories/python/</loc>
-        <lastmod>2020-04-15T16:50:12.011Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
         <loc>https://www.hanumoka.net/categories/programing-model/</loc>
         <lastmod>2020-04-15T16:50:12.010Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -141,22 +176,8 @@
     </url>
 
     <url>
-        <loc>https://www.hanumoka.net/categories/maven/</loc>
-        <lastmod>2020-04-15T16:50:12.003Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
         <loc>https://www.hanumoka.net/categories/jquery/</loc>
         <lastmod>2020-04-15T16:50:12.002Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>https://www.hanumoka.net/categories/jenkins/</loc>
-        <lastmod>2020-04-15T16:50:12.001Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
@@ -169,15 +190,8 @@
     </url>
 
     <url>
-        <loc>https://www.hanumoka.net/categories/java/</loc>
-        <lastmod>2020-04-15T16:50:11.993Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>https://www.hanumoka.net/categories/intelliJ/</loc>
-        <lastmod>2020-04-15T16:50:11.984Z</lastmod>
+        <loc>https://www.hanumoka.net/categories/jenkins/</loc>
+        <lastmod>2020-04-15T16:50:12.001Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
@@ -204,22 +218,8 @@
     </url>
 
     <url>
-        <loc>https://www.hanumoka.net/categories/Elasticsearch/</loc>
-        <lastmod>2020-04-15T16:50:11.980Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
         <loc>https://www.hanumoka.net/categories/chrome/</loc>
         <lastmod>2020-04-15T16:50:11.976Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>https://www.hanumoka.net/categories/centOs/</loc>
-        <lastmod>2020-04-15T16:50:11.975Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>

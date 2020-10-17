@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('https://www.hanumoka.net').hostname,
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.6.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":true,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":true},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    comments: {"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
+
+<!-- 구글 애드센스 코드  -->
+<script data-ad-client="ca-pub-6388187282606796" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-100596920-1"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'UA-100596920-1');
+</script>
+ 
+<!-- 네이버 웹 마스터-->
+<meta name="naver-site-verification" content="74bc91ee61c53c02f7d87ab3a442f99823f4f5f9">
+  <meta name="description" content="들어가기토이프로젝트를 만드는 중, 웹 크롤링 기능이 필요했다. 자료를 찾아보니 python 기반의 beautifulsoup, selenium, scrapy 라는 것들이 주로 사용된 다는 것을 알게되었다. beautifulsoup, selenium가 라이브러리 라면, scrapy 는 조금더 덩치가 큰 프레임워크라고 보면 될거 같다. 스크래피 (웹 프레임워크)">
+<meta property="og:type" content="article">
+<meta property="og:title" content="windows10 anaconda에 scrapy 설치(와 실패기)">
+<meta property="og:url" content="https://www.hanumoka.net/2020/06/23/python-20200623-python-windows10-conda-install-scrapy/index.html">
+<meta property="og:site_name" content="Hanumoka, IT Blog">
+<meta property="og:description" content="들어가기토이프로젝트를 만드는 중, 웹 크롤링 기능이 필요했다. 자료를 찾아보니 python 기반의 beautifulsoup, selenium, scrapy 라는 것들이 주로 사용된 다는 것을 알게되었다. beautifulsoup, selenium가 라이브러리 라면, scrapy 는 조금더 덩치가 큰 프레임워크라고 보면 될거 같다. 스크래피 (웹 프레임워크)">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:image" content="https://www.hanumoka.net/images/2020/windows10%20anaconda%20scrapy%20fdf71034c83b4250af25b84272075105/Untitled.png">
+<meta property="og:image" content="https://www.hanumoka.net/images/2020/windows10%20anaconda%20scrapy%20fdf71034c83b4250af25b84272075105/Untitled%201.png">
+<meta property="og:image" content="https://www.hanumoka.net/images/2020/windows10%20anaconda%20scrapy%20fdf71034c83b4250af25b84272075105/Untitled%202.png">
+<meta property="og:image" content="https://www.hanumoka.net/images/2020/windows10%20anaconda%20scrapy%20fdf71034c83b4250af25b84272075105/Untitled.png">
+<meta property="og:image" content="https://www.hanumoka.net/images/2020/windows10%20anaconda%20scrapy%20fdf71034c83b4250af25b84272075105/Untitled%203.png">
+<meta property="og:image" content="https://www.hanumoka.net/images/2020/windows10%20anaconda%20scrapy%20fdf71034c83b4250af25b84272075105/Untitled%204.png">
+<meta property="og:image" content="https://www.hanumoka.net/images/2020/windows10%20anaconda%20scrapy%20fdf71034c83b4250af25b84272075105/Untitled%205.png">
+<meta property="og:image" content="https://www.hanumoka.net/images/2020/windows10%20anaconda%20scrapy%20fdf71034c83b4250af25b84272075105/Untitled%206.png">
+<meta property="og:image" content="https://www.hanumoka.net/images/2020/windows10%20anaconda%20scrapy%20fdf71034c83b4250af25b84272075105/Untitled%207.png">
+<meta property="og:image" content="https://www.hanumoka.net/images/2020/windows10%20anaconda%20scrapy%20fdf71034c83b4250af25b84272075105/Untitled%208.png">
+<meta property="og:image" content="https://www.hanumoka.net/images/2020/windows10%20anaconda%20scrapy%20fdf71034c83b4250af25b84272075105/Untitled%209.png">
+<meta property="og:image" content="https://www.hanumoka.net/images/2020/windows10%20anaconda%20scrapy%20fdf71034c83b4250af25b84272075105/Untitled%2010.png">
+<meta property="og:image" content="https://www.hanumoka.net/images/2020/windows10%20anaconda%20scrapy%20fdf71034c83b4250af25b84272075105/Untitled%2011.png">
+<meta property="og:image" content="https://www.hanumoka.net/images/2020/windows10%20anaconda%20scrapy%20fdf71034c83b4250af25b84272075105/Untitled%2012.png">
+<meta property="og:image" content="https://www.hanumoka.net/images/2020/windows10%20anaconda%20scrapy%20fdf71034c83b4250af25b84272075105/Untitled%2013.png">
+<meta property="og:image" content="https://www.hanumoka.net/images/2020/windows10%20anaconda%20scrapy%20fdf71034c83b4250af25b84272075105/Untitled%2014.png">
+<meta property="og:image" content="https://www.hanumoka.net/images/2020/windows10%20anaconda%20scrapy%20fdf71034c83b4250af25b84272075105/Untitled%2015.png">
+<meta property="og:image" content="https://www.hanumoka.net/images/2020/windows10%20anaconda%20scrapy%20fdf71034c83b4250af25b84272075105/Untitled%2016.png">
+<meta property="og:image" content="https://www.hanumoka.net/images/2020/windows10%20anaconda%20scrapy%20fdf71034c83b4250af25b84272075105/Untitled%2017.png">
+<meta property="og:image" content="https://www.hanumoka.net/images/2020/windows10%20anaconda%20scrapy%20fdf71034c83b4250af25b84272075105/Untitled%2018.png">
+<meta property="og:image" content="https://www.hanumoka.net/images/2020/windows10%20anaconda%20scrapy%20fdf71034c83b4250af25b84272075105/Untitled%2019.png">
+<meta property="og:image" content="https://www.hanumoka.net/images/2020/windows10%20anaconda%20scrapy%20fdf71034c83b4250af25b84272075105/Untitled%2020.png">
+<meta property="og:image" content="https://www.hanumoka.net/images/2020/windows10%20anaconda%20scrapy%20fdf71034c83b4250af25b84272075105/Untitled%2021.png">
+<meta property="og:image" content="https://www.hanumoka.net/images/2020/windows10%20anaconda%20scrapy%20fdf71034c83b4250af25b84272075105/Untitled%2022.png">
+<meta property="og:image" content="https://www.hanumoka.net/images/2020/windows10%20anaconda%20scrapy%20fdf71034c83b4250af25b84272075105/Untitled%2023.png">
+<meta property="article:published_time" content="2020-06-23T14:05:54.000Z">
+<meta property="article:modified_time" content="2020-07-09T12:37:40.066Z">
+<meta property="article:author" content="Hanumoka">
+<meta property="article:tag" content="install">
+<meta property="article:tag" content="windows10">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="conda">
+<meta property="article:tag" content="anaconda">
+<meta property="article:tag" content="scrapy">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.hanumoka.net/images/2020/windows10%20anaconda%20scrapy%20fdf71034c83b4250af25b84272075105/Untitled.png">
+
+<link rel="canonical" href="https://www.hanumoka.net/2020/06/23/python-20200623-python-windows10-conda-install-scrapy/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>windows10 anaconda에 scrapy 설치(와 실패기) | Hanumoka, IT Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Hanumoka, IT Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hanumoka, IT Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">그래봐야 코딩, 그래도 코딩</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>홈</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>태그</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>카테고리</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>아카이브</a>
+
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="fa fa-fw fa-calendar"></i>Schedule</a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-fw fa-sitemap"></i>Sitemap</a>
+
+  </li>
+        <li class="menu-item menu-item-rss">
+
+    <a href="/atom.xml" rel="section"><i class="fa fa-fw fa-rss"></i>rss</a>
+
+  </li>
+        <li class="menu-item menu-item-commonweal">
+
+    <a href="/404/" rel="section"><i class="fa fa-fw fa-heartbeat"></i>Commonweal 404</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>검색
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none" placeholder="Searching..." spellcheck="false" type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/hanumoka" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="external nofollow noopener noreferrer" target="_blank"><svg width="80" height="80" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2020/06/23/python-20200623-python-windows10-conda-install-scrapy/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Hanumoka">
+      <meta itemprop="description" content="아마추어 개발자의 블로그">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hanumoka, IT Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          windows10 anaconda에 scrapy 설치(와 실패기)
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">작성일</span>
+
+              <time title="Post created: 2020-06-23 23:05:54" itemprop="dateCreated datePublished" datetime="2020-06-23T23:05:54+09:00">2020-06-23</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Updated at: 2020-07-09 21:37:40" itemprop="dateModified" datetime="2020-07-09T21:37:40+09:00">2020-07-09</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 20200427hexo_post_head -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h1><p>토이프로젝트를 만드는 중, 웹 크롤링 기능이 필요했다.</p>
+<p>자료를 찾아보니 python 기반의 beautifulsoup, selenium, scrapy 라는 것들이 주로 사용된 다는 것을 알게되었다.</p>
+<p>beautifulsoup, selenium가 라이브러리 라면, scrapy 는 조금더 덩치가 큰 프레임워크라고 보면 될거 같다.</p>
+<p><a href="https://ko.wikipedia.org/wiki/%EC%8A%A4%ED%81%AC%EB%9E%98%ED%94%BC_(%EC%9B%B9_%ED%94%84%EB%A0%88%EC%9E%84%EC%9B%8C%ED%81%AC)" target="_blank" rel="external nofollow noopener noreferrer">스크래피 (웹 프레임워크)</a></p>
+<blockquote>
+<p>Scrapy(스크래피)(/ˈskreɪpi/ SKRAY-pee)[2] 는 Python으로 작성된 오픈소스 웹 크롤링 프레임워크이다. 웹 데이터를 수집하는 것을 목표로 설계되었다. 또한 API를 이용하여 데이터를 추출할 수 있고, 범용 웹 크롤러로 사용될 수 있다.[3] Scrapy는 웹 스크래핑 개발 및 서비스 회사 Scrapinghub Ltd. 에 의해 유지된다.<br>Scrapy 프로젝트는 “spiders” 를 중심으로 개발되었다. “spiders”는 여러 기능이 내장된 크롤러이다. 장고와 같은 철학인 중복배제를 따르고 있는 프레임워크이다.[4] Scrapy는 개발자들이 코드 재사용성을 높일 수 있도록 도와주어, 큰 규모의 크롤링 프로젝트 개발을 쉽게 할 수 있도록 해준다. 또한 Scrapy는 개발자들이 크롤링하려는 사이트의 동작을 테스트할 수 있도록 웹 크롤링 쉘을 제공한다.[5]<br>Scrapy는 Lyst,[6][7] <a href="http://parse.ly/" target="_blank" rel="external nofollow noopener noreferrer">Parse.ly</a>,[8] Sayone Technologies[9], Sciences Po Medialab,[10]<a href="http://data.gov.uk/" target="_blank" rel="external nofollow noopener noreferrer">data.gov.uk</a>’s World Government Data site.[11][1] 등등의 기업에서 사용되고 있다.</p>
+</blockquote>
+<p>scrapy 단독으로 사용 시 일반적인 크롤링이 가능하지만, selenium의 기능이 필요하다면 연동이 가능한거 같다.</p>
+<p>(selenium 경우 크롤링 대상결과를 브라우저로 가져와 상호작용을 통해 다이나믹하게 크롤링이 가능하다.</p>
+<p>참고: <a href="https://stackoverflow.com/questions/6682503/click-a-button-in-scrapy" target="_blank" rel="external nofollow noopener noreferrer">https://stackoverflow.com/questions/6682503/click-a-button-in-scrapy</a></p>
+<h1 id="Python-Scrapy-설치하기"><a href="#Python-Scrapy-설치하기" class="headerlink" title="Python Scrapy 설치하기"></a>Python Scrapy 설치하기</h1><p>일단 성공기와 실패기가 있는데 참고만 하길 바란다. 내가 한 작업의 시간순은 당연히 실패 → 성공이다.</p>
+<p>요약하자면 pip로 설치를 실패했고, conda를 통해서 설치했다.</p>
+<h2 id="성공기"><a href="#성공기" class="headerlink" title="성공기"></a>성공기</h2><p><strong>실습환경</strong></p>
+<ul>
+<li>windows10(64)</li>
+<li>gitbash</li>
+<li>anaconda 설치(32bit)<ul>
+<li>conda 4.8.2</li>
+<li>python 3.8.0</li>
+</ul>
+</li>
+</ul>
+<p>현재 상태는 windows10 환경에서 anaconda를 설치한 상태이다.</p>
+<p><img src="/images/2020/windows10%20anaconda%20scrapy%20fdf71034c83b4250af25b84272075105/Untitled.png" alt="windows10%20anaconda%20scrapy%20fdf71034c83b4250af25b84272075105/Untitled.png"></p>
+<p>conda 명령어는 일반적인 윈도우 cmd에서 동작하지 않으며, 아래 anaconda prompt에서 실행해야 한다.</p>
+<p><img src="/images/2020/windows10%20anaconda%20scrapy%20fdf71034c83b4250af25b84272075105/Untitled%201.png" alt="windows10%20anaconda%20scrapy%20fdf71034c83b4250af25b84272075105/Untitled%201.png"></p>
+<p>콘다 명령어로 scrapy 설치하자.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">conda install -c scrapinghub scrapy</span><br></pre></td></tr></table></figure>
+
+<p>설치가 끝난 뒤 아래 명령어로 설치된 패키지를 찾아보면 scrapy가 보인다.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">conda list</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/2020/windows10%20anaconda%20scrapy%20fdf71034c83b4250af25b84272075105/Untitled%202.png" alt="windows10%20anaconda%20scrapy%20fdf71034c83b4250af25b84272075105/Untitled%202.png"></p>
+<h2 id="실패기-참고만-하길"><a href="#실패기-참고만-하길" class="headerlink" title="실패기(참고만 하길)"></a>실패기(참고만 하길)</h2><p><strong>실습환경</strong></p>
+<ul>
+<li>windows10(64)</li>
+<li>gitbash</li>
+<li>anaconda 설치(64bit)<ul>
+<li>conda 4.8.2</li>
+<li>python 3.8.0</li>
+</ul>
+</li>
+</ul>
+<p>현재 상태는 windows10 환경에서 anaconada 를 설치한 상태이다.</p>
+<p><img src="/images/2020/windows10%20anaconda%20scrapy%20fdf71034c83b4250af25b84272075105/Untitled.png" alt="windows10%20anaconda%20scrapy%20fdf71034c83b4250af25b84272075105/Untitled.png"></p>
+<p>아래 명령으로 Scrapy를 설치하자.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install scrapy</span><br></pre></td></tr></table></figure>
+
+<p>음 뭔가 안된다.</p>
+<p><img src="/images/2020/windows10%20anaconda%20scrapy%20fdf71034c83b4250af25b84272075105/Untitled%203.png" alt="windows10%20anaconda%20scrapy%20fdf71034c83b4250af25b84272075105/Untitled%203.png"></p>
+<p>인터넷 강의에서 해보라는 대로 해보자.(windows에서 안되는 경우)</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">pip install --upgrade setuptools</span><br><span class="line">pip install pypiwin32</span><br><span class="line">pip install twisted[tls]</span><br></pre></td></tr></table></figure>
+
+<p>pip install –upgrade setuptools</p>
+<p><img src="/images/2020/windows10%20anaconda%20scrapy%20fdf71034c83b4250af25b84272075105/Untitled%204.png" alt="windows10%20anaconda%20scrapy%20fdf71034c83b4250af25b84272075105/Untitled%204.png"></p>
+<p>pip install –upgrade setuptools 에러 발생</p>
+<p><img src="/images/2020/windows10%20anaconda%20scrapy%20fdf71034c83b4250af25b84272075105/Untitled%205.png" alt="windows10%20anaconda%20scrapy%20fdf71034c83b4250af25b84272075105/Untitled%205.png"></p>
+<p>pip install twisted[tls] 역시 오류</p>
+<p><img src="/images/2020/windows10%20anaconda%20scrapy%20fdf71034c83b4250af25b84272075105/Untitled%206.png" alt="windows10%20anaconda%20scrapy%20fdf71034c83b4250af25b84272075105/Untitled%206.png"></p>
+<p>음 이게 문제가 아닌가. 일단 pc 를 리부팅 해보자.</p>
+<p>리부팅 후에도 여전히 문제가 있다. 오류나 경고 내용을 확인해보자.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">WARNING: pip is configured with locations that require TLS/SSL, however the ssl module <span class="keyword">in</span> Python is not available.</span><br><span class="line">WARNING: Retrying (Retry(total=4, connect=None, <span class="built_in">read</span>=None, redirect=None, status=None)) after connection broken by <span class="string">'SSLError("Can'</span>t connect to HTTPS URL because the SSL module is not available.<span class="string">")': /simple/setuptools/</span></span><br><span class="line"><span class="string">WARNING: Retrying (Retry(total=3, connect=None, read=None, redirect=None, status=None)) after connection broken by 'SSLError("</span>Can<span class="string">'t connect to HTTPS URL because the SSL module is not available.")'</span>: /simple/setuptools/</span><br><span class="line">WARNING: Retrying (Retry(total=2, connect=None, <span class="built_in">read</span>=None, redirect=None, status=None)) after connection broken by <span class="string">'SSLError("Can'</span>t connect to HTTPS URL because the SSL module is not available.<span class="string">")': /simple/setuptools/</span></span><br><span class="line"><span class="string">WARNING: Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'SSLError("</span>Can<span class="string">'t connect to HTTPS URL because the SSL module is not available.")'</span>: /simple/setuptools/</span><br><span class="line">WARNING: Retrying (Retry(total=0, connect=None, <span class="built_in">read</span>=None, redirect=None, status=None)) after connection broken by <span class="string">'SSLError("Can'</span>t connect to HTTPS URL because the SSL module is not available.<span class="string">")': /simple/setuptools/</span></span><br><span class="line"><span class="string">Could not fetch URL https://pypi.org/simple/setuptools/: There was a problem confirming the ssl certificate: HTTPSConnectionPool(host='pypi.org', port=443): Max retries exceeded with url: /simple/setuptools/ (Caused by SSLError("</span>Can<span class="string">'t connect to HTTPS URL because the SSL module is not available.")) - skipping</span></span><br><span class="line"><span class="string">Requirement already up-to-date: setuptools in c:\users\amagr\anaconda3\lib\site-packages (45.2.0.post20200210)</span></span><br><span class="line"><span class="string">WARNING: pip is configured with locations that require TLS/SSL, however the ssl module in Python is not available.</span></span><br><span class="line"><span class="string">Could not fetch URL https://pypi.org/simple/pip/: There was a problem confirming the ssl certificate: HTTPSConnectionPool(host='</span>pypi.org<span class="string">', port=443): Max retries exceeded with url: /simple/pip/ (Caused by SSLError("Can'</span>t connect to HTTPS URL because the SSL module is not available.<span class="string">")) - skipping</span></span><br></pre></td></tr></table></figure>
+
+<p>문제해결 방법</p>
+<p><a href="https://funfunit.tistory.com/170" target="_blank" rel="external nofollow noopener noreferrer">https://funfunit.tistory.com/170</a></p>
+<p>pip install 아래를 추가하라고 한다. 뭔가 ssl 인증서쪽 문제 같은데… 일단 해보자</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">--trusted-host pypi.python.org --trusted-host files.pythonhosted.org --trusted-host pypi.org</span><br></pre></td></tr></table></figure>
+
+<p>다시 scrapy 설치해보기</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">pip install scrapy --trusted-host pypi.python.org --trusted-host files.pythonhosted.org --trusted-host pypi.org</span><br><span class="line"></span><br><span class="line">pip install --upgrade setuptools --trusted-host pypi.python.org --trusted-host files.pythonhosted.org --trusted-host pypi.org</span><br><span class="line">pip install pypiwin32 --trusted-host pypi.python.org --trusted-host files.pythonhosted.org --trusted-host pypi.org</span><br><span class="line">pip install twisted[tls] --trusted-host pypi.python.org --trusted-host files.pythonhosted.org --trusted-host pypi.org</span><br></pre></td></tr></table></figure>
+
+<p>음 여전히 안된다.</p>
+<p><img src="/images/2020/windows10%20anaconda%20scrapy%20fdf71034c83b4250af25b84272075105/Untitled%207.png" alt="windows10%20anaconda%20scrapy%20fdf71034c83b4250af25b84272075105/Untitled%207.png"></p>
+<p>아래 방법을 한번 써보자.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">conda config --<span class="built_in">set</span> ssl_verify <span class="literal">false</span></span><br></pre></td></tr></table></figure>
+
+<p>역시 안됨.</p>
+<p>홀리 씻…</p>
+<p>git bash에서 하니 설치가 된다. 아마도 뭔가 openssl 등을 사용하는 것 같은데, windows 터미널에서는 안되는 듯하다.</p>
+<p>아래처럼 git bash에서 설치가 잘된다. 아 윈도우 터미널 개똥같다.</p>
+<p><img src="/images/2020/windows10%20anaconda%20scrapy%20fdf71034c83b4250af25b84272075105/Untitled%208.png" alt="windows10%20anaconda%20scrapy%20fdf71034c83b4250af25b84272075105/Untitled%208.png"></p>
+<p>결론으로</p>
+<p>windows10 git bash에서 아래 명령으로 scrapy가 설치 되었다.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install scrapy</span><br></pre></td></tr></table></figure>
+
+<p>2.1.0 버전이 설치 되었다.</p>
+<p><img src="/images/2020/windows10%20anaconda%20scrapy%20fdf71034c83b4250af25b84272075105/Untitled%209.png" alt="windows10%20anaconda%20scrapy%20fdf71034c83b4250af25b84272075105/Untitled%209.png"></p>
+<p>이제 설치된 scrapy를 확인해보고, scrapy를 이용해서 프로젝트를 만들어보자.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">scrapy startproject <span class="built_in">test</span></span><br></pre></td></tr></table></figure>
+
+<p>gitbash , cmd 모두 오류가 발생한다.</p>
+<p><img src="/images/2020/windows10%20anaconda%20scrapy%20fdf71034c83b4250af25b84272075105/Untitled%2010.png" alt="windows10%20anaconda%20scrapy%20fdf71034c83b4250af25b84272075105/Untitled%2010.png"></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">C:\Users\amagr\examples\scrapy_test&gt;scrapy startproject test1</span><br><span class="line">Traceback (most recent call last):</span><br><span class="line">  File <span class="string">"c:\users\amagr\anaconda3\lib\runpy.py"</span>, line 193, <span class="keyword">in</span> _run_module_as_main</span><br><span class="line">    <span class="string">"__main__"</span>, mod_spec)</span><br><span class="line">  File <span class="string">"c:\users\amagr\anaconda3\lib\runpy.py"</span>, line 85, <span class="keyword">in</span> _run_code</span><br><span class="line">    <span class="built_in">exec</span>(code, run_globals)</span><br><span class="line">  File <span class="string">"C:\Users\amagr\anaconda3\Scripts\scrapy.exe\__main__.py"</span>, line 4, <span class="keyword">in</span> &lt;module&gt;</span><br><span class="line">  File <span class="string">"c:\users\amagr\anaconda3\lib\site-packages\scrapy\__init__.py"</span>, line 34, <span class="keyword">in</span> &lt;module&gt;</span><br><span class="line">    from scrapy.spiders import Spider</span><br><span class="line">  File <span class="string">"c:\users\amagr\anaconda3\lib\site-packages\scrapy\spiders\__init__.py"</span>, line 10, <span class="keyword">in</span> &lt;module&gt;</span><br><span class="line">    from scrapy.http import Request</span><br><span class="line">  File <span class="string">"c:\users\amagr\anaconda3\lib\site-packages\scrapy\http\__init__.py"</span>, line 11, <span class="keyword">in</span> &lt;module&gt;</span><br><span class="line">    from scrapy.http.request.form import FormRequest</span><br><span class="line">  File <span class="string">"c:\users\amagr\anaconda3\lib\site-packages\scrapy\http\request\form.py"</span>, line 10, <span class="keyword">in</span> &lt;module&gt;</span><br><span class="line">    import lxml.html</span><br><span class="line">  File <span class="string">"c:\users\amagr\anaconda3\lib\site-packages\lxml\html\__init__.py"</span>, line 53, <span class="keyword">in</span> &lt;module&gt;</span><br><span class="line">    from .. import etree</span><br><span class="line">ImportError: DLL load failed: 지정된 모듈을 찾을 수 없습니다.</span><br></pre></td></tr></table></figure>
+
+<p>혹시나해서</p>
+<p>scrapy가 안되면 설치하라는 패키지 3개를 설치 했다.</p>
+<p><img src="/images/2020/windows10%20anaconda%20scrapy%20fdf71034c83b4250af25b84272075105/Untitled%2011.png" alt="windows10%20anaconda%20scrapy%20fdf71034c83b4250af25b84272075105/Untitled%2011.png"></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">amagr@DESKTOP-77BUVLD MINGW64 ~/examples/scrapy_test</span><br><span class="line">$ pip install --upgrade setuptools</span><br><span class="line">Collecting setuptools</span><br><span class="line">  Downloading setuptools-47.3.0-py3-none-any.whl (583 kB)</span><br><span class="line">Installing collected packages: setuptools</span><br><span class="line">  Attempting uninstall: setuptools</span><br><span class="line">    Found existing installation: setuptools 45.2.0.post20200210</span><br><span class="line">    Uninstalling setuptools-45.2.0.post20200210:</span><br><span class="line">      Successfully uninstalled setuptools-45.2.0.post20200210</span><br><span class="line">Successfully installed setuptools-47.3.0</span><br><span class="line"></span><br><span class="line">amagr@DESKTOP-77BUVLD MINGW64 ~/examples/scrapy_test</span><br><span class="line">$ pip install pypiwin32</span><br><span class="line">Collecting pypiwin32</span><br><span class="line">  Downloading pypiwin32-223-py3-none-any.whl (1.7 kB)</span><br><span class="line">Requirement already satisfied: pywin32&gt;=223 <span class="keyword">in</span> c:\users\amagr\anaconda3\lib\site-packages (from pypiwin32) (227)</span><br><span class="line">Installing collected packages: pypiwin32</span><br><span class="line">Successfully installed pypiwin32-223</span><br><span class="line"></span><br><span class="line">amagr@DESKTOP-77BUVLD MINGW64 ~/examples/scrapy_test</span><br><span class="line">$ pip install twisted[tls]</span><br><span class="line">Requirement already satisfied: twisted[tls] <span class="keyword">in</span> c:\users\amagr\anaconda3\lib\site-packages (20.3.0)</span><br><span class="line">Requirement already satisfied: incremental&gt;=16.10.1 <span class="keyword">in</span> c:\users\amagr\anaconda3\lib\site-packages (from twisted[tls]) (17.5.0)</span><br><span class="line">Requirement already satisfied: zope.interface&gt;=4.4.2 <span class="keyword">in</span> c:\users\amagr\anaconda3\lib\site-packages (from twisted[tls]) (5.1.0)</span><br><span class="line">Requirement already satisfied: attrs&gt;=19.2.0 <span class="keyword">in</span> c:\users\amagr\anaconda3\lib\site-packages (from twisted[tls]) (19.3.0)</span><br><span class="line">Requirement already satisfied: Automat&gt;=0.3.0 <span class="keyword">in</span> c:\users\amagr\anaconda3\lib\site-packages (from twisted[tls]) (20.2.0)</span><br><span class="line">Requirement already satisfied: hyperlink&gt;=17.1.1 <span class="keyword">in</span> c:\users\amagr\anaconda3\lib\site-packages (from twisted[tls]) (19.0.0)</span><br><span class="line">Requirement already satisfied: PyHamcrest!=1.10.0,&gt;=1.9.0 <span class="keyword">in</span> c:\users\amagr\anaconda3\lib\site-packages (from twisted[tls]) (2.0.2)</span><br><span class="line">Requirement already satisfied: constantly&gt;=15.1 <span class="keyword">in</span> c:\users\amagr\anaconda3\lib\site-packages (from twisted[tls]) (15.1.0)</span><br><span class="line">Requirement already satisfied: idna!=2.3,&gt;=0.6; extra == <span class="string">"tls"</span> <span class="keyword">in</span> c:\users\amagr\anaconda3\lib\site-packages (from twisted[tls]) (2.8)</span><br><span class="line">Requirement already satisfied: service-identity&gt;=18.1.0; extra == <span class="string">"tls"</span> <span class="keyword">in</span> c:\users\amagr\anaconda3\lib\site-packages (from twisted[tls]) (18.1.0)</span><br><span class="line">Requirement already satisfied: pyopenssl&gt;=16.0.0; extra == <span class="string">"tls"</span> <span class="keyword">in</span> c:\users\amagr\anaconda3\lib\site-packages (from twisted[tls]) (19.1.0)</span><br><span class="line">Requirement already satisfied: setuptools <span class="keyword">in</span> c:\users\amagr\anaconda3\lib\site-packages (from zope.interface&gt;=4.4.2-&gt;twisted[tls]) (47.3.0)</span><br><span class="line">Requirement already satisfied: six <span class="keyword">in</span> c:\users\amagr\anaconda3\lib\site-packages (from Automat&gt;=0.3.0-&gt;twisted[tls]) (1.14.0)</span><br><span class="line">Requirement already satisfied: pyasn1-modules <span class="keyword">in</span> c:\users\amagr\anaconda3\lib\site-packages (from service-identity&gt;=18.1.0; extra == <span class="string">"tls"</span>-&gt;twisted[tls]) (0.2.8)</span><br><span class="line">Requirement already satisfied: pyasn1 <span class="keyword">in</span> c:\users\amagr\anaconda3\lib\site-packages (from service-identity&gt;=18.1.0; extra == <span class="string">"tls"</span>-&gt;twisted[tls]) (0.4.8)</span><br><span class="line">Requirement already satisfied: cryptography <span class="keyword">in</span> c:\users\amagr\anaconda3\lib\site-packages (from service-identity&gt;=18.1.0; extra == <span class="string">"tls"</span>-&gt;twisted[tls]) (2.8)</span><br><span class="line">Requirement already satisfied: cffi!=1.11.3,&gt;=1.8 <span class="keyword">in</span> c:\users\amagr\anaconda3\lib\site-packages (from cryptography-&gt;service-identity&gt;=18.1.0; extra == <span class="string">"tls"</span>-&gt;twisted[tls]) (1.14.0)</span><br><span class="line">Requirement already satisfied: pycparser <span class="keyword">in</span> c:\users\amagr\anaconda3\lib\site-packages (from cffi!=1.11.3,&gt;=1.8-&gt;cryptography-&gt;service-identity&gt;=18.1.0; extra == <span class="string">"tls"</span>-&gt;twisted[tls]) (2.19)</span><br><span class="line"></span><br><span class="line">amagr@DESKTOP-77BUVLD MINGW64 ~/examples/scrapy_test</span><br></pre></td></tr></table></figure>
+
+<p>다시 스크래피로 프로젝트를 만들어보자.</p>
+<p>음 역시 안된다.</p>
+<p><img src="/images/2020/windows10%20anaconda%20scrapy%20fdf71034c83b4250af25b84272075105/Untitled%2012.png" alt="windows10%20anaconda%20scrapy%20fdf71034c83b4250af25b84272075105/Untitled%2012.png"></p>
+<p>conda를 업데이트 해보라는데 역시 안됨.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">conda update -n base conda</span><br></pre></td></tr></table></figure>
+
+<p>일단 scrapy를 다시 지웠다.</p>
+<p><img src="/images/2020/windows10%20anaconda%20scrapy%20fdf71034c83b4250af25b84272075105/Untitled%2013.png" alt="windows10%20anaconda%20scrapy%20fdf71034c83b4250af25b84272075105/Untitled%2013.png"></p>
+<p><a href="https://wjdcjf0219.tistory.com/33" target="_blank" rel="external nofollow noopener noreferrer">https://wjdcjf0219.tistory.com/33</a></p>
+<p>여길 보니 pip로 설치하지 말고 conda를 이용해서 설치하라고 한다.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">conda install -c conda-forge scrapy</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/2020/windows10%20anaconda%20scrapy%20fdf71034c83b4250af25b84272075105/Untitled%2014.png" alt="windows10%20anaconda%20scrapy%20fdf71034c83b4250af25b84272075105/Untitled%2014.png"></p>
+<p><img src="/images/2020/windows10%20anaconda%20scrapy%20fdf71034c83b4250af25b84272075105/Untitled%2015.png" alt="windows10%20anaconda%20scrapy%20fdf71034c83b4250af25b84272075105/Untitled%2015.png"></p>
+<p>뭔가 한방에 많은 것들이 설치 되었다.</p>
+<p>하지만 여전히 안된다?</p>
+<p><img src="/images/2020/windows10%20anaconda%20scrapy%20fdf71034c83b4250af25b84272075105/Untitled%2016.png" alt="windows10%20anaconda%20scrapy%20fdf71034c83b4250af25b84272075105/Untitled%2016.png"></p>
+<p>원인을 모르겠다.</p>
+<p>혹시나 하고 인터넷 강의에서 알려준대로 비주얼스튜디오커뮤니티를 설치해보자.</p>
+<p><img src="/images/2020/windows10%20anaconda%20scrapy%20fdf71034c83b4250af25b84272075105/Untitled%2017.png" alt="windows10%20anaconda%20scrapy%20fdf71034c83b4250af25b84272075105/Untitled%2017.png"></p>
+<p>어제 설치 완료함. 용량도 크고 그만큼 시간도 오래 걸림</p>
+<p>다시 해보자.</p>
+<p>역시 안된다.</p>
+<p>scrapy.cmdline 을 못가져오는듯…. 뭐지</p>
+<p><img src="/images/2020/windows10%20anaconda%20scrapy%20fdf71034c83b4250af25b84272075105/Untitled%2018.png" alt="windows10%20anaconda%20scrapy%20fdf71034c83b4250af25b84272075105/Untitled%2018.png"></p>
+<p>파이썬2 자료라 안될거 같긴한데, 한번 깔아보자.</p>
+<p><a href="https://www.python2.net/questions-80520.htm" target="_blank" rel="external nofollow noopener noreferrer">https://www.python2.net/questions-80520.htm</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install -I cryptography</span><br></pre></td></tr></table></figure>
+
+<p>역시 안깔린다.</p>
+<p><img src="/images/2020/windows10%20anaconda%20scrapy%20fdf71034c83b4250af25b84272075105/Untitled%2019.png" alt="windows10%20anaconda%20scrapy%20fdf71034c83b4250af25b84272075105/Untitled%2019.png"></p>
+<p>conda를 업그레이드 해도 안된다.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">conda update -n base conda</span><br></pre></td></tr></table></figure>
+
+<p><a href="https://www.thetopsites.net/article/51813527.shtml" target="_blank" rel="external nofollow noopener noreferrer">https://www.thetopsites.net/article/51813527.shtml</a></p>
+<p>뭘 해도 안된다. anacoda를 지우고 다시 깔아보자.</p>
+<hr>
+<p>기존에 64 bit를 깔아썼다.</p>
+<p><img src="/images/2020/windows10%20anaconda%20scrapy%20fdf71034c83b4250af25b84272075105/Untitled%2020.png" alt="windows10%20anaconda%20scrapy%20fdf71034c83b4250af25b84272075105/Untitled%2020.png"></p>
+<p>다 지우고 리부트함….</p>
+<p>혹시나 해서 이번에는 32 bit 아나콘다를 설치해보자.</p>
+<p><img src="/images/2020/windows10%20anaconda%20scrapy%20fdf71034c83b4250af25b84272075105/Untitled%2021.png" alt="windows10%20anaconda%20scrapy%20fdf71034c83b4250af25b84272075105/Untitled%2021.png"></p>
+<p>설치 완료후 다시 scrapy 설치해보자.</p>
+<p>콘다 명령어로 설치하자. pip 는 뭔가 불안하다.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">conda install -c scrapinghub scrapy</span><br></pre></td></tr></table></figure>
+
+<p>아나콘다 네비게이터를 키고 conda.exe 를 킨다.(이전에 conda 를 windows10 환경변수에 지정했는데, 뭔가 적절하지 못한 짓 같다. 이번에 anaconda 설치시 conda path 설정은 not recommended 였다.)</p>
+<p><img src="/images/2020/windows10%20anaconda%20scrapy%20fdf71034c83b4250af25b84272075105/Untitled%2022.png" alt="windows10%20anaconda%20scrapy%20fdf71034c83b4250af25b84272075105/Untitled%2022.png"></p>
+<p>아 드디어 동작한다. 인터넷 강의에서 pip 로 설치해서 그런지 그냥 windows cmd 에서 실행되지만,</p>
+<p>conda 로 설치한 경우 conda 전용 프롬프트에서 scrapy 명령어가 먹힌다.</p>
+<p><img src="/images/2020/windows10%20anaconda%20scrapy%20fdf71034c83b4250af25b84272075105/Untitled%2023.png" alt="windows10%20anaconda%20scrapy%20fdf71034c83b4250af25b84272075105/Untitled%2023.png"></p>
+<p>끝!!!</p>
+<p>파이썬을 잘 몰라서 뭔가 내가 잘못해서 삽질을 한 것 같다.</p>
+
+      
+          
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 20200427_post_footer -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="7565540074" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      <!-- Utterances 댓글 -->
+      <script src="https://utteranc.es/client.js" repo="hanumoka/hanumoka.github.io" issue-term="pathname" theme="github-light" crossorigin="anonymous" async>
+      </script>
+      <div style="font-size: 1rem;
+                  font-weight: 400;
+                  line-height: 1.5;
+                  text-align: left;
+                  box-sizing: border-box;
+                  position: relative;
+                  padding: .75rem 1.25rem;
+                  margin-bottom: 1rem;
+                  border: 1px solid transparent;
+                  border-radius: .25rem;
+                  color: #721c24;
+                  background-color: #f8d7da;
+                  border-color: #f5c6cb;
+                  margin-top: 1rem;">
+        Notice: 댓글을 사용하시려면, github에 로그인을 해주세요.(Utterances 댓글을 사용중입니다.)
+      </div>
+    <div>
+          <div class="post-tags">
+              <a href="/tags/install/" rel="tag"># install</a>
+              <a href="/tags/windows10/" rel="tag"># windows10</a>
+              <a href="/tags/python/" rel="tag"># python</a>
+              <a href="/tags/conda/" rel="tag"># conda</a>
+              <a href="/tags/anaconda/" rel="tag"># anaconda</a>
+              <a href="/tags/scrapy/" rel="tag"># scrapy</a>
+          </div>
+        
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/06/16/python-20200616-python-windows10-conda-path/" rel="prev" title="windows10에서 conda 명령어 안될때">
+      <i class="fa fa-chevron-left"></i> windows10에서 conda 명령어 안될때
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/07/01/java-20200701-java-shell-command/" rel="next" title="java에서 shell command 호출하기">
+      java에서 shell command 호출하기 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </div></footer>
+    
+  </article>
+
+  
+      
+
+
+  
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          목차
+        </li>
+        <li class="sidebar-nav-overview">
+          흝어보기
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#들어가기"><span class="nav-number">1.</span> <span class="nav-text">들어가기</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Python-Scrapy-설치하기"><span class="nav-number">2.</span> <span class="nav-text">Python Scrapy 설치하기</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#성공기"><span class="nav-number">2.1.</span> <span class="nav-text">성공기</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#실패기-참고만-하길"><span class="nav-number">2.2.</span> <span class="nav-text">실패기(참고만 하길)</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Hanumoka</p>
+  <div class="site-description" itemprop="description">아마추어 개발자의 블로그</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">214</span>
+          <span class="site-state-item-name">포스트</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">38</span>
+        <span class="site-state-item-name">카테고리</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">585</span>
+        <span class="site-state-item-name">태그</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/hanumoka" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;hanumoka" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:amagramer@gmail.com" title="E-Mail → mailto:amagramer@gmail.com" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    <div>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 왼쪽 사이드 광고 -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="9032012837" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+    </div>
+    </div>
+    
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Hanumoka</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="external nofollow noopener noreferrer" target="_blank">Hexo</a> v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://theme-next.org/" class="theme-link" rel="external nofollow noopener noreferrer" target="_blank">NexT.Gemini</a> v7.6.0
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

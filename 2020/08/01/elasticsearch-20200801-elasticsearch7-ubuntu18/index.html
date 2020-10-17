@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('https://www.hanumoka.net').hostname,
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.6.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":true,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":true},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    comments: {"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
+
+<!-- 구글 애드센스 코드  -->
+<script data-ad-client="ca-pub-6388187282606796" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-100596920-1"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'UA-100596920-1');
+</script>
+ 
+<!-- 네이버 웹 마스터-->
+<meta name="naver-site-verification" content="74bc91ee61c53c02f7d87ab3a442f99823f4f5f9">
+  <meta name="description" content="들어가기ubuntu 18.04가 설치된 virtual box에 elasticsearch7을 설치해보자. 아직 공부가 부족해서, 자세한 내용을 모른체 연습용 elasticsearch를 설치하는 내용이다. 클러스터, 샤드등 설정에 대한 내용은 포함하고 있지 않다.  실습jdk 설치먼저 elasticsearch를 설치하기 위해서는 jdk 설치를 해야 한다. 1j">
+<meta property="og:type" content="article">
+<meta property="og:title" content="elasticsearch7을 ubuntu18에설치하기(virtualbox)">
+<meta property="og:url" content="https://www.hanumoka.net/2020/08/01/elasticsearch-20200801-elasticsearch7-ubuntu18/index.html">
+<meta property="og:site_name" content="Hanumoka, IT Blog">
+<meta property="og:description" content="들어가기ubuntu 18.04가 설치된 virtual box에 elasticsearch7을 설치해보자. 아직 공부가 부족해서, 자세한 내용을 모른체 연습용 elasticsearch를 설치하는 내용이다. 클러스터, 샤드등 설정에 대한 내용은 포함하고 있지 않다.  실습jdk 설치먼저 elasticsearch를 설치하기 위해서는 jdk 설치를 해야 한다. 1j">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:image" content="https://www.hanumoka.net/images/2020/Ubuntu%2018%2004%20elasticsearch7%20install%20a053c074d29c440f9377bdbc67dbd811/Untitled.png">
+<meta property="og:image" content="https://www.hanumoka.net/images/2020/Ubuntu%2018%2004%20elasticsearch7%20install%20a053c074d29c440f9377bdbc67dbd811/Untitled%201.png">
+<meta property="og:image" content="https://www.hanumoka.net/images/2020/Ubuntu%2018%2004%20elasticsearch7%20install%20a053c074d29c440f9377bdbc67dbd811/Untitled%202.png">
+<meta property="og:image" content="https://www.hanumoka.net/images/2020/Ubuntu%2018%2004%20elasticsearch7%20install%20a053c074d29c440f9377bdbc67dbd811/Untitled%203.png">
+<meta property="og:image" content="https://www.hanumoka.net/images/2020/Ubuntu%2018%2004%20elasticsearch7%20install%20a053c074d29c440f9377bdbc67dbd811/Untitled%204.png">
+<meta property="og:image" content="https://www.hanumoka.net/images/2020/Ubuntu%2018%2004%20elasticsearch7%20install%20a053c074d29c440f9377bdbc67dbd811/Untitled%205.png">
+<meta property="og:image" content="https://www.hanumoka.net/images/2020/Ubuntu%2018%2004%20elasticsearch7%20install%20a053c074d29c440f9377bdbc67dbd811/Untitled%206.png">
+<meta property="og:image" content="https://www.hanumoka.net/images/2020/Ubuntu%2018%2004%20elasticsearch7%20install%20a053c074d29c440f9377bdbc67dbd811/Untitled%207.png">
+<meta property="og:image" content="https://www.hanumoka.net/images/2020/Ubuntu%2018%2004%20elasticsearch7%20install%20a053c074d29c440f9377bdbc67dbd811/Untitled%208.png">
+<meta property="og:image" content="https://www.hanumoka.net/images/2020/Ubuntu%2018%2004%20elasticsearch7%20install%20a053c074d29c440f9377bdbc67dbd811/Untitled%209.png">
+<meta property="og:image" content="https://www.hanumoka.net/images/2020/Ubuntu%2018%2004%20elasticsearch7%20install%20a053c074d29c440f9377bdbc67dbd811/Untitled%2010.png">
+<meta property="og:image" content="https://www.hanumoka.net/images/2020/Ubuntu%2018%2004%20elasticsearch7%20install%20a053c074d29c440f9377bdbc67dbd811/Untitled%2011.png">
+<meta property="og:image" content="https://www.hanumoka.net/images/2020/Ubuntu%2018%2004%20elasticsearch7%20install%20a053c074d29c440f9377bdbc67dbd811/Untitled%2012.png">
+<meta property="og:image" content="https://www.hanumoka.net/images/2020/Ubuntu%2018%2004%20elasticsearch7%20install%20a053c074d29c440f9377bdbc67dbd811/Untitled%2013.png">
+<meta property="article:published_time" content="2020-08-01T02:11:29.000Z">
+<meta property="article:modified_time" content="2020-10-17T10:26:38.411Z">
+<meta property="article:author" content="Hanumoka">
+<meta property="article:tag" content="Elasticsearch">
+<meta property="article:tag" content="basic">
+<meta property="article:tag" content="기본개념">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.hanumoka.net/images/2020/Ubuntu%2018%2004%20elasticsearch7%20install%20a053c074d29c440f9377bdbc67dbd811/Untitled.png">
+
+<link rel="canonical" href="https://www.hanumoka.net/2020/08/01/elasticsearch-20200801-elasticsearch7-ubuntu18/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>elasticsearch7을 ubuntu18에설치하기(virtualbox) | Hanumoka, IT Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Hanumoka, IT Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hanumoka, IT Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">그래봐야 코딩, 그래도 코딩</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>홈</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>태그</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>카테고리</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>아카이브</a>
+
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="fa fa-fw fa-calendar"></i>Schedule</a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-fw fa-sitemap"></i>Sitemap</a>
+
+  </li>
+        <li class="menu-item menu-item-rss">
+
+    <a href="/atom.xml" rel="section"><i class="fa fa-fw fa-rss"></i>rss</a>
+
+  </li>
+        <li class="menu-item menu-item-commonweal">
+
+    <a href="/404/" rel="section"><i class="fa fa-fw fa-heartbeat"></i>Commonweal 404</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>검색
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none" placeholder="Searching..." spellcheck="false" type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/hanumoka" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="external nofollow noopener noreferrer" target="_blank"><svg width="80" height="80" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2020/08/01/elasticsearch-20200801-elasticsearch7-ubuntu18/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Hanumoka">
+      <meta itemprop="description" content="아마추어 개발자의 블로그">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hanumoka, IT Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          elasticsearch7을 ubuntu18에설치하기(virtualbox)
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">작성일</span>
+
+              <time title="Post created: 2020-08-01 11:11:29" itemprop="dateCreated datePublished" datetime="2020-08-01T11:11:29+09:00">2020-08-01</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Updated at: 2020-10-17 19:26:38" itemprop="dateModified" datetime="2020-10-17T19:26:38+09:00">2020-10-17</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Elasticsearch/" itemprop="url" rel="index">
+                    <span itemprop="name">Elasticsearch</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 20200427hexo_post_head -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h1><p>ubuntu 18.04가 설치된 virtual box에 elasticsearch7을 설치해보자.</p>
+<p>아직 공부가 부족해서, 자세한 내용을 모른체 연습용 elasticsearch를 설치하는 내용이다.</p>
+<p>클러스터, 샤드등 설정에 대한 내용은 포함하고 있지 않다.</p>
+<p><img src="/images/2020/Ubuntu%2018%2004%20elasticsearch7%20install%20a053c074d29c440f9377bdbc67dbd811/Untitled.png" alt="Ubuntu%2018%2004%20elasticsearch7%20install%20a053c074d29c440f9377bdbc67dbd811/Untitled.png"></p>
+<h1 id="실습"><a href="#실습" class="headerlink" title="실습"></a>실습</h1><h2 id="jdk-설치"><a href="#jdk-설치" class="headerlink" title="jdk 설치"></a>jdk 설치</h2><p>먼저 elasticsearch를 설치하기 위해서는 jdk 설치를 해야 한다.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">javac -version</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/2020/Ubuntu%2018%2004%20elasticsearch7%20install%20a053c074d29c440f9377bdbc67dbd811/Untitled%201.png" alt="Ubuntu%2018%2004%20elasticsearch7%20install%20a053c074d29c440f9377bdbc67dbd811/Untitled%201.png"></p>
+<p>먼저 jdk가 설치 되어있는지 확인해보자. 난 위처럼 설치가 안되어 있다.</p>
+<p><img src="/images/2020/Ubuntu%2018%2004%20elasticsearch7%20install%20a053c074d29c440f9377bdbc67dbd811/Untitled%202.png" alt="Ubuntu%2018%2004%20elasticsearch7%20install%20a053c074d29c440f9377bdbc67dbd811/Untitled%202.png"></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install openjdk<span class="number">-11</span>-jdk</span><br></pre></td></tr></table></figure>
+
+<p>난 위처럼 open jdk 11로 설치를 진행했다.</p>
+<p>아래처럼 jdk 가 설치 되었다.</p>
+<p><img src="/images/2020/Ubuntu%2018%2004%20elasticsearch7%20install%20a053c074d29c440f9377bdbc67dbd811/Untitled%203.png" alt="Ubuntu%2018%2004%20elasticsearch7%20install%20a053c074d29c440f9377bdbc67dbd811/Untitled%203.png"></p>
+<h2 id="Elasticsearch를-설치하자"><a href="#Elasticsearch를-설치하자" class="headerlink" title="Elasticsearch를 설치하자"></a>Elasticsearch를 설치하자</h2><p><a href="https://iruwl.github.io/catetan/install-elasticsearch-7.0.0-on-ubuntu-18.04/" target="_blank" rel="external nofollow noopener noreferrer">https://iruwl.github.io/catetan/install-elasticsearch-7.0.0-on-ubuntu-18.04/</a></p>
+<p>위 자료를 참고하여 실습을 진행했다.</p>
+<p>Elasticsearch리파지토리 GPG 공개키를 import 한다.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -</span><br></pre></td></tr></table></figure>
+
+<p>아래처럼 OK 가 나온다면 정상적으로 키를 import 한 것이다.</p>
+<p><img src="/images/2020/Ubuntu%2018%2004%20elasticsearch7%20install%20a053c074d29c440f9377bdbc67dbd811/Untitled%204.png" alt="Ubuntu%2018%2004%20elasticsearch7%20install%20a053c074d29c440f9377bdbc67dbd811/Untitled%204.png"></p>
+<p>Elasticsearch 라파지토리를 등록한다. 아래처럼 현재 최신 버전인 7 버전 리파지토리를 등록했다.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo sh -c <span class="string">'echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" &gt; /etc/apt/sources.list.d/elastic-7.x.list'</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/2020/Ubuntu%2018%2004%20elasticsearch7%20install%20a053c074d29c440f9377bdbc67dbd811/Untitled%205.png" alt="Ubuntu%2018%2004%20elasticsearch7%20install%20a053c074d29c440f9377bdbc67dbd811/Untitled%205.png"></p>
+<p>다음 명령어로 elasticsearch를 설치하자.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt update</span><br><span class="line">sudo apt install elasticsearch</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/2020/Ubuntu%2018%2004%20elasticsearch7%20install%20a053c074d29c440f9377bdbc67dbd811/Untitled%206.png" alt="Ubuntu%2018%2004%20elasticsearch7%20install%20a053c074d29c440f9377bdbc67dbd811/Untitled%206.png"></p>
+<p><img src="/images/2020/Ubuntu%2018%2004%20elasticsearch7%20install%20a053c074d29c440f9377bdbc67dbd811/Untitled%207.png" alt="Ubuntu%2018%2004%20elasticsearch7%20install%20a053c074d29c440f9377bdbc67dbd811/Untitled%207.png"></p>
+<p><img src="/images/2020/Ubuntu%2018%2004%20elasticsearch7%20install%20a053c074d29c440f9377bdbc67dbd811/Untitled%208.png" alt="Ubuntu%2018%2004%20elasticsearch7%20install%20a053c074d29c440f9377bdbc67dbd811/Untitled%208.png"></p>
+<p>위 처럼 설치가 정상적으로 진행 되었다.</p>
+<p>엘라스틱서치를 동작시키기전에 간단한 설정파일을 집고 넘어가자.</p>
+<ul>
+<li><strong>/etc/elasticsearch/elasticsearch.yml</strong></li>
+<li><strong>/etc/elasticsearch/jvm.options</strong></li>
+</ul>
+<p><strong>elasticsearch.yml 파일에는 엘라스틱 서치의 전반적인 환경설정이 들어간다.</strong></p>
+<p>일단 아래처럼 클러스트명을 지정한다.</p>
+<p><img src="/images/2020/Ubuntu%2018%2004%20elasticsearch7%20install%20a053c074d29c440f9377bdbc67dbd811/Untitled%209.png" alt="Ubuntu%2018%2004%20elasticsearch7%20install%20a053c074d29c440f9377bdbc67dbd811/Untitled%209.png"></p>
+<p>그리고 network 영역에서 network.host에서 해당 host의 ip를 등록한다.</p>
+<p>network.host를 지정하지 않을경우, elasticsearch가 설치된 host pc에서 localhost로 접속이 가능하지만, 외부에서 elasticsearch에 접속 할 수 없다.</p>
+<p>아래처럼 network.host에 명시적으로 host pc의 ip를 지정할경우 해당 ip를 사용해서 외부에서 elasticsearch에 접속 할 수 있다.</p>
+<p>http.port 에서 포트를 지정한다.</p>
+<p>discovery.seed_hosts를 아래 이미지 처럼 지정한다.(클러스트 노드 관련 설정인거 같다.)</p>
+<p><img src="/images/2020/Ubuntu%2018%2004%20elasticsearch7%20install%20a053c074d29c440f9377bdbc67dbd811/Untitled%2010.png" alt="Ubuntu%2018%2004%20elasticsearch7%20install%20a053c074d29c440f9377bdbc67dbd811/Untitled%2010.png"></p>
+<p><strong>jvm.options 파일은 elasticsearch의 jvm heap 메모리 설정을 할 수 있다.</strong></p>
+<p>아래 이미지를 보면 기본으로 jvm heap이 1g 로 설정되어 있는 것을 확인 할 수 있다.</p>
+<p>자신의 환경에 맞게 설정해주자.(초기 heap과 max heap의 사이즈를 동일하게 설정하는 것이 좋다고 한다.)</p>
+<p><img src="/images/2020/Ubuntu%2018%2004%20elasticsearch7%20install%20a053c074d29c440f9377bdbc67dbd811/Untitled%2011.png" alt="Ubuntu%2018%2004%20elasticsearch7%20install%20a053c074d29c440f9377bdbc67dbd811/Untitled%2011.png"></p>
+<p>기초적인 elasticsearch설정이 끝났다면, 서비스를 등록하고 실행해보자.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo systemctl <span class="built_in">enable</span> elasticsearch.service</span><br><span class="line">sudo systemctl start elasticsearch.service</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo systemctl status elasticsearch.service</span><br></pre></td></tr></table></figure>
+
+<p>아래처럼 서비스가 정상 동작하는 것을 확인 할 수 있다.</p>
+<p><img src="/images/2020/Ubuntu%2018%2004%20elasticsearch7%20install%20a053c074d29c440f9377bdbc67dbd811/Untitled%2012.png" alt="Ubuntu%2018%2004%20elasticsearch7%20install%20a053c074d29c440f9377bdbc67dbd811/Untitled%2012.png"></p>
+<p>ubuntu의 포트 여는 것은 생략한다.</p>
+<p>아래 명령어로 elasticsearch에 GET 요청을 날려보자.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -X GET <span class="string">'10.0.2.15:9200'</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/2020/Ubuntu%2018%2004%20elasticsearch7%20install%20a053c074d29c440f9377bdbc67dbd811/Untitled%2013.png" alt="Ubuntu%2018%2004%20elasticsearch7%20install%20a053c074d29c440f9377bdbc67dbd811/Untitled%2013.png"></p>
+<p>정상적으로 elasticsearch가 응답하는 것을 확인 할 수 있다.</p>
+<h1 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h1><p><a href="https://iruwl.github.io/catetan/install-elasticsearch-7.0.0-on-ubuntu-18.04/" target="_blank" rel="external nofollow noopener noreferrer">https://iruwl.github.io/catetan/install-elasticsearch-7.0.0-on-ubuntu-18.04/</a></p>
+<p>[<a href="https://kifarunix.com/install-elasticsearch-7-x-on-ubuntu-18-04-debian-9-8/]" target="_blank" rel="external nofollow noopener noreferrer">https://kifarunix.com/install-elasticsearch-7-x-on-ubuntu-18-04-debian-9-8/]</a>(</p>
+
+      
+          
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 20200427_post_footer -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="7565540074" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      <!-- Utterances 댓글 -->
+      <script src="https://utteranc.es/client.js" repo="hanumoka/hanumoka.github.io" issue-term="pathname" theme="github-light" crossorigin="anonymous" async>
+      </script>
+      <div style="font-size: 1rem;
+                  font-weight: 400;
+                  line-height: 1.5;
+                  text-align: left;
+                  box-sizing: border-box;
+                  position: relative;
+                  padding: .75rem 1.25rem;
+                  margin-bottom: 1rem;
+                  border: 1px solid transparent;
+                  border-radius: .25rem;
+                  color: #721c24;
+                  background-color: #f8d7da;
+                  border-color: #f5c6cb;
+                  margin-top: 1rem;">
+        Notice: 댓글을 사용하시려면, github에 로그인을 해주세요.(Utterances 댓글을 사용중입니다.)
+      </div>
+    <div>
+          <div class="post-tags">
+              <a href="/tags/Elasticsearch/" rel="tag"># Elasticsearch</a>
+              <a href="/tags/basic/" rel="tag"># basic</a>
+              <a href="/tags/%EA%B8%B0%EB%B3%B8%EA%B0%9C%EB%85%90/" rel="tag"># 기본개념</a>
+          </div>
+        
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/07/11/python-20200711-python-scrapy-selenium/" rel="prev" title="Scrapy와 Selenium을 연동하기">
+      <i class="fa fa-chevron-left"></i> Scrapy와 Selenium을 연동하기
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/10/17/maven-20201017-maven-install-maven-on-windows10/" rel="next" title="Windows10에 maven 설치 및 설정">
+      Windows10에 maven 설치 및 설정 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </div></footer>
+    
+  </article>
+
+  
+      
+
+
+  
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          목차
+        </li>
+        <li class="sidebar-nav-overview">
+          흝어보기
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#들어가기"><span class="nav-number">1.</span> <span class="nav-text">들어가기</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#실습"><span class="nav-number">2.</span> <span class="nav-text">실습</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#jdk-설치"><span class="nav-number">2.1.</span> <span class="nav-text">jdk 설치</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Elasticsearch를-설치하자"><span class="nav-number">2.2.</span> <span class="nav-text">Elasticsearch를 설치하자</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#참고자료"><span class="nav-number">3.</span> <span class="nav-text">참고자료</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Hanumoka</p>
+  <div class="site-description" itemprop="description">아마추어 개발자의 블로그</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">214</span>
+          <span class="site-state-item-name">포스트</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">38</span>
+        <span class="site-state-item-name">카테고리</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">585</span>
+        <span class="site-state-item-name">태그</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/hanumoka" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;hanumoka" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:amagramer@gmail.com" title="E-Mail → mailto:amagramer@gmail.com" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    <div>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 왼쪽 사이드 광고 -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="9032012837" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+    </div>
+    </div>
+    
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Hanumoka</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="external nofollow noopener noreferrer" target="_blank">Hexo</a> v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://theme-next.org/" class="theme-link" rel="external nofollow noopener noreferrer" target="_blank">NexT.Gemini</a> v7.6.0
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
