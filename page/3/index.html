@@ -245,6 +245,955 @@ gtag('config', 'UA-100596920-1');
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2020/04/27/docker-20200427-docker-react-nginx/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Hanumoka">
+      <meta itemprop="description" content="아마추어 개발자의 블로그">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hanumoka, IT Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/04/27/docker-20200427-docker-react-nginx/" class="post-title-link" itemprop="url">Docker를 이용해 React와 Nginx를 묶어서 이미지화 하고 컨테이너화 하기</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">작성일</span>
+
+              <time title="Post created: 2020-04-27 22:14:11" itemprop="dateCreated datePublished" datetime="2020-04-27T22:14:11+09:00">2020-04-27</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Updated at: 2020-04-28 20:23:49" itemprop="dateModified" datetime="2020-04-28T20:23:49+09:00">2020-04-28</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/docker/" itemprop="url" rel="index">
+                    <span itemprop="name">docker</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 20200427hexo_post_head -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h1><p>React 프로젝트를 만약 서버에 배포해야 한다면, 어떻게 해야할까?</p>
+<p>서버에 Apache나 Nginx등을 설치하고 웹 서버 설정을 한뒤, React로 build한 소스를 해당 서버에 FTP로 전송하면된다.</p>
+<p>이런 방법도 좋지만, Docker를 사용해서 웹서버를 React와 묶어놓은 이미지가 있다면 어떤 서버든 docker engine만 설치되어 있다면 바로 실행시킬수 있을것 같다.</p>
+<p>이런식으로 배포할경우 웹서버의 설정역시 Docker의 설정으로 관리할 수 있을것이다.</p>
+<p>이번에는 Docker를 이용해서 React와 Nginx를 합쳐 이미지화하고 그 이미지를 컨테이너화 하여 실행해보자.</p>
+<h2 id="개발환경"><a href="#개발환경" class="headerlink" title="개발환경"></a>개발환경</h2><ul>
+<li>windows10</li>
+<li>docker desktop</li>
+<li>VisualStudioCode</li>
+<li>GitBash</li>
+</ul>
+<h1 id="실습"><a href="#실습" class="headerlink" title="실습"></a>실습</h1><p>일단 테스트할 react 프로젝트를 생성하자.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npx create-react-app docker-react-ngnix</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/2020/Docker%20React%20Nginx/Untitled.png" alt="Docker%20React%20Nginx/Untitled.png"></p>
+<p>생성된 프로젝트으 root 경로에 <strong>Dockerfile-prod</strong> 이라는 파일을 생성하자.</p>
+<p>여기서 파일명은 무엇으로 해도 상관 없으나 prod(production)이라고 표시해두면, Dockerfile, Dockerfile-dev, Dockerfile-prod등 배포 환경에 따라서 관리하기가 편하다.</p>
+<p><img src="/images/2020/Docker%20React%20Nginx/Untitled%201.png" alt="Docker%20React%20Nginx/Untitled%201.png"></p>
+<p>그리고 해당파일을 아래처럼 채우자.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">FROM node:12.16.2 as builder</span><br><span class="line"></span><br><span class="line"><span class="comment"># 작업 폴더를 만들고 npm 설치</span></span><br><span class="line">RUN mkdir /usr/src/app</span><br><span class="line">WORKDIR /usr/src/app</span><br><span class="line">ENV PATH /usr/src/app/node_modules/.bin:<span class="variable">$PATH</span></span><br><span class="line">COPY package.json /usr/src/app/package.json</span><br><span class="line">RUN npm install --silent</span><br><span class="line">RUN npm install react-scripts@3.4.1 -g --silent</span><br><span class="line"></span><br><span class="line"><span class="comment"># 소스를 작업폴더로 복사하고 빌드</span></span><br><span class="line">COPY . /usr/src/app</span><br><span class="line">RUN npm run build</span><br><span class="line"></span><br><span class="line">FROM nginx:latest</span><br><span class="line"><span class="comment"># nginx의 기본 설정을 삭제하고 앱에서 설정한 파일을 복사</span></span><br><span class="line">RUN rm -rf /etc/nginx/conf.d</span><br><span class="line">COPY conf /etc/nginx</span><br><span class="line"></span><br><span class="line"><span class="comment"># 위에서 생성한 앱의 빌드산출물을 nginx의 샘플 앱이 사용하던 폴더로 이동</span></span><br><span class="line">COPY --from=builder /usr/src/app/build /usr/share/nginx/html</span><br><span class="line"></span><br><span class="line"><span class="comment"># 80포트 오픈하고 nginx 실행</span></span><br><span class="line">EXPOSE 80</span><br><span class="line">CMD [<span class="string">"nginx"</span>, <span class="string">"-g"</span>, <span class="string">"daemon off;"</span>]</span><br></pre></td></tr></table></figure>
+
+<p>Node, react-script, nginx 등 원하는 버전을 설정하자.</p>
+<p><img src="/images/2020/Docker%20React%20Nginx/Untitled%202.png" alt="Docker%20React%20Nginx/Untitled%202.png"></p>
+<p>이미지를 생성할 Dockerfile-prod는 만들었으니, 이 Dockerfile-prod파일에서 사용하는 nginx설정 파일을 만들어 줘야 한다.</p>
+<p><img src="/images/2020/Docker%20React%20Nginx/Untitled%203.png" alt="Docker%20React%20Nginx/Untitled%203.png"></p>
+<p>프로젝트 root 경로에 conf/conf.d 파일을 만들어주자.</p>
+<p><img src="/images/2020/Docker%20React%20Nginx/Untitled%204.png" alt="Docker%20React%20Nginx/Untitled%204.png"></p>
+<p>그리고 해당 파일 내부를 아래처럼 채워주자.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">    listen 80;</span><br><span class="line"></span><br><span class="line">    location / &#123;</span><br><span class="line">        root   /usr/share/nginx/html;</span><br><span class="line">        index  index.html index.htm;</span><br><span class="line">        try_files <span class="variable">$uri</span> <span class="variable">$uri</span>/ /index.html;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    error_page   500 502 503 504  /50x.html;</span><br><span class="line">    </span><br><span class="line">    location = /50x.html &#123;</span><br><span class="line">        root   /usr/share/nginx/html;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>위 내용은 Nginx의 설정 파일이다.</p>
+<p>이제 준비는 끝났다.</p>
+<p>프로젝트 root 경로, 즉 Dockerfile-prod 파일이 있는 경로에 터미널을 열고 아래 명령으로 이미지를 생성하자.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker build -f Dockerfile-prod -t docker-react-ngnix</span><br></pre></td></tr></table></figure>
+
+<p><strong>위 명령어 설명</strong></p>
+<ul>
+<li>-f Dockerfile-prod : 해당 파일을 기반하여 docker image를 생성한다.</li>
+<li>-t docker-react-ngnix : 생성할 이미지를 지정한다.</li>
+</ul>
+<p><img src="/images/2020/Docker%20React%20Nginx/Untitled%205.png" alt="Docker%20React%20Nginx/Untitled%205.png"></p>
+<p>위 이미지에서는 마지막에 <strong>.(콤마)</strong> 가 찍혀 있지만 앞에 -f 옵션으로 Dockerfile을 지정해 주었기 때문에 없어도 될거 같지만, 반드시 찍어주어야 한다.</p>
+<p><img src="/images/2020/Docker%20React%20Nginx/Untitled%206.png" alt="Docker%20React%20Nginx/Untitled%206.png"></p>
+<p>위 처럼 docker-react-ngnix 이미지가 생성 되었고, 해다 이미지에서 참조하는 nginx, node 이미지들도 다운이 되었다.</p>
+<p>다음 명령어로 docker-react-ngnix 이미지를 컨테이너화 하고 실행시키자.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -it -p 80:80 docker-react-ngnix</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/2020/Docker%20React%20Nginx/Untitled%207.png" alt="Docker%20React%20Nginx/Untitled%207.png"></p>
+<p>그리고 새로운 터미널에서 다음 명령어로 실행중인 docker 프로세스를 확인해 보자.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker ps</span><br></pre></td></tr></table></figure>
+
+<p>아래처럼 컨테이너가 실행중임을 확인 할 수 있다.</p>
+<p><img src="/images/2020/Docker%20React%20Nginx/Untitled%208.png" alt="Docker%20React%20Nginx/Untitled%208.png"></p>
+<p>아래처럼 브라우저에서도 정상 동작을 확인 할 수 있다.</p>
+<p><img src="/images/2020/Docker%20React%20Nginx/Untitled%209.png" alt="Docker%20React%20Nginx/Untitled%209.png"></p>
+<h1 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h1><p>[<a href="https://codechacha.com/ko/dockerizing-react-with-nginx/]" target="_blank" rel="external nofollow noopener noreferrer">https://codechacha.com/ko/dockerizing-react-with-nginx/]</a>(</p>
+
+      
+      
+          
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+      
+
+
+  
+  
+  
+  
+
+        
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2020/04/26/aws-20200426-aws-ec2-gitbash-putty/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Hanumoka">
+      <meta itemprop="description" content="아마추어 개발자의 블로그">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hanumoka, IT Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/04/26/aws-20200426-aws-ec2-gitbash-putty/" class="post-title-link" itemprop="url">aws-ec2에 ubuntu AMI(이미지)를 설치하고 접속해보기(t2.micro)</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">작성일</span>
+              
+
+              <time title="Post created: 2020-04-26 16:34:18 / Updated at: 16:37:19" itemprop="dateCreated datePublished" datetime="2020-04-26T16:34:18+09:00">2020-04-26</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/aws/" itemprop="url" rel="index">
+                    <span itemprop="name">aws</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 20200427hexo_post_head -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h1><p>AWS에 ec2를 이용해서 Ubuntu를 설치하고 접속해보는 예제이다.</p>
+<p>ec2 하드웨어 사양은 무료티어(t2.micro)를 사용했다.</p>
+<h2 id="개발환경"><a href="#개발환경" class="headerlink" title="개발환경"></a>개발환경</h2><ul>
+<li>windows10</li>
+<li>putty</li>
+<li>aws 계정(미리 가입되어 있어야 한다.)</li>
+<li>git bash</li>
+</ul>
+<h1 id="실습"><a href="#실습" class="headerlink" title="실습"></a>실습</h1><p>일단 aws의 AWS Management Console에 접속하자.</p>
+<p><img src="/images/2020/aws%20ec2%20ubuntu%20AMI%20t2%20micro/Untitled.png" alt="aws%20ec2%20ubuntu%20AMI%20t2%20micro/Untitled.png"></p>
+<p><strong>EC2</strong>를 선택하자.</p>
+<p><img src="/images/2020/aws%20ec2%20ubuntu%20AMI%20t2%20micro/Untitled%201.png" alt="aws%20ec2%20ubuntu%20AMI%20t2%20micro/Untitled%201.png"></p>
+<p>대시보드화면이 나오는데 화면 가운데 오랜지색 버튼인 <strong>인스턴스 시작</strong>을 눌러주자.</p>
+<p>다음 화면에서 EC2에 사용할 이미지(AMI)를 고를수 있다. </p>
+<p>나는 개인적으로 익숙한 Ubuntu18.04를 선택했다. </p>
+<p>이미지 설명에 <strong>프리티어 사용가능</strong>한 이미지로 선택했다.</p>
+<p><img src="/images/2020/aws%20ec2%20ubuntu%20AMI%20t2%20micro/Untitled%202.png" alt="aws%20ec2%20ubuntu%20AMI%20t2%20micro/Untitled%202.png"></p>
+<p>위 이미지처럼 원하는 이미지의 <strong>선택</strong>버튼을 누르자.</p>
+<p>다음 화면에서는 EC2의 하드웨어 설정이 나온다. </p>
+<p>역시 무료사용이 가능한 프리티어 <strong>t2.micro</strong> @ 를 선택하고 <strong>다음:인스턴스 세부 정보 구성</strong>을 클릭한다.</p>
+<p><img src="/images/2020/aws%20ec2%20ubuntu%20AMI%20t2%20micro/Untitled%203.png" alt="aws%20ec2%20ubuntu%20AMI%20t2%20micro/Untitled%203.png"></p>
+<p>다음 화면은 인스턴스 세부 정보 구성 화면이다. 기본 값을 건드리지 말고 <strong>다음:스토리지 추가</strong>를 클릭하자.</p>
+<p><img src="/images/2020/aws%20ec2%20ubuntu%20AMI%20t2%20micro/Untitled%204.png" alt="aws%20ec2%20ubuntu%20AMI%20t2%20micro/Untitled%204.png"></p>
+<p>다음 화면은 스토리지 추가 화면이다. 설명을 보면 프리티어 사용가능 고객은 최대 30GB의 EBS 범용(SSD) 또는 마그네틱 스토리지를 사용할 수 있다고 한다.</p>
+<p>나는 그냥 기본으로 두고 <strong>다음: 태그 추가</strong> 버튼을 클릭했다.</p>
+<p><img src="/images/2020/aws%20ec2%20ubuntu%20AMI%20t2%20micro/Untitled%205.png" alt="aws%20ec2%20ubuntu%20AMI%20t2%20micro/Untitled%205.png"></p>
+<p>다음화면은 태그 추가 화면이다.</p>
+<p>아무것도 하지 않고 <strong>다음: 보안:그룹 구성</strong>을 클릭하자.</p>
+<p><img src="/images/2020/aws%20ec2%20ubuntu%20AMI%20t2%20micro/Untitled%206.png" alt="aws%20ec2%20ubuntu%20AMI%20t2%20micro/Untitled%206.png"></p>
+<p>다음화면은 보안그룹 구성 화면이다.</p>
+<p>기본적으로 SSH 유형만 설정되어있는데, 나는 <strong>규칙추가</strong>를 통해 <strong>HTTP, HTTPS</strong>도 추가해주었다.</p>
+<p>나중에 해당 인스턴스에 웹서버를 올려서 테스트 해볼까 하기 때문이다.</p>
+<p><img src="/images/2020/aws%20ec2%20ubuntu%20AMI%20t2%20micro/Untitled%207.png" alt="aws%20ec2%20ubuntu%20AMI%20t2%20micro/Untitled%207.png"></p>
+<p>설정이 끝나면 <strong>검토 및 시작</strong> 버튼을 클릭하자.</p>
+<p>마지막 단계인 인서턴스 시작 검토 화면이다.</p>
+<p>지금까지 설정한 내용이 요약으로 보여진다.</p>
+<p><strong>시작하기</strong> 버튼을 클릭하자.</p>
+<p><img src="/images/2020/aws%20ec2%20ubuntu%20AMI%20t2%20micro/Untitled%208.png" alt="aws%20ec2%20ubuntu%20AMI%20t2%20micro/Untitled%208.png"></p>
+<p>다음처럼 키페어를 생성하는 팝업 창이 열린다.</p>
+<p>여기서 생성한 <strong>키페어파일</strong>를 이용해서 생성된 인스턴스에 SSH로 접속이 가능하다.</p>
+<p><img src="/images/2020/aws%20ec2%20ubuntu%20AMI%20t2%20micro/Untitled%209.png" alt="aws%20ec2%20ubuntu%20AMI%20t2%20micro/Untitled%209.png"></p>
+<p>만약 기존에 생성한 키페어가 있다면, 그것을 재 사용할수 있다.</p>
+<p>하지만 난 없으니 새 키페어 생성을 선택하고 키페어 이름을 지정한다.(영문)</p>
+<p>그리고 키페어 다운로드 버튼을 눌러, 입력한 <strong>키페어이름.pem</strong> 파일을 다운 받는다.</p>
+<p>해당 파일이 있어야 인스턴스에 접속이 가능하므로, <strong>외부에 유출되지 않게 잘 보관해야 한다.</strong></p>
+<p><img src="/images/2020/aws%20ec2%20ubuntu%20AMI%20t2%20micro/Untitled%2010.png" alt="aws%20ec2%20ubuntu%20AMI%20t2%20micro/Untitled%2010.png"></p>
+<p>아래처럼 pem 파일이 다운받아진다.</p>
+<p><img src="/images/2020/aws%20ec2%20ubuntu%20AMI%20t2%20micro/Untitled%2011.png" alt="aws%20ec2%20ubuntu%20AMI%20t2%20micro/Untitled%2011.png"></p>
+<p>pem 파일을 다운 받은후 <strong>인스턴스 시작</strong> 버튼을 눌러주자.</p>
+<p><img src="/images/2020/aws%20ec2%20ubuntu%20AMI%20t2%20micro/Untitled%2012.png" alt="aws%20ec2%20ubuntu%20AMI%20t2%20micro/Untitled%2012.png"></p>
+<p>아래처럼 인스턴스가 시작중이라고 나온다.</p>
+<p><strong>인스턴스 보기 버튼</strong>을 눌러주자.</p>
+<p><img src="/images/2020/aws%20ec2%20ubuntu%20AMI%20t2%20micro/Untitled%2013.png" alt="aws%20ec2%20ubuntu%20AMI%20t2%20micro/Untitled%2013.png"></p>
+<p>다음처럼 대쉬보드 화면으로 이동하고 인스턴스 상태가 <strong>pending</strong>으로 나온다.</p>
+<p><img src="/images/2020/aws%20ec2%20ubuntu%20AMI%20t2%20micro/Untitled%2014.png" alt="aws%20ec2%20ubuntu%20AMI%20t2%20micro/Untitled%2014.png"></p>
+<p>pending은 인스턴스가 준비되고 있다는 것을 의미한다. <strong>running</strong>으로 바뀔 때 까지 기다린다.</p>
+<p><img src="/images/2020/aws%20ec2%20ubuntu%20AMI%20t2%20micro/Untitled%2015.png" alt="aws%20ec2%20ubuntu%20AMI%20t2%20micro/Untitled%2015.png"></p>
+<h2 id="Git-bash에서-ssh로-Ec2에-접속하기"><a href="#Git-bash에서-ssh로-Ec2에-접속하기" class="headerlink" title="Git bash에서 ssh로 Ec2에 접속하기"></a>Git bash에서 ssh로 Ec2에 접속하기</h2><p>이제 실행중인 인스턴스에 접속해보자.</p>
+<p>대쉬보드 화면에서 해당 인스턴스를 마우스 우클릭 후 <strong>연결</strong>을 클릭하자.</p>
+<p><img src="/images/2020/aws%20ec2%20ubuntu%20AMI%20t2%20micro/Untitled%2016.png" alt="aws%20ec2%20ubuntu%20AMI%20t2%20micro/Untitled%2016.png"></p>
+<p>다음처럼 SSH 클라이언트로 인스턴스에 연결 할 수 있응 방법이 나온다.</p>
+<p><img src="/images/2020/aws%20ec2%20ubuntu%20AMI%20t2%20micro/Untitled%2017.png" alt="aws%20ec2%20ubuntu%20AMI%20t2%20micro/Untitled%2017.png"></p>
+<p>빨간줄과, 녹색줄은 보안을 위해 지웠다.</p>
+<p>중요한건 <strong>예:</strong> 아래의 ssh 명령어 줄이다.</p>
+<p>ssh 명령의 형식은 아래와 같다.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh -i <span class="string">"인스턴스 키패어.pem"</span> 계정명@인스턴스 주소</span><br></pre></td></tr></table></figure>
+
+<p>aws에서 ubunt 이미지로 인스턴스를 생성했을대 기본 계정으로 <strong>ubuntu</strong>를 생성해준다.</p>
+<p>@이 뒤에 인스턴스 주소는 aws에서 인스턴스를 생성할때 유니크한 도메인을 자동으로 생성해준다.</p>
+<p>팝업에 나오는 ssh 명령어 한줄을 그대로 복사한 뒤, git bash 창을 열고 접속해보자.</p>
+<p><img src="/images/2020/aws%20ec2%20ubuntu%20AMI%20t2%20micro/Untitled%2018.png" alt="aws%20ec2%20ubuntu%20AMI%20t2%20micro/Untitled%2018.png"></p>
+<p>뭔가 연결을 진행할 거냐 물어보는데 <strong>yes를 눌러주자.</strong></p>
+<p><img src="/images/2020/aws%20ec2%20ubuntu%20AMI%20t2%20micro/Untitled%2019.png" alt="aws%20ec2%20ubuntu%20AMI%20t2%20micro/Untitled%2019.png"></p>
+<p>다음처럼 접속이 된 것을 확인 할 수 있다.</p>
+<p><img src="/images/2020/aws%20ec2%20ubuntu%20AMI%20t2%20micro/Untitled%2020.png" alt="aws%20ec2%20ubuntu%20AMI%20t2%20micro/Untitled%2020.png"></p>
+<h2 id="putty로-Ec2-인스턴스에-접속하기"><a href="#putty로-Ec2-인스턴스에-접속하기" class="headerlink" title="putty로 Ec2 인스턴스에 접속하기."></a>putty로 Ec2 인스턴스에 접속하기.</h2><h3 id="과정요약"><a href="#과정요약" class="headerlink" title="과정요약"></a>과정요약</h3><ul>
+<li>키페어.pem 파일을 puttygen프로그램을 이용해서 ppk파일로 변환</li>
+<li>putty에 ppk파일을 등록</li>
+<li>putty로 Ec2 인스턴스에 접속</li>
+</ul>
+<h3 id="실습-1"><a href="#실습-1" class="headerlink" title="실습"></a>실습</h3><p>일단 puttygen.exe를 실행한다.</p>
+<p>보통 putty가 설치된 폴더에 같이 있다.</p>
+<p><img src="/images/2020/aws%20ec2%20ubuntu%20AMI%20t2%20micro/Untitled%2021.png" alt="aws%20ec2%20ubuntu%20AMI%20t2%20micro/Untitled%2021.png"></p>
+<p>puttygen 프로그램의 <strong>Conversions-import key</strong> 항목을 선택한다.</p>
+<p><img src="/images/2020/aws%20ec2%20ubuntu%20AMI%20t2%20micro/Untitled%2022.png" alt="aws%20ec2%20ubuntu%20AMI%20t2%20micro/Untitled%2022.png"></p>
+<p>아까 인스턴스 생성시 다운받은 키페어.pem 파일을 탐색창에서 찾아 연다.</p>
+<p><img src="/images/2020/aws%20ec2%20ubuntu%20AMI%20t2%20micro/Untitled%2023.png" alt="aws%20ec2%20ubuntu%20AMI%20t2%20micro/Untitled%2023.png"></p>
+<p>그 다음에 Save private key 버튼을 클릭하면 새로운 ppk 파일을 생성 할 수 있다.</p>
+<p><img src="/images/2020/aws%20ec2%20ubuntu%20AMI%20t2%20micro/Untitled%2024.png" alt="aws%20ec2%20ubuntu%20AMI%20t2%20micro/Untitled%2024.png"></p>
+<p>생성된 ppk 파일.</p>
+<p><img src="/images/2020/aws%20ec2%20ubuntu%20AMI%20t2%20micro/Untitled%2025.png" alt="aws%20ec2%20ubuntu%20AMI%20t2%20micro/Untitled%2025.png"></p>
+<p>이제 위에서 생성한 ppk 파일을 putty에 등록해서 사용하면된다.</p>
+<p><img src="/images/2020/aws%20ec2%20ubuntu%20AMI%20t2%20micro/Untitled%2026.png" alt="aws%20ec2%20ubuntu%20AMI%20t2%20micro/Untitled%2026.png"></p>
+<p>일단 putty를 열고 카테고리에서 Connection-SSH-Auth 들어가서 Private key file for authentication 항목의 Browse를 클릭해서 ppk 파일을 등록하자.</p>
+<p><img src="/images/2020/aws%20ec2%20ubuntu%20AMI%20t2%20micro/Untitled%2027.png" alt="aws%20ec2%20ubuntu%20AMI%20t2%20micro/Untitled%2027.png"></p>
+<p>다시 아까 인스턴스 연결에서 보았던 접속주소를 복사한다.</p>
+<p><img src="/images/2020/aws%20ec2%20ubuntu%20AMI%20t2%20micro/Untitled%2028.png" alt="aws%20ec2%20ubuntu%20AMI%20t2%20micro/Untitled%2028.png"></p>
+<p>위 이미지의 녹색 영역이 접속주소이다.</p>
+<p>해당 내용을 putty <strong>session</strong>에 Host Name에 입력하고 Open  버튼을 클릭하자.</p>
+<p><img src="/images/2020/aws%20ec2%20ubuntu%20AMI%20t2%20micro/Untitled%2029.png" alt="aws%20ec2%20ubuntu%20AMI%20t2%20micro/Untitled%2029.png"></p>
+<p>다음처럼 접속이 잘 되는 것을 확인 할 수 있다.</p>
+<p><img src="/images/2020/aws%20ec2%20ubuntu%20AMI%20t2%20micro/Untitled%2030.png" alt="aws%20ec2%20ubuntu%20AMI%20t2%20micro/Untitled%2030.png"></p>
+<p>끝!!!</p>
+<h1 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h1><p>책: 당신이 지금 알아야 할 AWS(이영호, 한동수)</p>
+
+      
+      
+          
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+      
+
+
+  
+  
+  
+  
+
+        
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2020/04/25/docker-20200425-docker-react-node/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Hanumoka">
+      <meta itemprop="description" content="아마추어 개발자의 블로그">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hanumoka, IT Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/04/25/docker-20200425-docker-react-node/" class="post-title-link" itemprop="url">Docker로 React-Node를 이미지로 만들어 컨터이너화 하기</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">작성일</span>
+
+              <time title="Post created: 2020-04-25 23:51:38" itemprop="dateCreated datePublished" datetime="2020-04-25T23:51:38+09:00">2020-04-25</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Updated at: 2020-04-26 02:45:05" itemprop="dateModified" datetime="2020-04-26T02:45:05+09:00">2020-04-26</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/docker/" itemprop="url" rel="index">
+                    <span itemprop="name">docker</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 20200427hexo_post_head -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h1><p>Docker를 사용해서 React와 Node를 묶어 이미지를 만들고 그 이미지를 이용해서 컨테이너를 생성하고 실행하는 예제이다.</p>
+<h2 id="개발환경"><a href="#개발환경" class="headerlink" title="개발환경"></a>개발환경</h2><ul>
+<li>windows10</li>
+<li>visual studo code</li>
+<li>docker desktop</li>
+</ul>
+<h1 id="실습"><a href="#실습" class="headerlink" title="실습"></a>실습</h1><p>일단 create-react-app 으로 사용할 react 프로젝트를 생성한다.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npx create-react-app react-docker-example1</span><br></pre></td></tr></table></figure>
+
+<p>프로젝트 명은 react-docker-example1로 지정했다.</p>
+<p><img src="/images/2020/Docker%20React%20Node/Untitled.png" alt="Docker%20React%20Node/Untitled.png"></p>
+<p>프로젝트가 생성되면 정상동작하는지 확인 해 보자.</p>
+<p><img src="/images/2020/Docker%20React%20Node/Untitled%201.png" alt="Docker%20React%20Node/Untitled%201.png"></p>
+<p>잘 동작하는 것을 확인 할 수 있다.</p>
+<p><img src="/images/2020/Docker%20React%20Node/Untitled%202.png" alt="Docker%20React%20Node/Untitled%202.png"></p>
+<p>프로젝트 경로로 진입해서 VisualStudoCode를 실행하자</p>
+<p>아래 명령으로 현재경로에서 VisualStudoCode를 실행 할 수 있다.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">code .</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/2020/Docker%20React%20Node/Untitled%203.png" alt="Docker%20React%20Node/Untitled%203.png"></p>
+<p>프로젝트 최상위 경로에 <strong>DockerFile</strong>을 생성하고 내용을 아래처럼 채우자.</p>
+<p><strong>node 이미지 버전의 경우 자신에 맞게 설정해주자.</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">FROM node:12.16.2 as builder</span><br><span class="line"></span><br><span class="line"><span class="comment"># 작업 폴더를 만들고 npm 설치</span></span><br><span class="line">RUN mkdir /usr/src/app</span><br><span class="line">WORKDIR /usr/src/app</span><br><span class="line">ENV PATH /usr/src/app/node_modules/.bin:<span class="variable">$PATH</span></span><br><span class="line">COPY package.json /usr/src/app/package.json</span><br><span class="line">RUN npm install --silent</span><br><span class="line">RUN npm install react-scripts@2.1.3 -g --silent</span><br><span class="line"></span><br><span class="line"><span class="comment"># 소스를 작업폴더로 복사하고 앱 실행</span></span><br><span class="line">COPY . /usr/src/app</span><br><span class="line">CMD [<span class="string">"npm"</span>, <span class="string">"start"</span>]</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/2020/Docker%20React%20Node/Untitled%204.png" alt="Docker%20React%20Node/Untitled%204.png"></p>
+<p>DockerFile을 만들었다면, 이제 이 DockerFile을 이용해서 image를 생성하자.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker build -t react-docker-example1</span><br></pre></td></tr></table></figure>
+
+<p>난 프로젝트명과 이미지명을 동일하게 지정했다.</p>
+<p><img src="/images/2020/Docker%20React%20Node/Untitled%205.png" alt="Docker%20React%20Node/Untitled%205.png"></p>
+<p>난 DockerFile에 설정한 node 버전의 이미지가 없어서 다운받는데 좀 시간이 걸렸다.</p>
+<p>node 이미지가 받아지면 DockerFile을 기반해서 새로운 이미지가 생성될 것이다.</p>
+<p>아래 명령어로 확인해보자.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker images</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/2020/Docker%20React%20Node/Untitled%206.png" alt="Docker%20React%20Node/Untitled%206.png"></p>
+<p>DockerFile에서 참조하고 있는 node 이미지와 그 기반으로 만들어진 react-docker-example1 이미지가 보인다.</p>
+<p>아래 명령어로 생성한 react-docker-example1 이미지를 컨테이너화 하고 실행해보자.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -it -p 3000:3000 --rm 이미지명또는아이디</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/2020/Docker%20React%20Node/Untitled%207.png" alt="Docker%20React%20Node/Untitled%207.png"></p>
+<p>docker run 옵션중 -it 로 인해 아래처럼 컨테이너 실행시 react 컨테이너에서 출력하는 콘솔이 터미널로 출력된다.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">**--rm** 옵션은 컨테이너가 종료될때 해당 컨테이너를 자동으로 지워준다.</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/2020/Docker%20React%20Node/Untitled%208.png" alt="Docker%20React%20Node/Untitled%208.png"></p>
+<p>정상적으로 컨테이너가 동작하는 것을 확인 할 수 있다.</p>
+<p><img src="/images/2020/Docker%20React%20Node/Untitled%209.png" alt="Docker%20React%20Node/Untitled%209.png"></p>
+<p>새로운 터미널에서 아래 명령어로 실행중인 컨테이너를 확인해보자.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker ps</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/2020/Docker%20React%20Node/Untitled%2010.png" alt="Docker%20React%20Node/Untitled%2010.png"></p>
+<p>이제 해당 컨테니어를 종료해보자.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker stop 컨테이너id</span><br></pre></td></tr></table></figure>
+
+<p>일반적으로 위 명령어로 docker 컨테이너를 종료한다.</p>
+<p>하지만 docker run 옵션으로 -it 사용했기에, docker run을 실행중인 터미널에서 ctrl+c 를 입력해도 docker 컨테이너가 종료된다.</p>
+<p><img src="/images/2020/Docker%20React%20Node/Untitled%2011.png" alt="Docker%20React%20Node/Untitled%2011.png"></p>
+<p>다시 docker ps로 해당 컨테이너가 자동으로 삭제되었는지 확인해보자.</p>
+<p><img src="/images/2020/Docker%20React%20Node/Untitled%2012.png" alt="Docker%20React%20Node/Untitled%2012.png"></p>
+<p>끝!!!</p>
+<h1 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h1><p><a href>https://codechacha.com/ko/dockerizing-react-with-nginx/</a><br><a href>https://blog.leedoing.com/171</a></p>
+
+      
+      
+          
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+      
+
+
+  
+  
+  
+  
+
+        
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2020/04/18/docker-20200418-docker-mongodb-start/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Hanumoka">
+      <meta itemprop="description" content="아마추어 개발자의 블로그">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hanumoka, IT Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/04/18/docker-20200418-docker-mongodb-start/" class="post-title-link" itemprop="url">Docker에서 테스트용도의 mongodb 실행하기</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">작성일</span>
+
+              <time title="Post created: 2020-04-18 21:52:37" itemprop="dateCreated datePublished" datetime="2020-04-18T21:52:37+09:00">2020-04-18</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Updated at: 2021-04-28 19:35:42" itemprop="dateModified" datetime="2021-04-28T19:35:42+09:00">2021-04-28</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/docker/" itemprop="url" rel="index">
+                    <span itemprop="name">docker</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 20200427hexo_post_head -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h1><p>docker로 간단하게 테스트용 mongodb 서버를 실행하는 예제이다.</p>
+<p>이글은 컨테이너 생성과 접근정도만 다룬다.</p>
+<p>관리자 계정생성등은 구글링 ㄱㄱ</p>
+<h2 id="환경"><a href="#환경" class="headerlink" title="환경"></a>환경</h2><ul>
+<li>windows10</li>
+<li>docker desktop</li>
+</ul>
+<h1 id="실습"><a href="#실습" class="headerlink" title="실습"></a>실습</h1><p>콘솔에서 아래 명령어로 mongodb 이미지를 검색하자.</p>
+<pre><code>docker search mongo</code></pre><p><img src="/images/2020/Docker%20mongodb/Untitled.png" alt="Docker%20mongodb/Untitled.png"></p>
+<p>아래 명령어로 해당 이미지를 다운받자.</p>
+<pre><code>docker pull mongo</code></pre><p><img src="/images/2020/Docker%20mongodb/Untitled%201.png" alt="Docker%20mongodb/Untitled%201.png"></p>
+<p>아래 명령어로 다움받은 mongo 이미지를 컨테이너화 하고 실행하자.</p>
+<pre><code>docker run --name mongodb_test -d -p 27017:27017 mongo</code></pre><p><strong>옵션설명</strong></p>
+<ul>
+<li>–name mongodb_test : 컨테이너 이름을 mongodb_test로 지정</li>
+<li>-d : 데몬으로 실행 설정</li>
+<li>-p 27017:27017 : 호스트 포트 27017로 접슨시 해당 컨테이너의 27017로 포트포워딩</li>
+</ul>
+<p><strong>주의</strong></p>
+<p>위에서 생성한 mongodb_test 는 테스트용 db로 사용할 목적이라서 로그인없이 db에 접근이 가능하다.</p>
+<p>만약 몽고 컨테이너 생성시 로그인 기능을 활성화 시키려면 아래 명령어로 컨테이너를 실행시키자.</p>
+<pre><code>docker run -name mongodb_test -d -p 27017:27017 mongo –auth</code></pre><p>마지막에 <strong>-auth</strong>를 추가해주면 된다. 나느 테스트 용이므로 -auth 옵션은 생략한다.</p>
+<p><img src="/images/2020/Docker%20mongodb/Untitled%202.png" alt="Docker%20mongodb/Untitled%202.png"></p>
+<p>mysql는 이전에 테스트용으로 생성한 것이다. mongodb_test 컨테이너가 생성된 것을 확인 할 수 있다.</p>
+<p>이제 컨테이너에 bash로 붙어보자.</p>
+<pre><code>docker exec -it mongodb_test /bin/bash</code></pre><p>위 명령어로 컨테이너에 진입하게 되면 다시 아래 명령어로 mongodb에 붙어보자.</p>
+<pre><code>mongo</code></pre><p><img src="/images/2020/Docker%20mongodb/Untitled%203.png" alt="Docker%20mongodb/Untitled%203.png"></p>
+<p>위처럼 정상 접근이 되는 것을 확인 할 수 있다.</p>
+<p>끝!</p>
+
+      
+      
+          
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+      
+
+
+  
+  
+  
+  
+
+        
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2020/04/16/git-20200416-git-ssh-key-generate/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Hanumoka">
+      <meta itemprop="description" content="아마추어 개발자의 블로그">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hanumoka, IT Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/04/16/git-20200416-git-ssh-key-generate/" class="post-title-link" itemprop="url">Github에 push, pull을 위한 ssh키 생성 및 등록(windows10)</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">작성일</span>
+              
+
+              <time title="Post created: 2020-04-16 01:27:22 / Updated at: 01:40:01" itemprop="dateCreated datePublished" datetime="2020-04-16T01:27:22+09:00">2020-04-16</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/git/" itemprop="url" rel="index">
+                    <span itemprop="name">git</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 20200427hexo_post_head -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h1><p>이 블로그는 hexo라는 정적 웹 생성기로 만들어져 있고, hexo로 만들어진 정적웹을 github 페이지에 배포하여 운영하고 있다.</p>
+<p>여기서 gitpage로 hexo블로그를 배포하기 위해서는 hexo 블로그를 작성하고 배포하는 pc에서 ssh키를 생성하고, 이 생성된 ssh키의 공개키를 github 계정에 등록해 줘야 한다. </p>
+<p>이번에는 그 과정을 정리해본다. (간단한 거지만 이따금 하는 일이라 자주 까먹는다.)</p>
+<h2 id="환경"><a href="#환경" class="headerlink" title="환경"></a>환경</h2><ul>
+<li>windows10</li>
+<li>git bash</li>
+</ul>
+<h1 id="실습"><a href="#실습" class="headerlink" title="실습"></a>실습</h1><h2 id="1-개발PC에서-ssh-키-생성하기"><a href="#1-개발PC에서-ssh-키-생성하기" class="headerlink" title="1.개발PC에서 ssh 키 생성하기"></a>1.개발PC에서 ssh 키 생성하기</h2><p><img src="/images/2020/Github%20push%20pull%20ssh%20windows10/Untitled.png" alt="Github%20push%20pull%20ssh%20windows10/Untitled.png"></p>
+<p>일단 git bash를 열자. (cmd, power shell 등을 사용해도 상관 없으나 윈도우 커맨드를 별로 안좋아해서 git bash를 사용했다.)</p>
+<p><strong>git bash 명령어</strong></p>
+<pre><code>pwd
+cd ~/.ssh</code></pre><p><img src="/images/2020/Github%20push%20pull%20ssh%20windows10/Untitled%201.png" alt="Github%20push%20pull%20ssh%20windows10/Untitled%201.png"></p>
+<p>현재 사용자 계정의 폴더에 .ssh라는 폴더 가 있는지 확인해보자.</p>
+<p>난 현재 OS를 초기화 한 상태라서 위처럼 폴더 자체가 없다.</p>
+<p>해당 폴더를 만들고 내부로 진입하자.</p>
+<p><strong>git bash 명령어</strong></p>
+<pre><code>cd ~/.ssh
+mkdir ./ssh
+ls -al</code></pre><p><img src="/images/2020/Github%20push%20pull%20ssh%20windows10/Untitled%202.png" alt="Github%20push%20pull%20ssh%20windows10/Untitled%202.png"></p>
+<p>이제 .ssh 폴더 내부에서 ssh를 생성하자.</p>
+<p><strong>git bash 명령어</strong></p>
+<pre><code>ssh-keygen -t rsa -b 4096 -C &quot;example@email.com&quot;</code></pre><p>위 명령어는 ssh 비대칭 키를 생성하는 명령어 이다.</p>
+<ul>
+<li>ssh-keygen : ssh 비대칭키 생성 명령어</li>
+<li>-t rsa : 암호화 타입을 rsa 방식을 사용</li>
+<li>-b 4096 : 생성할 키의 비트수 4096으로 지정, rsa 타입을 위해선 최소 768 비트가 필요하며 default로 2048 비트이다. 4096으로 더 난독화된 키를 생성한다.</li>
+<li>-C  “<a href="mailto:example@email.com" rel="external nofollow noopener noreferrer" target="_blank">example@email.com</a>“ : 코멘트로 일종의 주석이다. 보통 이메일 계정이나 아이디등을 입력한다.</li>
+</ul>
+<p>위명령어를 입력하면 다음처럼 공개키, 비밀키를 생성을 한다.</p>
+<p><img src="/images/2020/Github%20push%20pull%20ssh%20windows10/Untitled%203.png" alt="Github%20push%20pull%20ssh%20windows10/Untitled%203.png"></p>
+<p><strong>Enter</strong>를 눌러서 현재위치인 .ssh/id_rsa 파일을 생성하게 하자.</p>
+<p><img src="/images/2020/Github%20push%20pull%20ssh%20windows10/Untitled%204.png" alt="Github%20push%20pull%20ssh%20windows10/Untitled%204.png"></p>
+<p>그 다음에는 암호를 입력하라고 한다. 이 ssh를 사용할 때 암호 입력으로 한번더 검증을 하기 위해서는 여기에 암호를 넣어주어야 한다.</p>
+<p>그냥 enter를 누를경우 ssh키 사용시 암호입력 없이 사용이 된다.</p>
+<p>난 암호 입력을 사용하고 싶으니 <strong>암호를 입력한다</strong>.</p>
+<p>암호 확인을 위해서 두번 입력해 주어야 한다.</p>
+<p><img src="/images/2020/Github%20push%20pull%20ssh%20windows10/Untitled%205.png" alt="Github%20push%20pull%20ssh%20windows10/Untitled%205.png"></p>
+<p><img src="/images/2020/Github%20push%20pull%20ssh%20windows10/Untitled%206.png" alt="Github%20push%20pull%20ssh%20windows10/Untitled%206.png"></p>
+<p>위처럼 ssh 가 생성이 완료 되었다.</p>
+<p>id_rsa는 비밀키이고, id_rsa.pub는 공개키이다. </p>
+<p>이 <strong>id_rsa.pub 공개키</strong>가 github에 등록해야 할 대상이다. </p>
+<p>해당 파일을 문서 편집기로 열어서 내용을 클립보드에 복사하자.</p>
+<p><img src="/images/2020/Github%20push%20pull%20ssh%20windows10/Untitled%207.png" alt="Github%20push%20pull%20ssh%20windows10/Untitled%207.png"></p>
+<h2 id="2-github에-ssh-공개키를-등록하자"><a href="#2-github에-ssh-공개키를-등록하자" class="headerlink" title="2. github에 ssh 공개키를 등록하자."></a>2. github에 ssh 공개키를 등록하자.</h2><p><img src="/images/2020/Github%20push%20pull%20ssh%20windows10/Untitled%208.png" alt="Github%20push%20pull%20ssh%20windows10/Untitled%208.png"></p>
+<p>github페이지에서 계정의 <strong>Settings</strong>로 들어가자.</p>
+<p><img src="/images/2020/Github%20push%20pull%20ssh%20windows10/Untitled%209.png" alt="Github%20push%20pull%20ssh%20windows10/Untitled%209.png"></p>
+<p>왼쪽 메뉴에서 <strong>SSH and GPG keys</strong>를 클릭하자.</p>
+<p><img src="/images/2020/Github%20push%20pull%20ssh%20windows10/Untitled%2010.png" alt="Github%20push%20pull%20ssh%20windows10/Untitled%2010.png"></p>
+<p><strong>New SSH key</strong> 를 클릭하자.</p>
+<p><img src="/images/2020/Github%20push%20pull%20ssh%20windows10/Untitled%2011.png" alt="Github%20push%20pull%20ssh%20windows10/Untitled%2011.png"></p>
+<p>Title에는 ssh를 설명하는 내용을 적어주고.</p>
+<p>key에는 아까 생성하고 클립보드에 복사한 ssh 공개키를 붙여넣자.</p>
+<p>그리고 <strong>Add SSH key</strong> 버튼을 누르면 끝!</p>
+<p><img src="/images/2020/Github%20push%20pull%20ssh%20windows10/Untitled%2012.png" alt="Github%20push%20pull%20ssh%20windows10/Untitled%2012.png"></p>
+<p>위처럼 등록이 된다.</p>
+<p>hexo 블로그를 github에 배포해서 동작이 되나 확인해보자.</p>
+<p><img src="/images/2020/Github%20push%20pull%20ssh%20windows10/Untitled%2013.png" alt="Github%20push%20pull%20ssh%20windows10/Untitled%2013.png"></p>
+<p>잘 동작이 된다.</p>
+<p>끝!!!</p>
+<h1 id="마무리"><a href="#마무리" class="headerlink" title="마무리"></a>마무리</h1><p>개발 pc에서 ssh키를 생성하고 github에 계정에 등록하면, github에 push, pull등을 할때 github 계정으로 push, pull하는 것이 아니라 이 ssh 키로 push, pull을 할 수 있다.</p>
+<p>혹시 github push, pull 할 때 비밀번호 입력등이 귀찮은 경우, ssh 키 생성시 passphrase를 생략할 경우, 비밀번호를 생략해서 push, pull을 할 수 있다.</p>
+<h1 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h1><p><a href="https://storycompiler.tistory.com/112" target="_blank" rel="external nofollow noopener noreferrer">[Ubuntu/Linux] ssh 공개키의 모든 것</a></p>
+<p><a href="https://nickjoit.tistory.com/94" target="_blank" rel="external nofollow noopener noreferrer">GitHub SSH 키 생성 및 등록하여 사용하기</a></p>
+
+      
+      
+          
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+      
+
+
+  
+  
+  
+  
+
+        
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2020/01/24/maven-20200124-java-maven-local-repository/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Hanumoka">
+      <meta itemprop="description" content="아마추어 개발자의 블로그">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hanumoka, IT Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/01/24/maven-20200124-java-maven-local-repository/" class="post-title-link" itemprop="url">maven의 local repository설정으로 jar 추가하기</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">작성일</span>
+
+              <time title="Post created: 2020-01-24 16:02:27" itemprop="dateCreated datePublished" datetime="2020-01-24T16:02:27+09:00">2020-01-24</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Updated at: 2020-04-16 01:50:12" itemprop="dateModified" datetime="2020-04-16T01:50:12+09:00">2020-04-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/maven/" itemprop="url" rel="index">
+                    <span itemprop="name">maven</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 20200427hexo_post_head -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="개요"><a href="#개요" class="headerlink" title="개요"></a>개요</h1><p>얼마 전 Maven 프로젝트에 custom jar를 local  repository에 등록해서 사용해야하는 경우가 있었는데, 구체적인 방법을 몰라서 상당히 애를 먹었었다.</p>
+<p>평소 대충 되면 되나보다 하고 넘어가며 딱히 Maven에 대한 공부를 게을리 한게 이렇게 고생하게 만들 줄이야.</p>
+<p>Maven 프로젝트로 A 프로젝트를 만들어 a.jar를 만들고, 별도의 B 프로젝트에서 앞서 만든 a.jar를 local repository로 주입받아 사용하는 예제를 만들어 보겠다.</p>
+<p>예제를 만들고 테스트하며 그 내용을 시간의 흐름대로 작성한 글이라 두서가 없다는 점을 미리 알린다.</p>
+<h1 id="a-jar를-만들-Maven-프로젝트-만들기"><a href="#a-jar를-만들-Maven-프로젝트-만들기" class="headerlink" title="a.jar를 만들 Maven 프로젝트 만들기"></a>a.jar를 만들 Maven 프로젝트 만들기</h1><p>일단 intelliJ 에서 Maven 프로젝트를 만들어 보자.</p>
+<p><img src="/images/2020/Maven-local-repository-jar/Untitled.png" alt="Maven%20local%20repository%20jar/Untitled.png"></p>
+<p><img src="/images/2020/Maven-local-repository-jar/Untitled%201.png" alt="Maven%20local%20repository%20jar/Untitled%201.png"></p>
+<p><img src="/images/2020/Maven-local-repository-jar/Untitled%202.png" alt="Maven%20local%20repository%20jar/Untitled%202.png"></p>
+<p><img src="/images/2020/Maven-local-repository-jar/Untitled%203.png" alt="Maven%20local%20repository%20jar/Untitled%203.png"></p>
+<p>위 화면들 처럼 Aproject라는 Maven 프로젝트를 만들었다.</p>
+<p><img src="/images/2020/Maven-local-repository-jar/Untitled%204.png" alt="Maven%20local%20repository%20jar/Untitled%204.png"></p>
+<p>생성된 프로젝트에서 App 클래스에 main 메소드에서 이 프로젝트가 A project 임을 명시했다.</p>
+<p>실행해보니 콘솔에 System.out.println이 정상적으로 동작하는 것을 확인 할 수 있다.</p>
+<p>지금 Aproject에는 App클래스와 그 안에 main 메소드만 덩그러니 있다.</p>
+<p>나중에 생성할 Bproject에서 사용할 service 클래스를 추가하자.</p>
+<p><img src="/images/2020/Maven-local-repository-jar/Untitled%205.png" alt="Maven%20local%20repository%20jar/Untitled%205.png"></p>
+<p>위처럼 문자열을 리턴하는 service 클래스를 추가했다.</p>
+<p>위 프로젝트를 Maven package 명령으로 jar를 만들고, 그 jar를 실행시키면 아래처럼 오류가 발생 할 것이다..</p>
+<p><img src="/images/2020/Maven-local-repository-jar/Untitled%206.png" alt="Maven%20local%20repository%20jar/Untitled%206.png"></p>
+<p>위처럼 Maven clean 성공.</p>
+<p><img src="/images/2020/Maven-local-repository-jar/Untitled%207.png" alt="Maven%20local%20repository%20jar/Untitled%207.png"></p>
+<p>그리고 Maven package 명령으로 Aproject의 jar를 생성했다.</p>
+<p>생성된 jar를 java 명령으로 실행시키면 정작 아래처럼 메세지와 동작하지 않는다.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">메세지: 기본 Manifest 속성이 없습니다.</span><br></pre></td></tr></table></figure>
+<p><img src="/images/2020/Maven-local-repository-jar/Untitled%208.png" alt="Maven%20local%20repository%20jar/Untitled%208.png"></p>
+<p>실행 가능한 jar를 만들기 위해서는, 해당 jar파일을 실행하기위한 일종의 명세서 파일이 필요하다.</p>
+<p>이 파일은 jar 파일 내부에 존재 해야 한다.</p>
+<p>지금 Maven 프로젝트 build 설정에서는 그 명세서 파일(MANIFEST.MF)을 Maven package 명령시 자동으로 만들어주지 않아서 위처럼 jar가 실행되지 않는 것이다.</p>
+<h2 id="실행가능한-Maven-jar-설정-추가하기"><a href="#실행가능한-Maven-jar-설정-추가하기" class="headerlink" title="실행가능한 Maven jar 설정 추가하기"></a>실행가능한 Maven jar 설정 추가하기</h2><p>이제 위 프로젝트를 실행가능한 jar 프로젝트로 만들어 보자.</p>
+<p>일단 pom.xml파일에 아래처럼 packaging을 jar로 하겠다고 명시한다.</p>
+<p><img src="/images/2020/Maven-local-repository-jar/Untitled%209.png" alt="Maven%20local%20repository%20jar/Untitled%209.png"></p>
+<p>그리고 기존의 build 부분을 아래처럼 수정해주자.</p>
+<p><img src="/images/2020/Maven-local-repository-jar/Untitled%2010.png" alt="Maven%20local%20repository%20jar/Untitled%2010.png"></p>
+<p>중요한 부분은 mainClass태그 내부에 해당 프로젝트의 앤트리 포인트가 되는 클래스의 경로를 넣어주어야 한다. </p>
+<p><strong>pom.xml 전체소스</strong></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">project</span> <span class="attr">xmlns</span>=<span class="string">"http://maven.apache.org/POM/4.0.0"</span> <span class="attr">xmlns:xsi</span>=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span></span></span><br><span class="line"><span class="tag">  <span class="attr">xsi:schemaLocation</span>=<span class="string">"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">modelVersion</span>&gt;</span>4.0.0<span class="tag">&lt;/<span class="name">modelVersion</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.example<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>Aproject<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">packaging</span>&gt;</span>jar<span class="tag">&lt;/<span class="name">packaging</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.0-SNAPSHOT<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="tag">&lt;<span class="name">name</span>&gt;</span>Aproject<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">  <span class="comment">&lt;!-- FIXME change it to the project's website --&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">url</span>&gt;</span>http://www.example.com<span class="tag">&lt;/<span class="name">url</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="tag">&lt;<span class="name">properties</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">project.build.sourceEncoding</span>&gt;</span>UTF-8<span class="tag">&lt;/<span class="name">project.build.sourceEncoding</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">maven.compiler.source</span>&gt;</span>1.7<span class="tag">&lt;/<span class="name">maven.compiler.source</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">maven.compiler.target</span>&gt;</span>1.7<span class="tag">&lt;/<span class="name">maven.compiler.target</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">properties</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>junit<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>junit<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">version</span>&gt;</span>4.11<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">scope</span>&gt;</span>test<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="tag">&lt;<span class="name">build</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">plugins</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">plugin</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.maven.plugins<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>maven-jar-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">version</span>&gt;</span>3.2.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">archive</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">manifest</span>&gt;</span></span><br><span class="line">              <span class="tag">&lt;<span class="name">mainClass</span>&gt;</span></span><br><span class="line">                org.example.App</span><br><span class="line">              <span class="tag">&lt;/<span class="name">mainClass</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">manifest</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;/<span class="name">archive</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">plugins</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">build</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">project</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>이제 다시 maven clean 후 maven package 를 실행시켜 새로 jar파일을 생성하고 실행해보자.</p>
+<p><img src="/images/2020/Maven-local-repository-jar/Untitled%2011.png" alt="Maven%20local%20repository%20jar/Untitled%2011.png"></p>
+<p>위처럼 jar파일을 직접 실행시켰을때, 정상동작하는 것을 확인 할 수 있다.</p>
+<p>내가 개발한 일종의 커스텀 jar파일을 생성했다.</p>
+<p>그럼 이제 새로운 B 프로젝트를 생성하고 이 jar 파일을 사용하려면 어떻게 해야 할까?</p>
+<p>경우의 수는 다음과 같을 것이다.</p>
+<ol>
+<li>만약 당신이 오픈소스를 개발한다면, 그냥 maven repository에 올려서 사용하면 될 것이다.</li>
+<li>만약 당신이 인터넷망이 아닌, 일종의 사내망에서 개발중이고 사내망에 nexus와 같은 사설 maven 저장소가 존재한다면 그곳에 올려서 사용 할 수도 있을 것이다.</li>
+<li><strong>다 귀찮다. 그냥 해당 a. jar파일을 새로운 프로젝트B에 직접 주입해서 사용할 것이고, B프로젝트를 pakcage 했을때, 일종의 외부 라이브러리인 a.jar 가 같이 패키징이 되어야 한다.</strong></li>
+</ol>
+<p>내가 지금 할 방법은 3번이다. </p>
+<h1 id="Maven-local-repository를-사용해서-특정-jar파일을-프로젝트에-포함시키기"><a href="#Maven-local-repository를-사용해서-특정-jar파일을-프로젝트에-포함시키기" class="headerlink" title="Maven local repository를 사용해서 특정 jar파일을 프로젝트에 포함시키기"></a>Maven local repository를 사용해서 특정 jar파일을 프로젝트에 포함시키기</h1><p>Maven local repository를 강조하는 이유는, 내가 이 글을 쓰는 목적이기도 한다.</p>
+<p>Eclipce나 IntelliJ와 같은 툴에서는 자체적으로 외부라이브러리를 추가하는 설정이 존재한다.</p>
+<p>Eclipce의 경우 External library 같은 설정으로 있었던 기억이 있다.</p>
+<p>위와 같이 개발도구의 설정으로 jar를 추가할 경우, 개발할때는 문제가 없지만, 정작 프로젝트를 package 했을때, 내가 임이로 추가한 jar라 같이 패키징이 안되는 경우가 있다.</p>
+<p>따라서 내가 임의로 jar등을 외부 라이브러리로 추가할 때는 개발도구의 설정을 사용하기보다는, 개발 중인 프로젝트의 build 도구(Maven, gradle)의 설정으로 jar 외부 라이브러리를 추가하는 것이 깔끔하다.</p>
+<p>새로운 Maven 프로젝트를 생성하겠다. </p>
+<p>프로젝트명은 Bproject이다. 생성방법은 위 Aproject와 동일하기 때문에, 그 과정은 생략하겠다.</p>
+<p><img src="/images/2020/Maven-local-repository-jar/Untitled%2012.png" alt="Maven%20local%20repository%20jar/Untitled%2012.png"></p>
+<p>위처럼 이름만 다른 Bproject를 생성했다. </p>
+<p>그 다음에 Bproject의 pom.xml을 다음과 같이 수정해주자.</p>
+<p>pom.xml</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">project</span> <span class="attr">xmlns</span>=<span class="string">"http://maven.apache.org/POM/4.0.0"</span> <span class="attr">xmlns:xsi</span>=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span></span></span><br><span class="line"><span class="tag">  <span class="attr">xsi:schemaLocation</span>=<span class="string">"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">modelVersion</span>&gt;</span>4.0.0<span class="tag">&lt;/<span class="name">modelVersion</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.example<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>Bproject<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">packaging</span>&gt;</span>jar<span class="tag">&lt;/<span class="name">packaging</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.0-SNAPSHOT<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="tag">&lt;<span class="name">name</span>&gt;</span>Bproject<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">  <span class="comment">&lt;!-- FIXME change it to the project's website --&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">url</span>&gt;</span>http://www.example.com<span class="tag">&lt;/<span class="name">url</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="tag">&lt;<span class="name">repositories</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">repository</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">id</span>&gt;</span>localrepository<span class="tag">&lt;/<span class="name">id</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">url</span>&gt;</span>file://$&#123;basedir&#125;/lib<span class="tag">&lt;/<span class="name">url</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">repository</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">repositories</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="tag">&lt;<span class="name">properties</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">project.build.sourceEncoding</span>&gt;</span>UTF-8<span class="tag">&lt;/<span class="name">project.build.sourceEncoding</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">maven.compiler.source</span>&gt;</span>1.7<span class="tag">&lt;/<span class="name">maven.compiler.source</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">maven.compiler.target</span>&gt;</span>1.7<span class="tag">&lt;/<span class="name">maven.compiler.target</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">properties</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>junit<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>junit<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">version</span>&gt;</span>4.11<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">scope</span>&gt;</span>test<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.example<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>Aproject<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.0-SNAPSHOT<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="tag">&lt;<span class="name">build</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">plugins</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">plugin</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.maven.plugins<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>maven-jar-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">version</span>&gt;</span>3.2.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">archive</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">manifest</span>&gt;</span></span><br><span class="line">              <span class="tag">&lt;<span class="name">addClasspath</span>&gt;</span>true<span class="tag">&lt;/<span class="name">addClasspath</span>&gt;</span></span><br><span class="line">              <span class="tag">&lt;<span class="name">classpathPrefix</span>&gt;</span>lib/<span class="tag">&lt;/<span class="name">classpathPrefix</span>&gt;</span></span><br><span class="line">              <span class="tag">&lt;<span class="name">mainClass</span>&gt;</span></span><br><span class="line">                org.example.App</span><br><span class="line">              <span class="tag">&lt;/<span class="name">mainClass</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">manifest</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;/<span class="name">archive</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">plugin</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.maven.plugins<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>maven-dependency-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">executions</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">execution</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">id</span>&gt;</span>copy<span class="tag">&lt;/<span class="name">id</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">phase</span>&gt;</span>package<span class="tag">&lt;/<span class="name">phase</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">goals</span>&gt;</span></span><br><span class="line">              <span class="tag">&lt;<span class="name">goal</span>&gt;</span>copy-dependencies<span class="tag">&lt;/<span class="name">goal</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">goals</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">              <span class="tag">&lt;<span class="name">outputDirectory</span>&gt;</span></span><br><span class="line">                $&#123;project.build.directory&#125;/lib</span><br><span class="line">              <span class="tag">&lt;/<span class="name">outputDirectory</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;/<span class="name">execution</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">executions</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">plugins</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">build</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">project</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p><img src="/images/2020/Maven-local-repository-jar/Untitled%2013.png" alt="Maven%20local%20repository%20jar/Untitled%2013.png"></p>
+<p>Aproject와 마찬가지로 jar 설정을 해준다.</p>
+<p><img src="/images/2020/Maven-local-repository-jar/Untitled%2014.png" alt="Maven%20local%20repository%20jar/Untitled%2014.png"></p>
+<p>역시 Aproject와 마찬가지로 실행가능한 jar 생성을 위한 build plugin 설정도 추가해준다.</p>
+<p>아래 부분이 실제 Maven에서 local repository를 설정하는 부분이다.</p>
+<p><img src="/images/2020/Maven-local-repository-jar/Untitled%2015.png" alt="Maven%20local%20repository%20jar/Untitled%2015.png"></p>
+<p>id는 본인이 편한 고유값을 주면 된다.</p>
+<p>url은 maven local repository의 jar 파일들이 있을 경로를 설정하는 부분이다.</p>
+<p>관리하기 쉽게 위 처럼 basedir이라는 변수를 사용해서, 현재 프로젝트 root 경로에 lib 폴더를 설정했다.</p>
+<p>이제 해야할 일은 Aproject에서 jar 파일과 pom 파일을 추출해야 한다.</p>
+<p>Aproject로 돌아가서 jar파일과 pom파일을 추출하자.</p>
+<h2 id="Maven-local-repository를-위한-jar-추출하기"><a href="#Maven-local-repository를-위한-jar-추출하기" class="headerlink" title="Maven local repository를 위한 jar 추출하기"></a>Maven local repository를 위한 jar 추출하기</h2><p><strong>Aproject</strong>에서 maven clean 후 maven install 을 하자.</p>
+<p>maven install을 하면 해당 프로젝트를 빌드해서 현재 pc의 전역 메이븐 저장소에 저장하게 된다. </p>
+<p><img src="/images/2020/Maven-local-repository-jar/Untitled%2016.png" alt="Maven%20local%20repository%20jar/Untitled%2016.png"></p>
+<p>설치가 잘 되었는지 현재 pc의 메이븐 전역 저장소를 확인해보자.</p>
+<p>윈도우 탐색기로 C:\Users\계정명.m2\repository 가면 메이븐 전역 저장소를 확인 할수 있다.</p>
+<p>Aproject의 경로는 groupId와 artifactId 그리고 version 으로 경로가 조합되어 생선된다.</p>
+<p><img src="/images/2020/Maven-local-repository-jar/Untitled%2017.png" alt="Maven%20local%20repository%20jar/Untitled%2017.png"></p>
+<p>해당 경로에 가보면 jar파일과 pom 파일이 생성된 것을 확인 할 수 있다.</p>
+<p>위 Aproject 폴더를 통째로 복사하자.</p>
+<p>그리고 Bproject 폴더로 이동해서 프로젝트 root 경로에 lib 폴더를 만들고 아래처럼 붙여넣자.</p>
+<p><img src="/images/2020/Maven-local-repository-jar/Untitled%2018.png" alt="Maven%20local%20repository%20jar/Untitled%2018.png"></p>
+<p>그리고 Bproject의 pom.xml 에 아래처럼 해당 jar를 디펜던시로 추가해주자.</p>
+<p><img src="/images/2020/Maven-local-repository-jar/Untitled%2019.png" alt="Maven%20local%20repository%20jar/Untitled%2019.png"></p>
+<p>lib 폴더의 경로와 pom.xml의 dependency groupId, artifactId, version을 잘 맞쳐주어야 오류가 나지 않는다.</p>
+<p>Bproject의 main 메소드에서 추가한 자르의 Aservice클래스를 가져와서 호출하는 코드를 추가하고 실행하면 아래처럼 정상 동작을 확인 할 수 있다.</p>
+<p><img src="/images/2020/Maven-local-repository-jar/Untitled%2020.png" alt="Maven%20local%20repository%20jar/Untitled%2020.png"></p>
+<p>여기까지 해서 된다고 안심 하면 안된다. </p>
+<p>사실 maven local repository 설정 없이, 전역 maven 저장소에 maven install 로 설치되어 있다면 위처럼 개발툴에서 코드상에서 해당 jar를 가져와서 호출이 가능하다.</p>
+<p>하지만 maven local repository 설정이 없다면 Bproject를 maven package해서 생성한 jar를 실행할 경우, 해당 jar를 찾지 못하고 오류가 날 것이다.</p>
+<p>아래가 maven local repository 설정없이 maven package했을때, 라이브러리를 찾지 못하고 오류가 난 상황이다.</p>
+<p><img src="/images/2020/Maven-local-repository-jar/Untitled%2021.png" alt="Maven%20local%20repository%20jar/Untitled%2021.png"></p>
+<p>하지만 우리는 앞서</p>
+<p>pom.xml에 서 아래처럼 maven local repository 경로를 설정했고</p>
+<p><img src="/images/2020/Maven-local-repository-jar/Untitled%2015.png" alt="Maven%20local%20repository%20jar/Untitled%2015.png"></p>
+<p>또 아래처럼 Aproject의 install 결과물을 해당 경로에 이동 시켰으며</p>
+<p><img src="/images/2020/Maven-local-repository-jar/Untitled%2018.png" alt="Maven%20local%20repository%20jar/Untitled%2018.png"></p>
+<p>pom.xml 에 아래처럼 해당 라이브러리를 추가했기 때문에</p>
+<p><img src="/images/2020/Maven-local-repository-jar/Untitled%2019.png" alt="Maven%20local%20repository%20jar/Untitled%2019.png"></p>
+<p>Bproject를 maven package하여 생성한 jar를 실행 시켰을때, 아래처럼 정상동작하는 것을 확인 할수 있다.</p>
+<p><img src="/images/2020/Maven-local-repository-jar/Untitled%2022.png" alt="Maven%20local%20repository%20jar/Untitled%2022.png"></p>
+<p>끝!!!</p>
+<h2 id="예제-github-경로"><a href="#예제-github-경로" class="headerlink" title="예제 github 경로"></a>예제 github 경로</h2><p><a href="https://github.com/hanumoka/20200124blog-maven-local-repository" target="_blank" rel="external nofollow noopener noreferrer">https://github.com/hanumoka/20200124blog-maven-local-repository</a></p>
+<h3 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h3><p><a href="https://stackoverflow.com/questions/5692256/maven-best-way-of-linking-custom-external-jar-to-my-project" target="_blank" rel="external nofollow noopener noreferrer">https://stackoverflow.com/questions/5692256/maven-best-way-of-linking-custom-external-jar-to-my-project</a></p>
+<p><a href="https://okjsp.tistory.com/1165644118" target="_blank" rel="external nofollow noopener noreferrer">https://okjsp.tistory.com/1165644118</a></p>
+<p><a href="https://denodo1.tistory.com/282" target="_blank" rel="external nofollow noopener noreferrer">https://denodo1.tistory.com/282</a></p>
+<p><a href="https://blog.seotory.com/post/2016/03/maven-local-repository-setting" target="_blank" rel="external nofollow noopener noreferrer">https://blog.seotory.com/post/2016/03/maven-local-repository-setting</a></p>
+<p><a href="https://yujuwon.tistory.com/entry/maven%EC%97%90-custom-jar%EB%A5%BC-%EC%A7%91%EC%96%B4%EB%84%A3%EC%96%B4-%EB%B3%B4%EC%9E%90" target="_blank" rel="external nofollow noopener noreferrer">https://yujuwon.tistory.com/entry/maven에-custom-jar를-집어넣어-보자</a></p>
+
+      
+      
+          
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+      
+
+
+  
+  
+  
+  
+
+        
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
     <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2019/12/29/react-20191229-react-nginx-deploy/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -750,976 +1699,6 @@ gtag('config', 'UA-100596920-1');
   
   
 
-        
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
-    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2019/12/28/obsStudio-20191228-OBSstudio-nvidia-setting/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Hanumoka">
-      <meta itemprop="description" content="아마추어 개발자의 블로그">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hanumoka, IT Blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/12/28/obsStudio-20191228-OBSstudio-nvidia-setting/" class="post-title-link" itemprop="url">OBS Studio 디스플레이 캡쳐 검은화면 설정</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">작성일</span>
-
-              <time title="Post created: 2019-12-28 13:06:07" itemprop="dateCreated datePublished" datetime="2019-12-28T13:06:07+09:00">2019-12-28</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Updated at: 2020-04-16 01:50:12" itemprop="dateModified" datetime="2020-04-16T01:50:12+09:00">2020-04-16</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/OBSstudio/" itemprop="url" rel="index">
-                    <span itemprop="name">OBSstudio</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-      <!-- 20200427hexo_post_head -->
-      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
-      <script>
-          (adsbygoogle = window.adsbygoogle || []).push({});
-      </script>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="문제발생"><a href="#문제발생" class="headerlink" title="문제발생"></a>문제발생</h1><p>나는 코딩 테스트나 개발환경 셋팅을 할때, 그것들을 기록하고 싶은경우 OBS Studio 라는 화면 녹화 프로그램을 사용한다.</p>
-<p>노트북에서 OBS Studio를 잘 쓰다가, 뭔가 업데이트(Windows인지, Nvidia인지 모르겠지만)된 뒤로 갑작이 OBS Studio의 디스플레이 캡쳐가 검은 화면으로 나오면서, 녹화시에 검은 화면만 녹화가 되었다.</p>
-<p>참고로 특정 Window 화면 녹화는 정상적으로 되었다.</p>
-<h1 id="해결방법"><a href="#해결방법" class="headerlink" title="해결방법"></a>해결방법</h1><p>내 경우에는 다음과 같은 방법으로 문제를 해결 했다.</p>
-<p>만약 OBS studio가 실행중이라면 일단 종료를 시킨다.</p>
-<p>그리고 바탕화면에서 마우스 우클릭으로 NVIDIA 제어판으로 들어간다.</p>
-<p><img src="/images/2019/20191228OBSStudio/Untitled.png" alt="설정1"></p>
-<p>열린 NVIDIA 제어판에서 3D 설정 - 3D설정 관리로 화면 진입후 프로그램 설정 탭을 선택한다.</p>
-<p>내 경우에는 1.사용자 정의할 프로그램 선택에 OBS Studio가 이미 등록이 되어 있었으나, 만약 없다면 추가 버튼으로 OBS Studio를 추가해 준다.</p>
-<p>그리고 2.이 프로그램에 대한 기본 그래픽 프로세서 선택에서 통합 그래픽을 선택하고 적용버튼을 클릭해서 설정을 저장한다.</p>
-<p>이 설정으로 나는 문제를 해결 했다.</p>
-<p><img src="/images/2019/20191228OBSStudio/Untitled%201.png" alt="설정2"></p>
-<p>끝!!!</p>
-
-      
-      
-          
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-
-  
-      
-
-
-  
-  
-  
-  
-
-        
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
-    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2019/12/25/elasticsearch-20191225-Elasticsearch-hello-Elasticsearch/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Hanumoka">
-      <meta itemprop="description" content="아마추어 개발자의 블로그">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hanumoka, IT Blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/12/25/elasticsearch-20191225-Elasticsearch-hello-Elasticsearch/" class="post-title-link" itemprop="url">Elasticsearch-hello-Elasticsearch</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">작성일</span>
-
-              <time title="Post created: 2019-12-25 17:53:26" itemprop="dateCreated datePublished" datetime="2019-12-25T17:53:26+09:00">2019-12-25</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Updated at: 2020-04-16 01:50:11" itemprop="dateModified" datetime="2020-04-16T01:50:11+09:00">2020-04-16</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Elasticsearch/" itemprop="url" rel="index">
-                    <span itemprop="name">Elasticsearch</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-      <!-- 20200427hexo_post_head -->
-      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
-      <script>
-          (adsbygoogle = window.adsbygoogle || []).push({});
-      </script>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="엘라스틱서치-입문과-활용"><a href="#엘라스틱서치-입문과-활용" class="headerlink" title="엘라스틱서치 입문과 활용"></a>엘라스틱서치 입문과 활용</h1><h2 id="1-엘라스틱-서치-개요"><a href="#1-엘라스틱-서치-개요" class="headerlink" title="1.엘라스틱 서치 개요"></a>1.엘라스틱 서치 개요</h2><h3 id="1-1-엘라스틱-서치란"><a href="#1-1-엘라스틱-서치란" class="headerlink" title="1-1.엘라스틱 서치란"></a>1-1.엘라스틱 서치란</h3><p>우리는 지금 정보의 홍수 속에 살고 있다. 매일 매초 인터넷에 연결된 수없이 많은 시스템으로부터 헤아릴 수 없을 만큼 많은 데이터가 쏟아져 나오고 있으며, 이 데이터로부터 의미 있고 가치 있는 정보를 뽑아내기 위한 시스템 또한 수도 없이 개발되고 있다. </p>
-<p>특히 SNS와 각종 포털 사이트에서 사용자의 활동 정보 등에 대한 대용량 데이터의 실시간 분석 기술은 <strong>빅데이터</strong>라는 이름의 트렌드로 자리 잡으며 수많은 업체와 정부 기관에 데이터 활용의 새 지평을 열었다.</p>
-<p>이와 같은 정보의 홍수속에서 필요로 하는 정확한 데이터를 검색하여 찾는 기술은 무엇보다 중요해 졌다. 데이터를 검색하는데 있어 전 세계적으로 가장 널리 사용되고 있는 기술중 하나가 바로 아파치 루씬(Apache Lucene)이다. </p>
-<p>자바로 개발된 루씬은 오픈소스로 현재 아파치 Top 레벨 프로젝트로 등록돼 있다.</p>
-<p>루씬은 강력한 검색 기능이 있지만, 완전한 솔루션이 아닌 라이브러리로 제공되기 대문에 개인이나 기업에서 실제로 사용혀려면 루씬 라이브러리를 이용해 검색 솔루션을 스스로 개발해야 한다.</p>
-<p>아파치 루씬 라이브러리를 실무에 사용하기 위해 티카(Tica), 솔라(Solr)등의 솔루션이 개발되어 있는데 가장 <strong>최근에 개발돼 선풍적인 인기를 끌고 있는 솔루션이 바로 엘라스틱 서치이다.</strong></p>
-<p>엘라스틱서치는 샤이 배논(Shay Bannon)이 개발했으며 현재 오픈소스 프로젝트로 진행되고 있다. </p>
-<p>엘라스틱 서치를 이용하여 분산환경에서의 병렬 처리와 실시간 검색을 지원하고, 확장성이 뛰어난 대규모 시스템을 쉽게 구축할 수 있다.</p>
-<p><strong>엘라스틱 서치를 요약하자면, 빅데이터(비정형데이터)로부터 원하는 데이터를 검색하기 위한 검색엔진 솔루션이라고 할수 있다.</strong></p>
-<h3 id="1-2-용어-정리를-통한-엘라스틱서치의-이해"><a href="#1-2-용어-정리를-통한-엘라스틱서치의-이해" class="headerlink" title="1-2. 용어 정리를 통한 엘라스틱서치의 이해"></a>1-2. 용어 정리를 통한 엘라스틱서치의 이해</h3><p>네이버나 구글에서 제공하는 다양한 서비스는 일상에서 빼놓을 수 없는 서비스로 자리매김했다.</p>
-<p>그중에서도 사용자가 원하는 검색어에 대한 결과를 제공하는 검색 서비스가 가장 많이 사용되고 있다.</p>
-<p>그리고 이러한 검색 서비스를 부르는 용어도 다양하다.</p>
-<p><strong>검색엔진</strong>, <strong>검색시스템</strong>, <strong>검색서비스</strong> 등의 용어가 대표적인데 무언가 비슷하면서도 다른 듯한 알쏭달쏭한 느낌이 든다. </p>
-<p>먼저 <strong>검색엔진(Search engine)</strong>은 광활한 데이터에서 원하는 검색결과는 제공하는 프로그램이다.</p>
-<p>검색엔진은 검색 결과로 제공되는 데이터의 특성에 따라 구현 형태가 각각 달라진다.</p>
-<p>검색 역사에 한 획을 그은 야후(Yahoo)는 디렉터리 기반의 검색 결과를 세계 최초로 제공했다.</p>
-<p>이를 바탕으로 요즘에는 뉴스, 블로그, 카페 등 대범주에 따른 카테고리별 검색결과를 대부분의 검색 업체에서 제공하고 있다.</p>
-<p><strong>검색 시스템(Search system)</strong>은 대용량 데이터를 기반으로 신뢰성 있는 검색 결과를 제공하기 위해 검색엔진을 기반으로 구축된 시스템을 통칭하는 용어다.</p>
-<p>수집기를 이용해 방대한 데이터를 수집하고 이를 다수의 검색엔진을 이용해 색인하고 검색결과를 UI로 제공한다. </p>
-<p>시스템 내부의 정책에 따라 관련도가 다수 높은 문서를 검색 결과의 상위에 배치할 수 있을뿐더러 특정 필드나 문서에 가중치를 둬서 검색의 정확도를 높일 수도 있다.</p>
-<p><strong>검색 서비스(search service)</strong>는 검색엔진을 기반으로 구축한 검색 시스템을 활용해 검색 결과를 서비스로 제공한다.</p>
-<p>엄밀히 말하자면 <strong>엘라스틱서치는 검색엔진</strong>으로 분류 할 수 있다.</p>
-<p>그리고 <strong>ELK스택을 활용하여 검색엔진보다 더 큰 검색시스템</strong>을 구성 할수 있다.</p>
-<pre><code>검색 서비스(ex:google, naver ) &gt; 검색 시스템(ex: ELK스택) &gt; 검색엔진(ex: 엘라스틱 서치)</code></pre><h3 id="1-3-검색-시스템의-구성-요소"><a href="#1-3-검색-시스템의-구성-요소" class="headerlink" title="1-3. 검색 시스템의 구성 요소"></a>1-3. 검색 시스템의 구성 요소</h3><p>이번에는 검색시스템의 구성요소를 통해 엘라스틱서치를 알아보자.</p>
-<p>검색 시스템의 기본 구조는 개발사에 따라 서로 조금씩 다르지만 기본 구조는 같다. </p>
-<p>일반적으로 정보를 수집하는 수집기, 수집한 데이터를 저장하는 스토리지, 수집한 데이터를 검색에 적절한 형태로 변환하는 색인기, 색인된 데이터에서 일치하는 문서를 찾는 검색기로 구성된다.</p>
-<p><strong>수집기</strong></p>
-<p>수집기는 웹사이트, 블로그, 카페 등 웹에서 필요한 정보를 수집하는 프로그램이다.</p>
-<p>크롤러(Crawler), 스파이더(Spider), 웜(Worms), 웹 로봇(Web Robot) 등으로도 불린다.</p>
-<p>파일, 데이터베이스, 웹페이지 등 웹상의 대부분의 정보가 수집대상이다.</p>
-<p>파일의 경우 수집기가 파일명, 파일 내용, 파일 경로 등의 정보를 수집하고 저장하면 검색엔진이 저장된 정보를 검색하고, 사용자 질의에 답한다.</p>
-<p><strong>스토리지</strong></p>
-<p>데이터베이스에서 데이터를 저장하는 물리적인 저장소다. 검색엔진은 색인한 데이터를 스토리지에 보관한다.</p>
-<p><strong>색인기</strong></p>
-<p>검색엔진이 수집한 정보에서 사용자 질의와 일치하는 정보를 찾으려면 수집된 데이터를 검색 가능한 구조로 가공하고 저장해야 한다.</p>
-<p>그 역할을 하는 것이 색인기다.</p>
-<p>색인기는 다양한 형태로 분석을 조합해 정보에서 의미가 있는 용어를 추출하고 검색에 유리한 역색인 구조로 데이터를 저장한다.</p>
-<p><strong>검색기</strong></p>
-<p>검색기는 사용자 질의를 입력받아 색인기에서 저장한 역색인 구조에서 일치하는 문서를 찾아 결과로 반환한다.</p>
-<p>질의와 문서가 일치하는지 유사도 기반의 검색 순위 알고리즘으로 판단한다.</p>
-<p>검색기 또한 색인기와 마찬가지로 현태로 분석기를 이용해 사용자 질의에서 유의미한 용어를 추출해 검색한다.</p>
-<p>따라서 사용하는 형태로 분석기에 따라 검색 품질이 달라진다.</p>
-<p><img src="/images/2019/Hello%20ElasticSearch/1.png" alt="Hello%20ElasticSearch/1.png"></p>
-<p>엘라스틱서치는 위 검색시스템 구성요소 중 색인기, 스토리지, 검색기를 포함하고 있다.</p>
-<h3 id="1-4-관계형-데이터베이스와-엘라스틱서치의-차이점"><a href="#1-4-관계형-데이터베이스와-엘라스틱서치의-차이점" class="headerlink" title="1-4. 관계형 데이터베이스와 엘라스틱서치의 차이점"></a>1-4. 관계형 데이터베이스와 엘라스틱서치의 차이점</h3><p>검색엔진을 설명할 때 항상 비교되는 것이 관계형 데이터베이스(RDMBS)다.</p>
-<p>두 가지 모두 질의와 일치하는 데이터를 찾아 사용자에게 제공한다는 점에서 유사점이 많이 때문이다.</p>
-<p>하지만 관계형 데이터베이스로 검색 기능을 제공하는 데는 많은 문제점이 있다.</p>
-<p>관계형 데이터베이스의 어떠한 한계 때문에 검색엔진이 등장하게 됐는지, 그리고 이 둘은 어떤 점에서 차이점이 있는지 살펴보자.</p>
-<p>데이터베이스는 데이터를 통합 관리하는 데이터의 집합이다. 저장방식에 따라 크게 관계형 또는 계층형 데이터베이스로 나뉜다.</p>
-<p>모든 데이터는 중복을 제거하고 정형 데이터로 구조화해 행과 열로 구성된 테이블에 저장된다.</p>
-<p>SQL문을 이용해 원하는 정보의 검색이 가능한데 텍스트 매칭을 통한 단순한 검색만 가능하다.</p>
-<p>텍스트를 여러 단어로 변형하거나 여러 개의 동의어나 유의어를 활용한 검색은 불가능하다.</p>
-<p>반면 검색엔진은 데이터베이스에서 불가능한 비정형 데이터를 색인하고 검색할 수 있다.</p>
-<p>형태소 분석을 통해 사람이 구사하는 자연어의 처리가 가능해지고 역색인 구조를 바탕으로 빠른 검색 속도를 보장한다.</p>
-<p><strong>엘라스틱서치와 관계평 데이터베이스 비교</strong></p>
-<table>
-<thead>
-<tr>
-<th align="left">엘라스틱서치</th>
-<th align="left">관계형 데이터베이스</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="left">인덱스(Index)</td>
-<td align="left">데이터베이스(Database)</td>
-</tr>
-<tr>
-<td align="left">샤드(Shard</td>
-<td align="left">파티션(Partition)</td>
-</tr>
-<tr>
-<td align="left">타입(Type)</td>
-<td align="left">테이블(Table)</td>
-</tr>
-<tr>
-<td align="left">문서(Document)</td>
-<td align="left">행(Row)</td>
-</tr>
-<tr>
-<td align="left">필드(Field)</td>
-<td align="left">열(Column)</td>
-</tr>
-<tr>
-<td align="left">매핑(Mapping)</td>
-<td align="left">스키마(Schema)</td>
-</tr>
-<tr>
-<td align="left">Query DSL</td>
-<td align="left">SQL</td>
-</tr>
-</tbody></table>
-<p>위 표는 검색엔진의 대표 자자격인 엘라스틱서치와 관계형 데이터베이스의 주요 개념을 비교해 보여준다.</p>
-<p>엘라스틱서치의 인덱스는 관계형 데이터베이스의 데이터베이스와 비슷한 문서의 모음을 뜻한다.</p>
-<p>엘라스틱서치의 타입은 데이터베이스의 테이블과 같은 역을 한다. </p>
-<p>6.0 이하 버전에서는 하나의 인덱스 내부에 기능에 따라 데이터를 분류하고 여러 개의 타입을 만들어 사용했지만 현재(7버전)는 하나의 인덱스에 하나의 타입만을 구성하도록 바뀌었다.</p>
-<p>엘라스틱서치는 하나의 행을 문서라고 부르며, 해당 문서는 데이터베이스 테이블의 한 행을 의미한다.</p>
-<p>또한 엘라스틱서치의 매핑은 필드의 구조와 제약조건에 대한 명세를 말하며 이에 대응하는 관계형 데이터베이스의 개념을 스키마라 한다.</p>
-<p>관계형 데이터베이스와 엘라스틱서치는 인덱스라는 개념을 다르게 사용한다.</p>
-<p>엘라스틱서치의 인덱스는 Database, 앞에 설명했지만 관계형 데이터베이스에서의 인데스는 WHERE 절의 쿼리와 JOIN을 빠르게 만드는 보조 데이터 도구로 사용된다.</p>
-<p>엘라스틱서치와 데이터베이스는 데이터의 추가, 수정, 삭제 방식에도 차이가 있다. </p>
-<p>엘라스틱서치는 기본적으로 HTTP를 통해 JSON 형식의 RESTful API를 이용한다.</p>
-<p>엘라스틱서치는 자바로 개발 됐지만 여러 가지 프로그래밍 언어를 통해 사용할 수도 있다.</p>
-<p><strong>Copy of 추가, 검색, 삭제, 수정 기능 비교</strong></p>
-<table>
-<thead>
-<tr>
-<th align="left">엘라스틱서치에서 사용하는 HTTP 메소드</th>
-<th align="left">기능</th>
-<th align="left">데이터베이스 질의 문법</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="left">GET</td>
-<td align="left">데이터조회</td>
-<td align="left">SELECT</td>
-</tr>
-<tr>
-<td align="left">PUT</td>
-<td align="left">데이터생성</td>
-<td align="left">INSERT</td>
-</tr>
-<tr>
-<td align="left">POST</td>
-<td align="left">인덱스 업데이트, 데이터조회</td>
-<td align="left">UPDATE, SELECT</td>
-</tr>
-<tr>
-<td align="left">DELETE</td>
-<td align="left">데이터삭제</td>
-<td align="left">DELETE</td>
-</tr>
-<tr>
-<td align="left">HEAD</td>
-<td align="left">인덱스정보확인</td>
-<td align="left">-</td>
-</tr>
-</tbody></table>
-<h3 id="1-5-엘라스틱서치의-특징"><a href="#1-5-엘라스틱서치의-특징" class="headerlink" title="1-5. 엘라스틱서치의 특징"></a>1-5. 엘라스틱서치의 특징</h3><p>요즘에는 대량의 데이터를 빠르게 검색하기 위해 NoSQL(No Structured Query Language)를 많이 사용한다.</p>
-<p>엘라스틱서치 NoSQL의 일종으로서 분류가 가능하고 부산 처리를 통해 실시간에 준하는 빠른 검색이 가능하다.</p>
-<p>기존 데이터베이스로는 처리하기 어려운 대량의 비정형 데이터도 검색할 수 있으며, 전문검색(Full Text)과 구조 검색 모두를 지원한다. </p>
-<p>기본적으로는 검색엔진이지만 MongoDB나 Hbase처럼 대용량 스토리지로도 활용할 수 있다.</p>
-<h3 id="1-5-1-엘라스틱서치의-강점"><a href="#1-5-1-엘라스틱서치의-강점" class="headerlink" title="1-5-1. 엘라스틱서치의 강점"></a>1-5-1. 엘라스틱서치의 강점</h3><p><strong>오픈소스 검색엔진</strong></p>
-<p>엘라스틱서치는 아파치 재단의 루씬(Lucene)을 기반으로 개발된 오픈소스 검색엔진이다.</p>
-<p>따라서 전 세계에서 수많은 사람들이 사용하고 있으며, 버그가 발생할 경우에도 대부분 빠르게 해결된다.</p>
-<p>현재 약 2억 5천만 번 이상 다운로드됐는데, 이 수치만 보더라도 얼마나 많은 사람들이 사용하고 있는지 알 수 있다.</p>
-<p>다운로드가 많이 일어난다는 것은 프로젝트가 많이 활성화돼 있다는 것을 의미한다.</p>
-<p><strong>전문검색</strong></p>
-<p>PostgreSQL, MongoDB 같은 대부분의 데이터베이스는 기본 쿼리 및 색인 구조의 한계로 인해 기본적인 텍스트 검색 기능만 제공한다.</p>
-<p>하지만 엘라스틱서치는 좀 더 고차원적인 전문검색(Full Text)이 가능하다.</p>
-<p>전문검색이란 내용 전체를 색인해서 특정 단어가 포함된 문서를 검색하는 것을 말한다.</p>
-<p>기존 관계형 데이터베이스는 전문 검색에 적합하지 않지만 엘라스틱서치는 다양한 기능별, 언어별 플러그인을 조합해 빠르게 검색할 수 있다.</p>
-<p><strong>통계분석</strong></p>
-<p>비정형 로그 데이터를 수집하고 한곳에 모아 통계 분석을 할 수 있다.</p>
-<p>엘라스틱서치와 키바나(Kibana)를 연결하면 실시간으로 쌓이는 로그를 시각화하고 분석할 수 있다.</p>
-<p><strong>스키마리스(Schemaless)</strong></p>
-<p>데이터베이스는 스키마라는 구조에 따라 데이터를 적합한 형태로 변경해서 저장하고 관리한다.</p>
-<p>반면 엘라스틱서치는 정형화되지 않은 다양한 형태의 문서도 자동으로 색인하고 검색할 수 있다.</p>
-<p><strong>RESTful API</strong></p>
-<p>엘라스틱서치는 HTTP 기반의 RESTful API를 지원하고 요청뿐 아니라 응답에도 JSON 형식을 사용해 개발 언어, 운영체제, 시스템에 관계없이 이기종 플랫폼에서도 이용 가능하다.</p>
-<p><strong>멀티테넌시(Multi-tenancy)</strong></p>
-<p>서로 상이한 인덱스일지라도 검색할 필드명만 같으면 여러 개의 인덱스를 한번에 조회할 수 있다.</p>
-<p>이를 이용해 멀티테넌시 기능을 제공할 수 있다.</p>
-<p><strong>Document-Oriented</strong></p>
-<p>여러 계층의 데이터를 JSON 형식의 구조화된 문서로 인덱스에 저장할 수 있다.</p>
-<p>계층 구조로 문서도 한번의 쿼리로 쉽게 조회할 수 있다.</p>
-<p><strong>역색인(Inverted Index)</strong></p>
-<p>앞서 언급했듯이 엘라스틱서치는 루씬 기반의 검색엔진이다. 따라서 엘라스틱서치 또한 역색인을 지원한다.</p>
-<p>반면 MongoDB, 카산드라(Cassandra)같은 일반적인 NoSQL은 역색인을 지원하지 않는다.</p>
-<p>이는 다른 NoSQL 대비 엘라스틱서치의 매우 큰 장점이라 할 수 있다. </p>
-<p><img src="/images/2019/Hello%20ElasticSearch/KakaoTalk_20191204_215703353.png" alt="Hello%20ElasticSearch/KakaoTalk_20191204_215703353.png"></p>
-<p>색인:책의 목차와 같다.</p>
-<p><img src="/images/2019/Hello%20ElasticSearch/KakaoTalk_20191204_215708663.png" alt="Hello%20ElasticSearch/KakaoTalk_20191204_215708663.png"></p>
-<p>역색인:책의 뒷부분에 중요한 키워드로 페이지를 찾을수 있다.</p>
-<p><strong>확장성과 가용성</strong></p>
-<p>10억 개의 문서를 색인한다고 가정해보자. 모든 문서를 색인하는 데 막대한 비용과 시간이 드는 것은 불보듯 뻔하나.</p>
-<p>하지만 엘라스틱서치를 분산 구성해서 확장한다면 대량의 문서를 좀 더 효율적으로 처리할 수 있다.</p>
-<p>분산 환경에서 데이터는 샤드(Shard)라는 작은 단위로 나뉘어 제공되며, 인덱스를 만들 때마다 샤드의 수를 조절할 수 있다.</p>
-<p>이를 통해 데이터의 종류와 성격에 따라 데이터를 분선해서 빠르게 처리할 수 있다.</p>
-<h3 id="1-5-2-엘라스틱서치의-약점"><a href="#1-5-2-엘라스틱서치의-약점" class="headerlink" title="1-5-2. 엘라스틱서치의 약점"></a>1-5-2. 엘라스틱서치의 약점</h3><p>마법주문처럼 보이는 엘라스틱서치도 약점이 있다.</p>
-<p>첫째, <strong>실시간</strong>이 아니다. 일반적으로 색인된 데이터는 통상적으로 1초 뒤에나 검색이 가능해진다.</p>
-<p>색인된 데이터는 내부적으로 커밋(Commit)과 플러쉬(Flush)같은 복잡한 과정을 거치기 때문에 실시간이 아니다.</p>
-<p>엄밀히 따지자면 준 실시간(Near Realtime)이라고 할 수 있다.</p>
-<p>둘째, 트랜잭션과 롤백 기능을 제공하지 않는다. 엘라스틱서치는 기본적으로 분산 시스템으로 구성된다. 전체적인 클러스터의 성능 향상을 위해 시스템적 비용 소모가 큰 롤백(Rollback)과 트랜젝션(Transaction)을 지원하지 않기 때문에 최악의 경우 데이터 손실의 위험이 있다.</p>
-<p>셋째, 데이터의 업데이트를 제공하지 않는다. 엄밀히 말하자면 엘라스틱서치는 업데이트 명령이 요청될 경우 기존 문서를 삭제하고 변경된 내용으로 새로운 문서를 생성하는 방식을 사용한다.</p>
-<p>이러한 이유로 단순 업데이트에 비해서는 상대적으로 많은 비용이 발생한다.</p>
-<p>하지만 이것은 큰 단점은 아니다. 이를 통해 불변적(Immutable)이라는 이점을 취할 수 있기 때문이다.</p>
-<h3 id="1-6-엘라스틱서치-사용사례"><a href="#1-6-엘라스틱서치-사용사례" class="headerlink" title="1-6.엘라스틱서치 사용사례"></a>1-6.엘라스틱서치 사용사례</h3><ul>
-<li>위키피디아(Wikipedia)는 엘라스틱서치를 이용해 전문검색(Full Text Search)를 수행하고 실시간 타이핑 검색, 추천검색어 기능등에 활용 중이다.</li>
-<li>더 가디언(The Guardian)지는 방문객의 로그 분석을 통한 소셜 데이터를 생성해 실시간 응대와 기사에 대한 반응 분석등에 엘라스틱서치를 사용하고 있다.</li>
-<li>스택오버플로어(StackOverflow)에서는 검색 내용과 결과를 통합해 유사한 질문과 해답을 연결하는 데 엘라스틱서치를 활용하고 있다.</li>
-<li>깃허브(Github)에서는 1,300억 줄이 넘는 소스코드를 검색하는 데 엘라스틱서치를 사용중이다.</li>
-<li>골드만 삭스(Goldman Sachs)에서는 매일 5TB가 넘는 데이터를 저장하고 있으며, 엘라스틱서치를 이용해 이 데이터를 주식 시장의 변동을 분석하는데 사용한다.</li>
-</ul>
-<h2 id="2-엘라스틱서치-검색원리-분석과-역색인"><a href="#2-엘라스틱서치-검색원리-분석과-역색인" class="headerlink" title="2.엘라스틱서치 검색원리(분석과 역색인)"></a>2.엘라스틱서치 검색원리(분석과 역색인)</h2><p>엘라스틱서치에서 입력된 데이터를 통해 검색어를 추출하기 위한 프로세스를 거치는데 이 과정을 분석(Analysis)이라고 한다. </p>
-<p>이때 분석 과정에서 사용하는 프로그램을 분석기-애널라이저(Analyzer)라고 하며 분석기는 하나의 토크나이저(Tokenizer)와 0개 또는 1개 이상의 토큰필터(Token Filter)로 구성돼 있다.</p>
-<p>토크나이저는 입력 데이터를 토크나이저에 설정된 기준에 따라 검색어 토큰으로 분리하는 작업을 한다.</p>
-<p>토큰 필터는 토크나이저로 분리된 토큰들에 다시 필터를 적용해서 실제로 검색에 쓰이는 검색어들로 최종 변환하는 작업을 한다.</p>
-<p>엘라스틱 서치에서는 내부적으로 다양한 분석기를 가지고 있으며, 자신만의 분석기를 생성해서 적용할 수도 있다.</p>
-<h3 id="2-1-분석과정"><a href="#2-1-분석과정" class="headerlink" title="2-1. 분석과정"></a>2-1. 분석과정</h3><p>엘라스틱서치에서 데이터를 색인할 때 문사가 분석되는 가정을 한번 살펴보자.</p>
-<p>데이터는 색인될 때 인덱스에 설정된 분석기의 종류에 따라 토크나이저 → 토큰필터 순으로 분석과정을 거친다.</p>
-<p>예제로 문자열 “Around the World in Eighty Days”에 whitespace 토크나이저와 lowercase그리고 stop 토큰필터를 적용시켜 가면서 분석 과정을 차례대로 확인해보자.</p>
-<p>먼저 이 문자열에 whitespace 토크나이저를 적용시켜서 분석을 진행하면 문자열이 다음과 같이 분리된다.</p>
-<p><img src="/images/2019/Hello%20ElasticSearch/1-Page-2_(1).png" alt="Hello%20ElasticSearch/1-Page-2_(1).png"></p>
-<p>whitespace 토크나이저는 공백 또는 줄바꿈을 기준으로 단어를 불리하는 토크나이저다.</p>
-<p>위에서 처럼 withespace토크나이저를 거친 문자열 “Around the Wrold in Eighty Days”는 각 Around, the, World, in, Eighty, Days라는 검색어 토큰으로 색인된다.</p>
-<p>이제 이 검색어 토큰에 lowercase 토큰필터를 적용하면 각 검색어 토큰은 다음과 같이 변경된다.</p>
-<p><img src="/images/2019/Hello%20ElasticSearch/1-Page-3.png" alt="Hello%20ElasticSearch/1-Page-3.png"></p>
-<p>lowercase 토큰필터를 거친 검색어 토큰은 모두 소문자로변환된다. lowercase 토큰필터를 거친 검색어 토큰에 마지막으로 stop 토큰필터를 한번 더 적용하면 검색어 토큰은 다음과 같이 된다.</p>
-<p><img src="/images/2019/Hello%20ElasticSearch/1-Page-4_(1).png" alt="Hello%20ElasticSearch/1-Page-4_(1).png"></p>
-<p>stop 토큰필터는 검색어 토큰 중 불용어(stopwords)에 해당하는 토큰을 검색어 토큰 목록에서 제외시키는 역할을 한다.</p>
-<p>일반적으로 영어 단어 중 the, end, is와 같이 거의 대부분의 문장에 빠지지 않고 들어있는 대명사 또는 전치사 등의 단어를 실제로 검색어로 사용하기에는 문제가 있기 때문에 이러한 단어는 불용어에 해당된다. </p>
-<p>위 내용을 실제 엘라스틱서치에 _analyze API를 통해 확인해 볼 수 있다.</p>
-<p>아래는 whitespace 토크나이저만 적용하여 “Around the Wrold in Eighty Days” 텍스트의 분석을 요청하는 화면이다.</p>
-<p><img src="/images/2019/Hello%20ElasticSearch/Untitled.png" alt="Hello%20ElasticSearch/Untitled.png"></p>
-<p><img src="/images/2019/Hello%20ElasticSearch/Untitled%201.png" alt="Hello%20ElasticSearch/Untitled%201.png"></p>
-<p>위처럼 공백 단위로 잘려진 토큰을 확인 할 수 있다.</p>
-<p>filter로 lowercase를 적용한 결과 아래처럼 분석된 토큰들이 소문자로 변환된 것을 확인 할 수 있다.</p>
-<p><img src="/images/2019/Hello%20ElasticSearch/Untitled%202.png" alt="Hello%20ElasticSearch/Untitled%202.png"></p>
-<p><img src="/images/2019/Hello%20ElasticSearch/Untitled%203.png" alt="Hello%20ElasticSearch/Untitled%203.png"></p>
-<p>이제 여기서 추가로 stop 토큰필터를 적용해보자. </p>
-<p><img src="/images/2019/Hello%20ElasticSearch/Untitled%204.png" alt="Hello%20ElasticSearch/Untitled%204.png"></p>
-<p><img src="/images/2019/Hello%20ElasticSearch/Untitled%205.png" alt="Hello%20ElasticSearch/Untitled%205.png"></p>
-<p>the, in 이 삭제된 것을 확인할 수 있다.</p>
-<p>분석기(Analyzer)는 데이터의 분석에 사용할 토크나이저와 토큰 필터를 저장하고 있는 일종의 배치 프로그램으로 이해할 수 있다. </p>
-<p>엘라스틱서치에서 기본적으로 제공하는 분석기 역시 모두 토크나이저와 토큰필터를 가지고 있으며, 이 외에 추가로 사용자가 임의의 토크나이저와 토큰필터를 선택해서 사용자 정의 분석기를 생성할 수 있다.</p>
-<p>사용자 정의 분석기는 인덱스 단위로저장되며 해당 인덱스에 데이터 색인할 때 분석기를 명시해서 사용할 수 있다.</p>
-<p>다음은 실제 인덱스를 생성하면서 분석기를 설정하는 화면이다.</p>
-<p><img src="/images/2019/Hello%20ElasticSearch/Untitled%206.png" alt="Hello%20ElasticSearch/Untitled%206.png"></p>
-<p>inca_index라는 인덱스를 생성하며 settings에 분석기를 설정했다.</p>
-<p>아래는 맵핑정보로서 RDB의 테이블 정의라고 생각하면 된다. title이라는 프로퍼티에 위에서 생성한 my_analyzer를 설정했다.</p>
-<p>인덱스를 생성한뒤 해당 인덱스에 아래처럼 데이터를 입력하게 되면, title이라는 프로퍼티는 자동으로 index생성시 설정한 my_analyzer를 통해 역색인 과정을 거쳐 해당 역색인 데이터를 엘라스틱서치 내부에 따로 저장하게 된다.</p>
-<p><img src="/images/2019/Hello%20ElasticSearch/Untitled%207.png" alt="Hello%20ElasticSearch/Untitled%207.png"></p>
-<p><img src="/images/2019/Hello%20ElasticSearch/1-Page-5.png" alt="Hello%20ElasticSearch/1-Page-5.png"></p>
-<h2 id="3-엘라스틱-서치의-활용예시"><a href="#3-엘라스틱-서치의-활용예시" class="headerlink" title="3.엘라스틱 서치의 활용예시"></a>3.엘라스틱 서치의 활용예시</h2><h3 id="3-1-ELK-스택"><a href="#3-1-ELK-스택" class="headerlink" title="3-1. ELK 스택"></a>3-1. ELK 스택</h3><p>엘라스틱서치는 뛰어난 검색엔진이지만 실무에서 사용하려면 입력할 데이터를 JSON형태로 가공 해야 하고, 검색된 데이터를 시각화하려면 별도의 차트 프로그램이나 라이브러리를 사용해야 하는등 부가적인 작업을 거쳐야 한다.</p>
-<p>이를 위해 엘라스틱서치에서는 데이터 입력을 다양한 방식으로 간편하게 할 수 있는 프로그램인 로그스태시(Logstash)와 검색 데이터를 편리하게 시각화할 수 있는 도구인 키바나(Kibana)를 홈페이지에서 함께 제공하고 있다.</p>
-<p>엘라스틱서치(Elasticsearch), 로그스테이시(Logstash), 키바나(Kibana)를 연동해서 구성한 시스템을 ELK 스택(ELK Stack)이라 한다.</p>
-<p><img src="/images/2019/Hello%20ElasticSearch/Untitled%208.png" alt="Hello%20ElasticSearch/Untitled%208.png"></p>
-<p>ELK 스택와 더불어 ELK 스택에 경량 데이터수집 플랫폼인 Beats를 통해 다양한 환경에서 다양한 데이터를 수집, 가공, 저장, 시각화 하는 구조를 구성할 수 있다.</p>
-<p><img src="/images/2019/Hello%20ElasticSearch/beats-platform.png" alt="Hello%20ElasticSearch/beats-platform.png"></p>
-<h3 id="3-2-한글-형태소-분석기"><a href="#3-2-한글-형태소-분석기" class="headerlink" title="3-2. 한글 형태소 분석기"></a>3-2. 한글 형태소 분석기</h3><p>엘라스틱서치에서는 여러종류의 분석기와 토크나이저, 토큰필터를 내장하고 있다.</p>
-<p>하지만 영어가 아닌 우리말(한글)로 된 문장을 분석하려면 내장된 분석기로 만족할 만한 결과를 얻기가 쉽지 않다.</p>
-<p>예를 들어 “동해물과 백두산이 마르고 닳도록”과 같은 문장을 분석하면 보통은 “동해물과”, “백두산이”와 같이 공백 정도로만 토큰을 구분하거나 CJK 알고리즘을 사용한 경우에도 “동해”, “해물”과 같이 2음절의 토큰을 생성하는 정도로만 분석된다. </p>
-<p>이 문장에서 “동해”, “백두산” 같은 검색어 토큰을 분석하려면 한글을 의미로 해석해서 분리할 수 있는 별도의 한글 형태소 분석기가 필요하다.</p>
-<p>엘라스틱서치나 아파치 루씬에서는 한글을 위한 별도의 분석기 또는 사전을 제공하지 않고 있다.</p>
-<p>하지만 정확한 한글 분석을 위해 국내 개발자들에 의해 별도로 개발되어 있는 한글 형태소 분석기들이 있다.</p>
-<p>잘 알려진 분석기로는 아리랑 한글 분석기 프로젝트, 은전한잎 한글 분석기 프로젝트 등이 있으며 대부분 오픈소스로 개발되고 있으므로 해당 프로젝트 페이지에서 소스코드와 다양한 정보를 구할 수 있다.</p>
-<p><img src="/images/2019/Hello%20ElasticSearch/Untitled%209.png" alt="Hello%20ElasticSearch/Untitled%209.png"></p>
-<h1 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h1><p>시작하세요! 엘라스틱서치(책)</p>
-<p>엘라스틱서치 실무 가이드(책)</p>
-
-      
-      
-          
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-
-  
-      
-
-
-  
-  
-  
-  
-
-        
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
-    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2019/12/19/hexo-20191219-hello-hexo/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Hanumoka">
-      <meta itemprop="description" content="아마추어 개발자의 블로그">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hanumoka, IT Blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/12/19/hexo-20191219-hello-hexo/" class="post-title-link" itemprop="url">Hexo 블로그 만들기</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">작성일</span>
-
-              <time title="Post created: 2019-12-19 22:32:38" itemprop="dateCreated datePublished" datetime="2019-12-19T22:32:38+09:00">2019-12-19</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Updated at: 2020-04-16 01:50:11" itemprop="dateModified" datetime="2020-04-16T01:50:11+09:00">2020-04-16</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/hexo/" itemprop="url" rel="index">
-                    <span itemprop="name">hexo</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-      <!-- 20200427hexo_post_head -->
-      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
-      <script>
-          (adsbygoogle = window.adsbygoogle || []).push({});
-      </script>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>hexo는 jekyll과 같은 정적 블로그 생성 프레임 워크이다. </p>
-<p>다만 hexo는 루비가 아닌 javascript, node등을 기반으로한 정적 블로그 생성기이다.</p>
-<p>hexo도 markdown으로 글을 작성하며, github page와 연동해서 로컬에서 생성한 hexo 블로그를 웹에 공개 할수도 있다.</p>
-<p>hexo의 자세한 설명은 아래 공식 페이지에서 확인 할 수 있다.</p>
-<p><a href="https://hexo.io/ko/index.html" target="_blank" rel="external nofollow noopener noreferrer">Hexo</a></p>
-<p>Hexo 블로그를 만들기 전에, 로컬에 미리 node가 설치 되어 있어야 한다.</p>
-<p>설치가 되어있지 않다면, 구글링해서 설치하길 바란다.</p>
-<p><img src="/images/Hexo20191219/Untitled.png" alt="/images/Hexo20191219/Untitled.png"></p>
-<p>블로그를 생성한 경로로 이동해서 터미널을 열고 아래 명령어를 순차적으로 입력하면된다.</p>
-<pre><code>npm install hexo-cli -g    #hexo cli를 글로벌로 설치
-hexo init hexoblog         #hexoblog라는 폴더로 hexo 블로그 생성     
-cd blog                    #생성된 폴더로 진입
-npm install                #의존성 설치
-hexo server                #hexo 블로그 기동</code></pre><p>아래 hexo init명령으로 hexoblog라는 hexo blog 폴더를 생성한다.</p>
-<p>요즘에는 자동으로 기본 디펜던시를 다운로드 해주는것 같다.</p>
-<p><img src="/images/Hexo20191219/Untitled%201.png" alt="/images/Hexo20191219/Untitled%201.png"></p>
-<p>아래처럼 폴더가 생성 된다.</p>
-<p><img src="/images/Hexo20191219/Untitled%202.png" alt="/images/Hexo20191219/Untitled%202.png"></p>
-<p><img src="/images/Hexo20191219/Untitled%203.png" alt="/images/Hexo20191219/Untitled%203.png"></p>
-<p>위 이미지에서 hexo-deployer-git 을 추가로 설치했다. </p>
-<p>해당 모듈은 나중에 gitpage에 hexo로 빌드한 정적 웹을 배포하는 용도의 모듈이다.</p>
-<p>마지막으로 hexo s 또는 hexo server 를 입력하면 hexo가 동작중이라는 문구와 url 이 나온다.</p>
-<p><img src="/images/Hexo20191219/Untitled%204.png" alt="/images/Hexo20191219/Untitled%204.png"></p>
-<p>브라우저로 hexo 블로그가 동작하는 것을 확인 할 수 있다.</p>
-<p>아래 블로그의 테마는 hexo의 기본 테마인 landscape 테마이다. </p>
-<p>다음글에서는 이 테마를 Next 테마로 변경하는 내용을 다뤄 보도록 하겠다.</p>
-<p><img src="/images/Hexo20191219/Untitled%205.png" alt="/images/Hexo20191219/Untitled%205.png"></p>
-
-      
-      
-          
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-
-  
-      
-
-
-  
-  
-  
-  
-
-        
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
-    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2019/10/26/react-20191026-react-modal-draggable/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Hanumoka">
-      <meta itemprop="description" content="아마추어 개발자의 블로그">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hanumoka, IT Blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/10/26/react-20191026-react-modal-draggable/" class="post-title-link" itemprop="url">react 드래그 modal 예제</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">작성일</span>
-
-              <time title="Post created: 2019-10-26 02:11:18" itemprop="dateCreated datePublished" datetime="2019-10-26T02:11:18+09:00">2019-10-26</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Updated at: 2020-04-16 01:50:12" itemprop="dateModified" datetime="2020-04-16T01:50:12+09:00">2020-04-16</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/react/" itemprop="url" rel="index">
-                    <span itemprop="name">react</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-      <!-- 20200427hexo_post_head -->
-      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
-      <script>
-          (adsbygoogle = window.adsbygoogle || []).push({});
-      </script>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>windows에서 create-react-app으로 예제 프로젝트를 준비했다.</p>
-<p><img src="/images/2019/Untitled-15d005bb-ceac-4a63-8045-4b64d65db61a.png" alt></p>
-<p><a href="https://reactstrap.github.io/" target="_blank" rel="external nofollow noopener noreferrer">https://reactstrap.github.io/</a></p>
-<p>react에서 bootstrap을 컴포넌트를 제공하는 라이브러리가 있다. reactstrap이라는 라이브러리이다.</p>
-<p>설치하자. 이 라이브러리에 있는 모달을 사용할 예정이다.</p>
-<pre><code>npm install --save reactstrap react react-dom</code></pre><p><a href="https://www.npmjs.com/package/react-draggable" target="_blank" rel="external nofollow noopener noreferrer">https://www.npmjs.com/package/react-draggable</a></p>
-<p>react에서 마우스 드래그 기능을 제공하는 라이브러리이다 설치하자.</p>
-<p>해당 라이브러리는 modal에만 해당하는것이 아니라 감싼 컴포넌트 모두를 지원한다.</p>
-<pre><code>npm install react-draggable</code></pre><p><img src="/images/2019/Untitled-f41dddcb-82d9-4253-a436-bd45624d6924.png" alt></p>
-<p>ModalExample.js 라는 파일을 만들자. 이 파일이 마우스 드래그가 가능한 모달 컴포넌트이다.</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line">    <span class="keyword">import</span> React <span class="keyword">from</span> <span class="string">'react'</span>;</span><br><span class="line">    <span class="keyword">import</span> &#123; Button, Modal, ModalHeader, ModalBody, ModalFooter &#125; <span class="keyword">from</span> <span class="string">'reactstrap'</span>;</span><br><span class="line">    <span class="keyword">import</span> Draggable <span class="keyword">from</span> <span class="string">'react-draggable'</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">ModalExample</span> <span class="keyword">extends</span> <span class="title">React</span>.<span class="title">Component</span> </span>&#123;</span><br><span class="line">      <span class="keyword">constructor</span>(props) &#123;</span><br><span class="line">        <span class="keyword">super</span>(props);</span><br><span class="line">        <span class="keyword">this</span>.state = &#123;</span><br><span class="line">          modal: <span class="literal">false</span></span><br><span class="line">        &#125;;</span><br><span class="line">    </span><br><span class="line">        <span class="keyword">this</span>.toggle = <span class="keyword">this</span>.toggle.bind(<span class="keyword">this</span>);</span><br><span class="line">      &#125;</span><br><span class="line">    </span><br><span class="line">      toggle() &#123;</span><br><span class="line">        <span class="keyword">this</span>.setState(<span class="function"><span class="params">prevState</span> =&gt;</span> (&#123;</span><br><span class="line">          modal: !prevState.modal</span><br><span class="line">        &#125;));</span><br><span class="line">      &#125;</span><br><span class="line">    </span><br><span class="line">      render() &#123;</span><br><span class="line">        <span class="keyword">return</span> (</span><br><span class="line">          &lt;div&gt;</span><br><span class="line">            &lt;Button color=<span class="string">"danger"</span> onClick=&#123;<span class="keyword">this</span>.toggle&#125;&gt;&#123;<span class="keyword">this</span>.props.buttonLabel&#125;&lt;<span class="regexp">/Button&gt;</span></span><br><span class="line"><span class="regexp">            &lt;Draggable</span></span><br><span class="line"><span class="regexp">            axis="both"</span></span><br><span class="line"><span class="regexp">            handle=".handle"</span></span><br><span class="line"><span class="regexp">            defaultPosition=&#123;&#123;x: 0, y: 0&#125;&#125;</span></span><br><span class="line"><span class="regexp">            position=&#123;null&#125;</span></span><br><span class="line"><span class="regexp">            grid=&#123;[25, 25]&#125;</span></span><br><span class="line"><span class="regexp">            scale=&#123;1&#125;</span></span><br><span class="line"><span class="regexp">            onStart=&#123;this.handleStart&#125;</span></span><br><span class="line"><span class="regexp">            onDrag=&#123;this.handleDrag&#125;</span></span><br><span class="line"><span class="regexp">            onStop=&#123;this.handleStop&#125;&gt;</span></span><br><span class="line"><span class="regexp">            &lt;Modal isOpen=&#123;this.state.modal&#125; toggle=&#123;this.toggle&#125; className=&#123;this.props.className&#125;&gt;</span></span><br><span class="line"><span class="regexp">              &lt;ModalHeader toggle=&#123;this.toggle&#125; className="handle"&gt;Modal title&lt;/</span>ModalHeader&gt;</span><br><span class="line">              &lt;ModalBody&gt;</span><br><span class="line">                Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed <span class="keyword">do</span> eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor <span class="keyword">in</span> reprehenderit <span class="keyword">in</span> voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt <span class="keyword">in</span> culpa qui officia deserunt mollit anim id est laborum.</span><br><span class="line">              &lt;<span class="regexp">/ModalBody&gt;</span></span><br><span class="line"><span class="regexp">              &lt;ModalFooter&gt;</span></span><br><span class="line"><span class="regexp">                &lt;Button color="primary" onClick=&#123;this.toggle&#125;&gt;Do Something&lt;/</span>Button&gt;&#123;<span class="string">' '</span>&#125;</span><br><span class="line">                &lt;Button color=<span class="string">"secondary"</span> onClick=&#123;<span class="keyword">this</span>.toggle&#125;&gt;Cancel&lt;<span class="regexp">/Button&gt;</span></span><br><span class="line"><span class="regexp">              &lt;/</span>ModalFooter&gt;</span><br><span class="line">            &lt;<span class="regexp">/Modal&gt;</span></span><br><span class="line"><span class="regexp">            &lt;/</span>Draggable&gt;</span><br><span class="line">          &lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">        );</span></span><br><span class="line"><span class="regexp">      &#125;</span></span><br><span class="line"><span class="regexp">    &#125;</span></span><br><span class="line"><span class="regexp">    </span></span><br><span class="line"><span class="regexp">    export default ModalExample;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">App.js</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">    import React from 'react';</span></span><br><span class="line"><span class="regexp">    import './</span>App.css<span class="string">';</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    import ModalExample from '</span>./ModalExample<span class="string">';</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    function App() &#123;</span></span><br><span class="line"><span class="string">      return (</span></span><br><span class="line"><span class="string">        &lt;div className="App"&gt;</span></span><br><span class="line"><span class="string">          &lt;ModalExample buttonLabel=&#123;"모달 테스트"&#125;&gt;&lt;/ModalExample&gt;</span></span><br><span class="line"><span class="string">        &lt;/div&gt;</span></span><br><span class="line"><span class="string">      );</span></span><br><span class="line"><span class="string">    &#125;</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    export default App;</span></span><br></pre></td></tr></table></figure>
-
-<p><img src="/images/2019/Untitled-aad57dc8-6977-4dd3-a7aa-2f429b61b1c3.png" alt></p>
-<p>npm run start 로 실행해보자.</p>
-<p>모달창을 열고 모달의 제목을 마우스로 드래그 하면 드래그가 가능한 것을 확인 할 수 있다.</p>
-<p><img src="/images/2019/Untitled-17358c2c-8fd5-4fab-8949-e21e5cd6f3d3.png" alt></p>
-<p>현재 드래그가 좀 버벅이는 것 처럼 보이는데, 그것은 react-draggable의 옵션으로 부드러움 정도를 설정 할수 있다.</p>
-<p>해당 예제는 아래 github에 올려놓았다.</p>
-<p><a href="https://github.com/hanumoka/react-modal-draggable.git" target="_blank" rel="external nofollow noopener noreferrer">https://github.com/hanumoka/react-modal-draggable.git</a></p>
-
-      
-      
-          
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-
-  
-      
-
-
-  
-  
-  
-  
-
-        
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
-    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2019/10/23/jenkins-20191023-jenkins-connect-gitlab/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Hanumoka">
-      <meta itemprop="description" content="아마추어 개발자의 블로그">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hanumoka, IT Blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/10/23/jenkins-20191023-jenkins-connect-gitlab/" class="post-title-link" itemprop="url">jenkins에서 Gitlab연동하기(Gitlab계정사용)</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">작성일</span>
-
-              <time title="Post created: 2019-10-23 21:33:41" itemprop="dateCreated datePublished" datetime="2019-10-23T21:33:41+09:00">2019-10-23</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Updated at: 2020-04-16 01:50:12" itemprop="dateModified" datetime="2020-04-16T01:50:12+09:00">2020-04-16</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/jenkins/" itemprop="url" rel="index">
-                    <span itemprop="name">jenkins</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-      <!-- 20200427hexo_post_head -->
-      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
-      <script>
-          (adsbygoogle = window.adsbygoogle || []).push({});
-      </script>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h1><p>이번은 로컬에 docker로 올린 jenkins를 사용해서 Gitlab(online)에 연동하는 방법을 알아보겠다.</p>
-<h1 id="실습전-준비"><a href="#실습전-준비" class="headerlink" title="실습전 준비"></a>실습전 준비</h1><p><img src="/images/2019/Untitled-096ae800-7d1d-4496-8d86-6fb46e597b19.png" alt></p>
-<p>위 처럼 gitlab에 테스트할 리파지토리를 하나 준비했다.</p>
-<p><img src="/images/2019/Untitled-4bb0ed17-41b4-4ad9-8477-5299bfb6a62d.png" alt></p>
-<p>위처럼 젠킨스에서는 Git plugin, GitLab Plugin을 설치해주자. </p>
-<p>Git plugin은 기본적으로 설치되어 있지만, GitLab Plugin은 추가로 설치해 주어야 할 것이다.</p>
-<p> Git, GitLab관련 다양한 기능을 제공하는 플러그인들이 추가로 있으니, 필요기능별로 찾아 사용하면 된다.</p>
-<h1 id="실습"><a href="#실습" class="headerlink" title="실습"></a>실습</h1><p>구글링 해보면, Gitlab에 accesstoken을 사용해서 jenkins와 연동하는 예제는 많이 있다.</p>
-<p>하지만 내가 셋팅한 jenkins에 뭔가 문제가 있는지, Gitlab accesstoken을 저장까지는 되지만 막상 Project에서 Gitlab accesstoken credential을 불러오지 못했다.</p>
-<p>따라서 차선책으로 Gitlab의 accesstoken대신 Gitlab의 계정을 사용하여, jenkins에 연동을 해볼것이다.</p>
-<h2 id="jenkins에-github-계정-Credential-추가하기"><a href="#jenkins에-github-계정-Credential-추가하기" class="headerlink" title="jenkins에 github 계정 Credential 추가하기"></a>jenkins에 github 계정 Credential 추가하기</h2><p>jenkins에서 Credentilas로 이동 → global 클릭</p>
-<p><img src="/images/2019/Untitled-60c9c996-c12a-40b7-a0da-2c7d61c7c349.png" alt></p>
-<p>Add Credentials클릭</p>
-<p><img src="/images/2019/Untitled-f458cdc9-43bb-4559-a605-f5eb08806eef.png" alt></p>
-<p>이 화면에서 Credential을 저장하고 젠킨스의 project에서 필요한 Credential을 불러와서 사용한다.</p>
-<p><strong>Username</strong>에 gitlab 계정아이디(필수 값)</p>
-<p><strong>Password</strong>에 gitlba 계정비밀번호(필수 값)</p>
-<p><strong>ID</strong>에는 Credential을 식별하는 아이디(필수 값)</p>
-<p>Description은 이 Credential에 대한 설명을 입력하자.</p>
-<p><img src="/images/2019/Untitled-cf60f55a-733d-4979-9b43-8f6a9f0f5179.png" alt></p>
-<p>Credential저장이 완료되었다면, 이제 새로운 Item을 생성하자.</p>
-<p><img src="/images/2019/Untitled-201c3e62-c6e8-4914-b966-c6004c565ccd.png" alt></p>
-<p>아이템 이름을 입력하고, Freestyle project 를 선택하고 OK 를 클릭하자.</p>
-<p><img src="/images/2019/Untitled-6ca71e3a-fad5-43b6-81af-d11977a20d70.png" alt></p>
-<p>GitLab의 특정 프로젝트로 가서 리파지토리 URL을 클립보드로 복사하자.</p>
-<p><img src="/images/2019/Untitled-24719915-f835-4208-9f20-58f5872ca493.png" alt></p>
-<p>다시 jenkins로 이동해서 </p>
-<p>앞서 생성한 Item의 소스코드 관리로 이동후 Git 선택.</p>
-<p>그리고 Repository URL에 앞서 복사한 Gitlab 프로젝트 URL을 붙여넣자.</p>
-<p>처음에는 Credential이 none이므로 아래처럼 빨란 경고문그로 접근할수 없다고 나온다.</p>
-<p><img src="/images/2019/Untitled-f513ed0a-8af3-4c70-9a4a-5a776329c08a.png" alt></p>
-<p>Credentials 셀렉트박스를 눌러서 앞서 입력한, Credential을 선택하자.</p>
-<p>아래 그림에서는 내가 테스트로 여러개를 입력해서 여러개가 나오는 것 뿐이다.</p>
-<p><img src="/images/2019/Untitled-1bfdbbcf-fdb0-4f60-b0ba-464af4f44477.png" alt></p>
-<p>선택한 뒤 조금 지나면, 아래처럼 빨간 문구가 사라진 것을 확인 할 수 있다. 이것으로 연동이 된 것이다.</p>
-<p><img src="/images/2019/Untitled-2119f085-d987-4604-beda-d8cb62d481ea.png" alt></p>
-<p>실제 연동이 됬는지 확인하기 위해 item에 build로 가서 Execute shell을 클릭한뒤 ls -al 명령어를 입력하자.</p>
-<p><img src="/images/2019/Untitled-08e205a1-9276-4284-9753-f59c156d6f25.png" alt></p>
-<p>아래처럼 ls -al을 입력해서 gitlab 리파지토리에서 소스를 받아오는지 출력해보자.</p>
-<p>저장을 눌러서 jenkins item을 저장하자.</p>
-<p><img src="/images/2019/Untitled-7374ca61-189c-482b-bb09-22f7d63c89b0.png" alt></p>
-<p>아래처럼 저장이 완료 되었다.</p>
-<p><img src="/images/2019/Untitled-eefc218c-fab5-40f1-a68a-993609dca21d.png" alt></p>
-<p>Build Now를 눌러서 Jenkins item을 동작 시키자.</p>
-<p>아래처럼 Build History가 성공적으로 끝났다.</p>
-<p>#1을 클릭해서 내용을 확인해 보자.</p>
-<p><img src="/images/2019/Untitled-b8b35e7c-5086-4e7a-8c3c-4aead8967509.png" alt></p>
-<p><img src="/images/2019/Untitled-97cd9b10-17d9-46bb-9ca0-fb4599284651.png" alt></p>
-<p>아래처럼 gitlab의 소스를 받아오는 것을 확인 할 수 있다.</p>
-<p><img src="/images/2019/Untitled-add45bd0-65e5-4a3e-b566-7319aa1c740b.png" alt></p>
-<p>끝!!!</p>
-
-      
-      
-          
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-
-  
-      
-
-
-  
-  
-  
-  
-
-        
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
-    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2019/10/14/docker-20191014-docker-jenkins-docker-in-docker/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Hanumoka">
-      <meta itemprop="description" content="아마추어 개발자의 블로그">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hanumoka, IT Blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/10/14/docker-20191014-docker-jenkins-docker-in-docker/" class="post-title-link" itemprop="url">Docker를 이용한 Jenkins 컨테이너 만들기(docker in docker)</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">작성일</span>
-
-              <time title="Post created: 2019-10-14 22:01:11" itemprop="dateCreated datePublished" datetime="2019-10-14T22:01:11+09:00">2019-10-14</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Updated at: 2020-04-16 01:50:11" itemprop="dateModified" datetime="2020-04-16T01:50:11+09:00">2020-04-16</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/docker/" itemprop="url" rel="index">
-                    <span itemprop="name">docker</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-      <!-- 20200427hexo_post_head -->
-      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
-      <script>
-          (adsbygoogle = window.adsbygoogle || []).push({});
-      </script>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="Docker를-이용한-Jenkins-컨테이너-만들기-docker-in-docker"><a href="#Docker를-이용한-Jenkins-컨테이너-만들기-docker-in-docker" class="headerlink" title="Docker를 이용한 Jenkins 컨테이너 만들기(docker in docker)"></a>Docker를 이용한 Jenkins 컨테이너 만들기(docker in docker)</h1><p>Created: Oct 14, 2019 8:41 PM</p>
-<h1 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h1><p>이번에는 ubuntu 18.04 가상머신에 docker, docker-compose 를 사용해서 jenkins 컨테이너를 생성해보겠다.</p>
-<p>도커 관리를 위해서 Dockerfile, docker-compose 모두 사용할 예정이다.</p>
-<p>이번에 만들 jenkins 컨테이너는 내부에서 dockerfile을 빌드할 예정이므로, docker in docker로 jenkins 이미지를 만들 예정이다.</p>
-<h1 id="1-Docker관리를-위한-폴더와-파일-구조"><a href="#1-Docker관리를-위한-폴더와-파일-구조" class="headerlink" title="1. Docker관리를 위한 폴더와 파일 구조"></a>1. Docker관리를 위한 폴더와 파일 구조</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">docker (도커 관리 폴더)</span><br><span class="line">|-- jenkins_with_docker (도커를 포함한 젠킨슨 관리 폴더)</span><br><span class="line">  |-- jenkins_home      (젠킨스 컨테이너의 볼륨 연결용 폴더, 빈 폴더 준비)</span><br><span class="line">  |-- docker-compose.yml  (실제 컨테이너를 생성하는 docker-compose 파일)</span><br><span class="line">  |-- Dockerfile         (docker-compose.yml에서 빌드할 jenkins 파일)</span><br><span class="line">  |-- docker_install.sh   (Dockerfile에서 호출할 docker 설치 스크립트 파일)</span><br></pre></td></tr></table></figure>
-<p><img src="/images/2019/Untitled-102a40b7-b19d-441e-8e97-83b6d54175af.png" alt></p>
-<p>구조는 아래와 같다.</p>
-<p><img src="/images/2019/Untitled-d23756fa-1243-4ad0-94b0-bdf22ea4d2c1.png" alt></p>
-<p>이미 스스로가 docker 컨테이너는 jenkins에서 docker를 사용하기 위해서는 컨테이너가 동작하는 호스트의 docker를 빌려서 사용하는 것이다.</p>
-<p><strong>연결 방법은 docker volume을 사용해서 docker 가 설치된 host의 /var/run/docker.sock과 jenkins 컨테이너 내부의 /var/run/docker.sock를 연결해 줘야 한다.</strong></p>
-<p>이 부분은 docker-compose.yml 에 설정 할 것이다.</p>
-<h1 id="2-설정-파일들-준비"><a href="#2-설정-파일들-준비" class="headerlink" title="2. 설정 파일들 준비"></a>2. 설정 파일들 준비</h1><h2 id="Dockerfile"><a href="#Dockerfile" class="headerlink" title="Dockerfile"></a>Dockerfile</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">FROM jenkins&#x2F;jenkins:lts</span><br><span class="line"></span><br><span class="line">USER root </span><br><span class="line"></span><br><span class="line">COPY docker_install.sh &#x2F;docker_install.sh</span><br><span class="line"></span><br><span class="line">RUN chmod +x &#x2F;docker_install.sh</span><br><span class="line"></span><br><span class="line">RUN &#x2F;docker_install.sh</span><br></pre></td></tr></table></figure>
-<p>jenkins이미지에 docker_install.sh 파일을 복사해서 가져와서 실행한다.</p>
-<p>Dockerfile 내부에서 RUN 명령등으로 쉘 스크립트를 실행할수 있지만, 뭔가 계속 오류가 나서 이런 방식을 선택했다.</p>
-<h2 id="docker-install-sh"><a href="#docker-install-sh" class="headerlink" title="docker_install.sh"></a>docker_install.sh</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/sh</span></span><br><span class="line"></span><br><span class="line">apt-get update &amp;&amp; \</span><br><span class="line">apt-get -y install apt-transport-https \</span><br><span class="line">     ca-certificates \</span><br><span class="line">     curl \</span><br><span class="line">     gnupg2 \</span><br><span class="line">     zip \</span><br><span class="line">     unzip \</span><br><span class="line">     software-properties-common &amp;&amp; \</span><br><span class="line">curl -fsSL https://download.docker.com/linux/$(. /etc/os-release; <span class="built_in">echo</span> <span class="string">"<span class="variable">$ID</span>"</span>)/gpg &gt; /tmp/dkey; apt-key add /tmp/dkey &amp;&amp; \</span><br><span class="line">add-apt-repository \</span><br><span class="line">   <span class="string">"deb [arch=amd64] https://download.docker.com/linux/<span class="variable">$(. /etc/os-release; echo "$ID")</span> \</span></span><br><span class="line"><span class="string">   <span class="variable">$(lsb_release -cs)</span> \</span></span><br><span class="line"><span class="string">   stable"</span> &amp;&amp; \</span><br><span class="line">apt-get update &amp;&amp; \</span><br><span class="line">apt-get -y install docker-ce</span><br></pre></td></tr></table></figure>
-<p>위 내용은 jenkins Dockerfile을 빌드할때 동작하는 스크립트이다.</p>
-<p>내용은 jenkins 내부에 docker를 설치하는 것이다.</p>
-<p>개인적으로 이렇게 sh파일을 copy하는게 편해보인다. </p>
-<p>구글링으로 얻을수 있는 쉘스크립트를 바로 쓸수 있기 때문이다.</p>
-<p>만약 jdk, maven, gradle, node등 필요한게 있다면 이런식으로 추가해 주면 될것 같다.</p>
-<h2 id="docker-compose-yml"><a href="#docker-compose-yml" class="headerlink" title="docker-compose.yml"></a>docker-compose.yml</h2><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">version:</span> <span class="string">'3'</span></span><br><span class="line"></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">jenkins:</span></span><br><span class="line">    <span class="attr">build:</span></span><br><span class="line">      <span class="attr">context:</span> <span class="string">.</span></span><br><span class="line">      <span class="attr">dockerfile:</span> <span class="string">Dockerfile</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">'jenkins_docker'</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">always</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">'8200:8080'</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">'50200:50000'</span></span><br><span class="line">    <span class="attr">expose:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">'8080'</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">'50000'</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">'./jenkins_home:/var/jenkins_home'</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">'/var/run/docker.sock:/var/run/docker.sock'</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="attr">TZ:</span> <span class="string">"Asia/Seoul"</span></span><br><span class="line"><span class="attr">networks:</span></span><br><span class="line">  <span class="attr">default:</span></span><br><span class="line">    <span class="attr">external:</span></span><br><span class="line">      <span class="attr">name:</span> <span class="string">devops</span></span><br></pre></td></tr></table></figure>
-<p>docker-compose.yml에서는 이미지 대신 Dockerfile을 이용해서 이미지를 대신한다.</p>
-<p>volumes에서 docker.sock을 host와 연결한다.</p>
-<h1 id="3-컨테이너-생성"><a href="#3-컨테이너-생성" class="headerlink" title="3. 컨테이너 생성"></a>3. 컨테이너 생성</h1><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo docker network create devops</span><br></pre></td></tr></table></figure>
-<p>혹시나 나중에 쓸지도 모를 네트워크를 일단 생성하자.</p>
-<p><img src="/images/2019/Untitled-cb93506f-1cc9-474d-912b-645e8c7f40da.png" alt></p>
-<p>그리고 docker-copomse.yml 이 있는 경로로 이동해서 아래 명령으로 이미지 생성과 jenkins 컨테이너를 생성하자.</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo docker-compose up -d</span><br></pre></td></tr></table></figure>
-<p>위 명령얼 실행하면 Dockerfile을 빌드하기 시작한다. 이때 jenkins 이미지를 받고 docker를 설치하므로 시간이 좀 걸린다.</p>
-<p>그리고 완료가 되면 아래처럼 나올것이다.</p>
-<p><img src="/images/2019/Untitled-265f282f-40f3-41eb-9938-db3a84dae26f.png" alt></p>
-<p>그리고 docker 이미지를 검색해보면 아래처럼 상당이 큰 이미지가 생성된다.</p>
-<p><img src="/images/2019/Untitled-f334ccd5-368f-42bc-b2c8-386ea71250b9.png" alt></p>
-<p>만약 위 과정에서 문제가 생긴다면, Dockerfile을 별도로 빌드해서 Dockerfile에서 오류가 나는지, docker_install.sh에서 오류가 나는지, 아니면 docker-compose.yml 에서 오류가나는지 찬찬히 찾아봐야 한다.</p>
-<h1 id="4-jenkins-컨테이너에-접속해서-docker-명령어-테스트"><a href="#4-jenkins-컨테이너에-접속해서-docker-명령어-테스트" class="headerlink" title="4. jenkins 컨테이너에 접속해서 docker 명령어 테스트"></a>4. jenkins 컨테이너에 접속해서 docker 명령어 테스트</h1><p>브라우저에서 <a href="http://localhost:8200" target="_blank" rel="external nofollow noopener noreferrer">http://localhost:8200</a> 에 접속해보자.</p>
-<p><img src="/images/2019/Untitled-ce71b9bd-7bfc-4210-b260-1b13e5ee65ae.png" alt></p>
-<p>일반적인 jenkins 초기화면이 나온다 초기 비밀번호를 찾아서 넣어주자.</p>
-<p><img src="/images/2019/Untitled-606e3efe-c702-4e8d-b0f6-807ab375f723.png" alt></p>
-<p>공식 jenkins 이미지를 사용하므로 플러그인도 잘 설치가 된다.</p>
-<p><img src="/images/2019/Untitled-a069af1b-b823-45b7-a44f-e61ec66b4de7.png" alt></p>
-<p><img src="/images/2019/Untitled-0e608340-7ada-44b0-938b-8b05b1bb2f3b.png" alt></p>
-<p>관리자 정보를 입력하고 save and Continue 를 눌러주자.</p>
-<p><img src="/images/2019/Untitled-9361a08e-dbf3-44a9-add0-d5a09d2bacfa.png" alt></p>
-<p><img src="/images/2019/Untitled-616230d9-2bec-48d6-9c28-6f524183433b.png" alt></p>
-<p><img src="/images/2019/Untitled-47e44134-c97c-4006-90c3-3fad68f7cea3.png" alt></p>
-<p>아까 생성했던 관리자 계정으로 로그인하자.</p>
-<p><img src="/images/2019/Untitled-86233454-b732-453c-a727-9f812bb33bd1.png" alt></p>
-<p>위처럼 정상적으로 젠킨스가 동작한다.</p>
-<p>만약 화면이 하얀색으로 멈춰 있거나 먹통이 되면 docker-compose stop → docker-compose start 로 컨테이너를 재시작 해보길 바란다.</p>
-<p>이제 간단한 job을 만들어서 docker 명령어가 jenkins에서 호출되는지 확인해보자.</p>
-<p><img src="/images/2019/Untitled-bf57a312-cb18-4e43-a155-fd9f52b56938.png" alt></p>
-<p><img src="/images/2019/Untitled-6a04f72e-f728-4663-b100-2ca8f6df745e.png" alt></p>
-<p><img src="/images/2019/Untitled-89042855-7749-4983-914e-61f7198f62c4.png" alt></p>
-<p><img src="/images/2019/Untitled-8449685a-5b28-4b64-914b-301e41477c98.png" alt></p>
-<p><img src="/images/2019/Untitled-8fa9c6d1-b947-4e87-8411-c5adb83fe233.png" alt></p>
-<p>빨간 줄만 따라가면된다. Execute shell에 docker ps 입력하고 저장을 눌러 job을 저장하자.</p>
-<p><img src="/images/2019/Untitled-73ed3298-0b66-4015-8ec9-3d27e155cea8.png" alt></p>
-<p>이렇제 잡이 생성되면 들어가서 </p>
-<p><img src="/images/2019/Untitled-5481ec9a-8bcf-4fbb-86e6-1734729d1a32.png" alt></p>
-<p>Build now눌러서 결과를 확인하자.</p>
-<p><img src="/images/2019/Untitled-bfbdc836-e6ac-45de-8d46-f750b1036465.png" alt></p>
-<p>짜잔 jenkins에서 docker ps 명령어가 동작한 것을 확인 할 수 있다.</p>
-<p>앞서 말했듯이 jenkins 컨테이너에서 호스트 docker를 빌려 쓰므로 현재 호스트의 docker ps 가 동작하고 그 결과가 나온다.</p>
-<p>끝!</p>
-<p>참고자료중 </p>
-<p><a href="https://getintodevops.com/blog/the-simple-way-to-run-docker-in-docker-for-ci" target="_blank" rel="external nofollow noopener noreferrer">https://getintodevops.com/blog/the-simple-way-to-run-docker-in-docker-for-ci</a> </p>
-<p>를 가장 많이 참고했다.</p>
-<h1 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h1><p><a href="https://getintodevops.com/blog/the-simple-way-to-run-docker-in-docker-for-ci" target="_blank" rel="external nofollow noopener noreferrer">https://getintodevops.com/blog/the-simple-way-to-run-docker-in-docker-for-ci</a></p>
-<p><a href="https://medium.com/@NovaWoo/docker-%EC%99%80-jenkins-%EB%A5%BC-%EC%82%AC%EC%9A%A9%ED%95%9C-%EC%95%88%EB%93%9C%EB%A1%9C%EC%9D%B4%EB%93%9C-ci-1-9510178a525f" target="_blank" rel="external nofollow noopener noreferrer">https://medium.com/@NovaWoo/docker-와-jenkins-를-사용한-안드로이드-ci-1-9510178a525f</a></p>
-<p><a href="https://www.44bits.io/ko/post/almost-perfect-development-environment-with-docker-and-docker-compose#docker-compose.yml-%ED%8C%8C%EC%9D%BC" target="_blank" rel="external nofollow noopener noreferrer">https://www.44bits.io/ko/post/almost-perfect-development-environment-with-docker-and-docker-compose#docker-compose.yml-파일</a></p>
-<p><a href="https://github.com/jenkinsci/docker" target="_blank" rel="external nofollow noopener noreferrer">https://github.com/jenkinsci/docker</a></p>
-
-      
-      
-          
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-
-  
-      
-
-
-  
-  
-  
-  
-
   </div>
 
   
@@ -1790,7 +1769,7 @@ hexo server                #hexo 블로그 기동</code></pre><p>아래 hexo ini
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">214</span>
+          <span class="site-state-item-count">219</span>
           <span class="site-state-item-name">포스트</span>
         </a>
       </div>
@@ -1803,7 +1782,7 @@ hexo server                #hexo 블로그 기동</code></pre><p>아래 hexo ini
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">585</span>
+        <span class="site-state-item-count">592</span>
         <span class="site-state-item-name">태그</span></a>
       </div>
   </nav>
@@ -1845,7 +1824,7 @@ hexo server                #hexo 블로그 기동</code></pre><p>아래 hexo ini
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>

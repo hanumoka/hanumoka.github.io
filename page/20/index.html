@@ -245,6 +245,533 @@ gtag('config', 'UA-100596920-1');
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2017/10/28/android-20171028-android-toolbar/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Hanumoka">
+      <meta itemprop="description" content="아마추어 개발자의 블로그">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hanumoka, IT Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2017/10/28/android-20171028-android-toolbar/" class="post-title-link" itemprop="url">android Toolbar 사용하기(menu추가)</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">작성일</span>
+
+              <time title="Post created: 2017-10-28 05:13:45" itemprop="dateCreated datePublished" datetime="2017-10-28T05:13:45+09:00">2017-10-28</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Updated at: 2020-04-16 01:50:11" itemprop="dateModified" datetime="2020-04-16T01:50:11+09:00">2020-04-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 20200427hexo_post_head -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h4 id="ToolBar란"><a href="#ToolBar란" class="headerlink" title="ToolBar란"></a>ToolBar란</h4><p>안드로이드의 Activity의 상단을 보면 ActionBar라는 것이 있었다.<br>그런데 안드로이드 API21 부터 ActionBar는 deprecated되고 ToolBar라는 것이 추가 되었다.<br><strong>ToolBar란 기존의 ActionBar를 대체하는 View의 일종이다.</strong><br>ToolBar란 View이기 때문에 기존의 ActionBar에서는 할수 없던 것, 또는 하기 어려웠던 것들을 쉽게 코드로 제어 할 수 있다. (위치제어 등…)<br>이제부터는 deprecated된 ActionBar대신 ToolBar를 사용해야 할 것 같다.</p>
+<hr>
+<h4 id="ActionBar-VS-ToolBar"><a href="#ActionBar-VS-ToolBar" class="headerlink" title="ActionBar VS ToolBar"></a>ActionBar VS ToolBar</h4><p>ActionBar : View가 아니다. 따라서 위치나 내부 아이템을 제어하기 힘들다.<br>ToolBar : View다. 따라서 기타 View처럼 제어하기가 슆다.</p>
+<hr>
+<h4 id="ToolBar-적용하기"><a href="#ToolBar-적용하기" class="headerlink" title="ToolBar 적용하기"></a>ToolBar 적용하기</h4><p>안드로이드 스튜디오에서 Empty Activity로 진행한 예제다.<br>예제에서 사용된 아이콘 이미지등은 안드로이드스튜디오에서 재공하는 것들이다.</p>
+<h5 id="1-기존의-ActionBar-제거하기"><a href="#1-기존의-ActionBar-제거하기" class="headerlink" title="1.기존의 ActionBar 제거하기"></a>1.기존의 ActionBar 제거하기</h5><p><img src="/images/20171028-android-toolbar_01.png" alt="ActionBar"></p>
+<p>위 빨간 표시의 액션바를 일단 제거해 보자.<br>안드로이드 프로젝트의 res/values/styles.xml 파일을 연다.<br>Style태그의 parent속성 값을 Theme.AppCompat.Light.NoActionBar 로 바꾼다.</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">resources</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!-- Base application theme. --&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 변경된 소스 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">style</span> <span class="attr">name</span>=<span class="string">"AppTheme"</span> <span class="attr">parent</span>=<span class="string">"Theme.AppCompat.Light.NoActionBar"</span>&gt;</span></span><br><span class="line"><span class="xml">    <span class="comment">&lt;!--&lt;style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar"&gt;--&gt;</span></span></span><br><span class="line"><span class="xml">        <span class="comment">&lt;!-- Customize your theme here. --&gt;</span></span></span><br><span class="line"><span class="xml">        <span class="tag">&lt;<span class="name">item</span> <span class="attr">name</span>=<span class="string">"colorPrimary"</span>&gt;</span>@color/colorPrimary<span class="tag">&lt;/<span class="name">item</span>&gt;</span></span></span><br><span class="line"><span class="xml">        <span class="tag">&lt;<span class="name">item</span> <span class="attr">name</span>=<span class="string">"colorPrimaryDark"</span>&gt;</span>@color/colorPrimaryDark<span class="tag">&lt;/<span class="name">item</span>&gt;</span></span></span><br><span class="line"><span class="xml">        <span class="tag">&lt;<span class="name">item</span> <span class="attr">name</span>=<span class="string">"colorAccent"</span>&gt;</span>@color/colorAccent<span class="tag">&lt;/<span class="name">item</span>&gt;</span></span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">resources</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>[style.xml]</p>
+<p><img src="/images/20171028-android-toolbar_02.png" alt="ActionBar가 제거된 액티비티"></p>
+<p>액티비티를 다시열어보면 위처럼 액션바가 사라진 것을 볼 수 있다.</p>
+<h5 id="2-ToolBar-추가하기"><a href="#2-ToolBar-추가하기" class="headerlink" title="2. ToolBar 추가하기"></a>2. ToolBar 추가하기</h5><p>activity_main.xml 파일을 열고 아래 처럼 ToolBar 뷰를 추가 한다.</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">android.support.constraint.ConstraintLayout</span> <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">xmlns:app</span>=<span class="string">"http://schemas.android.com/apk/res-auto"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">xmlns:tools</span>=<span class="string">"http://schemas.android.com/tools"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:layout_height</span>=<span class="string">"match_parent"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">tools:context</span>=<span class="string">"com.hanumoka.android.test01.MainActivity"</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!-- 툴바, 추가된 소스 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">android.support.v7.widget.Toolbar</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:id</span>=<span class="string">"@+id/my_toolbar"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:layout_height</span>=<span class="string">"?attr/actionBarSize"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:background</span>=<span class="string">"?attr/colorPrimary"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:elevation</span>=<span class="string">"4dp"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:theme</span>=<span class="string">"@style/ThemeOverlay.AppCompat.ActionBar"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">app:popupTheme</span>=<span class="string">"@style/ThemeOverlay.AppCompat.Light"</span>/&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">android.support.constraint.ConstraintLayout</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>[activity_main.xml]</p>
+<p>MainAcitivity.java 파일을 아래처럼 수정한다.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 추가된 소스</span></span><br><span class="line">    Toolbar myToolbar;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(R.layout.activity_main);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 추가된 소스, Toolbar를 생성한다.</span></span><br><span class="line">        myToolbar = (Toolbar) findViewById(R.id.my_toolbar);</span><br><span class="line">        setSupportActionBar(myToolbar);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>[MainAcitivity.java]</p>
+<p>그리고 다시 애뮬레이터를 동작시키면 아래처럼 ToolBar가 추가 된 것을 볼 수 있다.<br>ActionBar와 모습은 똑같지만, 이녀석은 ToolBar이다.</p>
+<p><img src="/images/20171028-android-toolbar_03.png" alt="Toobar가 적용된 액티비티"></p>
+<h5 id="3-ToolBar에-버튼을-추가하기-메뉴추가"><a href="#3-ToolBar에-버튼을-추가하기-메뉴추가" class="headerlink" title="3. ToolBar에 버튼을 추가하기(메뉴추가)"></a>3. ToolBar에 버튼을 추가하기(메뉴추가)</h5><p>/res 경로에 menu라는 Android resource directory를 만든다. <strong>여기서 이 디렉토리명은 반드시 menu로 지정해야 한다.</strong><br>새로 생성한 menu 디렉토리 안에 menu.xml 파일을 생성한다.<br>그리고 아래의 내용물을 채워 넣자.<br>menu.xml로 ToolBar에 들어갈 항목(메뉴)의 레이아웃을 정의한다.<br>item태그에 icon은 안드로이드스튜디오에서 제공하는 asset image나 svg를 사용했다.</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">menu</span> <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">xmlns:app</span>=<span class="string">"http://schemas.android.com/apk/res-auto"</span></span></span><br><span class="line"><span class="tag">    &gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- "Mark Favorite", should appear as action button if possible --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">item</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:id</span>=<span class="string">"@+id/action_settings"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:title</span>=<span class="string">"환경설정"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:icon</span>=<span class="string">"@drawable/ic_settings_black_24dp"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">app:showAsAction</span>=<span class="string">"ifRoom"</span>/&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!-- Settings, should always be in the overflow --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">item</span> <span class="attr">android:id</span>=<span class="string">"@+id/action_settings2"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:title</span>=<span class="string">"항목1"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">app:showAsAction</span>=<span class="string">"never"</span>/&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">item</span> <span class="attr">android:id</span>=<span class="string">"@+id/action_settings3"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:title</span>=<span class="string">"항목2"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">app:showAsAction</span>=<span class="string">"never"</span>/&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">menu</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>[menu.xml]</p>
+<p>MainActivity.java파일로 이동해서 onCreateOptionsMenu, onOptionsItemSelected메소드를 오버라이딩으로 추가한다.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    Toolbar myToolbar;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(R.layout.activity_main);</span><br><span class="line"></span><br><span class="line">        myToolbar = (Toolbar) findViewById(R.id.my_toolbar);</span><br><span class="line">        setSupportActionBar(myToolbar);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//추가된 소스, ToolBar에 menu.xml을 인플레이트함</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onCreateOptionsMenu</span><span class="params">(Menu menu)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//return super.onCreateOptionsMenu(menu);</span></span><br><span class="line">        MenuInflater menuInflater = getMenuInflater();</span><br><span class="line">        menuInflater.inflate(R.menu.menu, menu);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//추가된 소스, ToolBar에 추가된 항목의 select 이벤트를 처리하는 함수</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onOptionsItemSelected</span><span class="params">(MenuItem item)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//return super.onOptionsItemSelected(item);</span></span><br><span class="line">        <span class="keyword">switch</span> (item.getItemId()) &#123;</span><br><span class="line">            <span class="keyword">case</span> R.id.action_settings:</span><br><span class="line">                <span class="comment">// User chose the "Settings" item, show the app settings UI...</span></span><br><span class="line">                Toast.makeText(getApplicationContext(), <span class="string">"환경설정 버튼 클릭됨"</span>, Toast.LENGTH_LONG).show();</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">default</span>:</span><br><span class="line">                <span class="comment">// If we got here, the user's action was not recognized.</span></span><br><span class="line">                <span class="comment">// Invoke the superclass to handle it.</span></span><br><span class="line">                Toast.makeText(getApplicationContext(), <span class="string">"나머지 버튼 클릭됨"</span>, Toast.LENGTH_LONG).show();</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">super</span>.onOptionsItemSelected(item);</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>[MainAcitivity.java]</p>
+<p>다시 에뮬레이터를 동작 시키면 다음과 같이 Toolbar에 아이콘 형태의 item이 추가된 것을 볼 수 있다.</p>
+<p><img src="/images/20171028-android-toolbar_04.png" alt="메뉴가 추가된 Toolbar"></p>
+<h5 id="4-툴바-왼쪽에-버튼-추가하기"><a href="#4-툴바-왼쪽에-버튼-추가하기" class="headerlink" title="4.툴바 왼쪽에 버튼 추가하기"></a>4.툴바 왼쪽에 버튼 추가하기</h5><p>이번엔 Toolbar의 왼쪽에 버튼을 추가해 보자.<br>MainActivity.java파일로 가서 onCreate 함수에 아래처럼 코드를 추가하자.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(R.layout.activity_main);</span><br><span class="line"></span><br><span class="line">        myToolbar = (Toolbar) findViewById(R.id.my_toolbar);</span><br><span class="line">        setSupportActionBar(myToolbar);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//추가된 소스코드, Toolbar의 왼쪽에 버튼을 추가하고 버튼의 아이콘을 바꾼다.</span></span><br><span class="line">        getSupportActionBar().setDisplayHomeAsUpEnabled(<span class="keyword">true</span>);</span><br><span class="line">        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_dehaze_black_24dp);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>[MainAcitivity.java]</p>
+<p>다시 애뮬레이터를 시작하면 아래처럼 Toolbar왼쪽에도 버튼이 추가된 것을 볼 수 있다.</p>
+<p><img src="/images/20171028-android-toolbar_05.png" alt="왼쪽에 버튼이 추가된 Toolbar"></p>
+<h5 id="5-툴바의-프로젝트-명-제거하기-변경"><a href="#5-툴바의-프로젝트-명-제거하기-변경" class="headerlink" title="5.툴바의 프로젝트 명 제거하기(변경)"></a>5.툴바의 프로젝트 명 제거하기(변경)</h5><p>setTitle 라는 메소드로 툴바의 타이틀을 변경 할 수 있다.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(R.layout.activity_main);</span><br><span class="line"></span><br><span class="line">        myToolbar = (Toolbar) findViewById(R.id.my_toolbar);</span><br><span class="line">        setSupportActionBar(myToolbar);</span><br><span class="line">        getSupportActionBar().setDisplayHomeAsUpEnabled(<span class="keyword">true</span>);</span><br><span class="line">        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_dehaze_black_24dp);</span><br><span class="line"></span><br><span class="line">        getSupportActionBar().setTitle(<span class="string">""</span>);  <span class="comment">//해당 액티비티의 툴바에 있는 타이틀을 공백으로 처리</span></span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/20171028-android-toolbar_06.png" alt="프로젝트명이 제거된 ToolBar"></p>
+
+      
+      
+          
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+      
+
+
+  
+  
+  
+  
+
+        
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2017/10/24/java-20171024-java-thread-mainthread/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Hanumoka">
+      <meta itemprop="description" content="아마추어 개발자의 블로그">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hanumoka, IT Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2017/10/24/java-20171024-java-thread-mainthread/" class="post-title-link" itemprop="url">java Thread와 MainThread</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">작성일</span>
+
+              <time title="Post created: 2017-10-24 10:12:06" itemprop="dateCreated datePublished" datetime="2017-10-24T10:12:06+09:00">2017-10-24</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Updated at: 2020-04-16 01:50:11" itemprop="dateModified" datetime="2020-04-16T01:50:11+09:00">2020-04-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/java/" itemprop="url" rel="index">
+                    <span itemprop="name">java</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 20200427hexo_post_head -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>운영체제에서는 실행중인 하나의 어플리케이션을 프로세스(process)라고 부른다. 즉 메모리에 올라가 현재 동작중인 프로그램을 프로세스라고 한다. 그렇다면 쓰레드(Thread)는 무엇을 말하는 것일까?</p>
+<p><strong>쓰레드는 어떠한 프로그램 내에서, 특히 프로세스 내에서 실행되는 흐름의 단위를 말한다. 일반적으로 한 프로그램은 하나의 쓰레드를 가지고 있지만, 프로그램 환경에 따라 둘 이상의 쓰레드를 동시에 실행할 수 있다. 이러한 실행 방식을 멀티쓰레드(multithread)라고 한다.</strong></p>
+<p>프로그램이 동작을 하려면 적어도 최소 한개의 쓰레드는 반드시 필요하다.<br>자바 프로그램에서는 그 역할을 Main메소드가 한다. *<em>java에서 Main 메소드는 프로그램의 시작 엔트리 포인트면서 동시에 Main 쓰레드라고 볼 수 있다. *</em><br>메인쓰레드는 필요에 따라 서브 쓰레드들을 만들어서 병렬로 코드를 실행할 수 있다. 즉 멀티 쓰레드를 생성해서 멀티 태스킹을 수행한다.</p>
+<p>싱글 쓰레드 프로그램인 경우 메인 쓰레드가 종료하면 프로세스도 종료된다.<br>하지만 멀티쓰레드 프로그램인 경우 실행중인 쓰레드가 하나라도 있다면 프로세스는 종료 되지 않는다.<br><strong>메인쓰레드가 이미 종료되었더라도 아직 종료되지 않고 동작중인 쓰레드가 있다면 그 프로세스는 종료되지 않는다.</strong></p>
+<p><img src="/images/20171024-java-thread.png" alt="싱글과 멀티쓰레드"></p>
+
+      
+      
+          
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+      
+
+
+  
+  
+  
+  
+
+        
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2017/10/12/android-20171012-android-RGBA-chart/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Hanumoka">
+      <meta itemprop="description" content="아마추어 개발자의 블로그">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hanumoka, IT Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2017/10/12/android-20171012-android-RGBA-chart/" class="post-title-link" itemprop="url">android - RGBA chart</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">작성일</span>
+
+              <time title="Post created: 2017-10-12 23:57:10" itemprop="dateCreated datePublished" datetime="2017-10-12T23:57:10+09:00">2017-10-12</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Updated at: 2020-04-16 01:50:11" itemprop="dateModified" datetime="2020-04-16T01:50:11+09:00">2020-04-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 20200427hexo_post_head -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><img src="/images/20171012-android-RGBA-chart.png" alt="RGBA 차트"></p>
+
+      
+      
+          
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+      
+
+
+  
+  
+  
+  
+
+        
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2017/10/11/android-20171011-android-context/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Hanumoka">
+      <meta itemprop="description" content="아마추어 개발자의 블로그">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hanumoka, IT Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2017/10/11/android-20171011-android-context/" class="post-title-link" itemprop="url">Android - Conxtext란?</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">작성일</span>
+
+              <time title="Post created: 2017-10-11 07:37:25" itemprop="dateCreated datePublished" datetime="2017-10-11T07:37:25+09:00">2017-10-11</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Updated at: 2020-04-16 01:50:11" itemprop="dateModified" datetime="2020-04-16T01:50:11+09:00">2020-04-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 20200427hexo_post_head -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h4 id="프로그래밍에서-컨텍스트란"><a href="#프로그래밍에서-컨텍스트란" class="headerlink" title="프로그래밍에서 컨텍스트란?"></a>프로그래밍에서 컨텍스트란?</h4><p>컨텍스트(context)란 프로그래밍을 하다보면 자주 접하게 되는 단어이다. </p>
+<blockquote>
+<p>영어뜻 context(명사) : 1. (어떤일의)맥락, 전후 사정 2.(글의)맥락, 문맥</p>
+</blockquote>
+<p>일반적인 의미로서 컨텍스트는 어떤 일,글 따위에 대한 전체적인 내용을 포괄적으로 말하는 것이다. 즉 어떤것의 모든 것을 컨텍스트라고 볼 수 있다.</p>
+<p>프로그래밍에 context라는 말도 비슷한 의미이다. 다른 것이 있다면 주어가 항상 프로그램 그 차제로 고정되어 있다는 것이다.<br>프로그래밍에서 컨텍스트를 아주 일반화해서 말하면 프로그램 그 자체라고 볼수있다. 조금 더 세세하게 표현하자면 프로그램 전체를 아우르며 접근 및 제어(컨트롤) 할 수 있는 코어라고 볼수 있다. </p>
+<hr>
+<h4 id="안드로이드의-컨텍스트란"><a href="#안드로이드의-컨텍스트란" class="headerlink" title="안드로이드의 컨텍스트란?"></a>안드로이드의 컨텍스트란?</h4><p>안드로이드에서도 안드로이드 어플리케이션 전체를 아우르며 컨트롤 할수 있는 컨텍스트가 존재하며, 그것을 추상클래스로 구현해 놓았다. 다음은 안드로이드의 context의 사전적 의미이다.</p>
+<blockquote>
+<p>어플리케이션 환경에 관한 글로벌 정보를 접근하기 위한 인터페이스. Abstract 클래스이며 실재 구현은 안드로이드 시스템에 의해 제공된다. Context 를 통해, 어플리케이션에 특화된 리소스나 클래스에 접근할 수 있을 뿐만 아니라, 추가적으로, 어플리케이션 레벨의 작업 - Activity 실행, Intent 브로드캐스팅, Intent 수신 등, 을 수행하기 위한 API 를 호출 할 수도 있다.</p>
+</blockquote>
+<p>예를 들어 대저택(안드로이드 앱)이 있고 그 집의 주인(개발자) 가 있다면, 안드로이드 컨텍스트는 대저택의 집사쯤 된다고 생각 할수 있겠다. 주인(개발자)은 본인 대신 대저택(개발중인 앱)의 관리를 집사에게 맞기고 필요한 것들을 집사(컨텍스트)에게 명령 하기만 하면된다.<br>실제 코딩에서 개발자는 안드로이드 앱의 리소스에 접근하기 위해 특정 리소스의 파일 경로등에 직접 접근할 필요 없이, 아래처럼 컨텍스트에게 리소스 정보를 달라고 요청만 하면 그만이다.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">this</span>.getResources();</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="컨텍스트의-종류"><a href="#컨텍스트의-종류" class="headerlink" title="컨텍스트의 종류"></a>컨텍스트의 종류</h4><p><strong>Application Context</strong> – 이 컨텍스트는 실행중인 안드로이드 어플리케이션 프로세스의 <strong>Singletone instances</strong> 이다.<br>즉, 안드로이드 Application 프로세스가 생성될 때 Application Context 생성되고, 안드로이드 Application 프로세스가 종료될 때  Application Context가 같이 사라진다.<br>Activity이나 Service에서는 getApplication() 메소드를 통해 getApplicationContext()로 이 Application Context를 얻어 올 수 있다. 이 컨텍스트는 안드로이드 어플리케이션 프로세스의 Singletone instances이므로 어디서나 동일한 인스턴스를 받게 된다.</p>
+<p><strong>(Activity / Service) Context</strong> – Activity 와 Service는 본인 그 자체가 context이다. Activity와 Service 모두 ContextWrapper를 상속받기 때문이다.<br>(Activity / Service) Context는 Application Context를 확장한 개념이며, Activity또는 Service자신의 라이프사이클을 따라간다. Activity또는 Service는 자신이 그 자체가 Context이니 당연한 말일 것이다.<br>Activity Context인경우 자신의 뷰 컴포넌트를 관리하기 위해서는 Application Context가 아니라 자신의 Activity Context에 접근해야 한다. Activity java코드에서 <strong>this키워드</strong>가 바로 이것이다.</p>
+<hr>
+<h4 id="BroadcastReceiver와-ContentProvider에서의-Context"><a href="#BroadcastReceiver와-ContentProvider에서의-Context" class="headerlink" title="BroadcastReceiver와 ContentProvider에서의 Context"></a>BroadcastReceiver와 ContentProvider에서의 Context</h4><p><strong>BroadcastReceiver</strong> – 위의 2가지와 다르게 자기자신이 Context자체는 아니다. 하지만 onRecevie()시 Context를 가져올 수 있는데, 이때의 Context는 ReveiverRestrictedContext이며 두가지 기능 registerReceiver()와 bindService()를 사용 할 수 없다. <strong>리시버가 브로드캐스트를 처리 할때마다 새로운 Context가 생성 된다.</strong></p>
+<p><strong>ContentProvider</strong> – 브로드캐스트와 마찬가지로 자기자신이 Context를 상속 받은것은 아니다. 하지만 액세스후 getContext()를 통해 Application Context를 가져 올 수 있다. ContentProvider 동일한 응용프로그램에 대해 호출시, 동일한 응용프로그램의 Singletone instances를 반환하게 된다. 하지만 별도의 프로세스에 있는 경우(서로다른 다른 앱), 프로바이더가 실행되는 응용프로그램의 instances가 반환된다</p>
+<hr>
+<h4 id="컨텍스트-사용시-주의점"><a href="#컨텍스트-사용시-주의점" class="headerlink" title="컨텍스트 사용시 주의점"></a>컨텍스트 사용시 주의점</h4><p>Application Context와 (Activity / Service) Context는 라이프 사이클이 다르다.<br>Application Context는 프로그램 프로세스가 종료되지 않는한 메모리에서 사라지지 않는반면, (Activity / Service) Context는 수업이 생성과 소멸을 반복한다.<br>Context를 참조할 때, (Activity / Service) Context를 참조하는 경우 이미 메모리에서 삭제된 Context를 참조하는 경우가 발생할 수 있다.<br>경우에 따라 다르겠지만, Context를 참조할 때에는 Application Context 참조해야 메모리누수를 피할수 있다.</p>
+<hr>
+<h4 id="컨텍스트-종류에-따라-다른-기능구분-표"><a href="#컨텍스트-종류에-따라-다른-기능구분-표" class="headerlink" title="컨텍스트 종류에 따라 다른 기능구분 표"></a>컨텍스트 종류에 따라 다른 기능구분 표</h4><p><img src="/images/20171011-android-context.png" alt="컨텍스트기능구분표"></p>
+<h3 id="참조한-사이트목록"><a href="#참조한-사이트목록" class="headerlink" title="참조한 사이트목록"></a>참조한 사이트목록</h3><p><a href="http://sunphiz.me/wp/archives/483" target="_blank" rel="external nofollow noopener noreferrer">http://sunphiz.me/wp/archives/483</a><br><a href="http://arabiannight.tistory.com/entry/272" target="_blank" rel="external nofollow noopener noreferrer">http://arabiannight.tistory.com/entry/272</a><br><a href="http://dev.youngkyu.kr/36" target="_blank" rel="external nofollow noopener noreferrer">http://dev.youngkyu.kr/36</a><br><a href="http://wengdiiiy.tistory.com/1" target="_blank" rel="external nofollow noopener noreferrer">http://wengdiiiy.tistory.com/1</a><br><a href="http://www.kmshack.kr/2013/10/android-context-what-context/" target="_blank" rel="external nofollow noopener noreferrer">http://www.kmshack.kr/2013/10/android-context-what-context/</a><br><a href="https://blog.mindorks.com/understanding-context-in-android-application-330913e32514" target="_blank" rel="external nofollow noopener noreferrer">https://blog.mindorks.com/understanding-context-in-android-application-330913e32514</a></p>
+
+      
+      
+          
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+      
+
+
+  
+  
+  
+  
+
+        
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2017/10/04/androidStudio-20171004-androidstudio-korean-problem/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Hanumoka">
+      <meta itemprop="description" content="아마추어 개발자의 블로그">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hanumoka, IT Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2017/10/04/androidStudio-20171004-androidstudio-korean-problem/" class="post-title-link" itemprop="url">안드로이드스튜디오 한글깨짐 해결방법</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">작성일</span>
+
+              <time title="Post created: 2017-10-04 04:54:14" itemprop="dateCreated datePublished" datetime="2017-10-04T04:54:14+09:00">2017-10-04</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Updated at: 2020-04-16 01:50:11" itemprop="dateModified" datetime="2020-04-16T01:50:11+09:00">2020-04-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/androidStudio/" itemprop="url" rel="index">
+                    <span itemprop="name">androidStudio</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 20200427hexo_post_head -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>안드로이드스튜디오에서 뷰의 디자인화면에서 한글로 입력된 텍스트가 경우 깨지는 경우가 있다. </p>
+<p><img src="/images/20171004-androidstudio-korean-problem_01.png" alt="안드로이드스튜디오 디자인에서 한글깨짐현상"></p>
+<p>해당 문제는 안드로이드스튜디오의 한글 폰트설정을 수정하면 해결 할 수 있다.</p>
+<p>가. 안드로이드스튜디오 설치폴더로 이동한다.<br><strong>C:\Program Files\Android\Android Studio\plugins\android\lib\layoutlib\data\fonts 폴더로 이동한 뒤, fonts.xml파일을 에디터로 연다.(에디터를 관리자 모드로 실행하라.)</strong></p>
+<p>나. 텍스트 검색으로 아래의 태그를 찾는다.</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">family</span> <span class="attr">lang</span>=<span class="string">"ko"</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>검색결과 NotoSansCJK-Regular.ttc 라는것으로 한글 폰트가 설정되어 있다. </p>
+<p><img src="/images/20171004-androidstudio-korean-problem_02.png" alt="셋팅전 한글폰트"><br><strong>NotoSansCJK-Regular.ttc</strong>를 <strong>NanumGothic.ttf</strong>로 바꿔서 fonts.xml 파일을 저장한다.</p>
+<p>다. 안드로이드스튜디오를 재부팅 시키면 디자인에서 정상적으로 한글이 보인다.</p>
+<p><img src="/images/20171004-androidstudio-korean-problem_03.png" alt="정상적으로 한글 표시"></p>
+
+      
+      
+          
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+      
+
+
+  
+  
+  
+  
+
+        
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
     <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2017/10/02/androidStudio-20171002-androidstudio-auto-import/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -756,502 +1283,6 @@ gtag('config', 'UA-100596920-1');
   
   
 
-        
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
-    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2017/09/15/java-20170915-java-Anonymouse-class/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Hanumoka">
-      <meta itemprop="description" content="아마추어 개발자의 블로그">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hanumoka, IT Blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2017/09/15/java-20170915-java-Anonymouse-class/" class="post-title-link" itemprop="url">java Anonymouse class(익명구현객체)</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">작성일</span>
-
-              <time title="Post created: 2017-09-15 22:31:25" itemprop="dateCreated datePublished" datetime="2017-09-15T22:31:25+09:00">2017-09-15</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Updated at: 2020-04-16 01:50:11" itemprop="dateModified" datetime="2020-04-16T01:50:11+09:00">2020-04-16</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/java/" itemprop="url" rel="index">
-                    <span itemprop="name">java</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-      <!-- 20200427hexo_post_head -->
-      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
-      <script>
-          (adsbygoogle = window.adsbygoogle || []).push({});
-      </script>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><img src="/images/20170915-java-Anonymouse-class.jpg" alt><br>익명구현객체(Anonymouse class)란 말 그래도 이름이 없는 객체이다.일반적으로 인터페이스를 사용하기 위해서는 해당 인터페이스를 구현한 클래스를 만들어야 한다. 예를 들어 하나의 인터페이스를 구현하는 클래스 3개를 만든다면, 3개의 java파일을 미리 만들어야 한다. 하지만 만약 재사용이 불필요한 구현클래스가 필요할땐 어떻게 해야 할까? 한번만 사용할 소스코드를 XXX.java 라는 파일로 만들고 그 것을 파일로 관리 해야만 할까? 프로그래밍에서 관리의 대상이 많아지는 것은 그 만큼 유지보수의 비용이 증가한다는 의미이다.</p>
-<p>이렇게 <strong>일회성이며, 재사용할 필요 없고 파일단위의 관리 대상이 아닌 객체를 만들때</strong> 이 익명구현객체라는 것을 활용 할 수 있다. 문법 형태는 다음과 같다.</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">인터페이스명 변수 = <span class="keyword">new</span> 인터페이스명()&#123;</span><br><span class="line">  <span class="comment">//인터페이스에 선언된 추상메소드의 구현 메소드</span></span><br><span class="line">  <span class="comment">//해당 인터페이스에 선언된 모든 추상메소드를 구현해야 한다. 없을시 컴파일 에러 발생 </span></span><br><span class="line">  <span class="comment">//추가적으로 필드와 메소드를 선언 할 수 있지만, 익명객체 안에서만 사용할수있다. </span></span><br><span class="line">  <span class="comment">//익명구현객체도 컴파일시 클래스파일이 만들어 지긴한다. 인터페이스명$1(순번) </span></span><br><span class="line">&#125;;  <span class="comment">//익명 클래스의 선언은 하나의 실행문이므로 끝에 세미콜론(;)이 무조건 붙는다.</span></span><br></pre></td></tr></table></figure>
-
-<h4 id="간단한-예제"><a href="#간단한-예제" class="headerlink" title="간단한 예제"></a>간단한 예제</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//구현할 인터페이스</span></span><br><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">Car</span></span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span></span>;</span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">stop</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AnonymouseTest1</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//익명구현 객체 fooCar</span></span><br><span class="line">    Car fooCar = <span class="keyword">new</span> Car()&#123;</span><br><span class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"달려라!"</span>);</span><br><span class="line">      &#125;</span><br><span class="line">      </span><br><span class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">stop</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"머.. 멈춰!!!"</span>);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">    </span><br><span class="line">    fooCar.run();</span><br><span class="line">    fooCar.stop();</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h4 id="실행결과"><a href="#실행결과" class="headerlink" title="실행결과"></a>실행결과</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">달려라!</span><br><span class="line">머.. 멈춰!!!</span><br></pre></td></tr></table></figure>
-<p>즉 <strong>한번 쓰고 버릴 객체가 필요할때 이 익명구현객체란 것을 이용할 수 있다.</strong><br>익명구현객체는 java8의 람다식이나 UI 프로그래밍에서 이벤트의 처리용으로 많이 사용되기 때문에 그 형태를 알아둘 필요가 있다.</p>
-<h3 id="Related-Posts"><a href="#Related-Posts" class="headerlink" title="Related Posts"></a>Related Posts</h3><p><a href="/2018/01/02/java-A-illusion-of-anonymous-inner-class/">Java에서 익명클래스에 대한 착각(a illusion of anonymous inner class)</a></p>
-
-      
-      
-          
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-
-  
-      
-
-
-  
-  
-  
-  
-
-        
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
-    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2017/09/15/java-20170915-java-Annotation/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Hanumoka">
-      <meta itemprop="description" content="아마추어 개발자의 블로그">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hanumoka, IT Blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2017/09/15/java-20170915-java-Annotation/" class="post-title-link" itemprop="url">java Annotation(어노테이션)이란?</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">작성일</span>
-
-              <time title="Post created: 2017-09-15 22:02:02" itemprop="dateCreated datePublished" datetime="2017-09-15T22:02:02+09:00">2017-09-15</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Updated at: 2020-04-16 01:50:11" itemprop="dateModified" datetime="2020-04-16T01:50:11+09:00">2020-04-16</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/java/" itemprop="url" rel="index">
-                    <span itemprop="name">java</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-      <!-- 20200427hexo_post_head -->
-      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
-      <script>
-          (adsbygoogle = window.adsbygoogle || []).push({});
-      </script>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><img src="/images/20170915-java-Annotation.png" alt="override annotation"><br>java5부터 어노테이션이라는 문법이 제공된다. 어노테이션이란 java의 소스코드를 설명하는 <strong>메타데이터</strong>다. 형태는 <strong>@어노테이션명</strong> 이다. 즉 소스코드의 특정부분(클래스, 인터페이스, 메소드, 필드 …)에 <strong>@어쩌구저쩌구</strong>를 붙여서 이 소스코드를 설명한다는 것인데… 누구에게 무엇을 설명한다는 것일까?</p>
-<blockquote>
-<ol>
-<li>컴파일러에게 코드 문법 에러를 체크하도록 정보를 제공</li>
-<li>소프트웨어 개발 툴이 빌드나 배치 시 코드를 자동으로 생성할 수 있도록 정보를 제공</li>
-<li>실행 시(런타임 시) 특정 기능을 실행하도록 정보를제공</li>
-</ol>
-</blockquote>
-<hr>
-<h4 id="컴파일러"><a href="#컴파일러" class="headerlink" title="컴파일러"></a>컴파일러</h4><p>어노테이션의 설명의 대상 중 하나는 컴파일러다. 컴파일러에게 이 소스코드를 어떻게 처리해야 되는 것인지 표시를 해준다. 예를들어 내장 어노테이션인 <strong>@override</strong>경우 해당 메소드가 부모클래스를 오버라이딩 한 메소드라고 컴파일러에게 미리 일러주는 것이다. 따라서 컴파일러는 런타임 이전에 이 메소드가 문제없이 오버라이딩 되었는지 검사한다.<br>개발툴, 빌드툴 등도 이 컴파일러와 비슷한 맥락으로 어노테이션을 사용한다고 생각된다.</p>
-<hr>
-<h4 id="개발자"><a href="#개발자" class="headerlink" title="개발자"></a>개발자</h4><p>어노테이션이 만들어진 목적은 프로그래밍에서 사용하던 xml 파일들을 줄이기 위해서라고 한다. 즉 프로그램에서 사용하는 xml 형태의 다양한 설정정보들, 특히 소스코드를 설명하는 내용의 설정 파일들을 대체하기 위해서이다. 예를 들어 n개의 클래스와 그 n개의 클래스의 설정정보가 xml로 되어있다면 관리의 대상이 두배가 된다.<br>어노테이션은 이런 xml들을 대신 설명이 필요한 대상과 그 설명을 합치게 되었고, 그 결과 어노테이션이란 것이 만들어 졌다.</p>
-<p>예를들어 개발자는 소스코드에 있는 @overide를 보고, <em>해당 메소드는 상속 받은 것</em> 임을 확인할수 있다.</p>
-<hr>
-<h4 id="컨테이너"><a href="#컨테이너" class="headerlink" title="컨테이너"></a>컨테이너</h4><p>어노테이션의 설명의 대상 세번째는 컨테이너 이다.<br>스프링 프레임워크를 만져본 개발자라면 수많은 스프링 어노테이션을 본적이 있을 것이다.<br>프리임워크는 자신 스스로 자바의 클래스를 객체화 하고 조립하고 사용한다. 즉 자신이 주체가 되어 자바 인스턴스의 라이프사이클을 관리한다. 이때 이 어린아이와 같은 프레임워크가 가지고 놀 클래스에 어노테이션으로 라벨을 붙여, 이 부품(클래스)는 용도가 무엇이고 어떻게 사용하고, 문제가 있을시에 어떻게 해야 하며, 테스트는 어떻게 하는지 기타 등등의 정보를 알려줄수 있다. </p>
-<hr>
-<h3 id="정리"><a href="#정리" class="headerlink" title="정리"></a>정리</h3><p>자바책에서 어노테이션을 설명하면서, 커스텀어노테이션도 설명 한다. 하지만 공부를 하면서 <strong>내가 이 어노테이션을 공부해서 어디에 활용 할 수 있지?</strong> 라는 고민이 들었다.<br><strong>어노테이션은 메타데이터이다. 즉 프로그램 그 자체에서 동작하는 코드가 아니다.</strong><br>만약 컴파일러, 개발툴, 빌드툴, 테스트툴 또는 스프링프레임워크와 같은 컨테이너를 개발하지 않는 이상 직접 어노테이션을 만들어서 사용해 볼 일이 거의 없을 것 같다.</p>
-
-      
-      
-          
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-
-  
-      
-
-
-  
-  
-  
-  
-
-        
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
-    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2017/09/13/java-20170913-java-static-initialization/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Hanumoka">
-      <meta itemprop="description" content="아마추어 개발자의 블로그">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hanumoka, IT Blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2017/09/13/java-20170913-java-static-initialization/" class="post-title-link" itemprop="url">java 정적 필드 초기화(static initialization)</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">작성일</span>
-
-              <time title="Post created: 2017-09-13 21:21:52" itemprop="dateCreated datePublished" datetime="2017-09-13T21:21:52+09:00">2017-09-13</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Updated at: 2020-04-16 01:50:11" itemprop="dateModified" datetime="2020-04-16T01:50:11+09:00">2020-04-16</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/java/" itemprop="url" rel="index">
-                    <span itemprop="name">java</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-      <!-- 20200427hexo_post_head -->
-      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
-      <script>
-          (adsbygoogle = window.adsbygoogle || []).push({});
-      </script>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><img src="/images/20170913-java-static-initialization.png" alt><br>java의 정적필드는 클래스로더에 의해 메소드영역에 로드가 된다.정적 필드는 객체생성 이전 클래스가 메모리에 올라가는 시점부터 사용이 가능하다. 따라서 클래스의 생성자는 정적필드의 초기화 위치로 적합하지 못하다. 그렇다면 정적필드는 어떻게 초기화 해야 할까?</p>
-<h3 id="정적필드-초기화-1-선언과-동시에-초기화-하기"><a href="#정적필드-초기화-1-선언과-동시에-초기화-하기" class="headerlink" title="정적필드 초기화 1 : 선언과 동시에 초기화 하기"></a>정적필드 초기화 1 : 선언과 동시에 초기화 하기</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">double</span> pi = <span class="number">3.14</span>;</span><br></pre></td></tr></table></figure>
-<p>일반적으로 정적필드는 위와 같이 선언과 동시에 초기화 한다. 하지만 외부환경의 영향이나 로직을 통해 정적필드를 초기화 하고 싶을 경우도 있을 것이다.</p>
-<h3 id="정적필드-초기화-2-정적영역-static-block-사용"><a href="#정적필드-초기화-2-정적영역-static-block-사용" class="headerlink" title="정적필드 초기화 2 : 정적영역(static block) 사용"></a>정적필드 초기화 2 : 정적영역(static block) 사용</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">double</span> pi;</span><br><span class="line"><span class="keyword">static</span>&#123;</span><br><span class="line">  클래스명.pi = <span class="number">3.14</span>;</span><br><span class="line">  System.out.println(<span class="string">"정적영역 초기화 완료..."</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>static { … } 형태의 정적영역을 사용하여 정적필드를 초기화 할 수 있다. 정적영역 역시 클래스가 메모리에 로드되면서 동작한다. </p>
-<h4 id="정적영역-사용시-주의점-1-정적영역에서-인스턴스-멤버에-접근-할-수-없다"><a href="#정적영역-사용시-주의점-1-정적영역에서-인스턴스-멤버에-접근-할-수-없다" class="headerlink" title="정적영역 사용시 주의점 1 : 정적영역에서 인스턴스 멤버에 접근 할 수 없다."></a>정적영역 사용시 주의점 1 : 정적영역에서 인스턴스 멤버에 접근 할 수 없다.</h4><p>정적영역은 클래스 단위의 영역이다. 모든 인스턴스는 자신의 클래스의 정적필드에 접근이 가능하지만, 그 반대로 정적영역에서 인스턴스의 필드에 접근 할 수 없다. 당연한 말일 것이다. 정적영역에서는 접근할 인스턴스를 구별할 수 없기 때문이다. </p>
-<h4 id="정적영역-사용시-주의점-2-static-final도-정적영역에서도-초기화-할-수-있다"><a href="#정적영역-사용시-주의점-2-static-final도-정적영역에서도-초기화-할-수-있다" class="headerlink" title="정적영역 사용시 주의점 2 : static final도 정적영역에서도 초기화 할 수 있다."></a>정적영역 사용시 주의점 2 : static final도 정적영역에서도 초기화 할 수 있다.</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">double</span> PI;  <span class="comment">//관용적으로 상수인경우 상수명을 대문자 사용</span></span><br><span class="line"><span class="keyword">static</span> &#123;</span><br><span class="line">  클래스명.PI = <span class="number">3.14</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><strong>java에서 일반적인 인스턴스 단위의 final 필드을 초기화 하는 방법은 필드 선언과 동시 또는 생성자에서 초기화 해야 한다.</strong>다른 방법은 존재하지 않는다.<br>static final 필드는 final이전에 static영역, 즉 클래스 단위의 필드이기 때문에 일반적인 static 필드 처럼 선언시와 정적영역(static block)에서 초기화 할 수 있다.</p>
-<h4 id="정적영역-사용시-주의점-3-interface의-상수는-정적영역에서-초기화-할-수-없다"><a href="#정적영역-사용시-주의점-3-interface의-상수는-정적영역에서-초기화-할-수-없다" class="headerlink" title="정적영역 사용시 주의점 3 : interface의 상수는 정적영역에서 초기화 할 수 없다."></a>정적영역 사용시 주의점 3 : interface의 상수는 정적영역에서 초기화 할 수 없다.</h4><p>인터페이스의 멤버변수는 모두 상수(public static final)이다. 하지만 이 상수는 정적영역에서 초기화 할 수 없으며, 반드시 선언과 동시에 초기화 해야 한다. (20170917 추가)</p>
-
-      
-      
-          
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-
-  
-      
-
-
-  
-  
-  
-  
-
-        
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
-    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2017/09/10/java-20170910-java-arbitrary-number-of-arguments/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Hanumoka">
-      <meta itemprop="description" content="아마추어 개발자의 블로그">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hanumoka, IT Blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2017/09/10/java-20170910-java-arbitrary-number-of-arguments/" class="post-title-link" itemprop="url">java arbitrary number of arguments(...함수매개변수)</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">작성일</span>
-
-              <time title="Post created: 2017-09-10 15:42:25" itemprop="dateCreated datePublished" datetime="2017-09-10T15:42:25+09:00">2017-09-10</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Updated at: 2020-04-16 01:50:11" itemprop="dateModified" datetime="2020-04-16T01:50:11+09:00">2020-04-16</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/java/" itemprop="url" rel="index">
-                    <span itemprop="name">java</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-      <!-- 20200427hexo_post_head -->
-      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
-      <script>
-          (adsbygoogle = window.adsbygoogle || []).push({});
-      </script>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><img src="/images/20170910-java-arbitrary-number-of-arguments.jpg" alt="tips"><br>java의 함수에는 일반적으로 동일한 자료형의 여러개 데이터를 인자로 받을 때, 배열을 인자로 사용 할 수 있다. 하지만 arbitrary number of arguments(… 함수인자)를 사용할 경우 함수는 배열보다도 유연하게 인자를 받을 수 있다.</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">sum</span><span class="params">(<span class="keyword">int</span> ... values)</span></span>&#123;...&#125;;</span><br></pre></td></tr></table></figure>
-<p>위와 같은 <strong>자료형 … 매개변수명</strong> 형태로 함수의 인자를 선언 할 수 있다. 예제를 보면 쉽게 이해가 된다.</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//int형의 파라미터가 몇개가 넘어올지 모를 경우, 대응 할 수 있는 ... 확장된 배열형태의 매개변수 형태</span></span><br><span class="line">  <span class="function"><span class="keyword">static</span> <span class="keyword">int</span> <span class="title">sum</span><span class="params">(<span class="keyword">int</span> ... values)</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> total = <span class="number">0</span>;</span><br><span class="line">    <span class="comment">//배열로 인자에 접근 할 수 있다.</span></span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i =<span class="number">0</span>; i &lt; values.length; i++)&#123;</span><br><span class="line">      total += values[i];</span><br><span class="line">    &#125;<span class="comment">// for</span></span><br><span class="line">    <span class="keyword">return</span> total;</span><br><span class="line">  &#125;<span class="comment">// sum</span></span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String [] args)</span></span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//인자를 아예 안받을 수도 있다.</span></span><br><span class="line">    System.out.println(sum());     <span class="comment">// 결과: 0 </span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">//인자를 하나만 받을 수 있다.</span></span><br><span class="line">    System.out.println(sum(<span class="number">1</span>));     <span class="comment">// 결과: 1</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">//물론 3개도 된다.</span></span><br><span class="line">    System.out.println(sum(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>)); <span class="comment">// 결과: 6</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">//배열로도 받을 수 있다.</span></span><br><span class="line">    System.out.println(sum(<span class="keyword">new</span> <span class="keyword">int</span>[] &#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>&#125;)); <span class="comment">// 결과: 10</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">int</span>[] values = &#123;<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>&#125;;</span><br><span class="line">    System.out.println(sum(values)); <span class="comment">// 결과: 15</span></span><br><span class="line">    </span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
-<p>함수를 선언 할때 *<em>동일한 형태의 자료형의 인자가 0개 또는 n가 예상 되거나, 또는 배열형태의 인자가 예상될 경우 *</em>함수 오버로딩을 대신하여 위의 arbitrary number of arguments 사용하면 편 할 것 같다. </p>
-<p>다만 주의 할 점은 <strong>arbitrary number of arguments(… 함수인자)를 사용한 경우 해당 함수는 다른 인자는 갖을 수 없다.</strong></p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">sum</span><span class="params">(<span class="keyword">int</span> ... values, <span class="keyword">int</span> b)</span></span>&#123;...&#125;;  <span class="comment">// 컴파일 오류</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">sum</span><span class="params">(<span class="keyword">int</span> ... values, String b)</span></span>&#123;...&#125;; <span class="comment">// 컴파일 오류</span></span><br></pre></td></tr></table></figure>
-
-
-      
-      
-          
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-
-  
-      
-
-
-  
-  
-  
-  
-
-        
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
-    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2017/09/10/java-20170910-java-this-constructor/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Hanumoka">
-      <meta itemprop="description" content="아마추어 개발자의 블로그">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hanumoka, IT Blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2017/09/10/java-20170910-java-this-constructor/" class="post-title-link" itemprop="url">java this() 생성자</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">작성일</span>
-
-              <time title="Post created: 2017-09-10 14:22:46" itemprop="dateCreated datePublished" datetime="2017-09-10T14:22:46+09:00">2017-09-10</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Updated at: 2020-04-16 01:50:11" itemprop="dateModified" datetime="2020-04-16T01:50:11+09:00">2020-04-16</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/java/" itemprop="url" rel="index">
-                    <span itemprop="name">java</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-      <!-- 20200427hexo_post_head -->
-      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
-      <script>
-          (adsbygoogle = window.adsbygoogle || []).push({});
-      </script>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><img src="/images/20170910-java-this-constructor.png" alt><br>이번에 기록할 내용은 this생성자 이다. (this 키워드가 아니다.)<br>java의 클래스 생성자도 역시 오버로딩이 가능하다. 함수 오버로딩은 훌륭한 기능이다. 다만 일반 함수의 오버로딩이 아니라 생성자의 오버로딩일 경우 객체의 멤버변수를 셋팅하는 경우가 많기 때문에 중복된 소스가 자주 발생한다. </p>
-<p>this() 생성자란 클래스의 생성자 오버로딩시 반복되는 소스를 줄여주는 훌륭한 방법이다.<br>생성자 내부의 코드 블록 첫줄에 this()를 호출함으로 자신의 다른 생성자를 호출 할 수 있다. <strong>주의할 점은 생성자 코드블록 내부의 this() 위에 다른 소스코드가 존재해서는 안된다.</strong></p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line"> <span class="keyword">private</span> String name;</span><br><span class="line"> <span class="keyword">private</span> <span class="keyword">int</span> age;</span><br><span class="line"> <span class="keyword">private</span> String sex;</span><br><span class="line">	</span><br><span class="line"> <span class="function"><span class="keyword">public</span> <span class="title">Person</span><span class="params">(String name)</span></span>&#123;</span><br><span class="line">  <span class="comment">//this.name = name;  // this()생성자 위에 있는 코드에는 컴파일 오류가 발생한다.</span></span><br><span class="line"> <span class="keyword">this</span>(name, <span class="number">12</span>);  <span class="comment">//자동으로 해당 파라미터에 적합한 자신의 생성자를 호출한다.</span></span><br><span class="line"> System.out.println(<span class="string">"this생성자 아래에는 다른 코드가 존재 할 수 있다."</span>);</span><br><span class="line"> &#125;</span><br><span class="line">	</span><br><span class="line"> <span class="function"><span class="keyword">public</span> <span class="title">Person</span><span class="params">(String name, <span class="keyword">int</span> age)</span></span>&#123;</span><br><span class="line"> <span class="comment">//this.name = name;  // this()생성자 위에 있는 코드에는 컴파일 오류가 발생한다.</span></span><br><span class="line"> <span class="comment">//this.age = age;    // this()생성자 위에 있는 코드에는 컴파일 오류가 발생한다.</span></span><br><span class="line"> <span class="keyword">this</span>(name, age, <span class="string">"Man"</span>);  <span class="comment">//자동으로 해당 파라미터에 적합한 자신의 생성자를 호출한다.</span></span><br><span class="line"> System.out.println(<span class="string">"this생성자 아래에는 다른 코드가 존재 할 수 있다."</span>);</span><br><span class="line"> &#125;</span><br><span class="line">	</span><br><span class="line"> <span class="function"><span class="keyword">public</span> <span class="title">Person</span><span class="params">(String name, <span class="keyword">int</span> age, String sex)</span></span>&#123;</span><br><span class="line"> <span class="keyword">this</span>.name = name;</span><br><span class="line"> <span class="keyword">this</span>.age = age;</span><br><span class="line"> <span class="keyword">this</span>.sex = sex;</span><br><span class="line"> &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>위 예제소스를 보면 쉽게 이해가 될것이다. 편리한 기능이라 생각되어 이렇게 기록해 놓는다. </p>
-
-      
-      
-          
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-
-  
-      
-
-
-  
-  
-  
-  
-
   </div>
 
   
@@ -1322,7 +1353,7 @@ gtag('config', 'UA-100596920-1');
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">214</span>
+          <span class="site-state-item-count">219</span>
           <span class="site-state-item-name">포스트</span>
         </a>
       </div>
@@ -1335,7 +1366,7 @@ gtag('config', 'UA-100596920-1');
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">585</span>
+        <span class="site-state-item-count">592</span>
         <span class="site-state-item-name">태그</span></a>
       </div>
   </nav>
@@ -1377,7 +1408,7 @@ gtag('config', 'UA-100596920-1');
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>

@@ -245,6 +245,516 @@ gtag('config', 'UA-100596920-1');
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2019/01/04/springBoot-20190104-spring-applicationRunner/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Hanumoka">
+      <meta itemprop="description" content="아마추어 개발자의 블로그">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hanumoka, IT Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/01/04/springBoot-20190104-spring-applicationRunner/" class="post-title-link" itemprop="url">SpringBoot-ApplicationRunner, CommandLineRunner(스프링부트 구동시 동작시킬 코드실행)</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">작성일</span>
+
+              <time title="Post created: 2019-01-04 15:18:41" itemprop="dateCreated datePublished" datetime="2019-01-04T15:18:41+09:00">2019-01-04</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Updated at: 2020-04-16 01:50:12" itemprop="dateModified" datetime="2020-04-16T01:50:12+09:00">2020-04-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/springBoot/" itemprop="url" rel="index">
+                    <span itemprop="name">springBoot</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 20200427hexo_post_head -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h1><p>Spring boot 어플리케이션을 시작시키면서 동시에 동작시킬 코드가 있다면, ApplicationRunner와 CommandLineRunner 인터페이스를 구현한 bean을 사용하면 된다.</p>
+<h1 id="사용법-예시"><a href="#사용법-예시" class="headerlink" title="사용법 예시"></a>사용법 예시</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> hanumoka.portfolio.nao;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.springframework.boot.ApplicationArguments;</span><br><span class="line"><span class="keyword">import</span> org.springframework.boot.ApplicationRunner;</span><br><span class="line"><span class="keyword">import</span> org.springframework.boot.CommandLineRunner;</span><br><span class="line"><span class="keyword">import</span> org.springframework.core.annotation.Order;</span><br><span class="line"><span class="keyword">import</span> org.springframework.stereotype.Component;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Order</span>(<span class="number">1</span>)</span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestApplicationRunner</span> <span class="keyword">implements</span> <span class="title">ApplicationRunner</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">(ApplicationArguments args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"============ApplicationRunner"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@Order</span>(<span class="number">2</span>)</span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">TestApplicationRunner2</span> <span class="keyword">implements</span> <span class="title">ApplicationRunner</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">(ApplicationArguments args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"============ApplicationRunner2"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Order</span>(<span class="number">1</span>)</span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">TestCommandLineRunner</span> <span class="keyword">implements</span> <span class="title">CommandLineRunner</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">(String... args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"============CommandLineRunner1"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>두 인터페이스 모두 함수형 인터페이스이며, 구현한 run메소드의 파라미터인 args를 통해서 springboot어플리케이션 실행시 전달받은 파라미터(Program arguemnts) 값을 읽어올수 있다.<br>VM Opions값은 읽어 올수 없다.</p>
+<p><strong>실행결과</strong></p>
+<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">  .   ____          _            __ _ _</span><br><span class="line"> /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \</span><br><span class="line">( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \</span><br><span class="line"> \\/  ___)| |_)| | | | | || (_| |  ) ) ) )</span><br><span class="line">  '  |____| .__|_| |_|_| |_\__, | / / / /</span><br><span class="line"> =========|_|==============|___/=/_/_/_/</span><br><span class="line"> :: Spring Boot ::        (v2.<span class="number">1</span>.<span class="number">1</span>.RELEASE)</span><br><span class="line"></span><br><span class="line"><span class="number">2019</span>-<span class="number">01</span>-<span class="number">04</span> <span class="number">15</span>:<span class="number">38</span>:<span class="number">24</span>.<span class="number">445</span>  INFO <span class="number">14840</span> --- [           main] hanumoka.portfolio.nao.NaoApplication    : Starting NaoApplication on DESKTOP-EU9BLID with PID <span class="number">14840</span> (C:\Users\amagr\Desktop\Project\nao\target\classes started by amagr <span class="keyword">in</span> C:\Users\amagr\Desktop\Project\nao)</span><br><span class="line"><span class="number">2019</span>-<span class="number">01</span>-<span class="number">04</span> <span class="number">15</span>:<span class="number">38</span>:<span class="number">24</span>.<span class="number">449</span>  INFO <span class="number">14840</span> --- [           main] hanumoka.portfolio.nao.NaoApplication    : No active profile <span class="built_in">set</span>, falling back to default profiles: default</span><br><span class="line"><span class="number">2019</span>-<span class="number">01</span>-<span class="number">04</span> <span class="number">15</span>:<span class="number">38</span>:<span class="number">25</span>.<span class="number">519</span>  WARN <span class="number">14840</span> --- [           main] io.undertow.websockets.jsr               : UT026010: Buffer pool was <span class="keyword">not</span> <span class="built_in">set</span> on WebSocketDeploymentInfo, the default pool will be used</span><br><span class="line"><span class="number">2019</span>-<span class="number">01</span>-<span class="number">04</span> <span class="number">15</span>:<span class="number">38</span>:<span class="number">25</span>.<span class="number">539</span>  INFO <span class="number">14840</span> --- [           main] io.undertow.servlet                      : Initializing Spring embedded WebApplicationContext</span><br><span class="line"><span class="number">2019</span>-<span class="number">01</span>-<span class="number">04</span> <span class="number">15</span>:<span class="number">38</span>:<span class="number">25</span>.<span class="number">539</span>  INFO <span class="number">14840</span> --- [           main] o.s.web.context.ContextLoader            : Root WebApplicationContext: initialization completed <span class="keyword">in</span> <span class="number">1043</span> ms</span><br><span class="line"><span class="number">2019</span>-<span class="number">01</span>-<span class="number">04</span> <span class="number">15</span>:<span class="number">38</span>:<span class="number">25</span>.<span class="number">729</span>  INFO <span class="number">14840</span> --- [           main] o.s.s.concurrent.ThreadPoolTaskExecutor  : Initializing ExecutorService 'applicationTaskExecutor'</span><br><span class="line"><span class="number">2019</span>-<span class="number">01</span>-<span class="number">04</span> <span class="number">15</span>:<span class="number">38</span>:<span class="number">25</span>.<span class="number">931</span>  INFO <span class="number">14840</span> --- [           main] org.xnio                                 : XNIO version <span class="number">3</span>.<span class="number">3</span>.<span class="number">8</span>.Final</span><br><span class="line"><span class="number">2019</span>-<span class="number">01</span>-<span class="number">04</span> <span class="number">15</span>:<span class="number">38</span>:<span class="number">25</span>.<span class="number">940</span>  INFO <span class="number">14840</span> --- [           main] org.xnio.nio                             : XNIO NIO Implementation Version <span class="number">3</span>.<span class="number">3</span>.<span class="number">8</span>.Final</span><br><span class="line"><span class="number">2019</span>-<span class="number">01</span>-<span class="number">04</span> <span class="number">15</span>:<span class="number">38</span>:<span class="number">25</span>.<span class="number">988</span>  INFO <span class="number">14840</span> --- [           main] o.s.b.w.e.u.UndertowServletWebServer     : Undertow started on port(s) <span class="number">1290</span> (http) with context <span class="built_in">path</span> ''</span><br><span class="line">포트:<span class="number">1290</span></span><br><span class="line"><span class="number">2019</span>-<span class="number">01</span>-<span class="number">04</span> <span class="number">15</span>:<span class="number">38</span>:<span class="number">25</span>.<span class="number">991</span>  INFO <span class="number">14840</span> --- [           main] hanumoka.portfolio.nao.NaoApplication    : Started NaoApplication <span class="keyword">in</span> <span class="number">1</span>.<span class="number">854</span> seconds (JVM running <span class="keyword">for</span> <span class="number">2</span>.<span class="number">285</span>)</span><br><span class="line">============ApplicationRunner</span><br><span class="line">============CommandLineRunner1</span><br><span class="line">============ApplicationRunner2</span><br></pre></td></tr></table></figure>
+
+<p>springboot 구동시 시작된 뒤, ApplicationRunner, CommandLineRunner 인터페이스로 구현한 run메소드가 동작하는 것을 확인 할 수 있다.<br>위 처럼, Order어노테이션으로 이들간의 동작 순서를 지정 할 수도 있다.</p>
+<h1 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h1><p><a href="https://dzone.com/articles/spring-boot-applicationrunner-and-commandlinerunne" target="_blank" rel="external nofollow noopener noreferrer">https://dzone.com/articles/spring-boot-applicationrunner-and-commandlinerunne</a></p>
+
+      
+      
+          
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+      
+
+
+  
+  
+  
+  
+
+        
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2019/01/04/springBoot-20190104-springboot-undertow/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Hanumoka">
+      <meta itemprop="description" content="아마추어 개발자의 블로그">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hanumoka, IT Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/01/04/springBoot-20190104-springboot-undertow/" class="post-title-link" itemprop="url">springboot 임베디드 undertow 설정</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">작성일</span>
+
+              <time title="Post created: 2019-01-04 14:28:19" itemprop="dateCreated datePublished" datetime="2019-01-04T14:28:19+09:00">2019-01-04</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Updated at: 2020-04-16 01:50:12" itemprop="dateModified" datetime="2020-04-16T01:50:12+09:00">2020-04-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/springBoot/" itemprop="url" rel="index">
+                    <span itemprop="name">springBoot</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 20200427hexo_post_head -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="undertow-언더토우"><a href="#undertow-언더토우" class="headerlink" title="undertow(언더토우)"></a>undertow(언더토우)</h1><p>undertow는 Tomcat, jetty와 같은 웹서버이다.<br>JBoss 진영의 새로 도입된 웹서버로, 웹서버와 서블릿 컨테이너 기능을 제공한다.<br>Java언어로 작성되었다.<br>초경량 웹서버라 가볍다.<br>NON-Blocking API와 Bloking API 모두 지원한다.<br>Apache License, version 2.0을 따르는 오픈소스이다.<br>Java Servlet 3.1과 WebSocker을 구현하고 http upgrade를 지원한다.</p>
+<p><a href="https://examples.javacodegeeks.com/enterprise-java/spring/tomcat-vs-jetty-vs-undertow-comparison-of-spring-boot-embedded-servlet-containers/" target="_blank" rel="external nofollow noopener noreferrer">https://examples.javacodegeeks.com/enterprise-java/spring/tomcat-vs-jetty-vs-undertow-comparison-of-spring-boot-embedded-servlet-containers/</a></p>
+<p>위 글에서 tomcat, jetty, undertow의 성능을 단순 비교한 내용이 있는데, 솔직히 성능에서 차이는 별로 없었다.(물론 단순한 테스트이긴 함)<br>undertow가 tomcat,jetty에 비해 약간 좋은 성능을 보여주기는 한다.</p>
+<p>tomcat과 jetty와 달리 언더토우는 default로 HTTP Persistent connections(HTTP persistent connection, also called HTTP keep-alive, or HTTP connection reuse)를 응답헤더에 포함하고 있다.(http2가 나온 마당에 중요한 특이점은 아니다.)</p>
+<p>springboot에서 undertow사용시 https설정이 tomcat사용시 https설정보다 훨씬 간편하다.</p>
+<h1 id="springboot에서-undertow설정"><a href="#springboot에서-undertow설정" class="headerlink" title="springboot에서 undertow설정"></a>springboot에서 undertow설정</h1><p>간단하다. default 설정인 tomcat을 제외시키고 undertow를 추가해주면 된다.<br>내 경우 maven 프로젝트이므로 pom.xml의 dependency를 아래처럼 수정해면 된다.</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-web<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">exclusions</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">exclusion</span>&gt;</span></span><br><span class="line">				<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">				<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-tomcat<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;/<span class="name">exclusion</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;/<span class="name">exclusions</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">&lt;!--&lt;dependency&gt;--&gt;</span></span><br><span class="line">		<span class="comment">&lt;!--&lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;--&gt;</span></span><br><span class="line">		<span class="comment">&lt;!--&lt;artifactId&gt;spring-boot-starter-jetty&lt;/artifactId&gt;--&gt;</span></span><br><span class="line">	<span class="comment">&lt;!--&lt;/dependency&gt;--&gt;</span></span><br><span class="line"></span><br><span class="line">	<span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-undertow<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br><span class="line">	<span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-test<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">scope</span>&gt;</span>test<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>exclusion을 통해 default tomcat 임베드 서블릿컨테이너를 제외시키지 않으면, undertow를 추가한다 하더라도 tomcat으로 실행이 된다.<br>반드시 제외하자.</p>
+<p><img src="/images/20190104-springboot-undertow_1.png" alt="실행결과"></p>
+<h3 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h3><p><a href="http://www.opennaru.com/jboss/undertow-is-web-server-in-wildfly-and-jboss-eap7/" target="_blank" rel="external nofollow noopener noreferrer">http://www.opennaru.com/jboss/undertow-is-web-server-in-wildfly-and-jboss-eap7/</a></p>
+<p><a href="https://examples.javacodegeeks.com/enterprise-java/spring/tomcat-vs-jetty-vs-undertow-comparison-of-spring-boot-embedded-servlet-containers/" target="_blank" rel="external nofollow noopener noreferrer">https://examples.javacodegeeks.com/enterprise-java/spring/tomcat-vs-jetty-vs-undertow-comparison-of-spring-boot-embedded-servlet-containers/</a></p>
+<p><a href="http://undertow.io/" target="_blank" rel="external nofollow noopener noreferrer">http://undertow.io/</a></p>
+
+      
+      
+          
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+      
+
+
+  
+  
+  
+  
+
+        
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2019/01/04/intelliJ-20190104-intelliJ-Comunity-springboot-settting/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Hanumoka">
+      <meta itemprop="description" content="아마추어 개발자의 블로그">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hanumoka, IT Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/01/04/intelliJ-20190104-intelliJ-Comunity-springboot-settting/" class="post-title-link" itemprop="url">intelliJ Comunity에 SpringBoot 프로젝트 생성하기</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">작성일</span>
+
+              <time title="Post created: 2019-01-04 10:25:23" itemprop="dateCreated datePublished" datetime="2019-01-04T10:25:23+09:00">2019-01-04</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Updated at: 2020-04-16 01:50:11" itemprop="dateModified" datetime="2020-04-16T01:50:11+09:00">2020-04-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/intelliJ/" itemprop="url" rel="index">
+                    <span itemprop="name">intelliJ</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 20200427hexo_post_head -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h1><p>스프링 개발을 해오면서, 주로 전자정부프레임워크, 이클립스, STS등을 사용해 왔었다.<br>intelliJ ide가 넘사벽으로 좋다고 이야기는 많이 들어 봤으나, 유료인데다 월단위 라이센스라 선뜻 당기지 않았다.</p>
+<p>그러던 와중 인프런 인강에서 springboot 프로젝트를 intelliJ comunity에서도 개발할수 있는 방법을 알게되어 이렇게 정리한다.<br>intellyJ Comunity 버전이라고 무료버전이 있긴한데, 자체적으로 스프링프로젝트 생성을 제공하지 않는 것을 극복할수 있는 것이다.</p>
+<h1 id="intelliJ-comunity-다운로드"><a href="#intelliJ-comunity-다운로드" class="headerlink" title="intelliJ comunity 다운로드"></a>intelliJ comunity 다운로드</h1><p><a href="https://www.jetbrains.com/idea/download/#section=windows" target="_blank" rel="external nofollow noopener noreferrer">https://www.jetbrains.com/idea/download/#section=windows</a></p>
+<p>위 페이지로 가서 Community를 다운로드 받으면 된다.</p>
+<p><img src="/images/20190104-intelliJ-Comunity-springboot-settting_1.png" alt="역시 무료버전이라 기능이 많이 제한되어 있다."></p>
+<p>아 물론 기존에 java가 설치와 환경변수 설정이 선행되어야 한다.<br>그리고 springboot 프로젝트를 위해 jdk8버전 이상이 필요하다.</p>
+<h1 id="Spring-initializr에서-SpringBoot-프로젝트-생성"><a href="#Spring-initializr에서-SpringBoot-프로젝트-생성" class="headerlink" title="Spring initializr에서 SpringBoot 프로젝트 생성"></a>Spring initializr에서 SpringBoot 프로젝트 생성</h1><p>여기서 무료버전이라 intelliJ에서 제공하지 않는 springboot프로젝트를 대신 생성해주는 Spring initializr가 필요하다.</p>
+<p><a href="https://start.spring.io/" target="_blank" rel="external nofollow noopener noreferrer">https://start.spring.io/</a></p>
+<p>위 주소가 Spring initializr, 즉 springboot 프로젝트를 생성해주는 곳이다.</p>
+<p><img src="/images/20190104-intelliJ-Comunity-springboot-settting_2.png" alt="Spring initializr"></p>
+<p>입맛에 맞게 설정한뒤, generate project 버튼을 클릭하면 zip 파일을 하나 내려받게 된다.</p>
+<p>그 파일을 압축해제후 intelliJ comunity 버전으로 열면된다.</p>
+<p><img src="/images/20190104-intelliJ-Comunity-springboot-settting_3.png" alt="실행결과"></p>
+<p>maven 디펜던시를 다 받고 난뒤 run을 하게 되면 springboot 프로젝트가 정상적으로 동작하는 것을 확인 할 수 있다.</p>
+<p>끝!</p>
+<h3 id="Related-Posts"><a href="#Related-Posts" class="headerlink" title="Related Posts"></a>Related Posts</h3><p><a href="https://start.spring.io/" target="_blank" rel="external nofollow noopener noreferrer">https://start.spring.io/</a></p>
+
+      
+      
+          
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+      
+
+
+  
+  
+  
+  
+
+        
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2019/01/02/java-20190102-java-install-openjdk-10-julu/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Hanumoka">
+      <meta itemprop="description" content="아마추어 개발자의 블로그">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hanumoka, IT Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/01/02/java-20190102-java-install-openjdk-10-julu/" class="post-title-link" itemprop="url">Widnows10 openJDK 설치(JUlU)</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">작성일</span>
+
+              <time title="Post created: 2019-01-02 09:11:55" itemprop="dateCreated datePublished" datetime="2019-01-02T09:11:55+09:00">2019-01-02</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Updated at: 2020-04-16 01:50:11" itemprop="dateModified" datetime="2020-04-16T01:50:11+09:00">2020-04-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/java/" itemprop="url" rel="index">
+                    <span itemprop="name">java</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 20200427hexo_post_head -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h1><p>오라클의 돈독에 개발용 java jdk도 유료화가 결정되었다.<br>Windows 10에 오라클 JDK가 아닌 openjdk를 설치해보자.</p>
+<h1 id="Zulu-openJDK-다운로드-하기"><a href="#Zulu-openJDK-다운로드-하기" class="headerlink" title="Zulu openJDK 다운로드 하기"></a>Zulu openJDK 다운로드 하기</h1><p><a href="https://www.azul.com/downloads/zulu/zulu-windows/" target="_blank" rel="external nofollow noopener noreferrer">https://www.azul.com/downloads/zulu/zulu-windows/</a> 로 이동하자.</p>
+<p><img src="/images/20190102-java-install-openjdk-10-julu_1.png" alt="재밌게도 java의 마지막 공짜 update날짜를 카운팅하고 있다."></p>
+<p><img src="/images/20190102-java-install-openjdk-10-julu_2.png" alt="java6 버전부터 현재 최신 11버전까지 openjdk를 제공한다."></p>
+<p>server용이 아닌 client용으로 원하는 jdk를 다운받자.</p>
+<p>서버용은 zip, 윈도우용은 msi 형태로 jdk가 제공된다.</p>
+<p><img src="/images/20190102-java-install-openjdk-10-julu_3.png" alt="이런식으로 실행하여 설치하면 된다."></p>
+<p>ZULU로 설치할 경우 기존 oracle jdk와 다르기 zulu라는 폴더로 설치가 된다.</p>
+<p>만약 환경변수를 설정할대 이 폴더를 적용해주면 된다.</p>
+<p><img src="/images/20190102-java-install-openjdk-10-julu_4.png" alt="zulu openjdk 환경변수설정"></p>
+<p>JAVA_HOME, path, classpath 환경변수를 zulu폴더 기준으로 잡아주면된다.</p>
+<p><img src="/images/20190102-java-install-openjdk-10-julu_5.png" alt="환경변수를 잡아주면 잘 동작한다."></p>
+<p>끝! 오라클 JDK와 이제 손절해야겠다.</p>
+
+      
+      
+          
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+      
+
+
+  
+  
+  
+  
+
+        
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2018/12/28/algorithm-20181228-algorithm-recursion-greatest-common-divisor/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Hanumoka">
+      <meta itemprop="description" content="아마추어 개발자의 블로그">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hanumoka, IT Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2018/12/28/algorithm-20181228-algorithm-recursion-greatest-common-divisor/" class="post-title-link" itemprop="url">최대공약수 재귀(recursion)함수 feat. 유클리드 호제법</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">작성일</span>
+
+              <time title="Post created: 2018-12-28 06:39:06" itemprop="dateCreated datePublished" datetime="2018-12-28T06:39:06+09:00">2018-12-28</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Updated at: 2020-04-16 01:50:11" itemprop="dateModified" datetime="2020-04-16T01:50:11+09:00">2020-04-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/algorithm/" itemprop="url" rel="index">
+                    <span itemprop="name">algorithm</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 20200427hexo_post_head -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h1><p>인프런에서 무료 알고리즘 강좌를 듣고있다.<br>아 코딩테스트 넘나 어려운것…</p>
+<p>여튼 순환 혹은 재귀함수를 이용하여 최대공약수를 구하는 예제인데, 참으로 신박해서 정리해본다.<br>기원전 300년 전 유클리드라는 아저씨가 유클리드 호제법이라고 최대공약수를 구하는 공식을 만들어 놓으셨다.<br>아래 코드는 그 유클리드 호제법을 이용한 최대공약수를 구하는 예제이다.</p>
+<p><strong>Java 코드</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">test</span> </span>&#123;</span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String [] args)</span> </span>&#123;</span><br><span class="line">		</span><br><span class="line">		System.out.println(gcd(<span class="number">10</span>, <span class="number">12</span>));</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">gcd</span><span class="params">(<span class="keyword">int</span> p, <span class="keyword">int</span> q)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span>( q == <span class="number">0</span>) &#123;</span><br><span class="line">			<span class="keyword">return</span> p;</span><br><span class="line">		&#125;<span class="keyword">else</span> &#123;</span><br><span class="line">			<span class="keyword">return</span> gcd(q, p % q);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>Python 코드</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">gcd</span><span class="params">(p, q)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> q == <span class="number">0</span>:</span><br><span class="line">        <span class="keyword">return</span> p</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">return</span> gcd(q, p % q)</span><br><span class="line"></span><br><span class="line">result = gcd(<span class="number">10</span>, <span class="number">12</span>)</span><br><span class="line">print(<span class="string">'최대공약수:'</span>,result)</span><br></pre></td></tr></table></figure>
+
+<h1 id="마무리"><a href="#마무리" class="headerlink" title="마무리"></a>마무리</h1><p>이거 알고리즘 보다, 중등수학부터 다시 봐야 할것 같다.</p>
+
+      
+      
+          
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+      
+
+
+  
+  
+  
+  
+
+        
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
     <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2018/12/21/python-20181221-python-anaconda-miniconda/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -799,857 +1309,6 @@ gtag('config', 'UA-100596920-1');
   
   
 
-        
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
-    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2018/12/02/java-20181202-java-int-add-overflow/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Hanumoka">
-      <meta itemprop="description" content="아마추어 개발자의 블로그">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hanumoka, IT Blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2018/12/02/java-20181202-java-int-add-overflow/" class="post-title-link" itemprop="url">Java - 정수 오버플로 확인(Check int overflow)</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">작성일</span>
-
-              <time title="Post created: 2018-12-02 07:18:45" itemprop="dateCreated datePublished" datetime="2018-12-02T07:18:45+09:00">2018-12-02</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Updated at: 2020-04-16 01:50:11" itemprop="dateModified" datetime="2020-04-16T01:50:11+09:00">2020-04-16</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/java/" itemprop="url" rel="index">
-                    <span itemprop="name">java</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-      <!-- 20200427hexo_post_head -->
-      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
-      <script>
-          (adsbygoogle = window.adsbygoogle || []).push({});
-      </script>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h1><p>음 Java에서 숫자 연산을 할때 고려해야 해야할 점이 여러개 있다.</p>
-<p>실수 연산의 경우 부동소수점에 의한 정밀도<br>float 타입에 정수를 할당 할 경우 float 타입의 가수범위등…</p>
-<p>하지만 가장 기본이 되는것은 역시 해당 타입이 표현할수 있는 숫자범위를 초과하는 값을 할당 할 경우이다.</p>
-<p>다음 코드는 int 두값을 더할 때, 그 결과가 int 타입에 저장할 때 그 범위가 초가되면 ArithmeticException를 발생시키는 코드이다.</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> java_test;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CheckOverflowExmaple</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">try</span> &#123;</span><br><span class="line">			</span><br><span class="line">			System.out.println(<span class="string">"맥스:"</span> + Integer.MAX_VALUE);</span><br><span class="line">			System.out.println(<span class="string">"민:"</span> + Integer.MIN_VALUE);</span><br><span class="line">			</span><br><span class="line">			<span class="keyword">int</span> result = safeAdd(<span class="number">2000000000</span>, -<span class="number">2000000000</span>);</span><br><span class="line">			System.out.println(result);</span><br><span class="line">			</span><br><span class="line">		&#125;<span class="keyword">catch</span>(Exception e) &#123;</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">safeAdd</span><span class="params">(<span class="keyword">int</span> left, <span class="keyword">int</span> right)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span>( right&gt;<span class="number">0</span>) &#123;</span><br><span class="line">			<span class="keyword">if</span>(left &gt; (Integer.MAX_VALUE - right)) &#123;</span><br><span class="line">				<span class="keyword">throw</span> <span class="keyword">new</span> ArithmeticException(<span class="string">"오버플로어 발생2"</span>);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			<span class="keyword">if</span>(left &lt;(Integer.MIN_VALUE - right)) &#123;</span><br><span class="line">				<span class="keyword">throw</span> <span class="keyword">new</span> ArithmeticException(<span class="string">"오버플로어 발생2"</span>); </span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">return</span> left + right;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-      
-      
-          
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-
-  
-      
-
-
-  
-  
-  
-  
-
-        
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
-    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2018/12/02/java-20181202-java-singleton/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Hanumoka">
-      <meta itemprop="description" content="아마추어 개발자의 블로그">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hanumoka, IT Blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2018/12/02/java-20181202-java-singleton/" class="post-title-link" itemprop="url">Java 싱글톤(singleton) 클래스</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">작성일</span>
-
-              <time title="Post created: 2018-12-02 07:18:24" itemprop="dateCreated datePublished" datetime="2018-12-02T07:18:24+09:00">2018-12-02</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Updated at: 2020-04-16 01:50:11" itemprop="dateModified" datetime="2020-04-16T01:50:11+09:00">2020-04-16</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/java/" itemprop="url" rel="index">
-                    <span itemprop="name">java</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-      <!-- 20200427hexo_post_head -->
-      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
-      <script>
-          (adsbygoogle = window.adsbygoogle || []).push({});
-      </script>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h1><p>java에서 싱글톤 객체를 생성하는 클래스 예제이다.</p>
-<p>핵심은 클래스의 생성자를 private로 설정하여, 외부에서 생성자 호출을 막고 static를 이용하는 것이다.</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> java_test;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Singleton</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">		Test t1 = Test.getInstance(); </span><br><span class="line">		</span><br><span class="line">		t1.doSomething();</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//싱글톤으로 설계된 클래스</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Test</span></span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> Test singleton = <span class="keyword">new</span> Test();</span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">static</span> Test <span class="title">getInstance</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> Test.singleton;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">//생성자를 private로 가려 외부로부 호추을 막는다.</span></span><br><span class="line">	<span class="function"><span class="keyword">private</span> <span class="title">Test</span><span class="params">()</span> </span>&#123;&#125;;</span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doSomething</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		System.out.println(<span class="string">"나는 싱글톤 클래스 TEST이다."</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-      
-      
-          
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-
-  
-      
-
-
-  
-  
-  
-  
-
-        
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
-    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2018/12/02/mysql-20181202-mysql-workbench-bug-not-showing-result-grid/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Hanumoka">
-      <meta itemprop="description" content="아마추어 개발자의 블로그">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hanumoka, IT Blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2018/12/02/mysql-20181202-mysql-workbench-bug-not-showing-result-grid/" class="post-title-link" itemprop="url">mysql workbench 쿼리 결과창(result grid) 보이게 하기(Windows)</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">작성일</span>
-
-              <time title="Post created: 2018-12-02 00:39:51" itemprop="dateCreated datePublished" datetime="2018-12-02T00:39:51+09:00">2018-12-02</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Updated at: 2020-04-16 01:50:12" itemprop="dateModified" datetime="2020-04-16T01:50:12+09:00">2020-04-16</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/mysql/" itemprop="url" rel="index">
-                    <span itemprop="name">mysql</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-      <!-- 20200427hexo_post_head -->
-      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
-      <script>
-          (adsbygoogle = window.adsbygoogle || []).push({});
-      </script>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h1><p>Mysql의 무료 DB관리툴로 Mysql Workbencn라는 것이 있다.<br>공짜! 공짜! 공짜! 툴이라 굉장히 호감이 가는 툴이다.<br>하지만 8버전 이후 버그가 많아진 듯 하다.</p>
-<p>내 경우에는 쿼리의 결과칭이 보이지 않았다.</p>
-<p><img src="/images/20181202-mysql-workbench-bug-not-showing-result-grid_1.png" alt="이렇게 쿼리를 실행한 결과가 보이는 result grid가 나오지 않는 경우가 있다."></p>
-<p>구글링을 해보니 Mysql workbench 8.0.11 버전 이후로 Mac OS에서 위와 같은 문제가 자주 발생한다고 한다.</p>
-<p>그런데… 난 Windows인데 쿼리의 결과창이 안보인다.</p>
-<h1 id="해결방법"><a href="#해결방법" class="headerlink" title="해결방법"></a>해결방법</h1><p>일단 workbench를 리스타트 한다.</p>
-<p><img src="/images/20181202-mysql-workbench-bug-not-showing-result-grid_2.png" alt="번개와 돋보기 모양 아이콘을 클릭한다."></p>
-<p>위 아이콘을 클릭하면 아래처럼 바로 grid result창이 나온다.</p>
-<p><img src="/images/20181202-mysql-workbench-bug-not-showing-result-grid_3.png" alt="result gird를 선택하자."></p>
-<p>별 내용은 없다.</p>
-<p>하지만 workbench에서 버그가 발생한 상태에서 workbench 리스타트를 하지 않고 result grid창을 다시 열어도, 막상 쿼리를 실행시키면 result grid가 사라진다.</p>
-<p>반드시 workbench 재시작 이후에 result grid를 열어주자.</p>
-<h1 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h1><p><a href="https://stackoverflow.com/questions/28038580/how-to-hide-view-result-grid-in-mysql-workbench" target="_blank" rel="external nofollow noopener noreferrer">https://stackoverflow.com/questions/28038580/how-to-hide-view-result-grid-in-mysql-workbench</a></p>
-
-      
-      
-          
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-
-  
-      
-
-
-  
-  
-  
-  
-
-        
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
-    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2018/11/28/node-20181128-node-express-handlerbars/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Hanumoka">
-      <meta itemprop="description" content="아마추어 개발자의 블로그">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hanumoka, IT Blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2018/11/28/node-20181128-node-express-handlerbars/" class="post-title-link" itemprop="url">Node Express에 handlebars 템플릿엔진 적용하기(레이아웃적용)</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">작성일</span>
-
-              <time title="Post created: 2018-11-28 20:34:04" itemprop="dateCreated datePublished" datetime="2018-11-28T20:34:04+09:00">2018-11-28</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Updated at: 2020-04-16 01:50:12" itemprop="dateModified" datetime="2020-04-16T01:50:12+09:00">2020-04-16</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/node/" itemprop="url" rel="index">
-                    <span itemprop="name">node</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-      <!-- 20200427hexo_post_head -->
-      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
-      <script>
-          (adsbygoogle = window.adsbygoogle || []).push({});
-      </script>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h1><p>Node Express환경에서 Pug와 EJS템플릿 엔진을 많이 사용하는 듯 하다.<br>내가 보고 있는 책에서도 Pug위주의 예제로 진행이 되었다.</p>
-<p>하지만 막상 Express예제 프로젝트를 만들어 써보니 Pug이녀석 여간 까다로운 것이 아니다.<br>익숙해 진다면 굉장히 쉽게 태그를 작성할수는 있지만, 문제는 HTML문법을 너무 회손한다는 것이다.</p>
-<p>즉, 인터넷에서 쉽게 구할수 있는 bootstrap 템플릿 같은것을 적용하기가 어렵다는 소리이다.<br>차선책으로 EJS를 써볼까 했으나, 이것도 영 HTML 친화적이지 못한것 같았다. 더군다나 jsp 스크립틀릿 같아서…</p>
-<p>구글링을 해보니 handlebars라는 템플릿을 찾게 되었다.<br>얼마전에 Spring 웹프로젝트 예제를 만들때 thymeleaf와 고민했던 그 템플릿 엔진을 Node에서도 사용할수 있었다.</p>
-<p>handlebars는 다른 템플릿 엔진에 비해 상대적으로 HTML을 거의 회손하지 않았고, 서버사이드뿐만 아니라 클라이언트 사이드에서도 단독으로 동작할수 있는 장점이 있다.</p>
-<p><a href="https://www.slant.co/versus/181/184/~handlebars-js_vs_ejs" target="_blank" rel="external nofollow noopener noreferrer">https://www.slant.co/versus/181/184/~handlebars-js_vs_ejs</a><br>위 사이트에서 Handlebars.js와 EJS를 비교하는 설문을 했는데 Handlebars가 더 많은 지지를 받고 있다.</p>
-<p>이 글은 내가 예제로 Express 프로젝트에 Handlebars 템플릿 엔진을 적용하는 글이다.<br>Handlerbars 템플릿 적용 말고도, mysql 시퀄라이저등 다른 설정도 포함한 글이다.</p>
-<p>참고로 Node에서 express-handlebars라는 모듈을 사용한다.</p>
-<h1 id="기초-Express-프로젝트-생성-수동생성"><a href="#기초-Express-프로젝트-생성-수동생성" class="headerlink" title="기초 Express 프로젝트 생성(수동생성)"></a>기초 Express 프로젝트 생성(수동생성)</h1><p>참고로 책을 보고 따라한 예제이며, Express cli를 사용하지 않고 수동으로 프로젝트를 생성했다.(템플릿 엔진을 선택하기 싫어서…)<br>개개인 입맛에 맞게 Express 프로젝트를 생성해도 된다.</p>
-<p>프로젝트 폴더로 backend라는 폴더를 만들고, 다음 명령어로 node 프로젝트 생성</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm init -y</span><br></pre></td></tr></table></figure>
-
-<p>생성된 package.json를 아래처럼 수정</p>
-<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"name"</span>: <span class="string">"backend"</span>,</span><br><span class="line">  <span class="attr">"version"</span>: <span class="string">"0.0.1"</span>,</span><br><span class="line">  <span class="attr">"description"</span>: <span class="string">"bnad_of_coder express backend"</span>,</span><br><span class="line">  <span class="attr">"main"</span>: <span class="string">"app.js"</span>,</span><br><span class="line">  <span class="attr">"scripts"</span>: &#123;</span><br><span class="line">    <span class="attr">"start"</span>: <span class="string">"nodemon app"</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">"author"</span>: <span class="string">"hanumoka"</span>,</span><br><span class="line">  <span class="attr">"license"</span>: <span class="string">"MIT"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="mysqlDB와-sequleize를-사용하기-위해-모듈-설치"><a href="#mysqlDB와-sequleize를-사용하기-위해-모듈-설치" class="headerlink" title="mysqlDB와 sequleize를 사용하기 위해 모듈 설치"></a>mysqlDB와 sequleize를 사용하기 위해 모듈 설치</h2><p>handlebars를 적용하는데 필요없다면 넘어가자.</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">npm i -g sequelize-cli</span><br><span class="line">npm i sequelize mysql2</span><br><span class="line">sequelize init</span><br></pre></td></tr></table></figure>
-
-<p>시퀄라이저 기본폴더 4개 생성됨 config, migrations, models, seeders</p>
-<p>수동으로 views, routers, public, passport를 만들어준다.</p>
-<h2 id="backend-폴더에-app-js-파일을-생성한다"><a href="#backend-폴더에-app-js-파일을-생성한다" class="headerlink" title="backend 폴더에 app.js 파일을 생성한다."></a>backend 폴더에 app.js 파일을 생성한다.</h2><p>app.js파일은 pakcage.json에서 설정한대로 Express의 엔트리 파일이 된다.</p>
-<h2 id="Express와-그-관련-모듈과-express-handlebars를-설치한다"><a href="#Express와-그-관련-모듈과-express-handlebars를-설치한다" class="headerlink" title="Express와 그 관련 모듈과, express-handlebars를 설치한다."></a>Express와 그 관련 모듈과, express-handlebars를 설치한다.</h2><p>기타 모듈들을 추가한다. 템플릿 엔진은 handlebars를 사용한다.<br><strong>express-handlebars</strong>라는 모듈을 설치해야 한다.</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">npm i express</span><br><span class="line">npm i cookie-parser</span><br><span class="line">npm i express-session</span><br><span class="line">npm i morgan</span><br><span class="line">npm i connect-flash</span><br><span class="line">npm i express-handlebars</span><br><span class="line">npm i -g nodemon</span><br><span class="line">npm i -D nodemon</span><br></pre></td></tr></table></figure>
-
-<p>nodemon모듈은 서버 코드에 수정이 발생하면 자동으로 재시작 해준다.<br>실행되는 콘솔에서 rs를 입력해서 수동으로 재시작 할 수 있다.<br>nodemon은 개발용(배포용 아님)이다.</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm i dotenv</span><br></pre></td></tr></table></figure>
-
-<p>dotenv 모듈을 추가 설치하고, backend 폴더에 .env 파일을 만들고 아래 내용을 채운다.<br>이 것은 서버에서 쿠키, 세션용 비밀키 관리용이다.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">COOKIE_SECRET&#x3D;hanumokasecret</span><br></pre></td></tr></table></figure>
-
-<h2 id="app-js-파일을-아래처럼-수정"><a href="#app-js-파일을-아래처럼-수정" class="headerlink" title="app.js 파일을 아래처럼 수정"></a>app.js 파일을 아래처럼 수정</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> express = <span class="built_in">require</span>(<span class="string">'express'</span>);</span><br><span class="line"><span class="keyword">const</span> hbs = <span class="built_in">require</span>(<span class="string">'express-handlebars'</span>);   <span class="comment">// handlebars 템플릿 엔진</span></span><br><span class="line"><span class="keyword">const</span> cookieParser = <span class="built_in">require</span>(<span class="string">'cookie-parser'</span>);</span><br><span class="line"><span class="keyword">const</span> morgan = <span class="built_in">require</span>(<span class="string">'morgan'</span>);</span><br><span class="line"><span class="keyword">const</span> path = <span class="built_in">require</span>(<span class="string">'path'</span>);</span><br><span class="line"><span class="keyword">const</span> session = <span class="built_in">require</span>(<span class="string">'express-session'</span>);</span><br><span class="line"><span class="keyword">const</span> flash = <span class="built_in">require</span>(<span class="string">'connect-flash'</span>);</span><br><span class="line"><span class="built_in">require</span>(<span class="string">'dotenv'</span>).config();  <span class="comment">// 비밀키 관리</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//TEST</span></span><br><span class="line"><span class="keyword">const</span> userTestRouter = <span class="built_in">require</span>(<span class="string">'./routes/test/user_test'</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> app = express();</span><br><span class="line"></span><br><span class="line"><span class="comment">//** handlebars 핵심 설정 시작 **//</span></span><br><span class="line">app.engine( <span class="string">'hbs'</span>, hbs( &#123;</span><br><span class="line">  extname: <span class="string">'hbs'</span>,</span><br><span class="line">  defaultLayout: <span class="string">'main'</span>,    <span class="comment">// 기본 레이아웃 파일 main.hbs 지정, 요청에 따라 레이아웃을 변경할수 있다.</span></span><br><span class="line">  layoutsDir: __dirname + <span class="string">'/views/layouts/'</span>,  <span class="comment">// 헨들바템플릿의 레이아웃 파일의 위치</span></span><br><span class="line">  partialsDir: __dirname + <span class="string">'/views/partials/'</span> <span class="comment">// 파티셜이란: 레이아웃을 채울 header.hbs, left.hbs, footer.hbs 파일의 위치</span></span><br><span class="line">&#125; ) );</span><br><span class="line"></span><br><span class="line">app.set( <span class="string">'view engine'</span>, <span class="string">'hbs'</span> ); <span class="comment">// handlebars파일의 확장자를 hbs로 사용.</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//** handlebars 핵심 설정 끝 **//</span></span><br><span class="line"></span><br><span class="line">app.set(<span class="string">'port'</span>, process.env.PORT || <span class="number">8001</span>);</span><br><span class="line"></span><br><span class="line">app.use(morgan(<span class="string">'dev'</span>));</span><br><span class="line">app.use(express.static(path.join(__dirname, <span class="string">'public'</span>)));</span><br><span class="line">app.use(express.json());</span><br><span class="line">app.use(express.urlencoded(&#123; <span class="attr">extended</span>: <span class="literal">false</span> &#125;));</span><br><span class="line">app.use(cookieParser(process.env.COOKIE_SECRET));</span><br><span class="line">app.use(session(&#123;</span><br><span class="line">  resave: <span class="literal">false</span>,</span><br><span class="line">  saveUninitialized: <span class="literal">false</span>,</span><br><span class="line">  secret: process.env.COOKIE_SECRET,</span><br><span class="line">  cookie: &#123;</span><br><span class="line">    httpOnly: <span class="literal">true</span>,</span><br><span class="line">    secure: <span class="literal">false</span>,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;));</span><br><span class="line">app.use(flash());</span><br><span class="line"></span><br><span class="line">app.get(<span class="string">'/'</span>, <span class="function"><span class="keyword">function</span> (<span class="params">req, res</span>) </span>&#123;</span><br><span class="line">    res.render(<span class="string">'index'</span>);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">//TEST ROUTER</span></span><br><span class="line">app.use(<span class="string">'/test'</span>, userTestRouter);</span><br><span class="line"></span><br><span class="line">app.use(<span class="function">(<span class="params">req, res, next</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> err = <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">'Not Found'</span>);</span><br><span class="line">  err.status = <span class="number">404</span>;</span><br><span class="line">  next(err);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">app.use(<span class="function">(<span class="params">err, req, res</span>) =&gt;</span> &#123;</span><br><span class="line">  res.locals.message = err.message;</span><br><span class="line">  res.locals.error = req.app.get(<span class="string">'env'</span>) === <span class="string">'development'</span> ? err : &#123;&#125;;</span><br><span class="line">  res.status(err.status || <span class="number">500</span>);</span><br><span class="line">  res.render(<span class="string">'error'</span>);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">app.listen(app.get(<span class="string">'port'</span>), () =&gt; &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(app.get(<span class="string">'port'</span>), <span class="string">'번 포트에서 대기중'</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-
-<h1 id="Handlerbars관련-디렉토리와-파일들"><a href="#Handlerbars관련-디렉토리와-파일들" class="headerlink" title="Handlerbars관련 디렉토리와 파일들"></a>Handlerbars관련 디렉토리와 파일들</h1><p>위의 app.js에서 Handlebars의 핵심 소스를 추리면 아래와 같다.</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> hbs = <span class="built_in">require</span>(<span class="string">'express-handlebars'</span>);</span><br><span class="line"></span><br><span class="line">app.engine( <span class="string">'hbs'</span>, hbs( &#123;</span><br><span class="line">  extname: <span class="string">'hbs'</span>,</span><br><span class="line">  defaultLayout: <span class="string">'main'</span>,</span><br><span class="line">  layoutsDir: __dirname + <span class="string">'/views/layouts/'</span>,</span><br><span class="line">  partialsDir: __dirname + <span class="string">'/views/partials/'</span></span><br><span class="line">&#125; ) );</span><br><span class="line"></span><br><span class="line">app.set( <span class="string">'view engine'</span>, <span class="string">'hbs'</span> );</span><br></pre></td></tr></table></figure>
-
-<p>그리고 주요 파일들은 아래와 같다.<br>파일들을 생성해주자.</p>
-<p>디폴트 레이아웃 : views/layouts/main.hbs<br>레이아웃에 사용할 header : views/partials/header.hbs<br>레이아웃에서 사용할 footer : views/partials/footer.hbs<br>레이아웃에서 사용할 leaf : views/partials/left.hbs<br>인덱스 페이지 : views/index.hbs</p>
-<p><img src="/images/20181128-node-express-handlebars_2.png" alt="내 폴더구조"></p>
-<p><img src="/images/20181128-node-express-handlebars_1.png" alt="예상하는 레이아웃 구조"></p>
-<p>중요한 것은 레이아웃을 담당하는 main.hbs일 것이다.</p>
-<p>아래는 main.hbs 이다.</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"utf-8"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>Example App<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">  ...</span><br><span class="line">  &#123;&#123;&gt; header &#125;&#125;</span><br><span class="line">  &#123;&#123;&gt; left &#125;&#125;</span><br><span class="line">  ...</span><br><span class="line">  &#123;&#123;&#123;body&#125;&#125;&#125;</span><br><span class="line">  ...</span><br><span class="line">  &#123;&#123;&gt; footer &#125;&#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p>body와 나머지의 무스타치 표현이 살작 다른것을 확인 할 수 있다. body는 라우터에서 바꿔줄 페이지의 컨텐츠가 된다.</p>
-<p>나머지 header.hbs, footer.hbs, left.hbs와 index.hbs에는 대충 구별할수 있게 텍스트를 쳐주자.</p>
-<p>예를 들어 header.hbs에는 아래처럼</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">h1</span>&gt;</span>헤더 입니다.<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p>위 app.js에 기본 인덱스 라우터가 설정되어 있다.</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">app.get(<span class="string">'/'</span>, <span class="function"><span class="keyword">function</span> (<span class="params">req, res</span>) </span>&#123;</span><br><span class="line">    res.render(<span class="string">'index'</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-
-<p>서버를 npm start로 실행하고 <em><a href="http://localhost:8001" target="_blank" rel="external nofollow noopener noreferrer">http://localhost:8001</a></em> 로 접근하면, 레이아웃이 적용된 index.hbs 파일이 보이는 것을 확인 할 수 있다.</p>
-<p><a href="http://avilos.codes/server/nodejs/node-js-express-and-handlebars/" target="_blank" rel="external nofollow noopener noreferrer">http://avilos.codes/server/nodejs/node-js-express-and-handlebars/</a> 이 글을 보면, 라우팅 할때 레이아웃을 변경할수도 있다.</p>
-<p>나는 부트스트랩4 템플릿 <a href="https://github.com/puikinsh/ElaAdmin를" target="_blank" rel="external nofollow noopener noreferrer">https://github.com/puikinsh/ElaAdmin를</a> 적용하여 다음과 같이 화면이 나온다.</p>
-<p><img src="/images/20181128-node-express-handlebars_3.png" alt="index.hbs"></p>
-<p>그리고 body페이지를 하나 추가하고 아래처럼, body가 바뀌는 것을 확인 할 수 있다.</p>
-<p><img src="/images/20181128-node-express-handlebars_4.png" alt="test.hbs"></p>
-<p>예제끝!!!</p>
-<h1 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h1><p><a href="http://avilos.codes/server/nodejs/node-js-express-and-handlebars/" target="_blank" rel="external nofollow noopener noreferrer">http://avilos.codes/server/nodejs/node-js-express-and-handlebars/</a></p>
-<p><a href="https://stackoverflow.com/questions/16385173/node-js-express-handlebars-js-partial-views" target="_blank" rel="external nofollow noopener noreferrer">https://stackoverflow.com/questions/16385173/node-js-express-handlebars-js-partial-views</a></p>
-<p><a href="https://github.com/ericf/express-handlebars" target="_blank" rel="external nofollow noopener noreferrer">https://github.com/ericf/express-handlebars</a></p>
-<p>핸들바 문법<br><a href="https://programmingsummaries.tistory.com/381" target="_blank" rel="external nofollow noopener noreferrer">https://programmingsummaries.tistory.com/381</a></p>
-<p>부트스트렙4 어드민 테마<br><a href="https://github.com/puikinsh/ElaAdmin" target="_blank" rel="external nofollow noopener noreferrer">https://github.com/puikinsh/ElaAdmin</a></p>
-<h1 id="기타-Express-favicon-처리-위-예제와-상관-없음"><a href="#기타-Express-favicon-처리-위-예제와-상관-없음" class="headerlink" title="기타. Express favicon 처리(위 예제와 상관 없음)"></a>기타. Express favicon 처리(위 예제와 상관 없음)</h1><p>파비콘이 없어서 404 뜨는 경우.<br><a href="https://www.npmjs.com/package/serve-favicon" target="_blank" rel="external nofollow noopener noreferrer">https://www.npmjs.com/package/serve-favicon</a></p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install serve-favicon</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> express = <span class="built_in">require</span>(<span class="string">'express'</span>)</span><br><span class="line"><span class="keyword">var</span> favicon = <span class="built_in">require</span>(<span class="string">'serve-favicon'</span>)</span><br><span class="line"><span class="keyword">var</span> path = <span class="built_in">require</span>(<span class="string">'path'</span>)</span><br><span class="line"> </span><br><span class="line"><span class="keyword">var</span> app = express()</span><br><span class="line">app.use(favicon(path.join(__dirname, <span class="string">'public'</span>, <span class="string">'favicon.ico'</span>)))</span><br><span class="line"> </span><br><span class="line"><span class="comment">// Add your routes here, etc.</span></span><br><span class="line"> </span><br><span class="line">app.listen(<span class="number">3000</span>)</span><br></pre></td></tr></table></figure>
-
-
-      
-      
-          
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-
-  
-      
-
-
-  
-  
-  
-  
-
-        
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
-    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2018/11/24/java-20181124-java-lambda2/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Hanumoka">
-      <meta itemprop="description" content="아마추어 개발자의 블로그">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hanumoka, IT Blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2018/11/24/java-20181124-java-lambda2/" class="post-title-link" itemprop="url">java - 함수형 인터페이스 API(람다의 활용1)</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">작성일</span>
-
-              <time title="Post created: 2018-11-24 23:50:30" itemprop="dateCreated datePublished" datetime="2018-11-24T23:50:30+09:00">2018-11-24</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Updated at: 2020-04-16 01:50:11" itemprop="dateModified" datetime="2020-04-16T01:50:11+09:00">2020-04-16</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/java/" itemprop="url" rel="index">
-                    <span itemprop="name">java</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-      <!-- 20200427hexo_post_head -->
-      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
-      <script>
-          (adsbygoogle = window.adsbygoogle || []).push({});
-      </script>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h1><p>자바의 람다는 자바언어에서 쉽고 간편하게 함수를 선언해서 사용하기위한 수단이다.<br>하지만 자바는 객체 지향언어이고 기본적인 프로그래밍의 단위는 Class이다.</p>
-<p>자바에서 구현하는 함수는 이 class의 범위를 벗어 날수가 없다.<br>함수적 인터페이스(추상클래스가 하나뿐인 인터페이스)를 구현하여 함수를 생성하고 사용하는 매커니즘을 통해서 함수형 프로그래밍을 지원하며, 람다식은 이것에 특화된 문법일 뿐이다.<br>실질적으로 함수 한개를 생성해서 사용하는 것 뿐이지만, 결과적으로는 함수적 인터페이스를 즉흥적으로 구현한 익명객체의 메소드를 사용하게 되는 것이다.</p>
-<p>여기서 고민해볼게 생긴다.<br>재사용이 필요없고, 즉흥적으로 함수를 구현하기 위해서 익명객체를 생성하는것 까지는 넘어간다 하더라도, 일일이 구현해야 할 함수적 인터페이스를 만들어 줘야 하나?</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">logString</span><span class="params">(String text)</span></span>&#123;</span><br><span class="line">  System.out.println(text);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">logInt</span><span class="params">(Int value)</span></span>&#123;</span><br><span class="line">  System.out.println(value);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>만약 위 처럼 인자만 다르고 하는 일은 똑같은 함수를 구현하기위해 인터페이스를 두개나 만들어야 하는 것인가?<br>위와 같은 고민은 전혀 할 필요가 없다.<br>정답은 java.util.function 표준 API 패키지에 있다.<br>Java8에서는 기능적으로 분류된 자주 사용햘 만한 함수형 인터페이스를 API로 제공하고 있기때문에, 그냥 해당 API의 인터페이스를 입맛에 맞게 구현해서 사용하면 된다.</p>
-<h1 id="기본으로-제공되는-함수적-인터페이스의-종류"><a href="#기본으로-제공되는-함수적-인터페이스의-종류" class="headerlink" title="기본으로 제공되는 함수적 인터페이스의 종류"></a>기본으로 제공되는 함수적 인터페이스의 종류</h1><table>
-<thead>
-<tr>
-<th>종류</th>
-<th>추상 메소드 특징</th>
-<th>비고</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Consumer</td>
-<td>매개값은 있고, 리턴값은 없음</td>
-<td></td>
-</tr>
-<tr>
-<td>Supplier</td>
-<td>매개값은 없고, 리턴값은 있음</td>
-<td></td>
-</tr>
-<tr>
-<td>Function</td>
-<td>매개값도 있고, 리턴값도 있음</td>
-<td>주로 매개값을 연산하고 결과를 리턴</td>
-</tr>
-<tr>
-<td>Operator</td>
-<td>매개값도 있고, 리턴값도 있음</td>
-<td>주로 매개값을 연산하고 결과를 리턴</td>
-</tr>
-<tr>
-<td>Predicate</td>
-<td>매개값은 있고, 리턴 값은 boolean</td>
-<td>매개값을 조사하고 true/false를 리턴</td>
-</tr>
-</tbody></table>
-<p>java.util.function에서 제공하는 인터페이스들은 위의 메소드 특징에 따라서 5형태의 카테고리로 나뉜다.<br>추상 메소드의 특징으로 인터페이스를 고른 뒤, 전달한 인자의 종류에 따라서 구체적인 인터페이스를 골라 사용하면 된다.</p>
-<p>java.util.function 오라클 DOC<br><a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/package-summary.html" target="_blank" rel="external nofollow noopener noreferrer">https://docs.oracle.com/javase/8/docs/api/java/util/function/package-summary.html</a></p>
-<p>Doc문서에서 카테고리별로 정렬을 안해줘서, 보기가 좀 불편한데 인터페이스와 그 추상메소드는 굉장히 직관적이라 알기만 한다면 쉽게 사용할수 있다.</p>
-<h2 id="Cunsunmer"><a href="#Cunsunmer" class="headerlink" title="Cunsunmer"></a>Cunsunmer</h2><p>인자를 받고 메소드에서 리턴없이 소모시킨다.<br>인자만 다를 뿐 추상 메소드명은 전부 accept인 것이 특징이다.</p>
-<table>
-<thead>
-<tr>
-<th>인터페이스명</th>
-<th>추상 메소드</th>
-<th>설명</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Consumer<t></t></td>
-<td>void accept(T t)</td>
-<td>객체 T를 받아 소비</td>
-</tr>
-<tr>
-<td>BiConsumer&lt;T,U&gt;</td>
-<td>void accept(T t, U u)</td>
-<td>객체 T와 U를 받아 소비</td>
-</tr>
-<tr>
-<td>DoubleConsumer</td>
-<td>void accept(double value)</td>
-<td>double 값을 받아 소비</td>
-</tr>
-<tr>
-<td>intConsumer</td>
-<td>void accept(int value)</td>
-<td>int 값을 받아 소비</td>
-</tr>
-<tr>
-<td>LongConsumer</td>
-<td>void accept(long value)</td>
-<td>long 값을 받아 소비</td>
-</tr>
-<tr>
-<td>ObjDoubleConsumer<t></t></td>
-<td>void accept(T t, double value)</td>
-<td>객체 T와 double 값을 소비</td>
-</tr>
-<tr>
-<td>ObjIntConsumer<t></t></td>
-<td>void accept(T t, int value)</td>
-<td>객체 T와 int 값을 받아 소비</td>
-</tr>
-<tr>
-<td>ObjLongConsumer<t></t></td>
-<td>void accept(T t, long value)</td>
-<td>객체 T와 long 값을 받아 소비</td>
-</tr>
-</tbody></table>
-<p>아래처럼 간단히 값을 출력하는 함수를 만들때 사용할 수도 있다.</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> java_lamdba;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.function.BiConsumer;</span><br><span class="line"><span class="keyword">import</span> java.util.function.Consumer;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CunsummerExample</span> </span>&#123;</span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String [] args)</span> </span>&#123;</span><br><span class="line">		</span><br><span class="line">		Consumer&lt;String&gt; c1 = t -&gt;  System.out.println(t);</span><br><span class="line">		</span><br><span class="line">		c1.accept(<span class="string">"Consumer를 이용해서 로그를 찍어 봅시다."</span>);</span><br><span class="line">		</span><br><span class="line">		BiConsumer&lt;String, String&gt; c2 = (t, u) -&gt; &#123;</span><br><span class="line">			</span><br><span class="line">			String result = <span class="string">"Log:"</span> + t + u;</span><br><span class="line">			System.out.println(result);</span><br><span class="line">		&#125;;</span><br><span class="line">		</span><br><span class="line">		c2.accept(<span class="string">"헛둘헛둘"</span>, <span class="string">"셋둘셋둘"</span>);</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="Supplier"><a href="#Supplier" class="headerlink" title="Supplier"></a>Supplier</h2><p>인자가 없으며 리턴값이 존재 한다.<br>리턴하는 값의 타입에 따라 getXXX형태의 추상메소드를 갖는 것이 특징이다.</p>
-<table>
-<thead>
-<tr>
-<th>인터페이스명</th>
-<th>추상 메소드</th>
-<th>설명</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Supplier<t></t></td>
-<td>T get()</td>
-<td>T 객체를 리턴</td>
-</tr>
-<tr>
-<td>BooleanSupplier</td>
-<td>boolean getAsBoolean()</td>
-<td>boolean 값을 리턴</td>
-</tr>
-<tr>
-<td>DoubleSupplier</td>
-<td>double getAsDouble()</td>
-<td>double 값을 리턴</td>
-</tr>
-<tr>
-<td>intSupplier</td>
-<td>int getAsint()</td>
-<td>int 값을 리턴</td>
-</tr>
-<tr>
-<td>LongSupplier</td>
-<td>long getAsLong()</td>
-<td>long 값일 리턴</td>
-</tr>
-</tbody></table>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> java_lamdba;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.function.IntSupplier;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SupplierExample</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">		IntSupplier myAge = () -&gt; &#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="number">32</span>;</span><br><span class="line">		&#125;;</span><br><span class="line">		</span><br><span class="line">		System.out.println(<span class="string">"내 나이:"</span> + myAge.getAsInt());</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="Function"><a href="#Function" class="headerlink" title="Function"></a>Function</h2><p>이 인터페이스의 용도는 인자의 타입을 변형하여 새로운 타입으로 값을 리턴하는 것이다.<br>즉 일종의 형변환 전용 함수형 인터페이스가 되겠다.<br><strong>매개인자 타입과 리턴값의 타입이 다르다.</strong></p>
-<table>
-<thead>
-<tr>
-<th>인터페이스명</th>
-<th>추상 메소드</th>
-<th>설명</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Function&lt;T, R&gt;</td>
-<td>R apply(T t)</td>
-<td>객체 T를 객체 R로 매핑</td>
-</tr>
-<tr>
-<td>BiFunction&lt;T,U,R&gt;</td>
-<td>R apply(T t, U u)</td>
-<td>객체 T와 U를 객체 R로 매핑</td>
-</tr>
-<tr>
-<td>DoubleFunction<r></r></td>
-<td>R apply(double value)</td>
-<td>double을 객체 R로 매핑</td>
-</tr>
-<tr>
-<td>intFunction<r></r></td>
-<td>R apply(int value)</td>
-<td>int를 객체 R로 매핑</td>
-</tr>
-<tr>
-<td>intToDoubleFunction</td>
-<td>double applyAsDouble(int value)</td>
-<td>int를 double로 매핑</td>
-</tr>
-<tr>
-<td>intToLongFunction</td>
-<td>long applyAsLong(int value)</td>
-<td>int를 long로 매핑</td>
-</tr>
-<tr>
-<td>LongToDoubleFunction</td>
-<td>double applyAsDouble(long value)</td>
-<td>long을 doube로 매핑</td>
-</tr>
-<tr>
-<td>LongToIntFunction</td>
-<td>int applyAsInt(long value)</td>
-<td>long을 int로 매핑</td>
-</tr>
-<tr>
-<td>ToDoubleBiFunction&lt;T,U&gt;</td>
-<td>double applyAsDouble(T t, U u)</td>
-<td>객체 T와 U를 double로 매핑</td>
-</tr>
-<tr>
-<td>ToDoubleFunction<t></t></td>
-<td>double applyAsDouble(T value)</td>
-<td>객체 T를 double로 매핑</td>
-</tr>
-<tr>
-<td>ToIntBiFunction&lt;T,U&gt;</td>
-<td>int applyAsInt(T t, U u)</td>
-<td>객체 T와 U를 int로 매핑</td>
-</tr>
-<tr>
-<td>ToIntFunction<t></t></td>
-<td>int applyAsInt(T value)</td>
-<td>객체 T를 int로 매핑</td>
-</tr>
-<tr>
-<td>ToLongBiFunction&lt;T,U&gt;</td>
-<td>long applyAsLong(T t, u)</td>
-<td>객체 T와 U를 long으로 매핑</td>
-</tr>
-<tr>
-<td>ToLongFunction<t></t></td>
-<td>long applyAsLong(T value)</td>
-<td>객체 T를 long으로 매핑</td>
-</tr>
-</tbody></table>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> java_lamdba;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.function.Function;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FunctionExample</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">		Function&lt;Human, String&gt; f1 = t -&gt; t.name;</span><br><span class="line">		System.out.println(f1.apply(<span class="keyword">new</span> Human()));</span><br><span class="line">			</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Human</span></span>&#123;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">int</span> age = <span class="number">32</span>;</span><br><span class="line">	<span class="keyword">public</span> String name = <span class="string">"hanumoka"</span>;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="Operator"><a href="#Operator" class="headerlink" title="Operator"></a>Operator</h2><p>Function과 동일한 형태의 applyXXX라는 메소드를 가지고 있다.<br>하지만 매개값의 타입변환의 역활보다 <strong>매개값을 이용하여 연산을 수생한 후 동일한 타입으로 리턴값</strong>을 제공하는 역할을 한다.<br><strong>매개인자의 타입과 리턴값의 타입이 동일</strong></p>
-<table>
-<thead>
-<tr>
-<th>인터페이스명</th>
-<th>추상 메소드</th>
-<th>설명</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>BinaryOperator<t></t></td>
-<td>T apply(T t1, T t2)</td>
-<td>동일한 타입의 t1, t2를 연산후 T를 리턴</td>
-</tr>
-<tr>
-<td>UnaryOperator<t></t></td>
-<td>T apply(T)</td>
-<td>T를 연산한 후 T를 리턴</td>
-</tr>
-</tbody></table>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> java_lamdba;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.function.BinaryOperator;</span><br><span class="line"><span class="keyword">import</span> java.util.function.UnaryOperator;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Operator1</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">		BinaryOperator&lt;Integer&gt; b1 = (t, u) -&gt;&#123;</span><br><span class="line">			<span class="keyword">return</span> (t * u);</span><br><span class="line">		&#125;;</span><br><span class="line">		</span><br><span class="line">		System.out.println(b1.apply(<span class="number">3</span>, <span class="number">10</span>));</span><br><span class="line">		</span><br><span class="line">		UnaryOperator&lt;Integer&gt; u1 = (t)-&gt;&#123;</span><br><span class="line">			<span class="keyword">return</span> t + <span class="number">1</span>;</span><br><span class="line">		&#125;;</span><br><span class="line">		</span><br><span class="line">		System.out.println(<span class="number">32</span>);</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<table>
-<thead>
-<tr>
-<th>인터페이스명</th>
-<th>추상 메소드</th>
-<th>설명</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>DoubleBinaryOperator</td>
-<td>double applyAsDouble(double, double)</td>
-<td>두개의 double 연산 후 double 리턴</td>
-</tr>
-<tr>
-<td>DoubleUnaryOperator</td>
-<td>double applyAsDouble(double)</td>
-<td>한 개의 double 연산후 double리턴</td>
-</tr>
-<tr>
-<td>intBinaryOperator</td>
-<td>int applyAsInt(int, int)</td>
-<td>두 개의 int 연산후 int 리턴</td>
-</tr>
-<tr>
-<td>intUnaryOperator</td>
-<td>int applyAsInt(int)</td>
-<td>한개의 int연산후 int리턴</td>
-</tr>
-<tr>
-<td>LongBinaryOperator</td>
-<td>long applyAsLong(long, long)</td>
-<td>두개의 long 연산후 long 리턴</td>
-</tr>
-<tr>
-<td>LongUnaryOperator</td>
-<td>long applyAsLong(long)</td>
-<td>한 개의 long 연산후 long리턴</td>
-</tr>
-</tbody></table>
-<h2 id="Predicate"><a href="#Predicate" class="headerlink" title="Predicate"></a>Predicate</h2><p>Prediacate는 매개 값을 이용하여 true, false를 리턴한다.</p>
-<table>
-<thead>
-<tr>
-<th>인터페이스명</th>
-<th>추상 메소드</th>
-<th>설명</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Predicate<t></t></td>
-<td>boolean test(T t)</td>
-<td>객체 T를 통해 boolean리턴</td>
-</tr>
-<tr>
-<td>BiPredicate&lt;T,U&gt;</td>
-<td>boolean test(T t, U u)</td>
-<td>객체 T와 U를 통해 통해 boolean리턴</td>
-</tr>
-<tr>
-<td>DoublePredicate</td>
-<td>boolean test(double value)</td>
-<td>double 값을 통해 boolean리턴</td>
-</tr>
-<tr>
-<td>intPredicate</td>
-<td>boolean test(int value)</td>
-<td>int값을 통해 boolean 리턴</td>
-</tr>
-<tr>
-<td>LongPredicate</td>
-<td>boolean test(long value)</td>
-<td>long값을 통해 booean 리턴</td>
-</tr>
-</tbody></table>
-
-      
-      
-          
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-
-  
-      
-
-
-  
-  
-  
-  
-
   </div>
 
   
@@ -1720,7 +1379,7 @@ gtag('config', 'UA-100596920-1');
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">214</span>
+          <span class="site-state-item-count">219</span>
           <span class="site-state-item-name">포스트</span>
         </a>
       </div>
@@ -1733,7 +1392,7 @@ gtag('config', 'UA-100596920-1');
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">585</span>
+        <span class="site-state-item-count">592</span>
         <span class="site-state-item-name">태그</span></a>
       </div>
   </nav>
@@ -1775,7 +1434,7 @@ gtag('config', 'UA-100596920-1');
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>

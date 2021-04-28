@@ -245,6 +245,650 @@ gtag('config', 'UA-100596920-1');
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2017/08/31/web-20170831-REST/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Hanumoka">
+      <meta itemprop="description" content="아마추어 개발자의 블로그">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hanumoka, IT Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2017/08/31/web-20170831-REST/" class="post-title-link" itemprop="url">REST의 정의</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">작성일</span>
+
+              <time title="Post created: 2017-08-31 03:07:34" itemprop="dateCreated datePublished" datetime="2017-08-31T03:07:34+09:00">2017-08-31</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Updated at: 2020-04-16 01:50:12" itemprop="dateModified" datetime="2020-04-16T01:50:12+09:00">2020-04-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/web/" itemprop="url" rel="index">
+                    <span itemprop="name">web</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 20200427hexo_post_head -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><strong>REST(REpresentational State Transfer: 표현 상태 전송)는 웹 아키텍처 스타일이다.</strong></p>
+<p>HTTP 스펙 설계에 참여했던 로이필딩이라는 사람이 2000년대 발표한 네트워크(웹) 아키텍처 스타일이다.<br>여기서 네트워크 아키텍처 스타일이란 한가지의 웹 아키텍쳐 가 아니라 여러 가지 복수의 아키텍쳐의 공통된 성질, 양식 규정 혹은 독특항 방식의 집합을 네트워크 아키텍쳐 스타일이라고 한다.<br>REST를 네트워크 아키텍쳐 스타일이라고 하지만, 사실 HTTP 기반위에 존재하는 아키텍쳐 스타일이므로 웹 아키텍처 스타일이라고 부르는 것도 틀린 표현은 아닌 것 같다.</p>
+<p>RESTful은 어떤 대상이 REST 의 제약에 따르고 있고, 그래서 상당히 REST스럽다? REST답다 라는 형용사적 의미이다.</p>
+<p>예를 들어 어떤 서버 A가 존재 한다고 하자. 이 A서버는 REST라는 아키텍츠 스타일의 제약을 충실히 따르고 있다면, 이 A 서버를 RESTful 한 서버라 부를 수 있다.</p>
+<blockquote>
+<p><img src="/images/20170831-REST%EB%9E%80_1.png" alt></p>
+</blockquote>
+<p><strong>REST의 의미</strong></p>
+<blockquote>
+<p>REST는 수많은 아키텍처 스타일 중에서도, 특히 네트워크 시스템의 아키텍처 스타일 이다.<br>그리고 REST는 웹의 대표적인 아키택처 스타일인 클라이언트/서버를 기반으로 하는 복합 아키텍처 스타일이다.<br>, 즉 로이필딩은 REST 기반으로 네트워크를 설계하면 효과적이라고 생각했다.</p>
+</blockquote>
+<p><strong>REST = 클라이언트/서버 + 스테이트리스 서버(Stateless Server) + 캐시(cache) + 유니폼 인터페이스(uniform Interface) + 계층화 시스템 + 코드 온 디맨</strong></p>
+<p><strong>클라이언트/서버</strong><br>말그대로 클라이언트 와 서버로 구성되어 있으며 클라이언트에서 request하면 서버에서 response한다.</p>
+<p><strong>스테이트리스 서버</strong><br>클라이언트의 어플리케이션 상태를 서버에서 관리하지 않는다는 의미이다. 서버가 어플리케이션의 상태를 가지지 않게되면, 그만큼 서버 측의 구현이 갈결해지는 장점이 있다.<br>하지만 현실적으로 스테이트리스가 아닌 웹 서비스와 웹 API가 많이 사용된다. 특히 HTTP를 스테이트풀 하게 만드는 대표적인 것은 Cookie를 사용한 세션관리이다.<br>REST의 관점에서 본다면, Cookie를 사용한 세션관리는 HTTP의 잘못된 확장이다. 다만 REST의 기준으로 잘못되었다고 해서, Cookie를 사용한 폼 인증을 그만둘 수 없는 것도 현실이다. Cookie는 스테이트리스 서버의 이점을 버린다는 것을 이해한 후 최소한으로 이용 해야 한다.</p>
+<p><strong>캐시</strong><br>리소스의 신선도에 기초해, 한번 가져온 리소스를 클라이언트 쪽에서 돌려쓰는 방식.</p>
+<p><strong>유니폼 인터페이스 (리소스, http 메소드, 메세지)</strong><br>URI로 지정한 리소스에 대한 조작을 통일되고 한정적인 인터페이스로 수행하는 아키텍처 스타일을 말한다.<br>예를 들어 HTTP1.1 에서 GET, POST등 8개의 메소드만 정의되어 있고, 보통은 이 이상 늘어나지 않는다. 어떻게 보면 확장성이 떨어진다고 보여지지만 이런 제약이 현재 웹의 통일된 인터페이스를 만들어 낸 것이다.</p>
+<p>REST에서는 모든 것을 명사형 리소스로 표현하며, 의미가 명확한 한정된 HTTP 메소드를 사요하고, 메세지를 담아서 통신한다.<br>아래는 대표적으로 사용하는 메소드 4개이다.</p>
+<table>
+<tr><td>메소드명</td><td>기능</td></tr>
+<tr><td>get</td><td>search</td></tr>
+<tr><td>post</td><td>create</td></tr>
+<tr><td>put</td><td>update</td></tr>
+<tr><td>delete</td><td>delete</td></tr>
+</table>
+
+
+<p>아래는 실제 REST 메세지의 표현 형테이다.<br><a href="http://somthingweb/user/" target="_blank" rel="external nofollow noopener noreferrer">http://somthingweb/user/</a> 주소(리소스 url)에 POST(CREATE)해라 rocky라는 이름으 user를 이라는 의미를 갖는 메세지이다.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">HTTP POST , http:&#x2F;&#x2F;somthingweb&#x2F;user&#x2F;</span><br><span class="line">&#123;</span><br><span class="line">   &quot;user&quot;:&#123;</span><br><span class="line">       &quot;name&quot;:&quot;rocky&quot;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>계층화 시스템</strong></p>
+<p>유니폼 인터페이스로 인해 발생되는 이점중 하나이다. 통일된 인터페이스로 인해 시스템 전체를 계층화 하기 쉽다. 프록시 서버, 로드벨런서 등등을 http 인터페이스로 통일하여 계층화 하여 사용 할수 있다.</p>
+<p><strong>코드 온 디맨드(code on demand)</strong></p>
+<p>프로그램 코드를 서버에서 다운 받아 클라이언트에서 실행하는 아키텍처 스타일이다.<br>처음에 이 개념은 서버에서 발생하는 부하를 클라이언트쪽으로 부담시켜 서버의 부하를 낮추것이 목적이었다.</p>
+<p>예를 들어 javascript나 flash, java 애플릿 등이 여기에 해당한다.<br>반대로 jsp, asp 같이 백엔드에서 페이지를 렌더링해서 클라이언트에 보내는 경우, 수많은 화면 페이지들은  *.jsp 또는 *.asp 이런 확장자를 가지게 된다. 이는 화면단 소스가 백엔드 기술에 종속된다는 것을 의미한다.<br>jsp, asp 이런 기술들은 백엔드에 프론트엔드가 기술적으로 종속된다는 단점이 있지만, 이런 단점을 무색하게 할 정도로 강력한 기능을 제공해 왔다.</p>
+<p>하지만 근래 javascript의 눈부신 발달, jquery, ajax 기타 수많은 블라블라.js 등으로 인해 이런 백엔드 서버페이지 기술, jsp, asp이런 것들이 제공하는 기술들을 대체하는 시대가 되었다. 본래의 서버의 부하를 낮추는 기능 뿐만 아니라 프론트 엔드가 서버에 독립적으로 동작할수 있는 특성이 생겨버렸다.</p>
+<p>요즘의 REST, RESTful 하다라는 말이 유행하게 된 가장 큰 이유는 발전된 javascript, jquery, ajax를 통해 백엔드에 독립적인 프론트엔드 개발이 가능한 환경 즉 코드 온 디멘드가 가능한 환경이 되었기 때문이라고 생각된다.<br>특히 ajax통신은 http + xml or json 형태의 통신형태로 인해 REST가 지향하는 유니폼 인터페이스를 구현하는 기반이 되었다고 생각된다.</p>
+<p>jquery, ajax를 이용하여 프론트엔드는 백엔드에 종속되지 않고 백엔드 시스템과 통신할수 있다.<br>이런 시점에서 적절한 웹 아키텍처가 필요했고 로이필딩이 2000년대 논문을 통해 발표한 REST라는 웹 아키텍처 스타일이 트랜드상 선호되는것 같다.</p>
+
+      
+      
+          
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+      
+
+
+  
+  
+  
+  
+
+        
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2017/08/31/javascript-20170831-javascript-closure-3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Hanumoka">
+      <meta itemprop="description" content="아마추어 개발자의 블로그">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hanumoka, IT Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2017/08/31/javascript-20170831-javascript-closure-3/" class="post-title-link" itemprop="url">javascript 클로저(closure)사용시 주의사항(3편)</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">작성일</span>
+
+              <time title="Post created: 2017-08-31 03:05:40" itemprop="dateCreated datePublished" datetime="2017-08-31T03:05:40+09:00">2017-08-31</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Updated at: 2020-04-16 01:50:11" itemprop="dateModified" datetime="2020-04-16T01:50:11+09:00">2020-04-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/javascript/" itemprop="url" rel="index">
+                    <span itemprop="name">javascript</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 20200427hexo_post_head -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="클로저-closure-의-사용시-주의사항"><a href="#클로저-closure-의-사용시-주의사항" class="headerlink" title="클로저(closure)의 사용시 주의사항"></a>클로저(closure)의 사용시 주의사항</h2><p>클로저는 그 기묘한 특성?상 다양한 활용이 가능하지만, 무분별하게 사용시 성능문제나 코드의 난독화가 발생한다고 한다.<br>이번글에서는 클로저 사용시 결과 예측을 실수 할수있는 ,즉 헷갈리는 클로저 예제 소스를 통해서 주의할 점을 알아보도록 하겠다.</p>
+<p>1.클로저를 선언하는 외부함수의 유효범위 스코프는 클로저에 의해 변경이 가능하다.</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">outerFunc</span>(<span class="params">argNum</span>)</span>&#123;</span><br><span class="line">	<span class="keyword">var</span> num = argNum;</span><br><span class="line">	<span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params">x</span>)</span>&#123;</span><br><span class="line">	num += x;</span><br><span class="line">	<span class="built_in">console</span>.log(<span class="string">'num:'</span> + num);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> exam = outerFunc(<span class="number">40</span>);</span><br><span class="line">exam(<span class="number">5</span>);</span><br><span class="line">exam(<span class="number">-10</span>);</span><br></pre></td></tr></table></figure>
+
+<p><strong>결과</strong></p>
+<blockquote>
+<ul>
+<li>num:45</li>
+<li>num:35</li>
+</ul>
+</blockquote>
+<p>사실 주의할 점 까지는 아니지만, 클로저의 가장 중요한 개념이다.<br>클로저를 처음 접할때 가장 햇갈리는 부분이 이부분일 것이다.</p>
+<p>클로저는 살아있다(alive)! 이 말이 무엇이냐면, outerFunc(40); 로 외부함수는 호출되고 종료되었지만, exam 이라는 변수에 클로저가 생성되고 할당 되었다.<br>이 클로저 exam 이 존재 하기 때문에 자바스크립트 엔진은 exam 이 생성될 때, 접근할 수 있는 영역에 대한 부분을 메모리에서 지우지 않고 보존하고 있다. 즉 exam 은 자신을 생성한 outerFunc의 살아있는 유효범위 스코프에 접근하여 값 접근 및 할당이 가능하다.</p>
+<ol start="2">
+<li>하나의 클로저가 여러 함수 객체의 스코프 체인에 들어가 있는 경우도 있다.</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">func</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">	<span class="keyword">var</span> x = <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">return</span> &#123;</span><br><span class="line">		func1 : <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123; <span class="built_in">console</span>.log(++x); &#125;,</span><br><span class="line">		func2 : <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123; <span class="built_in">console</span>.log(-x); &#125;</span><br><span class="line">&#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> exam = func();</span><br><span class="line">exam.func1();</span><br><span class="line">exam.func2();</span><br></pre></td></tr></table></figure>
+
+<p><strong>결과</strong></p>
+<blockquote>
+<ul>
+<li>2</li>
+<li>-2</li>
+</ul>
+</blockquote>
+<p>이 예제도 그렇게 어려운 예제는 아닐 것이다.<br>func()함수가 호출되며 하나의 객체를 리턴하고 그 객체는 func1, func2 두개의 메소드를 가지고 있다.<br>여기서 헷갈릴 가능성이 있는 부분은 리턴한 객체 exam 의 func1과 func2이 각각 다른 x에 접근 할 것이라 생각 할 수도 있다.<br>결과를 확인하면 exam.func1, 과 exam.func2과 동일한 x를 접근 하는 것을 확인 할 수 있다.</p>
+<p>func1과 func2는 [동일한 함수 호출]에 의해 만들어 졌기 때문에 같은 x[동일한 함수 호출의 유효범위 스코프]에 접근 하는 것이다.</p>
+<p>2번 예제를 통해 한가지 더 모호한 점은 클로저라는 어떤 대상의 구분이다.</p>
+<p><img src="/images/2017-06-11-javascript7_1.png" alt></p>
+<p>한개의 클로저의 범위를 정의 한다면, 한개의 외부함수의 유효범위 스코프와 그 유효범위 스코프를 공유하는 내부함수(1개 이상)라고 볼 수 있을것 같다.</p>
+<p>3.클로저를 정의하는 함수 내에서 루프를 이용하는 경우</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">constfuncs</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">	<span class="keyword">var</span> funcs = [];</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">var</span> i =<span class="number">0</span>; i &lt; <span class="number">10</span>; i++)&#123;</span><br><span class="line">	funcs[i] = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123; <span class="keyword">return</span> i;&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">return</span> funcs;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> funcs = constfuncs();</span><br><span class="line">funcs[<span class="number">0</span>]();</span><br><span class="line">funcs[<span class="number">4</span>]();</span><br><span class="line">funcs[<span class="number">9</span>]();</span><br></pre></td></tr></table></figure>
+
+<p><strong>결과</strong></p>
+<blockquote>
+<ul>
+<li>10</li>
+<li>10</li>
+<li>10</li>
+</ul>
+</blockquote>
+<p>결과를 0, 4, 9 가 리턴 될 것이라 예측 할 수도 있다. (필자 역시…)<br>여기서 중요한 점은 클로저와 연관된 유효범위 체인이 ‘살아있다’라는 것이다.<br>중첩함수의 유효범위에 대한 내부 사본이나 변수 바인딩의 스냅샷은 만들어지지 않는다.<br>이미 funcs<a href>0</a> 이 호출되는 시점에는 자신을 생성할 때 호출된 constFuncs 함수의 var i 는 for문이 완벽하게 동작하고 종료되었기 때문에 10인 것이다.</p>
+<ol start="4">
+<li>this와 arguments 사용시 주의점</li>
+</ol>
+<p>이 부분은 클로저 사용시 주의사항이라기 보다는 내부함수(중첩함수) 사용시 공통적으로 주의해야 할 부분이다.</p>
+<p>모든 함수 호출에는 this값이 있고, 외부 함수가 this 값을 별도로 변수로 저장하지 않으면 클로저는 외부 함수의 this값에 접근 할 수 없다.<br>arguments는 키워드는 아니지만, 모든 함수 호출에 자동으로 선언된다. 클로저 함수는 자신만의 arguments를 가지고 있기 때문에, 외부 함수가 argumengs을 다른 이름의 변수에 저장하지 않는 한, 클로저는 외부 함수의 arguments에 접근 할 수없다.</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">outerFunc1</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="built_in">console</span>.dir(<span class="keyword">this</span>);</span><br><span class="line">	<span class="built_in">console</span>.dir(<span class="built_in">arguments</span>);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line"><span class="meta">	"use strict"</span>;    <span class="comment">// this가 Window 전역객체로 할당 되는것을 강제로 막았다.</span></span><br><span class="line">        <span class="built_in">console</span>.dir(<span class="keyword">this</span>);</span><br><span class="line">	<span class="built_in">console</span>.dir(<span class="built_in">arguments</span> );</span><br><span class="line">&#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> test1 = outerFunc1(<span class="number">111</span>, <span class="string">'가나다'</span>);</span><br></pre></td></tr></table></figure>
+<p><img src="/images/2017-06-11-javascript7_3.png" alt></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">test1();</span><br></pre></td></tr></table></figure>
+<p><img src="/images/2017-06-11-javascript7_4.png" alt></p>
+<p>리턴된 클로저를 호출시 this 는 undefined(use strict를 통해 강제로 막았기 때문에) 그리고 arguments객체는 존재는 하지만 클로저 자신이 호출될때 생성된 arguments이기 때문에 외부함수 outerFunc1의 arguments에는 접근 할 수 없다.</p>
+<p>해결방법 외부함수의 this와 arguments 객체를 외부함수 지역변수에 할당하자!</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">outerFunc2</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="built_in">console</span>.dir(<span class="keyword">this</span>);</span><br><span class="line">	<span class="built_in">console</span>.dir(<span class="built_in">arguments</span>);</span><br><span class="line"></span><br><span class="line">   <span class="keyword">var</span> outThis = <span class="keyword">this</span>;       <span class="comment">// this를 클로저가 접근할 수 있도록 지역변수에 할당한다.</span></span><br><span class="line">	<span class="keyword">var</span> outArgu = <span class="built_in">arguments</span>;  <span class="comment">// arguments를 클로저가 접근할 수 있도록 지역변수에 할당한다.</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line"><span class="meta">"use strict"</span>;</span><br><span class="line"><span class="built_in">console</span>.dir(outThis);</span><br><span class="line">	   <span class="built_in">console</span>.dir(outArgu );</span><br><span class="line">&#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> test2 = outerFunc2(<span class="number">222</span>, <span class="string">'abc'</span>);</span><br></pre></td></tr></table></figure>
+<p><img src="/images/2017-06-11-javascript7_5.png" alt></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">test2();</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/2017-06-11-javascript7_6.png" alt></p>
+<p>외부함수의 this 와 arguments 를 지역변수에 할당하여 클로저가 접근할 수 있도록 할 수 있다.</p>
+
+      
+      
+          
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+      
+
+
+  
+  
+  
+  
+
+        
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2017/08/31/javascript-20170831-javascript-closure-2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Hanumoka">
+      <meta itemprop="description" content="아마추어 개발자의 블로그">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hanumoka, IT Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2017/08/31/javascript-20170831-javascript-closure-2/" class="post-title-link" itemprop="url">javascript 클로저(closure)의 활용(2편)</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">작성일</span>
+
+              <time title="Post created: 2017-08-31 03:04:57" itemprop="dateCreated datePublished" datetime="2017-08-31T03:04:57+09:00">2017-08-31</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Updated at: 2020-04-16 01:50:11" itemprop="dateModified" datetime="2020-04-16T01:50:11+09:00">2020-04-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/javascript/" itemprop="url" rel="index">
+                    <span itemprop="name">javascript</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 20200427hexo_post_head -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="클로저-closure-의-활용"><a href="#클로저-closure-의-활용" class="headerlink" title="클로저(closure)의 활용"></a>클로저(closure)의 활용</h2><p>본 글은 독자가 자바스크립트 클로저의 개념에 대한 이해를 전제하에 작성된 글이다.</p>
+<p>자바스크립트의 클로저의 개념에 대해서는 공부를 했지만, 막상 이 클로저라는 것을 활용해 보려니 도통 감이 오질 않는다.<br>클로저를 활용한다는 말인 즉, 클로저를 통해서 어떤 프로그래밍 적 효과를 발생시키고 그 효과를 활용 한다는 말일 것이다.</p>
+<p>그렇다면 간단한 예제를 통해 그 효과와 그 효과를 활용하는 방법을 알아보자.<br>(클로저는 성능적인 면과 자원적인 면에서 약간 손해를 볼수 있으므로 무차별적으로 사용해서는 안된다고 한다.)</p>
+<h3 id="활용1-함수-캡슐화"><a href="#활용1-함수-캡슐화" class="headerlink" title="활용1 - 함수 캡슐화"></a>활용1 - 함수 캡슐화</h3><p>설명 할 클로저는 함수형 프로그래밍 기법이지만, 캡슐화를 구현할 수 있다.<br>캡슐화란 객체지향 프로그래밍의 하나의 개념 중 하나이다.<br>객체지향 프로그래밍의 캡슐화란 다음과 같다.</p>
+<p>캡슐화란?</p>
+<blockquote>
+<p>객체의 속성(data fileds)과 행위(메소드, methods)를 하나도 묶는다.<br>실제 구현 내용 일부를 외부에 감추어 은닉한다.</p>
+</blockquote>
+<p>하지만 자바스크립트에서 기본적인 객체선언은 캡슐화의 두번째 측면인 실제 구현내용을 외부에 감추어 은닉할수가 없다.<br>간단한 객체 리터럴 예제로 확인해보자.</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> countObj1 = &#123;</span><br><span class="line">	n : <span class="number">0</span>,</span><br><span class="line">	count : <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123; <span class="keyword">return</span> <span class="keyword">this</span>.n++;&#125;,</span><br><span class="line">        reset : <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123; <span class="keyword">this</span>.n = <span class="number">0</span>&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>countObj1객체의 의도는 메소드 count를 이용해서 n을 1씩 증가시키는 것이다.<br>그리고 reset 메소드를 이용하여 n을 0로 초기화 시킨다.</p>
+<p><img src="/images/2017-06-11-javascript6_1.png" alt></p>
+<p>그리고 위처럼 사용 할수 있다. 하지만 객체의 내부 프로퍼티인 n을 다른 방식으로 접근하여 호출 또는 재정의 할 수 있다.</p>
+<p><img src="/images/2017-06-11-javascript6_2.png" alt></p>
+<p>위처럼 내부 객체의 내부 프로퍼티에 직접 접근하여 재 할당 될 수 있다.<br>만약 악의적인 코드 또는 실수로 인해 외부에서 직접 n을 접근 할 경우 의도치 않은 동작을 할 수도 있다.</p>
+<p>이렇게 외부에서 임의로 데이터를 접근 또는 훼손하는 것을 막는 기법이 캡슐화의 데이터 은닉이다.<br>하지만 안타깝게도 자바스크립트에서는 문법적으로 캡슐화의 데이터 은닉를 지원하지 않는다.  (java, c++에서는 문법적으로 지원한다.)</p>
+<p>이 캡슐화의 데이터 은닉을 자바스크립트에서는 함수형 프로그래밍 기법인 클로저를 이용해 구현 할 수 있다.</p>
+<p>1번 예제에 클로저를 적용하여 내부 변수 n을 외부에서 접근 못하게 해보자.(캡슐화의 데이터은닉)</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">counter</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">	<span class="keyword">var</span> n = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">return</span> &#123;</span><br><span class="line">		count: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123; <span class="keyword">return</span> n++; &#125;,</span><br><span class="line">                reset: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123; n = <span class="number">0</span>; &#125;</span><br><span class="line"> &#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> countA = counter();</span><br><span class="line"><span class="keyword">var</span> countB = counter();</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/2017-06-11-javascript6_3.png" alt></p>
+<p>위 소스코드에서는 counter 함수가 리턴하는 객체의 메소드 count()와 reset()가 클로저가 된다. (이부분이 이해가 안간다면 클로저의 개념과 대해 다시 공부해야 한다.)</p>
+<p>2번 예제는 1번예제와 객체 생성방법이 다르지만, 만들어진 객체의 사용은 동일하다.<br>count 메소드를 이용하여 n에 1을 더하고 , reset 메소드를 이용하여 n을 0으로 초기화 하고 있다.</p>
+<p>그렇다면 2번예제에서도 1번예제처럼 직접 객체에 접근하여 n을 수정해 보자.</p>
+<p><img src="/images/2017-06-11-javascript6_4.png" alt></p>
+<p>countA.n = 100; 을 통해 n이라는 객체에 새로운 변수를 추가 할 수 있다.<br>하지만 countA의 메소드(클로저)는 이 countA의 멤버변수 n을 사용하는 것이 아니라 자기 자신의 외부함수 counter의 지역변수 n을 사용하기 때문에 객체의 메소드를 호출시 계획한 대로 결과가 나오는 것을 확인 할수있다.<br>이것은 클로저를 통해 변수 n이 은닉되어 있기때문에 가능한 결과이다.</p>
+<p>2번 예제를 이용해 클로저에 대한 부연설명을 조금 더 해보자면,<br>countA.count()와 countA.reset() 메소드는 하나의 n을 공유한다.<br>하지만 countA 와 countB는 n을 공유하지 않고 각각의 n을 사용한다.<br>counter함수가 호출되어 새로운 객체를 리턴 할 때마다 새로운 유효범위 체인과 새로운 내부변수(n)이 생성되기 때문이다.<br>여기서 이 counter의 내부변수 n이 캡슐화된 외부로부터 은닉된 실제 구현내용이 된다.<br>이런 캡슐화를 통해서 내부변수 n이 외부로 부터 오염되는 것을 막을수 있다.</p>
+<h3 id="활용2-함수의-호출방법의-가공"><a href="#활용2-함수의-호출방법의-가공" class="headerlink" title="활용2 - 함수의 호출방법의 가공"></a>활용2 - 함수의 호출방법의 가공</h3><p>setTimeout  함수는 첫번째 인자로 받는 함수 참조값을 특정시간(두번째 인자) 이후에 실행시키는 내장함수이다.<br>문제는 첫번째 인자로 넘기는 함수에 매개변수를 전달 할 수 없다는 것이다.<br>하지만 클로저를 이용해 전달할 함수를 클로저로 변환하여 호출하는 방법을 가공 할수 있다.</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">sum</span>(<span class="params">a, b</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">"%d + %d = %d"</span>, a, b, a + b);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">callLater</span>(<span class="params">func, a, b</span>) </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">tempFn</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        func(a, b)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> tempFn;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> func = callLater(sum, <span class="number">1</span>, <span class="number">2</span>);</span><br><span class="line">setTimeout(func, <span class="number">8000</span>);</span><br></pre></td></tr></table></figure>
+
+
+<p>간단한 예제이다. callLater 함수를 이용해 setTimeout에게 전달할 함수의 호출환경을 미리 설정해 놓고 그것을 클로저(tempFn)로 만들어 func 변수에 할당했다.<br>func 클로저는 인자가 필요 없으므로 setTimeout에 첫번째 인자로 전달할 수 있다.</p>
+<p>자바스크립트에서는 함수도 일급객체이므로 변수처럼 다른 함수의 인자로 전달하여 실행시키는 경우가 많은데, 전달할 인자 함수에 매개변수를 클로저를 통해 미리 조립하여 전달하는 방식으로 클로저를 사용 할 수 있다.</p>
+<p>클로저의 활용 방법을 간단한  2가지 예로 설명했는데, 사실 더 다양한 방법이 있을 것이다.<br>스스로 더 공부하고 코딩하면서 클로저의 다양한 활용방법을 찾아보길 바란다.</p>
+
+      
+      
+          
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+      
+
+
+  
+  
+  
+  
+
+        
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2017/08/31/javascript-20170831-javascript-closure-1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Hanumoka">
+      <meta itemprop="description" content="아마추어 개발자의 블로그">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hanumoka, IT Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2017/08/31/javascript-20170831-javascript-closure-1/" class="post-title-link" itemprop="url">javascript 클로저(closure)란(1편)?</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">작성일</span>
+
+              <time title="Post created: 2017-08-31 03:03:26" itemprop="dateCreated datePublished" datetime="2017-08-31T03:03:26+09:00">2017-08-31</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Updated at: 2020-04-16 01:50:11" itemprop="dateModified" datetime="2020-04-16T01:50:11+09:00">2020-04-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/javascript/" itemprop="url" rel="index">
+                    <span itemprop="name">javascript</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 20200427hexo_post_head -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="클로저-closure-란"><a href="#클로저-closure-란" class="headerlink" title="클로저(closure)란?"></a>클로저(closure)란?</h2><p>클로저의 사전적 의미를 오렐리의 코뿔소책에서 발췌해왔다.</p>
+<blockquote>
+<p>함수객체와, 함수의 변수가 해석되는 유효범위(변수바인딩의 집합)을 아울러 컴퓨터 과학 문언에서는 클로저(closure)라고 일컫는다.<br>기술적으로 모든 자바스크립트 함수는 클로저인데, 함수는 객체이고 함수 자신과 관련된 유효범위 체인을 가지고 있기 때문이다.</p>
+</blockquote>
+<p>대충 보니 자바스크립트에서 함수객체 본인과, 그 함수객체가 접근할수 있는 유효범위를 포괄적으로 클로저라고 한다는것 같다.<br>하지만 위 글로는 야구의 마무리투수와 클로저의 차이를 구별하긴 어렵다. 역시 소스코드로 클로저를 이해해보자.</p>
+<h3 id="1번-예제"><a href="#1번-예제" class="headerlink" title="1번 예제"></a>1번 예제</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> testVal = <span class="string">'나는 전역변수이다.'</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">test</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">      <span class="keyword">var</span> testVal = <span class="string">'나는 지역변수이다.'</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">innerF</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">		<span class="keyword">return</span> testVal;</span><br><span class="line">&#125;<span class="comment">//innerF</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">return</span> innerF();</span><br><span class="line">&#125;<span class="comment">//test</span></span><br><span class="line"></span><br><span class="line">test();</span><br></pre></td></tr></table></figure>
+
+<p>1번 예제를 보자, 내부 함수를 선언하고 실행해서 리턴하는 간단한 예제이다.<br>여기서 마지막 test();의 결과를 보자.</p>
+<p><img src="/images/2017-06-11-javascript5_1.png" alt></p>
+<p>전역변수가 아닌 test함수의 지역변수가 선택되어 console.log함수에 의하여 호출되는 것을 확인 할 수 있다.<br>음 innerF함수가 test함수 내부에서 실행되고 그 값이 리턴된 것이니 당연한 결과라 생각이 된다.</p>
+<p>그렇다면 다음 예제를 보도록 하자.</p>
+<h3 id="2번-예제"><a href="#2번-예제" class="headerlink" title="2번 예제"></a>2번 예제</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> testVal = <span class="string">'나는 전역변수이다.'</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">test</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">      <span class="keyword">var</span> testVal = <span class="string">'나는 지역변수이다.'</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">innerF</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">		<span class="keyword">return</span> testVal;</span><br><span class="line">&#125;<span class="comment">//innerF</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">return</span> innerF;</span><br><span class="line">&#125;<span class="comment">//test</span></span><br><span class="line"></span><br><span class="line">test()();</span><br></pre></td></tr></table></figure>
+
+<p>1번예제와 거의 같지만, 다른점은 innerF 내부함수는 test함수 내부에서 실행되지 않고 그냥 리턴이 되어버린다. 그리고 전역 영역에서 innerF함수를 실행한다.<br>test()();의 결과를 한번 보자.</p>
+<p><img src="/images/2017-06-11-javascript5_2.png" alt></p>
+<p>클로저를 모르는 분들이라면 이 결과에 이상함 또는 충격과 공포를 느낄 것이다.  innerF 함수는 전역영역에서 실행이 되었다. 따라서 전역에 있는 testVal을 사용할것이라고 쉽게 예상한다. 하지만 그 결과는 여전이 test함수의 지역변수를 사용한다는 것을 알수 있다.</p>
+<p>보통 여기서 1차 멘붕이 온다.(필자가 그랬으니 당신들도 그러해야한 합니다. 나만 바보일순 없으니…)<br>왜???? test()(); 동작결과가 지역변수를 호출하는 거지????<br>분명 innerF함수는 전역영역에서 실행되었는데????<br>전역영역의 testVal을 가져와서 “저의 선택은 나는 전역변수이다. 입니다.” 이렇게 나와야 되는데????</p>
+<p>그리고 C와 같은 저수준 프로그래밍 언어를 공부한 사람들은 곧 2차 멘붕이 온다. (역시 당신들도 그러해야한 합니다….)<br>부모함수 test함수는 호출이 이미 끝났잖아????<br>리턴된 함수는 이미 실행이 종료(close)된 test함수의 내부 변수에 어떻게 접근할수 있는 거지?????<br>test함수가 실행이 끝나지 않은 것인가???? (참고로 test함수는 종료된것이 맞다.)</p>
+<p>예제2번의 결과가 나오는 이유는 바로</p>
+<p>자바스크립트의 함수가 동작할때 사용하는 유효범위는 함수를 호출하는 시점에서의 변수 유효범위가 아니라, 함수가 정의된 시점의 변수 유효범위 체인를 사용하여 함수가 실행되기 때문이다.<br>다시 강조를 하면 호출하는 시점이 아니라! 정의되는 시점!!!<br>이런 특징을 어휘적 유효범위(lexical scoping)이라고 부른다고 한다.<br>이것이 굉장히 중요하다. 자바스크립트는 이런 어휘적 유효범위 때문에 클로저라는 것을 구현할수 있는 것이다.<br>test함수가 실행이 종료된 뒤에도 여전히 innerF함수가 test함수의 지역변수를 사용할수 있는 이유는 innerF함수는 자신의 정의된 시점에 자신이 접근하여 사용할수 있는 유효범위 체인 정보를 별도의영역(내부적으로…)에 저장하고 관리하고 있기 때문이다.</p>
+<p>즉 2번 예제의, innerF함수는 전역영역에서 실행되었지만, innerF함수가 선언된 그 시점의 유효범위를 가지고 동작하기 때문에 선언된 시점의 test()함수 내부의 지역변수를 사용하게 된 것이다.</p>
+<p>그리고 이번에 공부하고 있는 클로저라는 녀석은 저 test()함수 객체를 말한다. 2번 예제에서는 리턴된 함수를 변수에 안담아서 보기가 좀 그렇지만 var a = test(); a(); 이 a를 클로저라고 부른다.<br>글 맨위에서 사전적 의미의 클로저(함수의 유효범위와 함수객체)가 있지만 실질적으로 어떤 함수 내부에서 정의되고 외부로 리턴된 함수를 클로저라고 말한다.</p>
+<p>클로저(closure)라는 말은 어원은 함수의 지역변수가 유효범위 체인에 바인딩 되어 있고, 따라서 그 함수는 함수의 변수에 ‘따라 닫힌다’는 뜻에서 유래한 용어라고 하는데, 이름을 잘못 지은것 같다. 오히려 개인적으로 이 이름때문에 이해하기 힘든 부분이 있었던것 같다.(마무리 투수만 생각 나더라…)</p>
+<h3 id="누군가-당신에게-자바스크립트-클로저-closure-를-물어본다면"><a href="#누군가-당신에게-자바스크립트-클로저-closure-를-물어본다면" class="headerlink" title="누군가 당신에게 자바스크립트 클로저(closure)를 물어본다면?"></a>누군가 당신에게 자바스크립트 클로저(closure)를 물어본다면?</h3><h4 id="귀찮을-때"><a href="#귀찮을-때" class="headerlink" title="귀찮을 때"></a>귀찮을 때</h4><blockquote>
+<p>함수다.</p>
+</blockquote>
+<h4 id="진지할-때"><a href="#진지할-때" class="headerlink" title="진지할 때"></a>진지할 때</h4><blockquote>
+<p>함수객체와 그 함수객체가 선언된 시점의 유효범위 체인을 통틀어서 클로저라고 부를수 있다.<br>더 구체적으로 클로저를 지칭 하자면 자신(함수)을 정의한 바깥쪽 함수에 바인딩된 지역변수(그리고 전달인자)를 포착할수 있는 함수객체이다.</p>
+</blockquote>
+<p>이 클로저라는 녀석을 이용해서 다양한 코딩 기법(자바의 private 멤버변수 같은)이 있는데, 그건 아직 공부를 안해서 나중에 시간이 난다면 끄적여 보도록 하겠다. 이만 뿅!.</p>
+
+      
+      
+          
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+      
+
+
+  
+  
+  
+  
+
+        
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2017/08/31/javascript-20170831-javascript-Object-2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Hanumoka">
+      <meta itemprop="description" content="아마추어 개발자의 블로그">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hanumoka, IT Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2017/08/31/javascript-20170831-javascript-Object-2/" class="post-title-link" itemprop="url">javascript 객체(Object) 생성방법</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">작성일</span>
+
+              <time title="Post created: 2017-08-31 03:02:13" itemprop="dateCreated datePublished" datetime="2017-08-31T03:02:13+09:00">2017-08-31</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Updated at: 2020-04-16 01:50:11" itemprop="dateModified" datetime="2020-04-16T01:50:11+09:00">2020-04-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/javascript/" itemprop="url" rel="index">
+                    <span itemprop="name">javascript</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 20200427hexo_post_head -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="자바스크립트의-객체-생성방법-3가지"><a href="#자바스크립트의-객체-생성방법-3가지" class="headerlink" title="자바스크립트의 객체 생성방법 3가지"></a>자바스크립트의 객체 생성방법 3가지</h2><p>1.객체 리터럴을 이용한 객체 생성 방식</p>
+<p>리터럴 방식 객체생성은 하나의 객체를 그 즉시 생성한다.<br>거두절미하고 소스와 주석으로 객체 리터럴을 설명하겠다.</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> filmograyphyList = [<span class="string">'도날드덕'</span>, <span class="string">'환타지아'</span>]; <span class="comment">// 배열 객체를 선언한다.</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> man = &#123;&#125;; <span class="comment">// 비어있는 프로퍼티가 없는 리터럴로 man 이라는 객체를 생성</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//duck 이라는 이름의 객체를 객체리터럴을 통해 생성한다.</span></span><br><span class="line"><span class="keyword">var</span> duck = &#123;</span><br><span class="line">	<span class="comment">//객체 내부에는 그 객체의 특징(element)이 되는 프로퍼티를 여러개 갖을수 있으며</span></span><br><span class="line">	<span class="comment">//이 프로퍼티에는 자바스크립트에 존재하는 모든 것을 담을수 있다.(원시값을 포함해 함수, 배열 ...)</span></span><br><span class="line">	name: <span class="string">'도날드 덕'</span>,</span><br><span class="line">	age: <span class="number">82</span>,</span><br><span class="line">	sex : man,      	  <span class="comment">// 프로퍼티에 객체가 할당된다.</span></span><br><span class="line">	별명 : <span class="string">'도날드 트럼프'</span>,    <span class="comment">// 자바스크립트 프로퍼티명은 영어가 아닌 한글도 가능하다.</span></span><br><span class="line"></span><br><span class="line">	filmograyphy : filmograyphyList,   <span class="comment">// 프로퍼티에 객체배열을 할당한다.</span></span><br><span class="line"></span><br><span class="line">	<span class="string">'home adress'</span> : <span class="string">'디지니 랜드'</span>,   <span class="comment">// 일반적으로 프로퍼티 명을 뛰어 쓰기로 사용할수 없으나</span></span><br><span class="line">                                        <span class="comment">//예외적으로 싱글쿼티션(') 또는 더블쿼티션("")으로 감싼 프로퍼티명은 사용이 가능하다.</span></span><br><span class="line">	                                <span class="comment">// 프로퍼티 네이밍은 일반적으로 자바스크립트 변수 네이밍</span></span><br><span class="line">                                        <span class="comment">//규칙을 따른다.(ex:숫자로 시작하는 변수명은 사용할수 없다.)</span></span><br><span class="line">					<span class="comment">// 하지만 싱글쿼티션(') 또는 더블쿼티션("")으로 감싼 프로퍼티명은 이런 자바스크립트의                                                       //변수명 작성 규칙 제한을 받지 않는다.</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> : <span class="string">'test2222'</span>,                   <span class="comment">// for, if 등 시스템 예약어는 변수명으로는 사용할수 없다 하지만 자바스크립트</span></span><br><span class="line">                                            <span class="comment">//객체프로퍼티명으론 사용할수 있다.</span></span><br><span class="line">	<span class="string">'if'</span> : <span class="string">'test111'</span>,                   <span class="comment">// 하지만 이런 예약어들의 사용을 권장하지 않으며, 만약 불가피 하다면 문자열로</span></span><br><span class="line">                                            <span class="comment">//감싸 사용하길 권장한다.</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">//프로퍼티에는 함수또한 담길수 있으며, 특이하게 객체의 프로퍼티중 함수를 담고 있는 프로퍼티는 메소드라고 부른다.</span></span><br><span class="line">    say : <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">		<span class="built_in">console</span>.log(<span class="string">'꽥 꽥'</span>);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>리터럴이라는 말을 위키피디아에서 찾아보니 컴퓨터 과학분야에서, 소스코드의 고정된 값을 대표하는 용어라고한다.( 즉 객체 리터럴 방식은 객체를 생성하는 표기법 정도로 이해하고 넘어가자. 리터널에 대해서는 인터넷에 한번 찾아보길 바란다.)</p>
+<p>위 소스는 obj1이라는 이름의 객체를 리터럴 방식으로 생성한 것이다.<br>객체 리터럴은 중괄호 { } 를 이용하여 프로퍼티명과 프로퍼티의 값을 감싼 형태로 생성 된다.<br>{ ‘프로퍼티이름’ : ‘프로퍼티값’ }</p>
+<p>더 자세한 내용은 위의 동영상을 참고하길 바란다.</p>
+<p>2.생성자를 이용한 객체 생성</p>
+<p>생성자 함수를 이용해 반복적으로 동일한 형태(프로퍼티를 갖는)객체를 생성하는 일반적인 방법.</p>
+<p>일단 자바스크립트의 생성자란 객체를 반복적으로 생성할수 있는 함수이다.<br>대중적인 객체지향 언어인 java, c++ 같은 언어에서는 class라는 객체의 설계도 내부의 생성자라는 함수를 가지고 있는데, 자바스크립트에서는 클래스라는 객체의 설계서가 따로 존재하지 않으며 이 생성자 내부에서 객체의 설계내용을 작성한다.</p>
+<p>그리고 자바스크립트에서는 기본적인 함수와 생성자간의 문법적 구별이 없다. A라는 함수가 있다면 이것을 그냥 함수처럼 호출할수도 있고, new라는 키워드로 생성자로 호출할수도 있다.</p>
+<p>역시 거두절미하고 소스를 보자.</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">var</span> obj1 = <span class="keyword">new</span> <span class="built_in">Object</span>();        <span class="comment">// 자바스크립트에 내장된 기본 Object 생성자를 이용해 빈 객체를 생성.</span></span><br><span class="line"><span class="keyword">var</span> arrayObj1 = <span class="keyword">new</span> <span class="built_in">Array</span>(<span class="number">10</span>);  <span class="comment">// 자바스크립트에 내장된 기본 Array 생성자를 이용해 빈 배열 객체를 생성.</span></span><br><span class="line"><span class="keyword">var</span> dateObj1 = <span class="keyword">new</span> <span class="built_in">Date</span>();      <span class="comment">// 자바스크립트에 내장된 기본 Date 생성자를 이용해 날짜 정보를 담은 Date 객체를 생성.</span></span><br><span class="line">                                <span class="comment">// Object, Array, Date 뿐만아니라 여러 다른 기본 내장 객체 생성자가 존재한다.</span></span><br></pre></td></tr></table></figure>
+
+<p>위처럼 내장된 생성자 객체들을 이용하여 객체를 생성할수 있다.<br>이런 내장된 생성자 말고 프로그래머가 직접 원하는 객체를 생성할수 있도록 생성자를 만들수 있다.</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//Duck이라는 생성자를 만든다. 자바스크립트에서는 일반 함수와 생성자의 문법적 차이가 없다.(개인적으로 불만이다.)</span></span><br><span class="line"><span class="comment">//생성자와 함수를 구별하기 위해 보통 생성자의 이름은 대문자로 선언한다.</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Duck</span>(<span class="params">dName, dAge</span>)</span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="comment">//생성자 함수의 내부에 있는 this라는 키워드는 이 함수가 new로 호출되었을때 생성해서 리턴하는 객체를 가리키며</span></span><br><span class="line">	<span class="comment">//this.name은 그 생성될 객체의 프로퍼티를 생성하겠다라는 의미이다.</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">this</span>.name = dName;  <span class="comment">// 생성자 함수를 호출시 전달받는 전달인자를 name이라는 프로퍼티에 할당한다.</span></span><br><span class="line">	<span class="keyword">this</span>.age = dAge;    <span class="comment">// 생성자 함수를 호출시 전달받는 전달인자를 age이라는 프로퍼티에 할당한다.</span></span><br><span class="line">	<span class="keyword">this</span>.종 = <span class="string">'오리'</span>;</span><br><span class="line"></span><br><span class="line">	<span class="comment">//객체 리터럴과 다르게 아래처럼은 객체 프로퍼티의 프로퍼티명을 문자열로 만들수 없다.</span></span><br><span class="line">	<span class="comment">//this."home adress" = '디지니 랜드';</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">//하지만 이런식으로 객체가 유사배열인 것을 이용하여, 배열 형태로 프로퍼티를 생성할 시 문자열로 프로퍼티명을 생성할수 있다.</span></span><br><span class="line">	<span class="keyword">this</span>[<span class="string">"home adress"</span>] = <span class="string">'디지니 랜드'</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">this</span>.for = <span class="string">'하하하?'</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">this</span>.say = <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">			<span class="built_in">console</span>.log(<span class="string">'꽥 꽥'</span>);</span><br><span class="line">	&#125;;</span><br><span class="line"></span><br><span class="line">&#125;<span class="comment">// Duck end</span></span><br></pre></td></tr></table></figure>
+<p>자 위 소스로 객채를 생성할수 있는 함수 즉 생성자를 선언했다.<br>이제 위 생성자를 통해 객체를 생성해 보자.</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//new 라는 키워드의 의미는 new 다음에 올 함수를 생성자로서 호출하겠다는 의미이다.</span></span><br><span class="line"><span class="comment">//여기서 중요한 것은 new로 호출된 모든 함수는 객체를 반드시 생성해서 리턴하게 된다.</span></span><br><span class="line"><span class="comment">//생성자는 어떤 형태의 객체를 만들 목적으로 만들어 진 것일뿐 일반함수와 같다.</span></span><br><span class="line"><span class="keyword">var</span> duck1 = <span class="keyword">new</span> Duck(<span class="string">'도날드 덕'</span>, <span class="number">82</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.dir(duck1);</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/2017-06-11-javascript4_1.png" alt></p>
+<p>생성된 객체를 console.dir로 열어보면 Duck생성자로 생성된 객체의 프로퍼티를 확인 할 수 있다.</p>
+<p>일단 생성자를 하나 만들었다면,</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> duck2 = <span class="keyword">new</span> Duck(<span class="string">'레임 덕'</span>, <span class="number">5</span>);</span><br><span class="line"><span class="keyword">var</span> duck2 = <span class="keyword">new</span> Duck(<span class="string">'베이징 덕'</span>, <span class="number">3</span>);</span><br></pre></td></tr></table></figure>
+
+<p>이처럼 반복적으로 객체를 생성하는 것이 가능하다.</p>
+<p>지금 설명하는 생성자를 사용하여 객체를 생성하는 이유는 동일 형태의 객체를 반복적으로 생성할 수 있기 때문이다.<br>(물론 필요에 따라 객체리터럴로 객체를 생성해도 된다. 뭐가 좋고 나쁘다는 말이 아니다.)</p>
+<p>자바스크립트에서 생성자가 다른 객체지향 언어와 개념적 차이가 있는데, 일반적인 객체지향언어에서 클래스라는 개념이 있다.<br>이 클래스라는 개념은 객체의 설계도 역할을 한다. 예를 들어 객체가 가져야 할 프로퍼티들을 정의 하는데, 자바스크립트에서는 이 클래스라는 개념이 없으며,그 대신 자바스크립트에서 생성자에서 this.프로퍼티명 을 이용하여 이 클래스의 설계도와 같은 기능을 포함하고 있다.</p>
+<ol start="3">
+<li>Object.create 매소드를 이용해한 객체 생성</li>
+</ol>
+<p>자바스크립트의 객체의 상속을 따라가다보면 최상위 객체가 존재하신다.(필자는 god object라고 장난스래 부른다)<br>그리고 이 최상위 객체를 이용하여 자바스크립트에서 객체를 생산하시는 성모마리아님 같은 최상위 생성자(자바스크립트 내장 상성자)가 역시 존재하는데, 그 분이 Object()생성자 이시다.<br>이 Object생성자 객체의 create 메소드를 이용하면, 객체 생성과 동시 객체 상속을 조금더 손쉽게 할수 있다.<br>이 기능은 ecma5(이끄마파이브) 부터 지원하며, 자세한 내용은 아래 MDN을 참고!</p>
+<p><a href="https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Global_Objects/Object/create" target="_blank" rel="external nofollow noopener noreferrer">https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Global_Objects/Object/create</a></p>
+<p>절대 귀찮아서 Object.create 설명은 글로 안쓴것이 아니다. 솔직히 나도 잘 모ㄹ…. 콜록콜록</p>
+
+      
+      
+          
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+      
+
+
+  
+  
+  
+  
+
+        
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
     <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2017/08/31/javascript-20170831-javascript-Object-1/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -779,7 +1423,7 @@ gtag('config', 'UA-100596920-1');
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">214</span>
+          <span class="site-state-item-count">219</span>
           <span class="site-state-item-name">포스트</span>
         </a>
       </div>
@@ -792,7 +1436,7 @@ gtag('config', 'UA-100596920-1');
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">585</span>
+        <span class="site-state-item-count">592</span>
         <span class="site-state-item-name">태그</span></a>
       </div>
   </nav>
@@ -834,7 +1478,7 @@ gtag('config', 'UA-100596920-1');
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>

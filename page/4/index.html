@@ -245,6 +245,976 @@ gtag('config', 'UA-100596920-1');
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2019/12/28/obsStudio-20191228-OBSstudio-nvidia-setting/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Hanumoka">
+      <meta itemprop="description" content="아마추어 개발자의 블로그">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hanumoka, IT Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/12/28/obsStudio-20191228-OBSstudio-nvidia-setting/" class="post-title-link" itemprop="url">OBS Studio 디스플레이 캡쳐 검은화면 설정</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">작성일</span>
+
+              <time title="Post created: 2019-12-28 13:06:07" itemprop="dateCreated datePublished" datetime="2019-12-28T13:06:07+09:00">2019-12-28</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Updated at: 2020-04-16 01:50:12" itemprop="dateModified" datetime="2020-04-16T01:50:12+09:00">2020-04-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/OBSstudio/" itemprop="url" rel="index">
+                    <span itemprop="name">OBSstudio</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 20200427hexo_post_head -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="문제발생"><a href="#문제발생" class="headerlink" title="문제발생"></a>문제발생</h1><p>나는 코딩 테스트나 개발환경 셋팅을 할때, 그것들을 기록하고 싶은경우 OBS Studio 라는 화면 녹화 프로그램을 사용한다.</p>
+<p>노트북에서 OBS Studio를 잘 쓰다가, 뭔가 업데이트(Windows인지, Nvidia인지 모르겠지만)된 뒤로 갑작이 OBS Studio의 디스플레이 캡쳐가 검은 화면으로 나오면서, 녹화시에 검은 화면만 녹화가 되었다.</p>
+<p>참고로 특정 Window 화면 녹화는 정상적으로 되었다.</p>
+<h1 id="해결방법"><a href="#해결방법" class="headerlink" title="해결방법"></a>해결방법</h1><p>내 경우에는 다음과 같은 방법으로 문제를 해결 했다.</p>
+<p>만약 OBS studio가 실행중이라면 일단 종료를 시킨다.</p>
+<p>그리고 바탕화면에서 마우스 우클릭으로 NVIDIA 제어판으로 들어간다.</p>
+<p><img src="/images/2019/20191228OBSStudio/Untitled.png" alt="설정1"></p>
+<p>열린 NVIDIA 제어판에서 3D 설정 - 3D설정 관리로 화면 진입후 프로그램 설정 탭을 선택한다.</p>
+<p>내 경우에는 1.사용자 정의할 프로그램 선택에 OBS Studio가 이미 등록이 되어 있었으나, 만약 없다면 추가 버튼으로 OBS Studio를 추가해 준다.</p>
+<p>그리고 2.이 프로그램에 대한 기본 그래픽 프로세서 선택에서 통합 그래픽을 선택하고 적용버튼을 클릭해서 설정을 저장한다.</p>
+<p>이 설정으로 나는 문제를 해결 했다.</p>
+<p><img src="/images/2019/20191228OBSStudio/Untitled%201.png" alt="설정2"></p>
+<p>끝!!!</p>
+
+      
+      
+          
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+      
+
+
+  
+  
+  
+  
+
+        
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2019/12/25/elasticsearch-20191225-Elasticsearch-hello-Elasticsearch/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Hanumoka">
+      <meta itemprop="description" content="아마추어 개발자의 블로그">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hanumoka, IT Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/12/25/elasticsearch-20191225-Elasticsearch-hello-Elasticsearch/" class="post-title-link" itemprop="url">Elasticsearch-hello-Elasticsearch</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">작성일</span>
+
+              <time title="Post created: 2019-12-25 17:53:26" itemprop="dateCreated datePublished" datetime="2019-12-25T17:53:26+09:00">2019-12-25</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Updated at: 2020-04-16 01:50:11" itemprop="dateModified" datetime="2020-04-16T01:50:11+09:00">2020-04-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Elasticsearch/" itemprop="url" rel="index">
+                    <span itemprop="name">Elasticsearch</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 20200427hexo_post_head -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="엘라스틱서치-입문과-활용"><a href="#엘라스틱서치-입문과-활용" class="headerlink" title="엘라스틱서치 입문과 활용"></a>엘라스틱서치 입문과 활용</h1><h2 id="1-엘라스틱-서치-개요"><a href="#1-엘라스틱-서치-개요" class="headerlink" title="1.엘라스틱 서치 개요"></a>1.엘라스틱 서치 개요</h2><h3 id="1-1-엘라스틱-서치란"><a href="#1-1-엘라스틱-서치란" class="headerlink" title="1-1.엘라스틱 서치란"></a>1-1.엘라스틱 서치란</h3><p>우리는 지금 정보의 홍수 속에 살고 있다. 매일 매초 인터넷에 연결된 수없이 많은 시스템으로부터 헤아릴 수 없을 만큼 많은 데이터가 쏟아져 나오고 있으며, 이 데이터로부터 의미 있고 가치 있는 정보를 뽑아내기 위한 시스템 또한 수도 없이 개발되고 있다. </p>
+<p>특히 SNS와 각종 포털 사이트에서 사용자의 활동 정보 등에 대한 대용량 데이터의 실시간 분석 기술은 <strong>빅데이터</strong>라는 이름의 트렌드로 자리 잡으며 수많은 업체와 정부 기관에 데이터 활용의 새 지평을 열었다.</p>
+<p>이와 같은 정보의 홍수속에서 필요로 하는 정확한 데이터를 검색하여 찾는 기술은 무엇보다 중요해 졌다. 데이터를 검색하는데 있어 전 세계적으로 가장 널리 사용되고 있는 기술중 하나가 바로 아파치 루씬(Apache Lucene)이다. </p>
+<p>자바로 개발된 루씬은 오픈소스로 현재 아파치 Top 레벨 프로젝트로 등록돼 있다.</p>
+<p>루씬은 강력한 검색 기능이 있지만, 완전한 솔루션이 아닌 라이브러리로 제공되기 대문에 개인이나 기업에서 실제로 사용혀려면 루씬 라이브러리를 이용해 검색 솔루션을 스스로 개발해야 한다.</p>
+<p>아파치 루씬 라이브러리를 실무에 사용하기 위해 티카(Tica), 솔라(Solr)등의 솔루션이 개발되어 있는데 가장 <strong>최근에 개발돼 선풍적인 인기를 끌고 있는 솔루션이 바로 엘라스틱 서치이다.</strong></p>
+<p>엘라스틱서치는 샤이 배논(Shay Bannon)이 개발했으며 현재 오픈소스 프로젝트로 진행되고 있다. </p>
+<p>엘라스틱 서치를 이용하여 분산환경에서의 병렬 처리와 실시간 검색을 지원하고, 확장성이 뛰어난 대규모 시스템을 쉽게 구축할 수 있다.</p>
+<p><strong>엘라스틱 서치를 요약하자면, 빅데이터(비정형데이터)로부터 원하는 데이터를 검색하기 위한 검색엔진 솔루션이라고 할수 있다.</strong></p>
+<h3 id="1-2-용어-정리를-통한-엘라스틱서치의-이해"><a href="#1-2-용어-정리를-통한-엘라스틱서치의-이해" class="headerlink" title="1-2. 용어 정리를 통한 엘라스틱서치의 이해"></a>1-2. 용어 정리를 통한 엘라스틱서치의 이해</h3><p>네이버나 구글에서 제공하는 다양한 서비스는 일상에서 빼놓을 수 없는 서비스로 자리매김했다.</p>
+<p>그중에서도 사용자가 원하는 검색어에 대한 결과를 제공하는 검색 서비스가 가장 많이 사용되고 있다.</p>
+<p>그리고 이러한 검색 서비스를 부르는 용어도 다양하다.</p>
+<p><strong>검색엔진</strong>, <strong>검색시스템</strong>, <strong>검색서비스</strong> 등의 용어가 대표적인데 무언가 비슷하면서도 다른 듯한 알쏭달쏭한 느낌이 든다. </p>
+<p>먼저 <strong>검색엔진(Search engine)</strong>은 광활한 데이터에서 원하는 검색결과는 제공하는 프로그램이다.</p>
+<p>검색엔진은 검색 결과로 제공되는 데이터의 특성에 따라 구현 형태가 각각 달라진다.</p>
+<p>검색 역사에 한 획을 그은 야후(Yahoo)는 디렉터리 기반의 검색 결과를 세계 최초로 제공했다.</p>
+<p>이를 바탕으로 요즘에는 뉴스, 블로그, 카페 등 대범주에 따른 카테고리별 검색결과를 대부분의 검색 업체에서 제공하고 있다.</p>
+<p><strong>검색 시스템(Search system)</strong>은 대용량 데이터를 기반으로 신뢰성 있는 검색 결과를 제공하기 위해 검색엔진을 기반으로 구축된 시스템을 통칭하는 용어다.</p>
+<p>수집기를 이용해 방대한 데이터를 수집하고 이를 다수의 검색엔진을 이용해 색인하고 검색결과를 UI로 제공한다. </p>
+<p>시스템 내부의 정책에 따라 관련도가 다수 높은 문서를 검색 결과의 상위에 배치할 수 있을뿐더러 특정 필드나 문서에 가중치를 둬서 검색의 정확도를 높일 수도 있다.</p>
+<p><strong>검색 서비스(search service)</strong>는 검색엔진을 기반으로 구축한 검색 시스템을 활용해 검색 결과를 서비스로 제공한다.</p>
+<p>엄밀히 말하자면 <strong>엘라스틱서치는 검색엔진</strong>으로 분류 할 수 있다.</p>
+<p>그리고 <strong>ELK스택을 활용하여 검색엔진보다 더 큰 검색시스템</strong>을 구성 할수 있다.</p>
+<pre><code>검색 서비스(ex:google, naver ) &gt; 검색 시스템(ex: ELK스택) &gt; 검색엔진(ex: 엘라스틱 서치)</code></pre><h3 id="1-3-검색-시스템의-구성-요소"><a href="#1-3-검색-시스템의-구성-요소" class="headerlink" title="1-3. 검색 시스템의 구성 요소"></a>1-3. 검색 시스템의 구성 요소</h3><p>이번에는 검색시스템의 구성요소를 통해 엘라스틱서치를 알아보자.</p>
+<p>검색 시스템의 기본 구조는 개발사에 따라 서로 조금씩 다르지만 기본 구조는 같다. </p>
+<p>일반적으로 정보를 수집하는 수집기, 수집한 데이터를 저장하는 스토리지, 수집한 데이터를 검색에 적절한 형태로 변환하는 색인기, 색인된 데이터에서 일치하는 문서를 찾는 검색기로 구성된다.</p>
+<p><strong>수집기</strong></p>
+<p>수집기는 웹사이트, 블로그, 카페 등 웹에서 필요한 정보를 수집하는 프로그램이다.</p>
+<p>크롤러(Crawler), 스파이더(Spider), 웜(Worms), 웹 로봇(Web Robot) 등으로도 불린다.</p>
+<p>파일, 데이터베이스, 웹페이지 등 웹상의 대부분의 정보가 수집대상이다.</p>
+<p>파일의 경우 수집기가 파일명, 파일 내용, 파일 경로 등의 정보를 수집하고 저장하면 검색엔진이 저장된 정보를 검색하고, 사용자 질의에 답한다.</p>
+<p><strong>스토리지</strong></p>
+<p>데이터베이스에서 데이터를 저장하는 물리적인 저장소다. 검색엔진은 색인한 데이터를 스토리지에 보관한다.</p>
+<p><strong>색인기</strong></p>
+<p>검색엔진이 수집한 정보에서 사용자 질의와 일치하는 정보를 찾으려면 수집된 데이터를 검색 가능한 구조로 가공하고 저장해야 한다.</p>
+<p>그 역할을 하는 것이 색인기다.</p>
+<p>색인기는 다양한 형태로 분석을 조합해 정보에서 의미가 있는 용어를 추출하고 검색에 유리한 역색인 구조로 데이터를 저장한다.</p>
+<p><strong>검색기</strong></p>
+<p>검색기는 사용자 질의를 입력받아 색인기에서 저장한 역색인 구조에서 일치하는 문서를 찾아 결과로 반환한다.</p>
+<p>질의와 문서가 일치하는지 유사도 기반의 검색 순위 알고리즘으로 판단한다.</p>
+<p>검색기 또한 색인기와 마찬가지로 현태로 분석기를 이용해 사용자 질의에서 유의미한 용어를 추출해 검색한다.</p>
+<p>따라서 사용하는 형태로 분석기에 따라 검색 품질이 달라진다.</p>
+<p><img src="/images/2019/Hello%20ElasticSearch/1.png" alt="Hello%20ElasticSearch/1.png"></p>
+<p>엘라스틱서치는 위 검색시스템 구성요소 중 색인기, 스토리지, 검색기를 포함하고 있다.</p>
+<h3 id="1-4-관계형-데이터베이스와-엘라스틱서치의-차이점"><a href="#1-4-관계형-데이터베이스와-엘라스틱서치의-차이점" class="headerlink" title="1-4. 관계형 데이터베이스와 엘라스틱서치의 차이점"></a>1-4. 관계형 데이터베이스와 엘라스틱서치의 차이점</h3><p>검색엔진을 설명할 때 항상 비교되는 것이 관계형 데이터베이스(RDMBS)다.</p>
+<p>두 가지 모두 질의와 일치하는 데이터를 찾아 사용자에게 제공한다는 점에서 유사점이 많이 때문이다.</p>
+<p>하지만 관계형 데이터베이스로 검색 기능을 제공하는 데는 많은 문제점이 있다.</p>
+<p>관계형 데이터베이스의 어떠한 한계 때문에 검색엔진이 등장하게 됐는지, 그리고 이 둘은 어떤 점에서 차이점이 있는지 살펴보자.</p>
+<p>데이터베이스는 데이터를 통합 관리하는 데이터의 집합이다. 저장방식에 따라 크게 관계형 또는 계층형 데이터베이스로 나뉜다.</p>
+<p>모든 데이터는 중복을 제거하고 정형 데이터로 구조화해 행과 열로 구성된 테이블에 저장된다.</p>
+<p>SQL문을 이용해 원하는 정보의 검색이 가능한데 텍스트 매칭을 통한 단순한 검색만 가능하다.</p>
+<p>텍스트를 여러 단어로 변형하거나 여러 개의 동의어나 유의어를 활용한 검색은 불가능하다.</p>
+<p>반면 검색엔진은 데이터베이스에서 불가능한 비정형 데이터를 색인하고 검색할 수 있다.</p>
+<p>형태소 분석을 통해 사람이 구사하는 자연어의 처리가 가능해지고 역색인 구조를 바탕으로 빠른 검색 속도를 보장한다.</p>
+<p><strong>엘라스틱서치와 관계평 데이터베이스 비교</strong></p>
+<table>
+<thead>
+<tr>
+<th align="left">엘라스틱서치</th>
+<th align="left">관계형 데이터베이스</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">인덱스(Index)</td>
+<td align="left">데이터베이스(Database)</td>
+</tr>
+<tr>
+<td align="left">샤드(Shard</td>
+<td align="left">파티션(Partition)</td>
+</tr>
+<tr>
+<td align="left">타입(Type)</td>
+<td align="left">테이블(Table)</td>
+</tr>
+<tr>
+<td align="left">문서(Document)</td>
+<td align="left">행(Row)</td>
+</tr>
+<tr>
+<td align="left">필드(Field)</td>
+<td align="left">열(Column)</td>
+</tr>
+<tr>
+<td align="left">매핑(Mapping)</td>
+<td align="left">스키마(Schema)</td>
+</tr>
+<tr>
+<td align="left">Query DSL</td>
+<td align="left">SQL</td>
+</tr>
+</tbody></table>
+<p>위 표는 검색엔진의 대표 자자격인 엘라스틱서치와 관계형 데이터베이스의 주요 개념을 비교해 보여준다.</p>
+<p>엘라스틱서치의 인덱스는 관계형 데이터베이스의 데이터베이스와 비슷한 문서의 모음을 뜻한다.</p>
+<p>엘라스틱서치의 타입은 데이터베이스의 테이블과 같은 역을 한다. </p>
+<p>6.0 이하 버전에서는 하나의 인덱스 내부에 기능에 따라 데이터를 분류하고 여러 개의 타입을 만들어 사용했지만 현재(7버전)는 하나의 인덱스에 하나의 타입만을 구성하도록 바뀌었다.</p>
+<p>엘라스틱서치는 하나의 행을 문서라고 부르며, 해당 문서는 데이터베이스 테이블의 한 행을 의미한다.</p>
+<p>또한 엘라스틱서치의 매핑은 필드의 구조와 제약조건에 대한 명세를 말하며 이에 대응하는 관계형 데이터베이스의 개념을 스키마라 한다.</p>
+<p>관계형 데이터베이스와 엘라스틱서치는 인덱스라는 개념을 다르게 사용한다.</p>
+<p>엘라스틱서치의 인덱스는 Database, 앞에 설명했지만 관계형 데이터베이스에서의 인데스는 WHERE 절의 쿼리와 JOIN을 빠르게 만드는 보조 데이터 도구로 사용된다.</p>
+<p>엘라스틱서치와 데이터베이스는 데이터의 추가, 수정, 삭제 방식에도 차이가 있다. </p>
+<p>엘라스틱서치는 기본적으로 HTTP를 통해 JSON 형식의 RESTful API를 이용한다.</p>
+<p>엘라스틱서치는 자바로 개발 됐지만 여러 가지 프로그래밍 언어를 통해 사용할 수도 있다.</p>
+<p><strong>Copy of 추가, 검색, 삭제, 수정 기능 비교</strong></p>
+<table>
+<thead>
+<tr>
+<th align="left">엘라스틱서치에서 사용하는 HTTP 메소드</th>
+<th align="left">기능</th>
+<th align="left">데이터베이스 질의 문법</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">GET</td>
+<td align="left">데이터조회</td>
+<td align="left">SELECT</td>
+</tr>
+<tr>
+<td align="left">PUT</td>
+<td align="left">데이터생성</td>
+<td align="left">INSERT</td>
+</tr>
+<tr>
+<td align="left">POST</td>
+<td align="left">인덱스 업데이트, 데이터조회</td>
+<td align="left">UPDATE, SELECT</td>
+</tr>
+<tr>
+<td align="left">DELETE</td>
+<td align="left">데이터삭제</td>
+<td align="left">DELETE</td>
+</tr>
+<tr>
+<td align="left">HEAD</td>
+<td align="left">인덱스정보확인</td>
+<td align="left">-</td>
+</tr>
+</tbody></table>
+<h3 id="1-5-엘라스틱서치의-특징"><a href="#1-5-엘라스틱서치의-특징" class="headerlink" title="1-5. 엘라스틱서치의 특징"></a>1-5. 엘라스틱서치의 특징</h3><p>요즘에는 대량의 데이터를 빠르게 검색하기 위해 NoSQL(No Structured Query Language)를 많이 사용한다.</p>
+<p>엘라스틱서치 NoSQL의 일종으로서 분류가 가능하고 부산 처리를 통해 실시간에 준하는 빠른 검색이 가능하다.</p>
+<p>기존 데이터베이스로는 처리하기 어려운 대량의 비정형 데이터도 검색할 수 있으며, 전문검색(Full Text)과 구조 검색 모두를 지원한다. </p>
+<p>기본적으로는 검색엔진이지만 MongoDB나 Hbase처럼 대용량 스토리지로도 활용할 수 있다.</p>
+<h3 id="1-5-1-엘라스틱서치의-강점"><a href="#1-5-1-엘라스틱서치의-강점" class="headerlink" title="1-5-1. 엘라스틱서치의 강점"></a>1-5-1. 엘라스틱서치의 강점</h3><p><strong>오픈소스 검색엔진</strong></p>
+<p>엘라스틱서치는 아파치 재단의 루씬(Lucene)을 기반으로 개발된 오픈소스 검색엔진이다.</p>
+<p>따라서 전 세계에서 수많은 사람들이 사용하고 있으며, 버그가 발생할 경우에도 대부분 빠르게 해결된다.</p>
+<p>현재 약 2억 5천만 번 이상 다운로드됐는데, 이 수치만 보더라도 얼마나 많은 사람들이 사용하고 있는지 알 수 있다.</p>
+<p>다운로드가 많이 일어난다는 것은 프로젝트가 많이 활성화돼 있다는 것을 의미한다.</p>
+<p><strong>전문검색</strong></p>
+<p>PostgreSQL, MongoDB 같은 대부분의 데이터베이스는 기본 쿼리 및 색인 구조의 한계로 인해 기본적인 텍스트 검색 기능만 제공한다.</p>
+<p>하지만 엘라스틱서치는 좀 더 고차원적인 전문검색(Full Text)이 가능하다.</p>
+<p>전문검색이란 내용 전체를 색인해서 특정 단어가 포함된 문서를 검색하는 것을 말한다.</p>
+<p>기존 관계형 데이터베이스는 전문 검색에 적합하지 않지만 엘라스틱서치는 다양한 기능별, 언어별 플러그인을 조합해 빠르게 검색할 수 있다.</p>
+<p><strong>통계분석</strong></p>
+<p>비정형 로그 데이터를 수집하고 한곳에 모아 통계 분석을 할 수 있다.</p>
+<p>엘라스틱서치와 키바나(Kibana)를 연결하면 실시간으로 쌓이는 로그를 시각화하고 분석할 수 있다.</p>
+<p><strong>스키마리스(Schemaless)</strong></p>
+<p>데이터베이스는 스키마라는 구조에 따라 데이터를 적합한 형태로 변경해서 저장하고 관리한다.</p>
+<p>반면 엘라스틱서치는 정형화되지 않은 다양한 형태의 문서도 자동으로 색인하고 검색할 수 있다.</p>
+<p><strong>RESTful API</strong></p>
+<p>엘라스틱서치는 HTTP 기반의 RESTful API를 지원하고 요청뿐 아니라 응답에도 JSON 형식을 사용해 개발 언어, 운영체제, 시스템에 관계없이 이기종 플랫폼에서도 이용 가능하다.</p>
+<p><strong>멀티테넌시(Multi-tenancy)</strong></p>
+<p>서로 상이한 인덱스일지라도 검색할 필드명만 같으면 여러 개의 인덱스를 한번에 조회할 수 있다.</p>
+<p>이를 이용해 멀티테넌시 기능을 제공할 수 있다.</p>
+<p><strong>Document-Oriented</strong></p>
+<p>여러 계층의 데이터를 JSON 형식의 구조화된 문서로 인덱스에 저장할 수 있다.</p>
+<p>계층 구조로 문서도 한번의 쿼리로 쉽게 조회할 수 있다.</p>
+<p><strong>역색인(Inverted Index)</strong></p>
+<p>앞서 언급했듯이 엘라스틱서치는 루씬 기반의 검색엔진이다. 따라서 엘라스틱서치 또한 역색인을 지원한다.</p>
+<p>반면 MongoDB, 카산드라(Cassandra)같은 일반적인 NoSQL은 역색인을 지원하지 않는다.</p>
+<p>이는 다른 NoSQL 대비 엘라스틱서치의 매우 큰 장점이라 할 수 있다. </p>
+<p><img src="/images/2019/Hello%20ElasticSearch/KakaoTalk_20191204_215703353.png" alt="Hello%20ElasticSearch/KakaoTalk_20191204_215703353.png"></p>
+<p>색인:책의 목차와 같다.</p>
+<p><img src="/images/2019/Hello%20ElasticSearch/KakaoTalk_20191204_215708663.png" alt="Hello%20ElasticSearch/KakaoTalk_20191204_215708663.png"></p>
+<p>역색인:책의 뒷부분에 중요한 키워드로 페이지를 찾을수 있다.</p>
+<p><strong>확장성과 가용성</strong></p>
+<p>10억 개의 문서를 색인한다고 가정해보자. 모든 문서를 색인하는 데 막대한 비용과 시간이 드는 것은 불보듯 뻔하나.</p>
+<p>하지만 엘라스틱서치를 분산 구성해서 확장한다면 대량의 문서를 좀 더 효율적으로 처리할 수 있다.</p>
+<p>분산 환경에서 데이터는 샤드(Shard)라는 작은 단위로 나뉘어 제공되며, 인덱스를 만들 때마다 샤드의 수를 조절할 수 있다.</p>
+<p>이를 통해 데이터의 종류와 성격에 따라 데이터를 분선해서 빠르게 처리할 수 있다.</p>
+<h3 id="1-5-2-엘라스틱서치의-약점"><a href="#1-5-2-엘라스틱서치의-약점" class="headerlink" title="1-5-2. 엘라스틱서치의 약점"></a>1-5-2. 엘라스틱서치의 약점</h3><p>마법주문처럼 보이는 엘라스틱서치도 약점이 있다.</p>
+<p>첫째, <strong>실시간</strong>이 아니다. 일반적으로 색인된 데이터는 통상적으로 1초 뒤에나 검색이 가능해진다.</p>
+<p>색인된 데이터는 내부적으로 커밋(Commit)과 플러쉬(Flush)같은 복잡한 과정을 거치기 때문에 실시간이 아니다.</p>
+<p>엄밀히 따지자면 준 실시간(Near Realtime)이라고 할 수 있다.</p>
+<p>둘째, 트랜잭션과 롤백 기능을 제공하지 않는다. 엘라스틱서치는 기본적으로 분산 시스템으로 구성된다. 전체적인 클러스터의 성능 향상을 위해 시스템적 비용 소모가 큰 롤백(Rollback)과 트랜젝션(Transaction)을 지원하지 않기 때문에 최악의 경우 데이터 손실의 위험이 있다.</p>
+<p>셋째, 데이터의 업데이트를 제공하지 않는다. 엄밀히 말하자면 엘라스틱서치는 업데이트 명령이 요청될 경우 기존 문서를 삭제하고 변경된 내용으로 새로운 문서를 생성하는 방식을 사용한다.</p>
+<p>이러한 이유로 단순 업데이트에 비해서는 상대적으로 많은 비용이 발생한다.</p>
+<p>하지만 이것은 큰 단점은 아니다. 이를 통해 불변적(Immutable)이라는 이점을 취할 수 있기 때문이다.</p>
+<h3 id="1-6-엘라스틱서치-사용사례"><a href="#1-6-엘라스틱서치-사용사례" class="headerlink" title="1-6.엘라스틱서치 사용사례"></a>1-6.엘라스틱서치 사용사례</h3><ul>
+<li>위키피디아(Wikipedia)는 엘라스틱서치를 이용해 전문검색(Full Text Search)를 수행하고 실시간 타이핑 검색, 추천검색어 기능등에 활용 중이다.</li>
+<li>더 가디언(The Guardian)지는 방문객의 로그 분석을 통한 소셜 데이터를 생성해 실시간 응대와 기사에 대한 반응 분석등에 엘라스틱서치를 사용하고 있다.</li>
+<li>스택오버플로어(StackOverflow)에서는 검색 내용과 결과를 통합해 유사한 질문과 해답을 연결하는 데 엘라스틱서치를 활용하고 있다.</li>
+<li>깃허브(Github)에서는 1,300억 줄이 넘는 소스코드를 검색하는 데 엘라스틱서치를 사용중이다.</li>
+<li>골드만 삭스(Goldman Sachs)에서는 매일 5TB가 넘는 데이터를 저장하고 있으며, 엘라스틱서치를 이용해 이 데이터를 주식 시장의 변동을 분석하는데 사용한다.</li>
+</ul>
+<h2 id="2-엘라스틱서치-검색원리-분석과-역색인"><a href="#2-엘라스틱서치-검색원리-분석과-역색인" class="headerlink" title="2.엘라스틱서치 검색원리(분석과 역색인)"></a>2.엘라스틱서치 검색원리(분석과 역색인)</h2><p>엘라스틱서치에서 입력된 데이터를 통해 검색어를 추출하기 위한 프로세스를 거치는데 이 과정을 분석(Analysis)이라고 한다. </p>
+<p>이때 분석 과정에서 사용하는 프로그램을 분석기-애널라이저(Analyzer)라고 하며 분석기는 하나의 토크나이저(Tokenizer)와 0개 또는 1개 이상의 토큰필터(Token Filter)로 구성돼 있다.</p>
+<p>토크나이저는 입력 데이터를 토크나이저에 설정된 기준에 따라 검색어 토큰으로 분리하는 작업을 한다.</p>
+<p>토큰 필터는 토크나이저로 분리된 토큰들에 다시 필터를 적용해서 실제로 검색에 쓰이는 검색어들로 최종 변환하는 작업을 한다.</p>
+<p>엘라스틱 서치에서는 내부적으로 다양한 분석기를 가지고 있으며, 자신만의 분석기를 생성해서 적용할 수도 있다.</p>
+<h3 id="2-1-분석과정"><a href="#2-1-분석과정" class="headerlink" title="2-1. 분석과정"></a>2-1. 분석과정</h3><p>엘라스틱서치에서 데이터를 색인할 때 문사가 분석되는 가정을 한번 살펴보자.</p>
+<p>데이터는 색인될 때 인덱스에 설정된 분석기의 종류에 따라 토크나이저 → 토큰필터 순으로 분석과정을 거친다.</p>
+<p>예제로 문자열 “Around the World in Eighty Days”에 whitespace 토크나이저와 lowercase그리고 stop 토큰필터를 적용시켜 가면서 분석 과정을 차례대로 확인해보자.</p>
+<p>먼저 이 문자열에 whitespace 토크나이저를 적용시켜서 분석을 진행하면 문자열이 다음과 같이 분리된다.</p>
+<p><img src="/images/2019/Hello%20ElasticSearch/1-Page-2_(1).png" alt="Hello%20ElasticSearch/1-Page-2_(1).png"></p>
+<p>whitespace 토크나이저는 공백 또는 줄바꿈을 기준으로 단어를 불리하는 토크나이저다.</p>
+<p>위에서 처럼 withespace토크나이저를 거친 문자열 “Around the Wrold in Eighty Days”는 각 Around, the, World, in, Eighty, Days라는 검색어 토큰으로 색인된다.</p>
+<p>이제 이 검색어 토큰에 lowercase 토큰필터를 적용하면 각 검색어 토큰은 다음과 같이 변경된다.</p>
+<p><img src="/images/2019/Hello%20ElasticSearch/1-Page-3.png" alt="Hello%20ElasticSearch/1-Page-3.png"></p>
+<p>lowercase 토큰필터를 거친 검색어 토큰은 모두 소문자로변환된다. lowercase 토큰필터를 거친 검색어 토큰에 마지막으로 stop 토큰필터를 한번 더 적용하면 검색어 토큰은 다음과 같이 된다.</p>
+<p><img src="/images/2019/Hello%20ElasticSearch/1-Page-4_(1).png" alt="Hello%20ElasticSearch/1-Page-4_(1).png"></p>
+<p>stop 토큰필터는 검색어 토큰 중 불용어(stopwords)에 해당하는 토큰을 검색어 토큰 목록에서 제외시키는 역할을 한다.</p>
+<p>일반적으로 영어 단어 중 the, end, is와 같이 거의 대부분의 문장에 빠지지 않고 들어있는 대명사 또는 전치사 등의 단어를 실제로 검색어로 사용하기에는 문제가 있기 때문에 이러한 단어는 불용어에 해당된다. </p>
+<p>위 내용을 실제 엘라스틱서치에 _analyze API를 통해 확인해 볼 수 있다.</p>
+<p>아래는 whitespace 토크나이저만 적용하여 “Around the Wrold in Eighty Days” 텍스트의 분석을 요청하는 화면이다.</p>
+<p><img src="/images/2019/Hello%20ElasticSearch/Untitled.png" alt="Hello%20ElasticSearch/Untitled.png"></p>
+<p><img src="/images/2019/Hello%20ElasticSearch/Untitled%201.png" alt="Hello%20ElasticSearch/Untitled%201.png"></p>
+<p>위처럼 공백 단위로 잘려진 토큰을 확인 할 수 있다.</p>
+<p>filter로 lowercase를 적용한 결과 아래처럼 분석된 토큰들이 소문자로 변환된 것을 확인 할 수 있다.</p>
+<p><img src="/images/2019/Hello%20ElasticSearch/Untitled%202.png" alt="Hello%20ElasticSearch/Untitled%202.png"></p>
+<p><img src="/images/2019/Hello%20ElasticSearch/Untitled%203.png" alt="Hello%20ElasticSearch/Untitled%203.png"></p>
+<p>이제 여기서 추가로 stop 토큰필터를 적용해보자. </p>
+<p><img src="/images/2019/Hello%20ElasticSearch/Untitled%204.png" alt="Hello%20ElasticSearch/Untitled%204.png"></p>
+<p><img src="/images/2019/Hello%20ElasticSearch/Untitled%205.png" alt="Hello%20ElasticSearch/Untitled%205.png"></p>
+<p>the, in 이 삭제된 것을 확인할 수 있다.</p>
+<p>분석기(Analyzer)는 데이터의 분석에 사용할 토크나이저와 토큰 필터를 저장하고 있는 일종의 배치 프로그램으로 이해할 수 있다. </p>
+<p>엘라스틱서치에서 기본적으로 제공하는 분석기 역시 모두 토크나이저와 토큰필터를 가지고 있으며, 이 외에 추가로 사용자가 임의의 토크나이저와 토큰필터를 선택해서 사용자 정의 분석기를 생성할 수 있다.</p>
+<p>사용자 정의 분석기는 인덱스 단위로저장되며 해당 인덱스에 데이터 색인할 때 분석기를 명시해서 사용할 수 있다.</p>
+<p>다음은 실제 인덱스를 생성하면서 분석기를 설정하는 화면이다.</p>
+<p><img src="/images/2019/Hello%20ElasticSearch/Untitled%206.png" alt="Hello%20ElasticSearch/Untitled%206.png"></p>
+<p>inca_index라는 인덱스를 생성하며 settings에 분석기를 설정했다.</p>
+<p>아래는 맵핑정보로서 RDB의 테이블 정의라고 생각하면 된다. title이라는 프로퍼티에 위에서 생성한 my_analyzer를 설정했다.</p>
+<p>인덱스를 생성한뒤 해당 인덱스에 아래처럼 데이터를 입력하게 되면, title이라는 프로퍼티는 자동으로 index생성시 설정한 my_analyzer를 통해 역색인 과정을 거쳐 해당 역색인 데이터를 엘라스틱서치 내부에 따로 저장하게 된다.</p>
+<p><img src="/images/2019/Hello%20ElasticSearch/Untitled%207.png" alt="Hello%20ElasticSearch/Untitled%207.png"></p>
+<p><img src="/images/2019/Hello%20ElasticSearch/1-Page-5.png" alt="Hello%20ElasticSearch/1-Page-5.png"></p>
+<h2 id="3-엘라스틱-서치의-활용예시"><a href="#3-엘라스틱-서치의-활용예시" class="headerlink" title="3.엘라스틱 서치의 활용예시"></a>3.엘라스틱 서치의 활용예시</h2><h3 id="3-1-ELK-스택"><a href="#3-1-ELK-스택" class="headerlink" title="3-1. ELK 스택"></a>3-1. ELK 스택</h3><p>엘라스틱서치는 뛰어난 검색엔진이지만 실무에서 사용하려면 입력할 데이터를 JSON형태로 가공 해야 하고, 검색된 데이터를 시각화하려면 별도의 차트 프로그램이나 라이브러리를 사용해야 하는등 부가적인 작업을 거쳐야 한다.</p>
+<p>이를 위해 엘라스틱서치에서는 데이터 입력을 다양한 방식으로 간편하게 할 수 있는 프로그램인 로그스태시(Logstash)와 검색 데이터를 편리하게 시각화할 수 있는 도구인 키바나(Kibana)를 홈페이지에서 함께 제공하고 있다.</p>
+<p>엘라스틱서치(Elasticsearch), 로그스테이시(Logstash), 키바나(Kibana)를 연동해서 구성한 시스템을 ELK 스택(ELK Stack)이라 한다.</p>
+<p><img src="/images/2019/Hello%20ElasticSearch/Untitled%208.png" alt="Hello%20ElasticSearch/Untitled%208.png"></p>
+<p>ELK 스택와 더불어 ELK 스택에 경량 데이터수집 플랫폼인 Beats를 통해 다양한 환경에서 다양한 데이터를 수집, 가공, 저장, 시각화 하는 구조를 구성할 수 있다.</p>
+<p><img src="/images/2019/Hello%20ElasticSearch/beats-platform.png" alt="Hello%20ElasticSearch/beats-platform.png"></p>
+<h3 id="3-2-한글-형태소-분석기"><a href="#3-2-한글-형태소-분석기" class="headerlink" title="3-2. 한글 형태소 분석기"></a>3-2. 한글 형태소 분석기</h3><p>엘라스틱서치에서는 여러종류의 분석기와 토크나이저, 토큰필터를 내장하고 있다.</p>
+<p>하지만 영어가 아닌 우리말(한글)로 된 문장을 분석하려면 내장된 분석기로 만족할 만한 결과를 얻기가 쉽지 않다.</p>
+<p>예를 들어 “동해물과 백두산이 마르고 닳도록”과 같은 문장을 분석하면 보통은 “동해물과”, “백두산이”와 같이 공백 정도로만 토큰을 구분하거나 CJK 알고리즘을 사용한 경우에도 “동해”, “해물”과 같이 2음절의 토큰을 생성하는 정도로만 분석된다. </p>
+<p>이 문장에서 “동해”, “백두산” 같은 검색어 토큰을 분석하려면 한글을 의미로 해석해서 분리할 수 있는 별도의 한글 형태소 분석기가 필요하다.</p>
+<p>엘라스틱서치나 아파치 루씬에서는 한글을 위한 별도의 분석기 또는 사전을 제공하지 않고 있다.</p>
+<p>하지만 정확한 한글 분석을 위해 국내 개발자들에 의해 별도로 개발되어 있는 한글 형태소 분석기들이 있다.</p>
+<p>잘 알려진 분석기로는 아리랑 한글 분석기 프로젝트, 은전한잎 한글 분석기 프로젝트 등이 있으며 대부분 오픈소스로 개발되고 있으므로 해당 프로젝트 페이지에서 소스코드와 다양한 정보를 구할 수 있다.</p>
+<p><img src="/images/2019/Hello%20ElasticSearch/Untitled%209.png" alt="Hello%20ElasticSearch/Untitled%209.png"></p>
+<h1 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h1><p>시작하세요! 엘라스틱서치(책)</p>
+<p>엘라스틱서치 실무 가이드(책)</p>
+
+      
+      
+          
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+      
+
+
+  
+  
+  
+  
+
+        
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2019/12/19/hexo-20191219-hello-hexo/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Hanumoka">
+      <meta itemprop="description" content="아마추어 개발자의 블로그">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hanumoka, IT Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/12/19/hexo-20191219-hello-hexo/" class="post-title-link" itemprop="url">Hexo 블로그 만들기</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">작성일</span>
+
+              <time title="Post created: 2019-12-19 22:32:38" itemprop="dateCreated datePublished" datetime="2019-12-19T22:32:38+09:00">2019-12-19</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Updated at: 2020-04-16 01:50:11" itemprop="dateModified" datetime="2020-04-16T01:50:11+09:00">2020-04-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/hexo/" itemprop="url" rel="index">
+                    <span itemprop="name">hexo</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 20200427hexo_post_head -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>hexo는 jekyll과 같은 정적 블로그 생성 프레임 워크이다. </p>
+<p>다만 hexo는 루비가 아닌 javascript, node등을 기반으로한 정적 블로그 생성기이다.</p>
+<p>hexo도 markdown으로 글을 작성하며, github page와 연동해서 로컬에서 생성한 hexo 블로그를 웹에 공개 할수도 있다.</p>
+<p>hexo의 자세한 설명은 아래 공식 페이지에서 확인 할 수 있다.</p>
+<p><a href="https://hexo.io/ko/index.html" target="_blank" rel="external nofollow noopener noreferrer">Hexo</a></p>
+<p>Hexo 블로그를 만들기 전에, 로컬에 미리 node가 설치 되어 있어야 한다.</p>
+<p>설치가 되어있지 않다면, 구글링해서 설치하길 바란다.</p>
+<p><img src="/images/Hexo20191219/Untitled.png" alt="/images/Hexo20191219/Untitled.png"></p>
+<p>블로그를 생성한 경로로 이동해서 터미널을 열고 아래 명령어를 순차적으로 입력하면된다.</p>
+<pre><code>npm install hexo-cli -g    #hexo cli를 글로벌로 설치
+hexo init hexoblog         #hexoblog라는 폴더로 hexo 블로그 생성     
+cd blog                    #생성된 폴더로 진입
+npm install                #의존성 설치
+hexo server                #hexo 블로그 기동</code></pre><p>아래 hexo init명령으로 hexoblog라는 hexo blog 폴더를 생성한다.</p>
+<p>요즘에는 자동으로 기본 디펜던시를 다운로드 해주는것 같다.</p>
+<p><img src="/images/Hexo20191219/Untitled%201.png" alt="/images/Hexo20191219/Untitled%201.png"></p>
+<p>아래처럼 폴더가 생성 된다.</p>
+<p><img src="/images/Hexo20191219/Untitled%202.png" alt="/images/Hexo20191219/Untitled%202.png"></p>
+<p><img src="/images/Hexo20191219/Untitled%203.png" alt="/images/Hexo20191219/Untitled%203.png"></p>
+<p>위 이미지에서 hexo-deployer-git 을 추가로 설치했다. </p>
+<p>해당 모듈은 나중에 gitpage에 hexo로 빌드한 정적 웹을 배포하는 용도의 모듈이다.</p>
+<p>마지막으로 hexo s 또는 hexo server 를 입력하면 hexo가 동작중이라는 문구와 url 이 나온다.</p>
+<p><img src="/images/Hexo20191219/Untitled%204.png" alt="/images/Hexo20191219/Untitled%204.png"></p>
+<p>브라우저로 hexo 블로그가 동작하는 것을 확인 할 수 있다.</p>
+<p>아래 블로그의 테마는 hexo의 기본 테마인 landscape 테마이다. </p>
+<p>다음글에서는 이 테마를 Next 테마로 변경하는 내용을 다뤄 보도록 하겠다.</p>
+<p><img src="/images/Hexo20191219/Untitled%205.png" alt="/images/Hexo20191219/Untitled%205.png"></p>
+
+      
+      
+          
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+      
+
+
+  
+  
+  
+  
+
+        
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2019/10/26/react-20191026-react-modal-draggable/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Hanumoka">
+      <meta itemprop="description" content="아마추어 개발자의 블로그">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hanumoka, IT Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/10/26/react-20191026-react-modal-draggable/" class="post-title-link" itemprop="url">react 드래그 modal 예제</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">작성일</span>
+
+              <time title="Post created: 2019-10-26 02:11:18" itemprop="dateCreated datePublished" datetime="2019-10-26T02:11:18+09:00">2019-10-26</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Updated at: 2020-04-16 01:50:12" itemprop="dateModified" datetime="2020-04-16T01:50:12+09:00">2020-04-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/react/" itemprop="url" rel="index">
+                    <span itemprop="name">react</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 20200427hexo_post_head -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>windows에서 create-react-app으로 예제 프로젝트를 준비했다.</p>
+<p><img src="/images/2019/Untitled-15d005bb-ceac-4a63-8045-4b64d65db61a.png" alt></p>
+<p><a href="https://reactstrap.github.io/" target="_blank" rel="external nofollow noopener noreferrer">https://reactstrap.github.io/</a></p>
+<p>react에서 bootstrap을 컴포넌트를 제공하는 라이브러리가 있다. reactstrap이라는 라이브러리이다.</p>
+<p>설치하자. 이 라이브러리에 있는 모달을 사용할 예정이다.</p>
+<pre><code>npm install --save reactstrap react react-dom</code></pre><p><a href="https://www.npmjs.com/package/react-draggable" target="_blank" rel="external nofollow noopener noreferrer">https://www.npmjs.com/package/react-draggable</a></p>
+<p>react에서 마우스 드래그 기능을 제공하는 라이브러리이다 설치하자.</p>
+<p>해당 라이브러리는 modal에만 해당하는것이 아니라 감싼 컴포넌트 모두를 지원한다.</p>
+<pre><code>npm install react-draggable</code></pre><p><img src="/images/2019/Untitled-f41dddcb-82d9-4253-a436-bd45624d6924.png" alt></p>
+<p>ModalExample.js 라는 파일을 만들자. 이 파일이 마우스 드래그가 가능한 모달 컴포넌트이다.</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line">    <span class="keyword">import</span> React <span class="keyword">from</span> <span class="string">'react'</span>;</span><br><span class="line">    <span class="keyword">import</span> &#123; Button, Modal, ModalHeader, ModalBody, ModalFooter &#125; <span class="keyword">from</span> <span class="string">'reactstrap'</span>;</span><br><span class="line">    <span class="keyword">import</span> Draggable <span class="keyword">from</span> <span class="string">'react-draggable'</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">ModalExample</span> <span class="keyword">extends</span> <span class="title">React</span>.<span class="title">Component</span> </span>&#123;</span><br><span class="line">      <span class="keyword">constructor</span>(props) &#123;</span><br><span class="line">        <span class="keyword">super</span>(props);</span><br><span class="line">        <span class="keyword">this</span>.state = &#123;</span><br><span class="line">          modal: <span class="literal">false</span></span><br><span class="line">        &#125;;</span><br><span class="line">    </span><br><span class="line">        <span class="keyword">this</span>.toggle = <span class="keyword">this</span>.toggle.bind(<span class="keyword">this</span>);</span><br><span class="line">      &#125;</span><br><span class="line">    </span><br><span class="line">      toggle() &#123;</span><br><span class="line">        <span class="keyword">this</span>.setState(<span class="function"><span class="params">prevState</span> =&gt;</span> (&#123;</span><br><span class="line">          modal: !prevState.modal</span><br><span class="line">        &#125;));</span><br><span class="line">      &#125;</span><br><span class="line">    </span><br><span class="line">      render() &#123;</span><br><span class="line">        <span class="keyword">return</span> (</span><br><span class="line">          &lt;div&gt;</span><br><span class="line">            &lt;Button color=<span class="string">"danger"</span> onClick=&#123;<span class="keyword">this</span>.toggle&#125;&gt;&#123;<span class="keyword">this</span>.props.buttonLabel&#125;&lt;<span class="regexp">/Button&gt;</span></span><br><span class="line"><span class="regexp">            &lt;Draggable</span></span><br><span class="line"><span class="regexp">            axis="both"</span></span><br><span class="line"><span class="regexp">            handle=".handle"</span></span><br><span class="line"><span class="regexp">            defaultPosition=&#123;&#123;x: 0, y: 0&#125;&#125;</span></span><br><span class="line"><span class="regexp">            position=&#123;null&#125;</span></span><br><span class="line"><span class="regexp">            grid=&#123;[25, 25]&#125;</span></span><br><span class="line"><span class="regexp">            scale=&#123;1&#125;</span></span><br><span class="line"><span class="regexp">            onStart=&#123;this.handleStart&#125;</span></span><br><span class="line"><span class="regexp">            onDrag=&#123;this.handleDrag&#125;</span></span><br><span class="line"><span class="regexp">            onStop=&#123;this.handleStop&#125;&gt;</span></span><br><span class="line"><span class="regexp">            &lt;Modal isOpen=&#123;this.state.modal&#125; toggle=&#123;this.toggle&#125; className=&#123;this.props.className&#125;&gt;</span></span><br><span class="line"><span class="regexp">              &lt;ModalHeader toggle=&#123;this.toggle&#125; className="handle"&gt;Modal title&lt;/</span>ModalHeader&gt;</span><br><span class="line">              &lt;ModalBody&gt;</span><br><span class="line">                Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed <span class="keyword">do</span> eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor <span class="keyword">in</span> reprehenderit <span class="keyword">in</span> voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt <span class="keyword">in</span> culpa qui officia deserunt mollit anim id est laborum.</span><br><span class="line">              &lt;<span class="regexp">/ModalBody&gt;</span></span><br><span class="line"><span class="regexp">              &lt;ModalFooter&gt;</span></span><br><span class="line"><span class="regexp">                &lt;Button color="primary" onClick=&#123;this.toggle&#125;&gt;Do Something&lt;/</span>Button&gt;&#123;<span class="string">' '</span>&#125;</span><br><span class="line">                &lt;Button color=<span class="string">"secondary"</span> onClick=&#123;<span class="keyword">this</span>.toggle&#125;&gt;Cancel&lt;<span class="regexp">/Button&gt;</span></span><br><span class="line"><span class="regexp">              &lt;/</span>ModalFooter&gt;</span><br><span class="line">            &lt;<span class="regexp">/Modal&gt;</span></span><br><span class="line"><span class="regexp">            &lt;/</span>Draggable&gt;</span><br><span class="line">          &lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">        );</span></span><br><span class="line"><span class="regexp">      &#125;</span></span><br><span class="line"><span class="regexp">    &#125;</span></span><br><span class="line"><span class="regexp">    </span></span><br><span class="line"><span class="regexp">    export default ModalExample;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">App.js</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">    import React from 'react';</span></span><br><span class="line"><span class="regexp">    import './</span>App.css<span class="string">';</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    import ModalExample from '</span>./ModalExample<span class="string">';</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    function App() &#123;</span></span><br><span class="line"><span class="string">      return (</span></span><br><span class="line"><span class="string">        &lt;div className="App"&gt;</span></span><br><span class="line"><span class="string">          &lt;ModalExample buttonLabel=&#123;"모달 테스트"&#125;&gt;&lt;/ModalExample&gt;</span></span><br><span class="line"><span class="string">        &lt;/div&gt;</span></span><br><span class="line"><span class="string">      );</span></span><br><span class="line"><span class="string">    &#125;</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    export default App;</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/2019/Untitled-aad57dc8-6977-4dd3-a7aa-2f429b61b1c3.png" alt></p>
+<p>npm run start 로 실행해보자.</p>
+<p>모달창을 열고 모달의 제목을 마우스로 드래그 하면 드래그가 가능한 것을 확인 할 수 있다.</p>
+<p><img src="/images/2019/Untitled-17358c2c-8fd5-4fab-8949-e21e5cd6f3d3.png" alt></p>
+<p>현재 드래그가 좀 버벅이는 것 처럼 보이는데, 그것은 react-draggable의 옵션으로 부드러움 정도를 설정 할수 있다.</p>
+<p>해당 예제는 아래 github에 올려놓았다.</p>
+<p><a href="https://github.com/hanumoka/react-modal-draggable.git" target="_blank" rel="external nofollow noopener noreferrer">https://github.com/hanumoka/react-modal-draggable.git</a></p>
+
+      
+      
+          
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+      
+
+
+  
+  
+  
+  
+
+        
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2019/10/23/jenkins-20191023-jenkins-connect-gitlab/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Hanumoka">
+      <meta itemprop="description" content="아마추어 개발자의 블로그">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hanumoka, IT Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/10/23/jenkins-20191023-jenkins-connect-gitlab/" class="post-title-link" itemprop="url">jenkins에서 Gitlab연동하기(Gitlab계정사용)</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">작성일</span>
+
+              <time title="Post created: 2019-10-23 21:33:41" itemprop="dateCreated datePublished" datetime="2019-10-23T21:33:41+09:00">2019-10-23</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Updated at: 2020-04-16 01:50:12" itemprop="dateModified" datetime="2020-04-16T01:50:12+09:00">2020-04-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/jenkins/" itemprop="url" rel="index">
+                    <span itemprop="name">jenkins</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 20200427hexo_post_head -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h1><p>이번은 로컬에 docker로 올린 jenkins를 사용해서 Gitlab(online)에 연동하는 방법을 알아보겠다.</p>
+<h1 id="실습전-준비"><a href="#실습전-준비" class="headerlink" title="실습전 준비"></a>실습전 준비</h1><p><img src="/images/2019/Untitled-096ae800-7d1d-4496-8d86-6fb46e597b19.png" alt></p>
+<p>위 처럼 gitlab에 테스트할 리파지토리를 하나 준비했다.</p>
+<p><img src="/images/2019/Untitled-4bb0ed17-41b4-4ad9-8477-5299bfb6a62d.png" alt></p>
+<p>위처럼 젠킨스에서는 Git plugin, GitLab Plugin을 설치해주자. </p>
+<p>Git plugin은 기본적으로 설치되어 있지만, GitLab Plugin은 추가로 설치해 주어야 할 것이다.</p>
+<p> Git, GitLab관련 다양한 기능을 제공하는 플러그인들이 추가로 있으니, 필요기능별로 찾아 사용하면 된다.</p>
+<h1 id="실습"><a href="#실습" class="headerlink" title="실습"></a>실습</h1><p>구글링 해보면, Gitlab에 accesstoken을 사용해서 jenkins와 연동하는 예제는 많이 있다.</p>
+<p>하지만 내가 셋팅한 jenkins에 뭔가 문제가 있는지, Gitlab accesstoken을 저장까지는 되지만 막상 Project에서 Gitlab accesstoken credential을 불러오지 못했다.</p>
+<p>따라서 차선책으로 Gitlab의 accesstoken대신 Gitlab의 계정을 사용하여, jenkins에 연동을 해볼것이다.</p>
+<h2 id="jenkins에-github-계정-Credential-추가하기"><a href="#jenkins에-github-계정-Credential-추가하기" class="headerlink" title="jenkins에 github 계정 Credential 추가하기"></a>jenkins에 github 계정 Credential 추가하기</h2><p>jenkins에서 Credentilas로 이동 → global 클릭</p>
+<p><img src="/images/2019/Untitled-60c9c996-c12a-40b7-a0da-2c7d61c7c349.png" alt></p>
+<p>Add Credentials클릭</p>
+<p><img src="/images/2019/Untitled-f458cdc9-43bb-4559-a605-f5eb08806eef.png" alt></p>
+<p>이 화면에서 Credential을 저장하고 젠킨스의 project에서 필요한 Credential을 불러와서 사용한다.</p>
+<p><strong>Username</strong>에 gitlab 계정아이디(필수 값)</p>
+<p><strong>Password</strong>에 gitlba 계정비밀번호(필수 값)</p>
+<p><strong>ID</strong>에는 Credential을 식별하는 아이디(필수 값)</p>
+<p>Description은 이 Credential에 대한 설명을 입력하자.</p>
+<p><img src="/images/2019/Untitled-cf60f55a-733d-4979-9b43-8f6a9f0f5179.png" alt></p>
+<p>Credential저장이 완료되었다면, 이제 새로운 Item을 생성하자.</p>
+<p><img src="/images/2019/Untitled-201c3e62-c6e8-4914-b966-c6004c565ccd.png" alt></p>
+<p>아이템 이름을 입력하고, Freestyle project 를 선택하고 OK 를 클릭하자.</p>
+<p><img src="/images/2019/Untitled-6ca71e3a-fad5-43b6-81af-d11977a20d70.png" alt></p>
+<p>GitLab의 특정 프로젝트로 가서 리파지토리 URL을 클립보드로 복사하자.</p>
+<p><img src="/images/2019/Untitled-24719915-f835-4208-9f20-58f5872ca493.png" alt></p>
+<p>다시 jenkins로 이동해서 </p>
+<p>앞서 생성한 Item의 소스코드 관리로 이동후 Git 선택.</p>
+<p>그리고 Repository URL에 앞서 복사한 Gitlab 프로젝트 URL을 붙여넣자.</p>
+<p>처음에는 Credential이 none이므로 아래처럼 빨란 경고문그로 접근할수 없다고 나온다.</p>
+<p><img src="/images/2019/Untitled-f513ed0a-8af3-4c70-9a4a-5a776329c08a.png" alt></p>
+<p>Credentials 셀렉트박스를 눌러서 앞서 입력한, Credential을 선택하자.</p>
+<p>아래 그림에서는 내가 테스트로 여러개를 입력해서 여러개가 나오는 것 뿐이다.</p>
+<p><img src="/images/2019/Untitled-1bfdbbcf-fdb0-4f60-b0ba-464af4f44477.png" alt></p>
+<p>선택한 뒤 조금 지나면, 아래처럼 빨간 문구가 사라진 것을 확인 할 수 있다. 이것으로 연동이 된 것이다.</p>
+<p><img src="/images/2019/Untitled-2119f085-d987-4604-beda-d8cb62d481ea.png" alt></p>
+<p>실제 연동이 됬는지 확인하기 위해 item에 build로 가서 Execute shell을 클릭한뒤 ls -al 명령어를 입력하자.</p>
+<p><img src="/images/2019/Untitled-08e205a1-9276-4284-9753-f59c156d6f25.png" alt></p>
+<p>아래처럼 ls -al을 입력해서 gitlab 리파지토리에서 소스를 받아오는지 출력해보자.</p>
+<p>저장을 눌러서 jenkins item을 저장하자.</p>
+<p><img src="/images/2019/Untitled-7374ca61-189c-482b-bb09-22f7d63c89b0.png" alt></p>
+<p>아래처럼 저장이 완료 되었다.</p>
+<p><img src="/images/2019/Untitled-eefc218c-fab5-40f1-a68a-993609dca21d.png" alt></p>
+<p>Build Now를 눌러서 Jenkins item을 동작 시키자.</p>
+<p>아래처럼 Build History가 성공적으로 끝났다.</p>
+<p>#1을 클릭해서 내용을 확인해 보자.</p>
+<p><img src="/images/2019/Untitled-b8b35e7c-5086-4e7a-8c3c-4aead8967509.png" alt></p>
+<p><img src="/images/2019/Untitled-97cd9b10-17d9-46bb-9ca0-fb4599284651.png" alt></p>
+<p>아래처럼 gitlab의 소스를 받아오는 것을 확인 할 수 있다.</p>
+<p><img src="/images/2019/Untitled-add45bd0-65e5-4a3e-b566-7319aa1c740b.png" alt></p>
+<p>끝!!!</p>
+
+      
+      
+          
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+      
+
+
+  
+  
+  
+  
+
+        
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2019/10/14/docker-20191014-docker-jenkins-docker-in-docker/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Hanumoka">
+      <meta itemprop="description" content="아마추어 개발자의 블로그">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hanumoka, IT Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/10/14/docker-20191014-docker-jenkins-docker-in-docker/" class="post-title-link" itemprop="url">Docker를 이용한 Jenkins 컨테이너 만들기(docker in docker)</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">작성일</span>
+
+              <time title="Post created: 2019-10-14 22:01:11" itemprop="dateCreated datePublished" datetime="2019-10-14T22:01:11+09:00">2019-10-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Updated at: 2020-04-16 01:50:11" itemprop="dateModified" datetime="2020-04-16T01:50:11+09:00">2020-04-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/docker/" itemprop="url" rel="index">
+                    <span itemprop="name">docker</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 20200427hexo_post_head -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="Docker를-이용한-Jenkins-컨테이너-만들기-docker-in-docker"><a href="#Docker를-이용한-Jenkins-컨테이너-만들기-docker-in-docker" class="headerlink" title="Docker를 이용한 Jenkins 컨테이너 만들기(docker in docker)"></a>Docker를 이용한 Jenkins 컨테이너 만들기(docker in docker)</h1><p>Created: Oct 14, 2019 8:41 PM</p>
+<h1 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h1><p>이번에는 ubuntu 18.04 가상머신에 docker, docker-compose 를 사용해서 jenkins 컨테이너를 생성해보겠다.</p>
+<p>도커 관리를 위해서 Dockerfile, docker-compose 모두 사용할 예정이다.</p>
+<p>이번에 만들 jenkins 컨테이너는 내부에서 dockerfile을 빌드할 예정이므로, docker in docker로 jenkins 이미지를 만들 예정이다.</p>
+<h1 id="1-Docker관리를-위한-폴더와-파일-구조"><a href="#1-Docker관리를-위한-폴더와-파일-구조" class="headerlink" title="1. Docker관리를 위한 폴더와 파일 구조"></a>1. Docker관리를 위한 폴더와 파일 구조</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">docker (도커 관리 폴더)</span><br><span class="line">|-- jenkins_with_docker (도커를 포함한 젠킨슨 관리 폴더)</span><br><span class="line">  |-- jenkins_home      (젠킨스 컨테이너의 볼륨 연결용 폴더, 빈 폴더 준비)</span><br><span class="line">  |-- docker-compose.yml  (실제 컨테이너를 생성하는 docker-compose 파일)</span><br><span class="line">  |-- Dockerfile         (docker-compose.yml에서 빌드할 jenkins 파일)</span><br><span class="line">  |-- docker_install.sh   (Dockerfile에서 호출할 docker 설치 스크립트 파일)</span><br></pre></td></tr></table></figure>
+<p><img src="/images/2019/Untitled-102a40b7-b19d-441e-8e97-83b6d54175af.png" alt></p>
+<p>구조는 아래와 같다.</p>
+<p><img src="/images/2019/Untitled-d23756fa-1243-4ad0-94b0-bdf22ea4d2c1.png" alt></p>
+<p>이미 스스로가 docker 컨테이너는 jenkins에서 docker를 사용하기 위해서는 컨테이너가 동작하는 호스트의 docker를 빌려서 사용하는 것이다.</p>
+<p><strong>연결 방법은 docker volume을 사용해서 docker 가 설치된 host의 /var/run/docker.sock과 jenkins 컨테이너 내부의 /var/run/docker.sock를 연결해 줘야 한다.</strong></p>
+<p>이 부분은 docker-compose.yml 에 설정 할 것이다.</p>
+<h1 id="2-설정-파일들-준비"><a href="#2-설정-파일들-준비" class="headerlink" title="2. 설정 파일들 준비"></a>2. 설정 파일들 준비</h1><h2 id="Dockerfile"><a href="#Dockerfile" class="headerlink" title="Dockerfile"></a>Dockerfile</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">FROM jenkins&#x2F;jenkins:lts</span><br><span class="line"></span><br><span class="line">USER root </span><br><span class="line"></span><br><span class="line">COPY docker_install.sh &#x2F;docker_install.sh</span><br><span class="line"></span><br><span class="line">RUN chmod +x &#x2F;docker_install.sh</span><br><span class="line"></span><br><span class="line">RUN &#x2F;docker_install.sh</span><br></pre></td></tr></table></figure>
+<p>jenkins이미지에 docker_install.sh 파일을 복사해서 가져와서 실행한다.</p>
+<p>Dockerfile 내부에서 RUN 명령등으로 쉘 스크립트를 실행할수 있지만, 뭔가 계속 오류가 나서 이런 방식을 선택했다.</p>
+<h2 id="docker-install-sh"><a href="#docker-install-sh" class="headerlink" title="docker_install.sh"></a>docker_install.sh</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/sh</span></span><br><span class="line"></span><br><span class="line">apt-get update &amp;&amp; \</span><br><span class="line">apt-get -y install apt-transport-https \</span><br><span class="line">     ca-certificates \</span><br><span class="line">     curl \</span><br><span class="line">     gnupg2 \</span><br><span class="line">     zip \</span><br><span class="line">     unzip \</span><br><span class="line">     software-properties-common &amp;&amp; \</span><br><span class="line">curl -fsSL https://download.docker.com/linux/$(. /etc/os-release; <span class="built_in">echo</span> <span class="string">"<span class="variable">$ID</span>"</span>)/gpg &gt; /tmp/dkey; apt-key add /tmp/dkey &amp;&amp; \</span><br><span class="line">add-apt-repository \</span><br><span class="line">   <span class="string">"deb [arch=amd64] https://download.docker.com/linux/<span class="variable">$(. /etc/os-release; echo "$ID")</span> \</span></span><br><span class="line"><span class="string">   <span class="variable">$(lsb_release -cs)</span> \</span></span><br><span class="line"><span class="string">   stable"</span> &amp;&amp; \</span><br><span class="line">apt-get update &amp;&amp; \</span><br><span class="line">apt-get -y install docker-ce</span><br></pre></td></tr></table></figure>
+<p>위 내용은 jenkins Dockerfile을 빌드할때 동작하는 스크립트이다.</p>
+<p>내용은 jenkins 내부에 docker를 설치하는 것이다.</p>
+<p>개인적으로 이렇게 sh파일을 copy하는게 편해보인다. </p>
+<p>구글링으로 얻을수 있는 쉘스크립트를 바로 쓸수 있기 때문이다.</p>
+<p>만약 jdk, maven, gradle, node등 필요한게 있다면 이런식으로 추가해 주면 될것 같다.</p>
+<h2 id="docker-compose-yml"><a href="#docker-compose-yml" class="headerlink" title="docker-compose.yml"></a>docker-compose.yml</h2><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">version:</span> <span class="string">'3'</span></span><br><span class="line"></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">jenkins:</span></span><br><span class="line">    <span class="attr">build:</span></span><br><span class="line">      <span class="attr">context:</span> <span class="string">.</span></span><br><span class="line">      <span class="attr">dockerfile:</span> <span class="string">Dockerfile</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">'jenkins_docker'</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">always</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">'8200:8080'</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">'50200:50000'</span></span><br><span class="line">    <span class="attr">expose:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">'8080'</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">'50000'</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">'./jenkins_home:/var/jenkins_home'</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">'/var/run/docker.sock:/var/run/docker.sock'</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="attr">TZ:</span> <span class="string">"Asia/Seoul"</span></span><br><span class="line"><span class="attr">networks:</span></span><br><span class="line">  <span class="attr">default:</span></span><br><span class="line">    <span class="attr">external:</span></span><br><span class="line">      <span class="attr">name:</span> <span class="string">devops</span></span><br></pre></td></tr></table></figure>
+<p>docker-compose.yml에서는 이미지 대신 Dockerfile을 이용해서 이미지를 대신한다.</p>
+<p>volumes에서 docker.sock을 host와 연결한다.</p>
+<h1 id="3-컨테이너-생성"><a href="#3-컨테이너-생성" class="headerlink" title="3. 컨테이너 생성"></a>3. 컨테이너 생성</h1><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo docker network create devops</span><br></pre></td></tr></table></figure>
+<p>혹시나 나중에 쓸지도 모를 네트워크를 일단 생성하자.</p>
+<p><img src="/images/2019/Untitled-cb93506f-1cc9-474d-912b-645e8c7f40da.png" alt></p>
+<p>그리고 docker-copomse.yml 이 있는 경로로 이동해서 아래 명령으로 이미지 생성과 jenkins 컨테이너를 생성하자.</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo docker-compose up -d</span><br></pre></td></tr></table></figure>
+<p>위 명령얼 실행하면 Dockerfile을 빌드하기 시작한다. 이때 jenkins 이미지를 받고 docker를 설치하므로 시간이 좀 걸린다.</p>
+<p>그리고 완료가 되면 아래처럼 나올것이다.</p>
+<p><img src="/images/2019/Untitled-265f282f-40f3-41eb-9938-db3a84dae26f.png" alt></p>
+<p>그리고 docker 이미지를 검색해보면 아래처럼 상당이 큰 이미지가 생성된다.</p>
+<p><img src="/images/2019/Untitled-f334ccd5-368f-42bc-b2c8-386ea71250b9.png" alt></p>
+<p>만약 위 과정에서 문제가 생긴다면, Dockerfile을 별도로 빌드해서 Dockerfile에서 오류가 나는지, docker_install.sh에서 오류가 나는지, 아니면 docker-compose.yml 에서 오류가나는지 찬찬히 찾아봐야 한다.</p>
+<h1 id="4-jenkins-컨테이너에-접속해서-docker-명령어-테스트"><a href="#4-jenkins-컨테이너에-접속해서-docker-명령어-테스트" class="headerlink" title="4. jenkins 컨테이너에 접속해서 docker 명령어 테스트"></a>4. jenkins 컨테이너에 접속해서 docker 명령어 테스트</h1><p>브라우저에서 <a href="http://localhost:8200" target="_blank" rel="external nofollow noopener noreferrer">http://localhost:8200</a> 에 접속해보자.</p>
+<p><img src="/images/2019/Untitled-ce71b9bd-7bfc-4210-b260-1b13e5ee65ae.png" alt></p>
+<p>일반적인 jenkins 초기화면이 나온다 초기 비밀번호를 찾아서 넣어주자.</p>
+<p><img src="/images/2019/Untitled-606e3efe-c702-4e8d-b0f6-807ab375f723.png" alt></p>
+<p>공식 jenkins 이미지를 사용하므로 플러그인도 잘 설치가 된다.</p>
+<p><img src="/images/2019/Untitled-a069af1b-b823-45b7-a44f-e61ec66b4de7.png" alt></p>
+<p><img src="/images/2019/Untitled-0e608340-7ada-44b0-938b-8b05b1bb2f3b.png" alt></p>
+<p>관리자 정보를 입력하고 save and Continue 를 눌러주자.</p>
+<p><img src="/images/2019/Untitled-9361a08e-dbf3-44a9-add0-d5a09d2bacfa.png" alt></p>
+<p><img src="/images/2019/Untitled-616230d9-2bec-48d6-9c28-6f524183433b.png" alt></p>
+<p><img src="/images/2019/Untitled-47e44134-c97c-4006-90c3-3fad68f7cea3.png" alt></p>
+<p>아까 생성했던 관리자 계정으로 로그인하자.</p>
+<p><img src="/images/2019/Untitled-86233454-b732-453c-a727-9f812bb33bd1.png" alt></p>
+<p>위처럼 정상적으로 젠킨스가 동작한다.</p>
+<p>만약 화면이 하얀색으로 멈춰 있거나 먹통이 되면 docker-compose stop → docker-compose start 로 컨테이너를 재시작 해보길 바란다.</p>
+<p>이제 간단한 job을 만들어서 docker 명령어가 jenkins에서 호출되는지 확인해보자.</p>
+<p><img src="/images/2019/Untitled-bf57a312-cb18-4e43-a155-fd9f52b56938.png" alt></p>
+<p><img src="/images/2019/Untitled-6a04f72e-f728-4663-b100-2ca8f6df745e.png" alt></p>
+<p><img src="/images/2019/Untitled-89042855-7749-4983-914e-61f7198f62c4.png" alt></p>
+<p><img src="/images/2019/Untitled-8449685a-5b28-4b64-914b-301e41477c98.png" alt></p>
+<p><img src="/images/2019/Untitled-8fa9c6d1-b947-4e87-8411-c5adb83fe233.png" alt></p>
+<p>빨간 줄만 따라가면된다. Execute shell에 docker ps 입력하고 저장을 눌러 job을 저장하자.</p>
+<p><img src="/images/2019/Untitled-73ed3298-0b66-4015-8ec9-3d27e155cea8.png" alt></p>
+<p>이렇제 잡이 생성되면 들어가서 </p>
+<p><img src="/images/2019/Untitled-5481ec9a-8bcf-4fbb-86e6-1734729d1a32.png" alt></p>
+<p>Build now눌러서 결과를 확인하자.</p>
+<p><img src="/images/2019/Untitled-bfbdc836-e6ac-45de-8d46-f750b1036465.png" alt></p>
+<p>짜잔 jenkins에서 docker ps 명령어가 동작한 것을 확인 할 수 있다.</p>
+<p>앞서 말했듯이 jenkins 컨테이너에서 호스트 docker를 빌려 쓰므로 현재 호스트의 docker ps 가 동작하고 그 결과가 나온다.</p>
+<p>끝!</p>
+<p>참고자료중 </p>
+<p><a href="https://getintodevops.com/blog/the-simple-way-to-run-docker-in-docker-for-ci" target="_blank" rel="external nofollow noopener noreferrer">https://getintodevops.com/blog/the-simple-way-to-run-docker-in-docker-for-ci</a> </p>
+<p>를 가장 많이 참고했다.</p>
+<h1 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h1><p><a href="https://getintodevops.com/blog/the-simple-way-to-run-docker-in-docker-for-ci" target="_blank" rel="external nofollow noopener noreferrer">https://getintodevops.com/blog/the-simple-way-to-run-docker-in-docker-for-ci</a></p>
+<p><a href="https://medium.com/@NovaWoo/docker-%EC%99%80-jenkins-%EB%A5%BC-%EC%82%AC%EC%9A%A9%ED%95%9C-%EC%95%88%EB%93%9C%EB%A1%9C%EC%9D%B4%EB%93%9C-ci-1-9510178a525f" target="_blank" rel="external nofollow noopener noreferrer">https://medium.com/@NovaWoo/docker-와-jenkins-를-사용한-안드로이드-ci-1-9510178a525f</a></p>
+<p><a href="https://www.44bits.io/ko/post/almost-perfect-development-environment-with-docker-and-docker-compose#docker-compose.yml-%ED%8C%8C%EC%9D%BC" target="_blank" rel="external nofollow noopener noreferrer">https://www.44bits.io/ko/post/almost-perfect-development-environment-with-docker-and-docker-compose#docker-compose.yml-파일</a></p>
+<p><a href="https://github.com/jenkinsci/docker" target="_blank" rel="external nofollow noopener noreferrer">https://github.com/jenkinsci/docker</a></p>
+
+      
+      
+          
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+      
+
+
+  
+  
+  
+  
+
+        
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
     <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2019/10/13/docker-20191013-docker-compose-ubuntu-jenkins/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -747,880 +1717,6 @@ docker-compose --version</code></pre><p><img src="/images/2019/Untitled-53125fd8
   
   
 
-        
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
-    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2019/10/04/springBoot-20191004-springboot-gradle-multimodule/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Hanumoka">
-      <meta itemprop="description" content="아마추어 개발자의 블로그">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hanumoka, IT Blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/10/04/springBoot-20191004-springboot-gradle-multimodule/" class="post-title-link" itemprop="url">springboot - gradle을 이용한 멀티모듈 프로젝트 만들기</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">작성일</span>
-
-              <time title="Post created: 2019-10-04 01:54:26" itemprop="dateCreated datePublished" datetime="2019-10-04T01:54:26+09:00">2019-10-04</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Updated at: 2020-04-16 01:50:12" itemprop="dateModified" datetime="2020-04-16T01:50:12+09:00">2020-04-16</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/springBoot/" itemprop="url" rel="index">
-                    <span itemprop="name">springBoot</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-      <!-- 20200427hexo_post_head -->
-      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
-      <script>
-          (adsbygoogle = window.adsbygoogle || []).push({});
-      </script>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="springboot-gradle-멀티모듈-프로젝트-만들기"><a href="#springboot-gradle-멀티모듈-프로젝트-만들기" class="headerlink" title="springboot gradle 멀티모듈 프로젝트 만들기"></a>springboot gradle 멀티모듈 프로젝트 만들기</h1><h1 id="개발환경"><a href="#개발환경" class="headerlink" title="개발환경"></a>개발환경</h1><p>windows10</p>
-<p>intelliJ 커뮤니티 버전</p>
-<p>jdk1.8</p>
-<h1 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h1><p>intelliJ 에서 gradle 기반 springboot 멀티 모듈 프로젝트를 한번 만들어보자.</p>
-<p>멀티모듈을 어떻게 디자인 해야하는지는 다루지 않고, gradle을 이용해서 어떻게 모듈을 생성하고 모듈간의 의존성을 셋팅을 하는가에 중점을 둔 글이다.</p>
-<h3 id="1-인텔리J에서-gradle-프로젝트-생성"><a href="#1-인텔리J에서-gradle-프로젝트-생성" class="headerlink" title="1. 인텔리J에서 gradle 프로젝트 생성"></a>1. 인텔리J에서 gradle 프로젝트 생성</h3><p>일단 intelliJ 에서 gradle 프로젝트를 생성하자.</p>
-<p><a href="http://start.spring.io" target="_blank" rel="external nofollow noopener noreferrer">http://start.spring.io</a> 로 이동해서 spring boot gradle 프로젝트를 생성하자.</p>
-<p>(나는 인텔리J 커뮤니티 버전을 사용중이라 springboot 프로젝트를 생성할 때 주로 <a href="http://start.spring.io" target="_blank" rel="external nofollow noopener noreferrer">http://start.spring.io</a> 를 주로 사용한다.)</p>
-<p>아래처럼 설정하여 프로젝트를 생성하자.</p>
-<p><strong>Project</strong> : Gradle Project</p>
-<p><strong>Language</strong>: Java</p>
-<p><strong>Spring Boot</strong>: 2.1.9(현재 2점대 이상으로 선택하면 될듯)</p>
-<p><strong>Project Metadata</strong></p>
-<p><strong>Group</strong> : com.hanumoka.go</p>
-<p><strong>Artifact</strong> : go-modules</p>
-<p><strong>Option</strong> </p>
-<p><strong>Packaging</strong>: War</p>
-<p><strong>Java</strong> : 8</p>
-<p><strong>Dependencies</strong>: Spring web, Thymeleaf</p>
-<p>위에서 중요한 부분은 Group이다. </p>
-<p>com.hanumoka.go는 이 프로젝트의 공통 패키지이며, Artifact: go-modules 는 실제 생성되는 실행 프로그램을 구별하는 명칭이 아니라 모듈의 묶음일 뿐이다.</p>
-<p>개인적으로 프로젝트를 war로 설정해서 생성한 이유는 애시당초 war로 프로젝트를 생성하면 프로젝트 빌드시 war, jar 빌드가 쉽기 때문이다.</p>
-<p><img src="/images/2019/Untitled-5341e670-96cc-4c30-87ce-b3b5e1f8f70e.png" alt></p>
-<p><img src="/images/2019/Untitled-74760319-2255-4c62-8e0e-420b86d1ff1f.png" alt></p>
-<p><img src="/images/2019/Untitled-d9a4929d-6637-4b35-abe6-7f30e72831a3.png" alt></p>
-<p>Spring web은 필수이며  Thymeleaf 스프링 컨트롤러의 동작을 확인하기 위해 추가했다.</p>
-<p>설정된 값을을 이용해서 압축된 프로젝트를 다운로드 하자.</p>
-<p><img src="/images/2019/Untitled-b2e2e41a-d83f-42c6-8d3a-b8be0f1620e9.png" alt></p>
-<p>해당 파일을 압축을 풀고 intelliJ로 open하자.</p>
-<p><img src="/images/2019/Untitled-cb15ce0d-2329-42a8-a064-88a35931aa4f.png" alt></p>
-<p>위처럼 gradle 이 제대로 빌드 되는지 확인하자.</p>
-<p>컨트롤러와 html 페이지를 추가해서 스프링 컨트롤러 동작을 한번 시켜보자.</p>
-<p>com.hanumoka.go.gomodules 패키지를 선택하고 controller 패키지를 생성하고, HomeController를 생성하고 html을 리다이렉팅 할 수 있는 RequestMapping 메소드를 추가하자.</p>
-<p><img src="/images/2019/Untitled-1de55a38-69bf-4f45-aa47-c4b608000a3a.png" alt></p>
-<p><img src="/images/2019/Untitled-453cfccc-a5da-4ab9-bc06-32d1dd1da2d8.png" alt></p>
-<p>GoModulesApplication 를 선택하고 run 시켜서, <a href="http://localhost:8080" target="_blank" rel="external nofollow noopener noreferrer">http://localhost:8080</a> 로 접속해서 컨트롤러가 동작하는지 보자.</p>
-<p><img src="/images/2019/Untitled-a0b353dd-cff9-46b3-91e9-162e3b25cf80.png" alt></p>
-<p><img src="/images/2019/Untitled-c37042c7-7134-4ea7-a560-0d269625b277.png" alt></p>
-<p>스프링 컨트롤러가 정상 동작하는 것을 확인 할 수 있다.</p>
-<h3 id="2-모듈-추가하기"><a href="#2-모듈-추가하기" class="headerlink" title="2. 모듈 추가하기"></a>2. 모듈 추가하기</h3><p>1번에서 한 일은 그냥 gradle 기반 springboot 프로젝트를 생성하고 동작시킨 것이다.</p>
-<p>이제 실제 사용할 모듈을 구상하고 추가하고 셋팅해야 한다.</p>
-<p>이 글은 gradle환경에서 springboot 프로젝트에서 모듈을 추가하고 연결하는 설정을 기록하는데 초점을 두고 있다.</p>
-<p>따라서 간단하게 Service 모듈과 Controller 모듈을 생성하고 Controller 모듈이 Service 모듈을 사용하는 시나리오로 진행 하겠다.</p>
-<p>실제 모듈을 설계하고 구성하는 일은 많은 고심이 필요해 보인다.(이부분은 나중에 좀 연구해 봐야 겠다.)</p>
-<p><img src="/images/2019/Untitled-763d4bb6-6264-4ddd-ad37-e1bbf1583016.png" alt></p>
-<p>일단 프로젝트 루트 경로의 build.gradle, settigns.gradle 은 프로젝트 전체에 적용되는 설정 파일이다. </p>
-<p>사실 gradle을 잘 몰라 자세한 설명을 할 수가 없다. </p>
-<p>하지만 이후로 추가될 모듈에 관련된 공통적인 설정은 이 두 파일에 기술된다.</p>
-<p><img src="/images/2019/Untitled-0409dc23-9fe8-4d84-af69-622f0b2d146c.png" alt></p>
-<p>그리고 프로젝트 루트 경로의 src 폴더는 모듈을 추가함으로써 사라질 예정이다.</p>
-<p><img src="/images/2019/Untitled-1bf0b85f-d119-4e8d-8e5a-1ff8ff2e5f39.png" alt></p>
-<h3 id="일단-a-module-이라는-이름의-모듈을-추가해보자"><a href="#일단-a-module-이라는-이름의-모듈을-추가해보자" class="headerlink" title="일단 a-module 이라는 이름의 모듈을 추가해보자."></a>일단 a-module 이라는 이름의 모듈을 추가해보자.</h3><p>일단 루트 경로의 settings.gradle을  확인해보자.</p>
-<p>아래처럼 루트 프로젝트 네임만 있을 것이다. 나중에 모듈을 추가하면 모듈 정보가 추가될 것이다.</p>
-<p>일단 넘어가자.</p>
-<pre><code>rootProject.name = &apos;go-modules&apos;</code></pre><p>그리고 루트 경로의 build.gradle 파일을 열어서 내용물을 모두 지우고 아래 내용으로 치환하자.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">buildscript &#123;</span><br><span class="line">    ext &#123;</span><br><span class="line">        springBootVersion &#x3D; &#39;2.1.9.RELEASE&#39;</span><br><span class="line">    &#125;</span><br><span class="line">    repositories &#123;</span><br><span class="line">        mavenCentral()</span><br><span class="line">    &#125;</span><br><span class="line">    dependencies &#123;</span><br><span class="line">        classpath(&quot;org.springframework.boot:spring-boot-gradle-plugin:$&#123;springBootVersion&#125;&quot;)</span><br><span class="line">        classpath &quot;io.spring.gradle:dependency-management-plugin:1.0.8.RELEASE&quot;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">subprojects &#123;</span><br><span class="line"></span><br><span class="line">    apply plugin: &#39;java&#39;</span><br><span class="line">    apply plugin: &#39;eclipse&#39;</span><br><span class="line">    apply plugin: &#39;org.springframework.boot&#39;</span><br><span class="line">    apply plugin: &#39;io.spring.dependency-management&#39;</span><br><span class="line"></span><br><span class="line">    group &#x3D; &#39;com.hanumoka.go&#39;</span><br><span class="line">    version &#x3D; &#39;0.0.0&#39;</span><br><span class="line">    sourceCompatibility &#x3D; 1.8</span><br><span class="line"></span><br><span class="line">    repositories &#123;</span><br><span class="line">        mavenCentral()</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    task initSourceFolders &#123;</span><br><span class="line">        sourceSets*.java.srcDirs*.each &#123;</span><br><span class="line">            if( !it.exists() ) &#123;</span><br><span class="line">                it.mkdirs()</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        sourceSets*.resources.srcDirs*.each &#123;</span><br><span class="line">            if( !it.exists() ) &#123;</span><br><span class="line">                it.mkdirs()</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    dependencies &#123;</span><br><span class="line">        compileOnly(&#39;org.projectlombok:lombok&#39;)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>buildscript  부분에서 공통 스브링부트 버전등을 설정한다.</p>
-<p>subprojects 는 추가될 모듈둘에 공통적으로 적용될 내용들이 기술되어 있다.</p>
-<p>이제 a-module 을 추가해보자. 아래처럼 모듈을 클릭하자.</p>
-<p><img src="/images/2019/Untitled-64586004-bf5a-4a95-af5d-2c80215154e5.png" alt></p>
-<p>아래 내용을 확인하고 next 버튼을 클릭하자.</p>
-<p><img src="/images/2019/Untitled-728f02ae-0958-433b-aded-dfc20c6639c0.png" alt></p>
-<p>아래처럼 GroupId : com.hanumoka.go</p>
-<p>ArtifactId : a-module 를 입력하고 next 를 클릭하자.</p>
-<p><img src="/images/2019/Untitled-3919234e-a81d-45fa-a06c-07f35ff6d8c2.png" alt></p>
-<p>a-module 이라는 모듈명을 확인하고 Finish 버튼을 클릭하자.</p>
-<p><img src="/images/2019/Untitled-cdbb921e-edd1-48e7-8419-f4f584e6e5e6.png" alt></p>
-<p>아래처럼 a-module이 추가되었다. 하늘색 작은 상자가 표시 되어 있는데, 이것이 모듈을 의미한다.</p>
-<p><img src="/images/2019/Untitled-9e0e20d4-d3d0-4bfb-8da3-b0fa3b9190a0.png" alt></p>
-<p>모듈을 추가했으니 프로젝트 루트 경로의 settings.gradle 파일을 열어보자.</p>
-<p>아래처럼 include ‘a-module’ 이라는 내용이 자동으로 추가된 것을 확인 할 수 있다.</p>
-<p>만약 없다면, 추가해주자.</p>
-<p><img src="/images/2019/Untitled-d4e72ab9-3593-449c-8bcf-074294dda1a3.png" alt></p>
-<p>그리고 루트 경로의 settings.gradle 파일을 열어보자.</p>
-<p>그리고 아래 내용을 추가해주자. 프로젝트해당 모듈이 있다고 등록하는 것이다. 나중에 이 모듈에 대한 디펜던시도 추가할 것이다.</p>
-<pre><code>project(&apos;:a-module&apos;) {
-}</code></pre><p><img src="/images/2019/Untitled-8ef73c78-899a-4472-acd5-7c4fd6dab19c.png" alt></p>
-<p>이제 생성했던 a-module 폴더로 들어가서 a-module 폴더의 build.gradle 파일을 열어보자.</p>
-<p>기존의 내용들을 지우고 아래 내용으로 치환하자.</p>
-<p>이 파일은 a-module을 위한 독자적인 파일이다.</p>
-<pre><code>dependencies {
-    compile(&apos;org.springframework.boot:spring-boot-starter-thymeleaf&apos;)
-    compile(&apos;org.springframework.boot:spring-boot-starter-web&apos;)
-    testCompile(&apos;org.springframework.boot:spring-boot-starter-test&apos;)
-}</code></pre><p><img src="/images/2019/Untitled-4f8a1a40-e697-482a-8733-3e0c749dcf7b.png" alt></p>
-<p>그리고 아래처럼 모듈 내부의 패키지와 파일들을 구성하자.</p>
-<p><img src="/images/2019/Untitled-cc91f841-ef40-40ed-9499-79c23105eb78.png" alt></p>
-<p><strong>공통 패키지는 com.hanumoka.go 이다.</strong></p>
-<p><strong>BeanScan의 기준이 되는 AmoduleApp.class, ServletInitializer.class 는 이곳이 둬야 한다.</strong></p>
-<p>아래 AmoduleApp.class 파일이다.</p>
-<pre><code>package com.hanumoka.go;
-
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-
-@SpringBootApplication
-public class AmoduleApp {
-    public static void main(String[] args) {
-        SpringApplication.run(AmoduleApp.class, args);
-    }
-}</code></pre><p>아래 ServletInitializer.class 파일이다.</p>
-<pre><code>package com.hanumoka.go;
-
-import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
-
-public class ServletInitializer extends SpringBootServletInitializer {
-
-    @Override
-    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-        return application.sources(AmoduleApp.class);
-    }
-
-}</code></pre><p>아래 HomeController.class 이다.</p>
-<p>추가한 a-module을 다른 모듈과 구분하기 위해 amodule 을 추가했다.</p>
-<pre><code>package com.hanumoka.go.amodule.controller;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-@Controller
-public class HomeController {
-
-    @RequestMapping(&quot;/&quot;)
-    public String index(){
-        return &quot;index&quot;;
-    }
-}</code></pre><p>기존에 루트 경로에 있던 src 폴더 내부를 옮겨와서 AmoduleApp 파일명만 변경한 것이다.</p>
-<p>그리고 루트 경로의 src 폴더를 제거하자.</p>
-<p>지금까지 작업은 기존의 단일 프로젝트의 src를 a-module로 옮긴것이다.</p>
-<p>AmoduleApp 을 실행 하면, 스프링 앱이 동작하고 <a href="http://localhost:8080" target="_blank" rel="external nofollow noopener noreferrer">http://localhost:8080</a> 접근시 index.html 이 보여야 한다.</p>
-<p>지금까지 한 작업으로 springboot 단일 프로젝트를 springboot 모듈 프로젝트로 변경 되었다.</p>
-<p>이제 b-module을 추가하고 a-module에서 b-module을 사용하는 구조로 만들어보자.</p>
-<h3 id="b-module-이라는-모듈-추가하기"><a href="#b-module-이라는-모듈-추가하기" class="headerlink" title="b-module 이라는 모듈 추가하기"></a>b-module 이라는 모듈 추가하기</h3><p>앞서 a-module 추가하듯이 b-module도 추가하자.</p>
-<p>아래와 같은 구조가 될 것이고, src 폴더는 앞에서 말한것 처럼 제거 했다.</p>
-<p><img src="/images/2019/Untitled-eb7e58f7-4c94-4821-9647-63d58d52c801.png" alt></p>
-<p>루트 경로에 settings.gradle 폴더르르 보면 역시 b-module 이 추가된 것을 볼 수 있다.</p>
-<p><img src="/images/2019/Untitled-2a9d2015-3aa7-4c45-ae73-e04758fb8bcb.png" alt></p>
-<p>루트 경로의 build.gradle 에 가서 앞서 등록했던 a-module에 dependencies 를 방금 추가한 b-module 로 추가하자.</p>
-<p>해당 내용은 a-modul이 b-module에 의존성을 갖는다는 것이다.</p>
-<pre><code>project(&apos;:a-module&apos;) {
-    dependencies {
-        compile project(&apos;:b-module&apos;)
-    }
-}</code></pre><p><img src="/images/2019/Untitled-a5baeacc-585a-4ad5-90dd-24effcf2ab22.png" alt></p>
-<p>b-module을 열고 아래처럼 구성하자.</p>
-<p>b-module은 a-module에서 사용할 서비스로 Bservice.class를 제공한다.</p>
-<p><img src="/images/2019/Untitled-e2cf2f53-0c69-4946-b61f-ffb807c0fdfd.png" alt></p>
-<p>Bservice.class</p>
-<pre><code>package com.hanumoka.go.bmodule.service;
-
-import org.springframework.stereotype.Service;
-
-@Service
-public class Bservice {
-    public String test(){
-        return &quot;Bservice test()...&quot;;
-    }
-}</code></pre><p>그리고 b-module 하위이 build.gradle 을 아래로 치환 했다.</p>
-<pre><code>bootJar{
-    enabled = false;
-}
-jar {
-    enabled = true;
-}
-
-dependencies {
-    compile(&apos;org.springframework.boot:spring-boot-starter&apos;)
-}</code></pre><h3 id="A-module-컨트롤러에서-B-module-서비스를-사용해보자"><a href="#A-module-컨트롤러에서-B-module-서비스를-사용해보자" class="headerlink" title="A-module 컨트롤러에서 B-module 서비스를 사용해보자."></a>A-module 컨트롤러에서 B-module 서비스를 사용해보자.</h3><p>A-module의 HomeController.class를 아래처럼 수정하자.</p>
-<pre><code>package com.hanumoka.go.amodule.controller;
-
-import com.hanumoka.go.bmodule.service.Bservice;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-@Controller
-public class HomeController {
-
-    @Autowired
-    Bservice bservice;
-
-    @RequestMapping(&quot;/&quot;)
-    public String index(){
-
-        System.out.println(bservice.test());
-        return &quot;index&quot;;
-    }
-}</code></pre><p><img src="/images/2019/Untitled-c078d4ae-a987-432f-857e-3aa2797fcdbd.png" alt></p>
-<p>이제 a-module의 AmoduleApp을 실행해서 a-module의 컨트롤러가 동작할때 b-module의 서비스를 호출하는지 확인해보자.</p>
-<p>아래처럼 동작을 확인 할 수 있다.</p>
-<p><img src="/images/2019/Untitled-f2b2ebe0-c361-4915-86dc-2941cf8b1bfc.png" alt></p>
-<p>go-module 을 빌드하면 아래처럼 a-module 의 빌드 결과물을 확인 할 수 있다.</p>
-<p>화면에는 안 보이지만 b-module 역시 빌드 결과물이 생겼다.</p>
-<p>하지만 a-module에만 SpringBootApplication을 등록했으므로, 실제 실행 시킬수 있는 jar 파일은</p>
-<p>a-module-0.0.0.jar 이다.</p>
-<p><img src="/images/2019/Untitled-97d20444-23a5-49dc-b013-d79fa718d076.png" alt></p>
-<p>직접 jar를 실행시켜, 정상동작을 확인하자.</p>
-<pre><code>java -jar a-module-0.0.0.jar </code></pre><h3 id="마무리"><a href="#마무리" class="headerlink" title="마무리"></a>마무리</h3><p>이 글에서는 간단하게 gradle 기반으로 spring boot 멀티 모듈을 구축하는 방법을 정리하였다.</p>
-<p>사실 실제 멀티 모듈을 설계하고 구축하는 일은 어려운 일이고, 많은 고민이 필요해 보인다.</p>
-<p>하지만 나처럼 gradle 자체를 잘 모르는 사람은 실제 구축 자체가 어려운 일이므로 이렇게 기록해 놓는다.</p>
-<p><strong>해당 예제는 아래 github에 올려놓았다.</strong></p>
-<p><a href="https://github.com/hanumoka/springboot_gradle_multimodule" target="_blank" rel="external nofollow noopener noreferrer">https://github.com/hanumoka/springboot_gradle_multimodule</a></p>
-<h3 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h3><p><a href="https://bkjeon1614.tistory.com/38" target="_blank" rel="external nofollow noopener noreferrer">https://bkjeon1614.tistory.com/38</a></p>
-
-      
-      
-          
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-
-  
-      
-
-
-  
-  
-  
-  
-
-        
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
-    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2019/09/26/ubuntu-20190926-ubuntu-grant-root/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Hanumoka">
-      <meta itemprop="description" content="아마추어 개발자의 블로그">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hanumoka, IT Blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/09/26/ubuntu-20190926-ubuntu-grant-root/" class="post-title-link" itemprop="url">ubuntu 일반계정에 root권한 부여하기</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">작성일</span>
-
-              <time title="Post created: 2019-09-26 23:10:37" itemprop="dateCreated datePublished" datetime="2019-09-26T23:10:37+09:00">2019-09-26</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Updated at: 2020-04-16 01:50:12" itemprop="dateModified" datetime="2020-04-16T01:50:12+09:00">2020-04-16</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/ubuntu/" itemprop="url" rel="index">
-                    <span itemprop="name">ubuntu</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-      <!-- 20200427hexo_post_head -->
-      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
-      <script>
-          (adsbygoogle = window.adsbygoogle || []).push({});
-      </script>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h3><p>ubuntu에서 이것저것 하다보면 관리자 권한으로 명령어를 실행해야 할 일이 많다.</p>
-<p>매번 sudo 명령어 형태로 명령어를 호출하기에는 불편하다.</p>
-<p>sudo su로 root 계정으로 로그인 하여 명령어를 호출하면 간단하지만, 이때 문제가</p>
-<p>cd ~ 명령어 사용히 /root 로 이동한다는 것이다.</p>
-<p>이런 경우 일반계정을 아예 root 계정의 그룹에 추가하면 해결이 된다.</p>
-<h3 id="일반계정에-root-계정-권한-부여"><a href="#일반계정에-root-계정-권한-부여" class="headerlink" title="일반계정에 root 계정 권한 부여"></a>일반계정에 root 계정 권한 부여</h3><p>나는 현재 가상머신 ubuntu에 hanumoka-ubuntu1804라는 일반계정을 가지고 있다. (아 계정명을 너무 길게 지었다.)</p>
-<p>일단, 환경설정 파일을 수정하기 위해 관리자로 로그인하자.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo su</span><br></pre></td></tr></table></figure>
-
-<p>그리고 /etc/sudoers 파일을 수정해야 한다.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">vim &#x2F;etc&#x2F;sudoers</span><br><span class="line"></span><br><span class="line">root All&#x3D;(ALL:ALL) ALL </span><br><span class="line">일반계정명 All&#x3D;(ALL:ALL) ALL   &lt;-  이렇게 추가하자.</span><br></pre></td></tr></table></figure>
-<p><img src="/images/2019/Untitled_20190928_ubuntu.png" alt></p>
-<p>파일을 저장하자.</p>
-<p>그리고 /etc/passwd 파일을 수정하자.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim &#x2F;etc&#x2F;passwd</span><br></pre></td></tr></table></figure>
-
-<p><img src="/images/2019/Untitled-eac0a2dd-be61-436b-bef2-f92f15a5d9be.png" alt></p>
-<p>맨 위에 보면 root:x 뒤에 0:0 가 보일것이다. </p>
-<p>앞의 0은 uid(유저아이디) 뒤의 0는 gid(그룹아이디)를 의미하는데, 슈퍼유저의 uid는 0 슈퍼유저의 gid도 0이다.</p>
-<p>root의 권한이 필요한 일반계정의 uid와 gid를 0:0으로 변경해주자.</p>
-<p><img src="/images/2019/Untitled-0872416e-0d60-4bdd-aa9a-98f71344151d.png" alt></p>
-<p>내 경우 hanumoka-ubuntu1804라는 계정의 uid:gid를 0:0으로 변경했다.</p>
-<p>해당 파일을 저장하자.</p>
-<p>그리고 root 그룹에 일반계정 hanumoka-ubuntu1804를 포함시키자.</p>
-<pre><code>vim /etc/group</code></pre><p><img src="/images/2019/Untitled-7b66a74d-647b-4a0d-bee0-d134d62e29a5.png" alt></p>
-<p>파일을 열면 맨위 root:x:0: 이렇게 되어 있을 것이다.</p>
-<pre><code>root:x:0: 를 root:x:0:일반계정명 으로 수정해주자.</code></pre><p><img src="/images/2019/Untitled-3465c469-7416-4de1-972b-834d642f3c4b.png" alt></p>
-<p>파일을 저장하고 나온 뒤, root 권한을 부여한 계정에 접속해서 sudo 없이 명령어가 실행되는지 확인해보자.</p>
-<p><img src="/images/2019/Untitled-82196000-db48-4c4f-977a-d24035d4f2e9.png" alt></p>
-<p>기존에는 sudo docker ps 로 실행 해야 했지만, 이제는 docker ps 로 바로 명령어가 실행되는 것을 확인 할 수 있다.</p>
-<p>끝.</p>
-<p>참고로 일반계정아 root 권한을 주면 우분투 로그인시 목록에 나오지 않는다.</p>
-<h3 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h3><p><a href="https://itgameworld.tistory.com/75" target="_blank" rel="external nofollow noopener noreferrer">https://itgameworld.tistory.com/75</a></p>
-<p><a href="https://crasy.tistory.com/149" target="_blank" rel="external nofollow noopener noreferrer">https://crasy.tistory.com/149</a></p>
-<p><a href="https://zetawiki.com/wiki/%EC%82%AC%EC%9A%A9%EC%9E%90%EC%95%84%EC%9D%B4%EB%94%94_UID,_%EA%B7%B8%EB%A3%B9%EC%95%84%EC%9D%B4%EB%94%94_GID" target="_blank" rel="external nofollow noopener noreferrer">https://zetawiki.com/wiki/사용자아이디_UID,_그룹아이디_GID</a></p>
-
-      
-      
-          
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-
-  
-      
-
-
-  
-  
-  
-  
-
-        
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
-    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2019/09/21/spring-20190921-spring-mybatis-sqlinjectionsafe/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Hanumoka">
-      <meta itemprop="description" content="아마추어 개발자의 블로그">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hanumoka, IT Blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/09/21/spring-20190921-spring-mybatis-sqlinjectionsafe/" class="post-title-link" itemprop="url">springboot mybatis ${} 사용시 sql injection 방어하기</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">작성일</span>
-
-              <time title="Post created: 2019-09-21 13:51:59" itemprop="dateCreated datePublished" datetime="2019-09-21T13:51:59+09:00">2019-09-21</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Updated at: 2020-04-16 01:50:12" itemprop="dateModified" datetime="2020-04-16T01:50:12+09:00">2020-04-16</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/spring/" itemprop="url" rel="index">
-                    <span itemprop="name">spring</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-      <!-- 20200427hexo_post_head -->
-      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
-      <script>
-          (adsbygoogle = window.adsbygoogle || []).push({});
-      </script>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="개발환경"><a href="#개발환경" class="headerlink" title="개발환경"></a>개발환경</h1><p>springboot</p>
-<p>jdk1.8</p>
-<p>mysql</p>
-<p>mybatis</p>
-<h1 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h1><p>spring 개발을 할때, 난 일반적으로 mybatis를 사용했다.</p>
-<p>음 빨리 JPA도 공부를 해야 할거 같다.</p>
-<p>일반적으로 mybatis를 사용할 경우 ${param1}, #{param2} 이렇게 두가지 방식으로  파라미터를 받을 수 있다.</p>
-<p>나는 보통 #{param2} 를 사용해서, 파라미터를 받는다.</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> *</span><br><span class="line"><span class="keyword">FROM</span> <span class="keyword">USERS</span></span><br><span class="line"><span class="keyword">WHERE</span> <span class="number">1</span>=<span class="number">1</span></span><br><span class="line"><span class="keyword">AND</span> USER_ID = <span class="comment">#&#123;userId&#125;</span></span><br></pre></td></tr></table></figure>
-
-
-<p>#{} 는 내부적으로 PreparedStatement를 사용하기 때문에  SQLInjection 공격에 안전하기 때문이다.</p>
-<p>참고로 PreparedStatement는 값을 바인딩 하는 시점에서 전달된 값에 대한 특수문자, 쿼리등을 필터링하여 SQLinjection을 막는다.</p>
-<p>이렇게 mybatis를 사용할때 보통 #{}를 사용하면 평화롭고, 안전한 코딩을 할 수 있다.</p>
-<p>하지만 간혹 ${}를 사용하고 싶을 때가 있다.</p>
-<p>바로 쿼리의 파라미터로 컬럼명을 화면에서 받고 싶은 경우인데,</p>
-<p>보통 select 쿼리에 호출시 정렬을 하고 싶을 때 이다.</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span></span><br><span class="line">    	USER_ID</span><br><span class="line">     ,USER_NAME</span><br><span class="line">     ,USER_AGE</span><br><span class="line">    <span class="keyword">FROM</span> <span class="keyword">USERS</span></span><br><span class="line"><span class="keyword">WHERE</span> <span class="number">1</span>=<span class="number">1</span></span><br><span class="line"><span class="keyword">ORDER</span> <span class="keyword">BY</span> $&#123;sort_column&#125; $&#123;sort_type&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-<p>위처럼 동적으로 파라미터를 외부에 주입 받기 위해서는 #{}가 아닌 ${}를 사용 해야 한다.</p>
-<p>${}는 입력받은 파라미터를 쿼리에 직접 치환해주기 때문이다.</p>
-<p>하지만 여기에는 SQLInjection에 대한 위험이 존재한다.</p>
-<p>어떻게 하면 ${}를 사용하면서, SQL Injection을 방어 할 수 있을까?</p>
-<p>스프링 필터를 사용해야하나?  AOP를 사용해야 하나?</p>
-<p>고민하다가 인터넷에서 괜찮은 라이브리러를 찾았다.</p>
-<h1 id="어노테이션으로-SQL-Injection-방어"><a href="#어노테이션으로-SQL-Injection-방어" class="headerlink" title="어노테이션으로 SQL Injection 방어"></a>어노테이션으로 SQL Injection 방어</h1><p><a href="https://github.com/rkpunjal/sql-injection-safe/" target="_blank" rel="external nofollow noopener noreferrer">https://github.com/rkpunjal/sql-injection-safe/</a></p>
-<p>sql-injection-safe 라는 라이브러리이다. </p>
-<p>아이디어는 어노테이션으로 VO의 필드에 SqlInjection을 방어하는 방법이다.</p>
-<p>아래로 가보면 간단하게 테스트 할수 있는 예제 샘플도 있다.</p>
-<p><a href="https://github.com/rkpunjal/sql-safe-annotation-example" target="_blank" rel="external nofollow noopener noreferrer">https://github.com/rkpunjal/sql-safe-annotation-example</a></p>
-<p>일단 동적으로 sql의 컬럼을 받을 VO를 만들어보자.</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">GridDto</span></span>&#123;</span><br><span class="line">	<span class="keyword">private</span> String sortColumn;</span><br><span class="line">  <span class="keyword">private</span> String sortType;</span><br><span class="line"></span><br><span class="line">  <span class="comment">//getter, setter 생략</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SomethingGridDto</span> <span class="keyword">extends</span> <span class="title">GridDto</span> </span>&#123;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">int</span> column_1;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">int</span> column_2;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">int</span> column_3;</span><br><span class="line">  <span class="comment">//getter, setter 생략</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-<p>위처럼 대충 DTO를 만들었다. </p>
-<p>자 이제 라이브러리를 추가하자. pom.xml 아래처럼 추가하자.</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.github.rkpunjal.sqlsafe<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>sql-injection-safe<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.0.2<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-
-<p>라이브러리가 추가 되었다면, Sql Injection 위험이 있는 DTO의 필드에 @SQLInjectionSafe 어노테이션을 추가해준다.</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">GridDto</span></span>&#123;</span><br><span class="line">    	<span class="keyword">private</span> <span class="meta">@SQLInjectionSafe</span> String sortColumn;</span><br><span class="line">      <span class="keyword">private</span> <span class="meta">@SQLInjectionSafe</span> String sortType;</span><br><span class="line">    </span><br><span class="line">      <span class="comment">//getter, setter 생략</span></span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-
-<p>그리고 해당 DTO를 받은 컨트롤러에서 @valid를 적용해주면 된다.</p>
-<p>굉장히 간단하게 스프링 컨트롤러에서 전달되는 파라미터에 어노테이션으로 SQL Injection을 방어 할 수 있다.</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RequestMapping</span>(value = <span class="string">"/queryGrid"</span>, produces=APPLICATION_JSON_UTF_8)</span><br><span class="line"><span class="keyword">public</span> <span class="meta">@ResponseBody</span> <span class="function">WebResponse <span class="title">queryGrid</span><span class="params">(@Valid @ModelAttribute()</span> SomethingGridDto paramDto) </span>&#123;</span><br><span class="line">    		<span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>@Valid 가 동작하면서 @SQLInjectionSafe 동작한다.</p>
-<p>만약 sortColumn 멤버변수에 SQL Injection의 위험이 되는 문구가 있는 경우 BindException 이 발생하게된다.</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@ExceptionHandler</span>(BindException<span class="class">.<span class="keyword">class</span>)</span></span><br><span class="line"><span class="class"><span class="title">public</span> @<span class="title">ResponseBody</span> <span class="title">WebResponse</span> <span class="title">handleBindException</span>(<span class="title">BindException</span> <span class="title">be</span> )</span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> MyResponseObject(<span class="keyword">false</span>,</span><br><span class="line">  	getBindExceptionMessage(be) <span class="comment">// custom method to find and send an appropriate response</span></span><br><span class="line">  );</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-<p><a href="https://github.com/rkpunjal/sql-safe-annotation-example" target="_blank" rel="external nofollow noopener noreferrer">https://github.com/rkpunjal/sql-safe-annotation-example</a></p>
-<p>위 예제 샘플을 받아서 구동해보면 아래처럼 @SQLInjectionSafe 내용을 확인 할 수 있다.</p>
-<p>SQLInjection을 정규식으로 잡아내는 것을 확인 할 수 있다.</p>
-<p>뭔가 부족하다면 커스텀 하면 될거 같다.</p>
-<p><img src="/images/2019/Untitled-f94f04e9-1bf2-441e-b4bd-370d5bd88c77.png" alt="SQLInjectionSafe"></p>
-<h3 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h3><p><a href="https://lng1982.tistory.com/246" target="_blank" rel="external nofollow noopener noreferrer">https://lng1982.tistory.com/246</a></p>
-<p><a href="https://m.blog.naver.com/PostView.nhn?blogId=blogpyh&logNo=220675109307&proxyReferer=https%3A%2F%2Fwww.google.com%2F" target="_blank" rel="external nofollow noopener noreferrer">https://m.blog.naver.com/PostView.nhn?blogId=blogpyh&amp;logNo=220675109307&amp;proxyReferer=https%3A%2F%2Fwww.google.com%2F</a></p>
-<p><a href="https://hackbyr0k.tistory.com/2" target="_blank" rel="external nofollow noopener noreferrer">https://hackbyr0k.tistory.com/2</a></p>
-
-      
-      
-          
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-
-  
-      
-
-
-  
-  
-  
-  
-
-        
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
-    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2019/08/17/ubuntu-20190817-ubuntu-docker/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Hanumoka">
-      <meta itemprop="description" content="아마추어 개발자의 블로그">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hanumoka, IT Blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/08/17/ubuntu-20190817-ubuntu-docker/" class="post-title-link" itemprop="url">Ubuntu1804에 docker 설치</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">작성일</span>
-
-              <time title="Post created: 2019-08-17 19:19:41" itemprop="dateCreated datePublished" datetime="2019-08-17T19:19:41+09:00">2019-08-17</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Updated at: 2020-04-16 01:50:12" itemprop="dateModified" datetime="2020-04-16T01:50:12+09:00">2020-04-16</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/ubuntu/" itemprop="url" rel="index">
-                    <span itemprop="name">ubuntu</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-      <!-- 20200427hexo_post_head -->
-      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
-      <script>
-          (adsbygoogle = window.adsbygoogle || []).push({});
-      </script>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h1><p>음 docker는 상당히 편리한 녀석이다.</p>
-<p>VitualBox에 설치된 Ubuntu1804에 docker를 설치 해보려한다.</p>
-<p>솔직히 이게 재대로 될지 잘 모르지만, 일단 해보자.</p>
-<p>별거 없다. 아래 명령어를 한줄 한줄 주욱 입력해주자.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">sudo apt update</span><br><span class="line"></span><br><span class="line">sudo apt install apt-transport-https ca-certificates curl software-properties-common</span><br><span class="line"></span><br><span class="line">curl -fsSL https:&#x2F;&#x2F;download.docker.com&#x2F;linux&#x2F;ubuntu&#x2F;gpg | sudo apt-key add -</span><br><span class="line"></span><br><span class="line">sudo add-apt-repository &quot;deb [arch&#x3D;amd64] https:&#x2F;&#x2F;download.docker.com&#x2F;linux&#x2F;ubuntu bionic stable&quot;</span><br><span class="line"></span><br><span class="line">sudo apt update</span><br><span class="line"></span><br><span class="line">apt-cache policy docker-ce</span><br><span class="line"></span><br><span class="line">sudo apt install docker-ce</span><br><span class="line"></span><br><span class="line">sudo systemctl status docker</span><br></pre></td></tr></table></figure>
-
-<h3 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h3><p>[<a href="https://blog.cosmosfarm.com/archives/248/우분투-18-04-도커-docker-설치-방법/]" target="_blank" rel="external nofollow noopener noreferrer">https://blog.cosmosfarm.com/archives/248/우분투-18-04-도커-docker-설치-방법/]</a>(</p>
-
-      
-      
-          
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-
-  
-      
-
-
-  
-  
-  
-  
-
-        
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
-    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2019/08/17/ubuntu-20190817-ubuntu-nvm-node/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Hanumoka">
-      <meta itemprop="description" content="아마추어 개발자의 블로그">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hanumoka, IT Blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/08/17/ubuntu-20190817-ubuntu-nvm-node/" class="post-title-link" itemprop="url">ubuntu nvm node</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">작성일</span>
-
-              <time title="Post created: 2019-08-17 19:18:16" itemprop="dateCreated datePublished" datetime="2019-08-17T19:18:16+09:00">2019-08-17</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Updated at: 2020-04-16 01:50:12" itemprop="dateModified" datetime="2020-04-16T01:50:12+09:00">2020-04-16</time>
-              </span>
-
-          
-
-        </div>
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-      <!-- 20200427hexo_post_head -->
-      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
-      <script>
-          (adsbygoogle = window.adsbygoogle || []).push({});
-      </script>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h1><p>우분투에 nvm을 이용해서 node를 설치해보자.</p>
-<p>nvm은 Node.js version manager로 여러가지 버전을 손쉽게 설치하고 거기서 원하는 버전을 골라서 사용할수 있게 해준다.</p>
-<p>우분투 저장소에서 vnm에 필요한 패키지를 설치하자.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get update</span><br><span class="line">sudo apt-get install build-essential libssl-dev</span><br></pre></td></tr></table></figure>
-
-<p>그리고 nvm 설치 스크립트를 다운로드 후 실행하자.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">curl -sL https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;creationix&#x2F;nvm&#x2F;v0.31.0&#x2F;install.sh -o install_nvm.sh </span><br><span class="line">bash install_nvm.sh </span><br><span class="line">source ~&#x2F;.profile</span><br></pre></td></tr></table></figure>
-
-<p>nvm 설치가 완료가 되었다면, 아래 명령어를 입력하여 설치 가능한 node.js 버전들을 확인할 수 있다.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nvm ls-remote</span><br></pre></td></tr></table></figure>
-
-<p>현재 LTS 버전인 10.16.2 버전을 설치해보겠다.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nvm install 10.16.2</span><br></pre></td></tr></table></figure>
-
-<p>설치가 끝나면 </p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">node -v</span><br></pre></td></tr></table></figure>
-
-<p>위 명령어로 설치된 node의 버전을 확인 할 수 있다.</p>
-<p>추가로 </p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nvm use 6.0.0</span><br></pre></td></tr></table></figure>
-
-<p>위처럼 만약 다른 버전의 node가 설치되어 있다면 버전을 바꿔서 사용할 수도 있다.</p>
-<p>설치된 node 버전을 보려면 아래 명령어로 확인 할 수 있다.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nvm ls</span><br></pre></td></tr></table></figure>
-
-<h3 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h3><p><a href="https://itstory.tk/entry/Ubuntu-1604-nodejs-%EC%99%80-npm-%EC%84%A4%EC%B9%98" target="_blank" rel="external nofollow noopener noreferrer">https://itstory.tk/entry/Ubuntu-1604-nodejs-와-npm-설치</a></p>
-<p><a href="https://zetawiki.com/wiki/%EC%9A%B0%EB%B6%84%ED%88%AC_curl_%EC%84%A4%EC%B9%98" target="_blank" rel="external nofollow noopener noreferrer">https://zetawiki.com/wiki/우분투_curl_설치</a></p>
-
-      
-      
-          
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-
-  
-      
-
-
-  
-  
-  
-  
-
-        
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
-    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2019/08/17/ubuntu-20190817-ubuntu-visual-studio-code/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Hanumoka">
-      <meta itemprop="description" content="아마추어 개발자의 블로그">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hanumoka, IT Blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/08/17/ubuntu-20190817-ubuntu-visual-studio-code/" class="post-title-link" itemprop="url">Ubuntu1804 VisualStudioCode 설치</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">작성일</span>
-
-              <time title="Post created: 2019-08-17 19:15:20" itemprop="dateCreated datePublished" datetime="2019-08-17T19:15:20+09:00">2019-08-17</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Updated at: 2020-04-16 01:50:12" itemprop="dateModified" datetime="2020-04-16T01:50:12+09:00">2020-04-16</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/ubuntu/" itemprop="url" rel="index">
-                    <span itemprop="name">ubuntu</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-      <!-- 20200427hexo_post_head -->
-      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
-      <script>
-          (adsbygoogle = window.adsbygoogle || []).push({});
-      </script>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>이번에는 우분투에 VisualStudioCode를 설치해보겠다.</p>
-<p>다 필요 없고 아래 명령어를 순서대로 주욱 입력하면 된다.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">curl https:&#x2F;&#x2F;packages.microsoft.com&#x2F;keys&#x2F;microsoft.asc | gpg --dearmor &gt; microsoft.gpg</span><br><span class="line"></span><br><span class="line">sudo mv microsoft.gpg &#x2F;etc&#x2F;apt&#x2F;trusted.gpg.d&#x2F;microsoft.gpg</span><br><span class="line"></span><br><span class="line">sudo sh -c &#39;echo &quot;deb [arch&#x3D;amd64] https:&#x2F;&#x2F;packages.microsoft.com&#x2F;repos&#x2F;vscode stable main&quot; &gt; &#x2F;etc&#x2F;apt&#x2F;sources.list.d&#x2F;vscode.list&#39;</span><br><span class="line"></span><br><span class="line">sudo apt-get update</span><br><span class="line"></span><br><span class="line">sudo apt-get install code</span><br><span class="line"></span><br><span class="line">sudo rm &#x2F;etc&#x2F;apt&#x2F;sources.list.d&#x2F;vscode.list</span><br></pre></td></tr></table></figure>
-
-<p><img src="/images/2019/5/Untitled-98ac3bd7-2b8b-4b30-a077-884178fb9ce6.png" alt></p>
-<p>위처럼 설치를 확인 할 수 있다.</p>
-<p>끝!!!</p>
-<h3 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h3><p><a href="https://yjcode.tistory.com/1" target="_blank" rel="external nofollow noopener noreferrer">https://yjcode.tistory.com/1</a></p>
-<p>[<a href="https://lukelee91.github.io/blog/vscode-installation-on-ubuntu/]" target="_blank" rel="external nofollow noopener noreferrer">https://lukelee91.github.io/blog/vscode-installation-on-ubuntu/]</a>(</p>
-
-      
-      
-          
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-
-  
-      
-
-
-  
-  
-  
-  
-
   </div>
 
   
@@ -1691,7 +1787,7 @@ public class HomeController {
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">214</span>
+          <span class="site-state-item-count">219</span>
           <span class="site-state-item-name">포스트</span>
         </a>
       </div>
@@ -1704,7 +1800,7 @@ public class HomeController {
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">585</span>
+        <span class="site-state-item-count">592</span>
         <span class="site-state-item-name">태그</span></a>
       </div>
   </nav>
@@ -1746,7 +1842,7 @@ public class HomeController {
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>

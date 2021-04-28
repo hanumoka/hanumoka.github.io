@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.hanumoka.net/"/>
-  <updated>2020-10-17T10:32:57.965Z</updated>
+  <updated>2021-04-28T10:35:42.644Z</updated>
   <id>https://www.hanumoka.net/</id>
   
   <author>
@@ -15,6 +15,213 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>nextjs + typescript + storybook 프로젝트생성</title>
+    <link href="https://www.hanumoka.net/2021/04/24/react-20210424-nextjs-typescript-storybook/"/>
+    <id>https://www.hanumoka.net/2021/04/24/react-20210424-nextjs-typescript-storybook/</id>
+    <published>2021-04-24T11:40:49.000Z</published>
+    <updated>2021-04-28T10:35:42.644Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;nextjs-typescript-storybook-프로젝트-생성하기&quot;&gt;&lt;a href=&quot;#nextjs-typescript-storybook-프로젝트-생성하기&quot; class=&quot;headerlink&quot;
+        
+      
+    
+    </summary>
+    
+    
+      <category term="react" scheme="https://www.hanumoka.net/categories/react/"/>
+    
+    
+      <category term="windows10" scheme="https://www.hanumoka.net/tags/windows10/"/>
+    
+      <category term="react" scheme="https://www.hanumoka.net/tags/react/"/>
+    
+      <category term="typescript" scheme="https://www.hanumoka.net/tags/typescript/"/>
+    
+      <category term="wsl2" scheme="https://www.hanumoka.net/tags/wsl2/"/>
+    
+      <category term="nextjs" scheme="https://www.hanumoka.net/tags/nextjs/"/>
+    
+      <category term="storybook" scheme="https://www.hanumoka.net/tags/storybook/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Windows10 wsl2에 nvm과 node 설치</title>
+    <link href="https://www.hanumoka.net/2021/04/24/node-20210424-wsl2-nvm-node/"/>
+    <id>https://www.hanumoka.net/2021/04/24/node-20210424-wsl2-nvm-node/</id>
+    <published>2021-04-24T11:33:21.000Z</published>
+    <updated>2021-04-28T10:35:42.643Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;Windows10-wsl2에-nvm과-node-설치&quot;&gt;&lt;a href=&quot;#Windows10-wsl2에-nvm과-node-설치&quot; class=&quot;headerlink&quot; title=&quot;Windows10 wsl2에 nvm과 node
+        
+      
+    
+    </summary>
+    
+    
+      <category term="node" scheme="https://www.hanumoka.net/categories/node/"/>
+    
+    
+      <category term="windows" scheme="https://www.hanumoka.net/tags/windows/"/>
+    
+      <category term="windows10" scheme="https://www.hanumoka.net/tags/windows10/"/>
+    
+      <category term="node" scheme="https://www.hanumoka.net/tags/node/"/>
+    
+      <category term="nvm" scheme="https://www.hanumoka.net/tags/nvm/"/>
+    
+      <category term="wsl2" scheme="https://www.hanumoka.net/tags/wsl2/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Windows10에 nvm 설치 및 node 설치</title>
+    <link href="https://www.hanumoka.net/2021/03/09/node-20210309-windows-nvm-install/"/>
+    <id>https://www.hanumoka.net/2021/03/09/node-20210309-windows-nvm-install/</id>
+    <published>2021-03-09T11:35:50.000Z</published>
+    <updated>2021-04-28T10:35:42.643Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;들어가기&quot;&gt;&lt;a href=&quot;#들어가기&quot; class=&quot;headerlink&quot; title=&quot;들어가기&quot;&gt;&lt;/a&gt;들어가기&lt;/h1&gt;&lt;p&gt;개발프로젝트에 따라서 Node의 버전을 여러개 설치하고, 번갈아 가면서 사용해야 할 경우가
+        
+      
+    
+    </summary>
+    
+    
+      <category term="node" scheme="https://www.hanumoka.net/categories/node/"/>
+    
+    
+      <category term="windows" scheme="https://www.hanumoka.net/tags/windows/"/>
+    
+      <category term="windows10" scheme="https://www.hanumoka.net/tags/windows10/"/>
+    
+      <category term="node" scheme="https://www.hanumoka.net/tags/node/"/>
+    
+      <category term="nvm" scheme="https://www.hanumoka.net/tags/nvm/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>React cra 프로젝트에 ant 디자인 적용 및 dark테마 적용</title>
+    <link href="https://www.hanumoka.net/2021/03/09/react-20210309-react-antd-darktheme/"/>
+    <id>https://www.hanumoka.net/2021/03/09/react-20210309-react-antd-darktheme/</id>
+    <published>2021-03-09T03:27:18.000Z</published>
+    <updated>2021-04-28T10:35:42.644Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;들어가기&quot;&gt;&lt;a href=&quot;#들어가기&quot; class=&quot;headerlink&quot; title=&quot;들어가기&quot;&gt;&lt;/a&gt;들어가기&lt;/h1&gt;&lt;p&gt;React의 CRA를 사용해서 프로젝트를 생성하고, ant 디자인을 적용하고, dark 테마를 적용하는 예제를
+        
+      
+    
+    </summary>
+    
+    
+      <category term="react" scheme="https://www.hanumoka.net/categories/react/"/>
+    
+    
+      <category term="react" scheme="https://www.hanumoka.net/tags/react/"/>
+    
+      <category term="antd" scheme="https://www.hanumoka.net/tags/antd/"/>
+    
+      <category term="darktheme" scheme="https://www.hanumoka.net/tags/darktheme/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Intellij springboot gradle test시 No tests found for given includes 오류발생</title>
+    <link href="https://www.hanumoka.net/2020/12/12/springBoot-20201212-intellij-No-tests-found-for-given-includes/"/>
+    <id>https://www.hanumoka.net/2020/12/12/springBoot-20201212-intellij-No-tests-found-for-given-includes/</id>
+    <published>2020-12-12T12:22:29.000Z</published>
+    <updated>2021-01-30T04:59:43.810Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h3 id=&quot;테스트-환경&quot;&gt;&lt;a href=&quot;#테스트-환경&quot; class=&quot;headerlink&quot; title=&quot;테스트 환경&quot;&gt;&lt;/a&gt;테스트 환경&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;인텔리J
+        
+      
+    
+    </summary>
+    
+    
+      <category term="springBoot" scheme="https://www.hanumoka.net/categories/springBoot/"/>
+    
+    
+      <category term="test" scheme="https://www.hanumoka.net/tags/test/"/>
+    
+      <category term="springboot" scheme="https://www.hanumoka.net/tags/springboot/"/>
+    
+      <category term="intellJ" scheme="https://www.hanumoka.net/tags/intellJ/"/>
+    
+      <category term="gradple" scheme="https://www.hanumoka.net/tags/gradple/"/>
+    
+      <category term="No tests found for given includes" scheme="https://www.hanumoka.net/tags/No-tests-found-for-given-includes/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Intellij springboot gradle lombok셋팅</title>
+    <link href="https://www.hanumoka.net/2020/12/12/springBoot-20201212-intellij-springboot-lombok/"/>
+    <id>https://www.hanumoka.net/2020/12/12/springBoot-20201212-intellij-springboot-lombok/</id>
+    <published>2020-12-12T12:22:29.000Z</published>
+    <updated>2021-01-30T04:59:43.810Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h3 id=&quot;실습환경&quot;&gt;&lt;a href=&quot;#실습환경&quot; class=&quot;headerlink&quot;
+        
+      
+    
+    </summary>
+    
+    
+      <category term="springBoot" scheme="https://www.hanumoka.net/categories/springBoot/"/>
+    
+    
+      <category term="setting" scheme="https://www.hanumoka.net/tags/setting/"/>
+    
+      <category term="springboot" scheme="https://www.hanumoka.net/tags/springboot/"/>
+    
+      <category term="intellJ" scheme="https://www.hanumoka.net/tags/intellJ/"/>
+    
+      <category term="gradple" scheme="https://www.hanumoka.net/tags/gradple/"/>
+    
+      <category term="lombok" scheme="https://www.hanumoka.net/tags/lombok/"/>
+    
+  </entry>
   
   <entry>
     <title>Windows10에 maven 설치 및 설정</title>
@@ -506,205 +713,6 @@
       <category term="test" scheme="https://www.hanumoka.net/tags/test/"/>
     
       <category term="테스트" scheme="https://www.hanumoka.net/tags/%ED%85%8C%EC%8A%A4%ED%8A%B8/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Docker를 이용해 React와 Nginx를 묶어서 이미지화 하고 컨테이너화 하기</title>
-    <link href="https://www.hanumoka.net/2020/04/27/docker-20200427-docker-react-nginx/"/>
-    <id>https://www.hanumoka.net/2020/04/27/docker-20200427-docker-react-nginx/</id>
-    <published>2020-04-27T13:14:11.000Z</published>
-    <updated>2020-04-28T11:23:49.348Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        
-        
-          &lt;h1 id=&quot;들어가기&quot;&gt;&lt;a href=&quot;#들어가기&quot; class=&quot;headerlink&quot; title=&quot;들어가기&quot;&gt;&lt;/a&gt;들어가기&lt;/h1&gt;&lt;p&gt;React 프로젝트를 만약 서버에 배포해야 한다면, 어떻게 해야할까?&lt;/p&gt;
-&lt;p&gt;서버에 Apache나
-        
-      
-    
-    </summary>
-    
-    
-      <category term="docker" scheme="https://www.hanumoka.net/categories/docker/"/>
-    
-    
-      <category term="docker" scheme="https://www.hanumoka.net/tags/docker/"/>
-    
-      <category term="react" scheme="https://www.hanumoka.net/tags/react/"/>
-    
-      <category term="node" scheme="https://www.hanumoka.net/tags/node/"/>
-    
-      <category term="ngnix" scheme="https://www.hanumoka.net/tags/ngnix/"/>
-    
-      <category term="prod" scheme="https://www.hanumoka.net/tags/prod/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>aws-ec2에 ubuntu AMI(이미지)를 설치하고 접속해보기(t2.micro)</title>
-    <link href="https://www.hanumoka.net/2020/04/26/aws-20200426-aws-ec2-gitbash-putty/"/>
-    <id>https://www.hanumoka.net/2020/04/26/aws-20200426-aws-ec2-gitbash-putty/</id>
-    <published>2020-04-26T07:34:18.000Z</published>
-    <updated>2020-04-26T07:37:19.699Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        
-        
-          &lt;h1 id=&quot;들어가기&quot;&gt;&lt;a href=&quot;#들어가기&quot; class=&quot;headerlink&quot; title=&quot;들어가기&quot;&gt;&lt;/a&gt;들어가기&lt;/h1&gt;&lt;p&gt;AWS에 ec2를 이용해서 Ubuntu를 설치하고 접속해보는 예제이다.&lt;/p&gt;
-&lt;p&gt;ec2 하드웨어 사양은
-        
-      
-    
-    </summary>
-    
-    
-      <category term="aws" scheme="https://www.hanumoka.net/categories/aws/"/>
-    
-    
-      <category term="aws" scheme="https://www.hanumoka.net/tags/aws/"/>
-    
-      <category term="ec2" scheme="https://www.hanumoka.net/tags/ec2/"/>
-    
-      <category term="t2.micro" scheme="https://www.hanumoka.net/tags/t2-micro/"/>
-    
-      <category term="ubuntu" scheme="https://www.hanumoka.net/tags/ubuntu/"/>
-    
-      <category term="putty" scheme="https://www.hanumoka.net/tags/putty/"/>
-    
-      <category term="gitbash" scheme="https://www.hanumoka.net/tags/gitbash/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Docker로 React-Node를 이미지로 만들어 컨터이너화 하기</title>
-    <link href="https://www.hanumoka.net/2020/04/25/docker-20200425-docker-react-node/"/>
-    <id>https://www.hanumoka.net/2020/04/25/docker-20200425-docker-react-node/</id>
-    <published>2020-04-25T14:51:38.000Z</published>
-    <updated>2020-04-25T17:45:05.322Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        
-        
-          &lt;h1 id=&quot;들어가기&quot;&gt;&lt;a href=&quot;#들어가기&quot; class=&quot;headerlink&quot; title=&quot;들어가기&quot;&gt;&lt;/a&gt;들어가기&lt;/h1&gt;&lt;p&gt;Docker를 사용해서 React와 Node를 묶어 이미지를 만들고 그 이미지를 이용해서 컨테이너를 생성하고
-        
-      
-    
-    </summary>
-    
-    
-      <category term="docker" scheme="https://www.hanumoka.net/categories/docker/"/>
-    
-    
-      <category term="docker" scheme="https://www.hanumoka.net/tags/docker/"/>
-    
-      <category term="react" scheme="https://www.hanumoka.net/tags/react/"/>
-    
-      <category term="node" scheme="https://www.hanumoka.net/tags/node/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Docker에서 테스트용도의 mongodb 실행하기</title>
-    <link href="https://www.hanumoka.net/2020/04/18/docker-20200418-docker-mongodb-start/"/>
-    <id>https://www.hanumoka.net/2020/04/18/docker-20200418-docker-mongodb-start/</id>
-    <published>2020-04-18T12:52:37.000Z</published>
-    <updated>2020-04-18T12:57:03.546Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        
-        
-          &lt;h1 id=&quot;들어가기&quot;&gt;&lt;a href=&quot;#들어가기&quot; class=&quot;headerlink&quot; title=&quot;들어가기&quot;&gt;&lt;/a&gt;들어가기&lt;/h1&gt;&lt;p&gt;docker로 간단하게 테스트용 mongodb 서버를 실행하는 예제이다.&lt;/p&gt;
-&lt;p&gt;이글은 컨테이너 생성과
-        
-      
-    
-    </summary>
-    
-    
-      <category term="docker" scheme="https://www.hanumoka.net/categories/docker/"/>
-    
-    
-      <category term="docker" scheme="https://www.hanumoka.net/tags/docker/"/>
-    
-      <category term="mongodb" scheme="https://www.hanumoka.net/tags/mongodb/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Github에 push, pull을 위한 ssh키 생성 및 등록(windows10)</title>
-    <link href="https://www.hanumoka.net/2020/04/16/git-20200416-git-ssh-key-generate/"/>
-    <id>https://www.hanumoka.net/2020/04/16/git-20200416-git-ssh-key-generate/</id>
-    <published>2020-04-15T16:27:22.000Z</published>
-    <updated>2020-04-15T16:40:01.987Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        
-        
-          &lt;h1 id=&quot;들어가기&quot;&gt;&lt;a href=&quot;#들어가기&quot; class=&quot;headerlink&quot; title=&quot;들어가기&quot;&gt;&lt;/a&gt;들어가기&lt;/h1&gt;&lt;p&gt;이 블로그는 hexo라는 정적 웹 생성기로 만들어져 있고, hexo로 만들어진 정적웹을 github 페이지에
-        
-      
-    
-    </summary>
-    
-    
-      <category term="git" scheme="https://www.hanumoka.net/categories/git/"/>
-    
-    
-      <category term="github" scheme="https://www.hanumoka.net/tags/github/"/>
-    
-      <category term="git" scheme="https://www.hanumoka.net/tags/git/"/>
-    
-      <category term="ssh" scheme="https://www.hanumoka.net/tags/ssh/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>maven의 local repository설정으로 jar 추가하기</title>
-    <link href="https://www.hanumoka.net/2020/01/24/maven-20200124-java-maven-local-repository/"/>
-    <id>https://www.hanumoka.net/2020/01/24/maven-20200124-java-maven-local-repository/</id>
-    <published>2020-01-24T07:02:27.000Z</published>
-    <updated>2020-04-15T16:50:12.003Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        
-        
-          &lt;h1 id=&quot;개요&quot;&gt;&lt;a href=&quot;#개요&quot; class=&quot;headerlink&quot; title=&quot;개요&quot;&gt;&lt;/a&gt;개요&lt;/h1&gt;&lt;p&gt;얼마 전 Maven 프로젝트에 custom jar를 local  repository에 등록해서 사용해야하는 경우가 있었는데,
-        
-      
-    
-    </summary>
-    
-    
-      <category term="maven" scheme="https://www.hanumoka.net/categories/maven/"/>
-    
-    
-      <category term="maven" scheme="https://www.hanumoka.net/tags/maven/"/>
-    
-      <category term="java" scheme="https://www.hanumoka.net/tags/java/"/>
-    
-      <category term="local repository" scheme="https://www.hanumoka.net/tags/local-repository/"/>
-    
-      <category term="jar" scheme="https://www.hanumoka.net/tags/jar/"/>
     
   </entry>
   

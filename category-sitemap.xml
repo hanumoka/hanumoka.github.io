@@ -8,6 +8,34 @@
     </url>
 
     <url>
+        <loc>https://www.hanumoka.net/categories/react/</loc>
+        <lastmod>2021-04-28T10:35:42.644Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>https://www.hanumoka.net/categories/node/</loc>
+        <lastmod>2021-04-28T10:35:42.643Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>https://www.hanumoka.net/categories/docker/</loc>
+        <lastmod>2021-04-28T10:35:42.642Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>https://www.hanumoka.net/categories/springBoot/</loc>
+        <lastmod>2021-01-30T04:59:43.810Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
         <loc>https://www.hanumoka.net/categories/maven/</loc>
         <lastmod>2020-10-17T10:32:57.965Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -24,13 +52,6 @@
     <url>
         <loc>https://www.hanumoka.net/categories/Elasticsearch/</loc>
         <lastmod>2020-10-17T10:26:38.411Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>https://www.hanumoka.net/categories/springBoot/</loc>
-        <lastmod>2020-07-09T12:37:40.068Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
@@ -59,13 +80,6 @@
     <url>
         <loc>https://www.hanumoka.net/categories/security/</loc>
         <lastmod>2020-05-19T14:31:49.415Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>https://www.hanumoka.net/categories/docker/</loc>
-        <lastmod>2020-04-28T11:23:49.348Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
@@ -127,13 +141,6 @@
     </url>
 
     <url>
-        <loc>https://www.hanumoka.net/categories/react/</loc>
-        <lastmod>2020-04-15T16:50:12.012Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
         <loc>https://www.hanumoka.net/categories/programing-model/</loc>
         <lastmod>2020-04-15T16:50:12.010Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -149,13 +156,6 @@
 
     <url>
         <loc>https://www.hanumoka.net/categories/OBSstudio/</loc>
-        <lastmod>2020-04-15T16:50:12.007Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>https://www.hanumoka.net/categories/node/</loc>
         <lastmod>2020-04-15T16:50:12.007Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>

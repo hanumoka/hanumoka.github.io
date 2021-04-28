@@ -245,6 +245,616 @@ gtag('config', 'UA-100596920-1');
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2018/09/17/javascript-20180917-javascript-spread-operator/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Hanumoka">
+      <meta itemprop="description" content="아마추어 개발자의 블로그">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hanumoka, IT Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2018/09/17/javascript-20180917-javascript-spread-operator/" class="post-title-link" itemprop="url">javascript - 전개연산자 spread operator(...)</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">작성일</span>
+
+              <time title="Post created: 2018-09-17 21:13:24" itemprop="dateCreated datePublished" datetime="2018-09-17T21:13:24+09:00">2018-09-17</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Updated at: 2020-04-16 01:50:11" itemprop="dateModified" datetime="2020-04-16T01:50:11+09:00">2020-04-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/javascript/" itemprop="url" rel="index">
+                    <span itemprop="name">javascript</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 20200427hexo_post_head -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h1><p>아 프론트엔드 진짜 너무 어렵다.<br>누군가 만들어논 Vue bootstrap 템플릿을 분석중인데, 진짜 뇌에 마비가 올것 같다.</p>
+<p>Vue 소스중에 다음과 같은 소스를 찾았다. </p>
+<p><img src="/images/20180917-javascript-spread-operator_1.png" alt="위 코드의 실행결과"></p>
+<p>저 ...  라는 자바스크립트 표현은 전개연산자(spread operator)라 불린다.</p>
+<p>전개연산자(spread operator)를 후려쳐서 말하자면, 배열 x에 전개연산자를 적용하면 배열 x를 복사한 뒤 배열 껍대기를 지워 버린다.</p>
+<p>아래 소스를 보면 이해가 될 것이다.</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">test</span>(<span class="params">a, b, c</span>)</span>&#123;&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> x = [<span class="number">1</span>, <span class="number">2</span>, <span class="string">'d'</span>];</span><br><span class="line"></span><br><span class="line">test(...x);</span><br></pre></td></tr></table></figure>
+
+<p>test 함수는 인자로 a, b, c 3개의 값을 받는다.<br>x라는 변수는 배열로 인덱스를 3개 같는다.<br>전개연산자를 배열 앞에 붙일 경우 그 배열을 복사한 뒤 배열 대 괄호를 지워버린다. </p>
+<p><img src="/images/20180917-javascript-spread-operator_2.png" alt="전개연산자를 대충 그림으로 표현하자면..."></p>
+<p>배열을 함수등에 파라미터로 넘길때 유용하게 사용되는 듯하다. </p>
+<p>자세한 사용법은 아래 MDN을 참고!</p>
+<hr>
+<h3 id="Related-Posts"><a href="#Related-Posts" class="headerlink" title="Related Posts"></a>Related Posts</h3><p>자바스크립트 전개연산자 MDN<br><a href="https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Operators/Spread_operator" target="_blank" rel="external nofollow noopener noreferrer">https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Operators/Spread_operator</a></p>
+<p>분석중인 VUE bootstrap 템플릿<br><a href="https://github.com/epicmaxco/vuestic-admin" target="_blank" rel="external nofollow noopener noreferrer">https://github.com/epicmaxco/vuestic-admin</a></p>
+
+      
+      
+          
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+      
+
+
+  
+  
+  
+  
+
+        
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2018/09/11/spring-20180911-spring-Transactional/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Hanumoka">
+      <meta itemprop="description" content="아마추어 개발자의 블로그">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hanumoka, IT Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2018/09/11/spring-20180911-spring-Transactional/" class="post-title-link" itemprop="url">spring - @Transactional(스프링 트랜잭션 적용하기.)</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">작성일</span>
+
+              <time title="Post created: 2018-09-11 15:08:14" itemprop="dateCreated datePublished" datetime="2018-09-11T15:08:14+09:00">2018-09-11</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Updated at: 2020-04-16 01:50:12" itemprop="dateModified" datetime="2020-04-16T01:50:12+09:00">2020-04-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/spring/" itemprop="url" rel="index">
+                    <span itemprop="name">spring</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 20200427hexo_post_head -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><img src="/images/20180911-spring-Transactional_1.png" alt="스프링로고"></p>
+<h3 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h3><p>Spring에서 트랜잭션을 설정하는 방법은 크게 XML파일을 이용한 설정과, 어노테이션을 이용한 설정이 있다.</p>
+<p>이 글에서는 @Transactional 어노테이션을 이용하면 간단하게 트랜잭션 처리에 대해 정리하겠다.</p>
+<p>AOP + tx:advice 태그를 이용한 트랜잭션 보다 간단하게 사용 할 수 있다.</p>
+<hr>
+<h3 id="root-contenxt-xml에-transactionManager-설정하기"><a href="#root-contenxt-xml에-transactionManager-설정하기" class="headerlink" title="root-contenxt.xml에 transactionManager 설정하기"></a>root-contenxt.xml에 transactionManager 설정하기</h3><p>일단 root-context.xml 파일에 트랜잭션 처리를 위한  transactionManager를 설정해야 한다.<br>아래 내용을 root-context.xml 파일에 추가하자.</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 트랜젝션 매니저 --&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"transactionManager"</span> <span class="attr">class</span>=<span class="string">"org.springframework.jdbc.datasource.DataSourceTransactionManager"</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"dataSource"</span> <span class="attr">ref</span>=<span class="string">"dataSource"</span>&gt;</span><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line">	</span><br><span class="line">	<span class="comment">&lt;!-- @Transactional 애노테이션을 sacn하기 위한 설정 --&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">tx:annotation-driven</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="트랜잭션이-필요한-서비스에-Transactional-어노테이션을-달아주자"><a href="#트랜잭션이-필요한-서비스에-Transactional-어노테이션을-달아주자" class="headerlink" title="트랜잭션이 필요한 서비스에 @Transactional 어노테이션을 달아주자."></a>트랜잭션이 필요한 서비스에 @Transactional 어노테이션을 달아주자.</h3><p>정말 간단하다. 트랜잭션이 필요한 서비스 클래스에 @Transactional 어노테이션을 달아주면된다.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">//게시글 삭제</span></span><br><span class="line"><span class="meta">@Transactional</span></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">removeBoard</span><span class="params">(BoardVO vo)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line"></span><br><span class="line">  replyDAO.removeAllRepl(vo.bno);  <span class="comment">//삭제할 게시글의 답글 삭제</span></span><br><span class="line">  boardDAO.deleteBoard(vo.bno);    <span class="comment">//게시글 삭제</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>위처럼 간단한 설정으로 트랜잭션 설정을 할 수 있다.</p>
+<hr>
+<h3 id="Transactional에-대한-조금더-자세한-설정"><a href="#Transactional에-대한-조금더-자세한-설정" class="headerlink" title="@Transactional에 대한 조금더 자세한 설정"></a>@Transactional에 대한 조금더 자세한 설정</h3><p>@Transactional 애노테이션은 위 예제의 처럼 <strong>클래스의 메소드</strong> 뿐만 아니라, <strong>인터페이스</strong>, <strong>클래스</strong> 선언에도 사용할수 있다.</p>
+<p>메소드에 선언된 @Transactional의 설정이 가산 우선되기 때문에, 공통적인 규칙은 인터페이스, 클래스 등에 적용하고 특별한 설정은 메소드에 적용할수 있다.</p>
+<hr>
+<h3 id="Transactional-속성"><a href="#Transactional-속성" class="headerlink" title="@Transactional 속성"></a>@Transactional 속성</h3><p><strong>isolation (격리레벨)</strong></p>
+<ul>
+<li>DEFAULT: DB 설정, 기본 격리 수준(기본설정)</li>
+<li>SERIALIZABLE : 가장 높은 격리, 성능 저하의 우려가 있음</li>
+<li>READ_UNCOMMITED : 커밋되지 않는 데이터에 대한 읽기를 허용</li>
+<li>READ_COMMITED : 커밋된 데이터에 대해 읽기 허용</li>
+<li>REPEATEABLE_READ : 동일 필드에 대해 다중 접근 시 모두 동일한 결과를 보장</li>
+</ul>
+<p>설정 예: @Transactional(isolation=Isolation.DEFAULT)</p>
+<p><strong>propagation (전파속성)</strong></p>
+<ul>
+<li>PROPAGATION_MANDATORY : 작업은 반드시 특정한 트랜잭션이 존재한 상태에서만 가능</li>
+<li>PROPAGATION_NESTED : 기존에 트랜잭션이 있는 경우, 포함되어서 실행</li>
+<li>PROPAGATION_NEVER : 트랜잭션 상황에 실행되면 예외 발생</li>
+<li>PROPAGATION_NOT_SUPPORTED : 트랜잭션이 있는 경우에는 트랜잭션이 끝날 때까지 보류된 후 실행</li>
+<li><strong>PROPAGATION_REQUIRED : 트랜젝션이 있으면 그 상황에서 실행, 없으면 새로운 트랜잭션 실행(기본설정)</strong></li>
+<li>PROPAGATION_REQUIRED_NEW : 대상은 자신만의 고유한 트랜잭션으로 실행</li>
+<li>PROPAGATION_SUPPORTS : 트랜젝션을 필요료 하지 않으나, 트랜잭션 상황에 있다면 포함되어서 실행</li>
+</ul>
+<p>설정 예: @Transactional(propagation=Propagation.REQUIRED)</p>
+<p><strong>readOnly 속성</strong></p>
+<ul>
+<li>true인 경우 insert, update, delete 실행 시 예외 발생, 기본 설정은 false</li>
+</ul>
+<p>설정 예: @Transactional(readOnly = true)</p>
+<p><strong>rollbackFor 속성</strong></p>
+<ul>
+<li>특정 예외가 발생 시 강제로 Rollback</li>
+</ul>
+<p>설정 예: @Transactional(rollbackFor=Exception.class)</p>
+<p><strong>noRollbackFor 속성</strong></p>
+<ul>
+<li>특정 예외의 발생 시 Rollback 처리되지 않음</li>
+</ul>
+<p>설정 예: @Transactional(noRollbackFor=Exception.class)</p>
+<p><strong>timeout 속성</strong></p>
+<ul>
+<li>지정한 시간 내에 해당 메소드 수행이 완료되이 않은 경우 rollback 수행. -1일 경우 no timeout(Default=-1)</li>
+</ul>
+<p>설정 예: @Transactional(timeout=10)</p>
+<h3 id="마무리"><a href="#마무리" class="headerlink" title="마무리"></a>마무리</h3><p>음.. 전파속성은 어떤경우에 사용할까???</p>
+
+      
+      
+          
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+      
+
+
+  
+  
+  
+  
+
+        
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2018/09/06/spring-20180906-spring-file-upload/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Hanumoka">
+      <meta itemprop="description" content="아마추어 개발자의 블로그">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hanumoka, IT Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2018/09/06/spring-20180906-spring-file-upload/" class="post-title-link" itemprop="url">Spring - File Upload 개발요약정리</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">작성일</span>
+
+              <time title="Post created: 2018-09-06 22:43:10" itemprop="dateCreated datePublished" datetime="2018-09-06T22:43:10+09:00">2018-09-06</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Updated at: 2020-04-16 01:50:12" itemprop="dateModified" datetime="2020-04-16T01:50:12+09:00">2020-04-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/spring/" itemprop="url" rel="index">
+                    <span itemprop="name">spring</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 20200427hexo_post_head -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h3><p>이번에는 Spring에서 File Upload를 개발할때 필요한 라이브러리, 개념, 특정 기술들을 정리하겠다.<br>업로드할 파일은 이미지 파일과 일반파일로 나뉘며, 저용량 파일업로드를 기준한다.<br>완전한 실습이 아니라 요약정리임을 미리 알린다.(DB없이 실제 파일의 업로드만…)</p>
+<hr>
+<h3 id="필요한-라이브러리"><a href="#필요한-라이브러리" class="headerlink" title="필요한 라이브러리"></a>필요한 라이브러리</h3><p>pom.xml 파일에 아래 라이브러리를 추가한다.</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 파일업로드 관련 : 이미지 썸네일 생성 라이브러리--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.imgscalr<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>imgscalr-lib<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">version</span>&gt;</span>4.2<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">		</span><br><span class="line"><span class="comment">&lt;!-- 파일업로드 관련--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">groupId</span>&gt;</span>commons-fileupload<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>commons-fileupload<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">version</span>&gt;</span>1.3.2<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="스프링-mulipartResolver-선언"><a href="#스프링-mulipartResolver-선언" class="headerlink" title="스프링 mulipartResolver 선언"></a>스프링 mulipartResolver 선언</h3><p>화면단에서 mutipart/form-date방식으로 서버에 전송되는 데이터를 스프링 MVC의 mulipartResolver로 처리할수 있다.</p>
+<p>servlet-context.xml 파일에 아래와 내용을 추가하자</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 파일 업로드로 들어오는 데이터를 처리하는 객체 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">beans:bean</span> <span class="attr">id</span>=<span class="string">"multipartResolver"</span> <span class="attr">class</span>=<span class="string">"org.springframework.web.multipart.commons.CommonsMultipartResolver"</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">beans:property</span> <span class="attr">name</span>=<span class="string">"maxUploadSize"</span> <span class="attr">value</span>=<span class="string">"10485760"</span> /&gt;</span> <span class="comment">&lt;!-- 10mb 제한 --&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">beans:bean</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="업로드할-파일위치-지정하기"><a href="#업로드할-파일위치-지정하기" class="headerlink" title="업로드할 파일위치 지정하기"></a>업로드할 파일위치 지정하기</h3><p>업로드할 파일의 위치를 지정해야 한다.</p>
+<p>servlet-context.xml 파일을 열어서 아래 내용을 추가하자.</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 업로드된 파일의 저장 위치 지정 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">beans:bean</span> <span class="attr">id</span>=<span class="string">"uploadPath"</span> <span class="attr">class</span>=<span class="string">"java.lang.String"</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">beans:constructor-arg</span> <span class="attr">value</span>=<span class="string">"D:\\SpringUploadRepo\\upload"</span>&gt;</span><span class="tag">&lt;/<span class="name">beans:constructor-arg</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">beans:bean</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>maxUploadSize 프로퍼티를 통해 업로드할 파일의 용량을 제한할수 있다.</p>
+<hr>
+<h3 id="web-xml-파일의-한글파일-인코딩-처리"><a href="#web-xml-파일의-한글파일-인코딩-처리" class="headerlink" title="web.xml 파일의 한글파일 인코딩 처리"></a>web.xml 파일의 한글파일 인코딩 처리</h3><p>한글파일이 업로드될때 파일명이 깨지는 것을 해결하기 위해 web.xml 파일에 아래 내용을 추가하자.</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- Ensure UTF-8 character encoding is used --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">filter</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">filter-name</span>&gt;</span>encodingFilter<span class="tag">&lt;/<span class="name">filter-name</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">filter-class</span>&gt;</span>org.springframework.web.filter.CharacterEncodingFilter<span class="tag">&lt;/<span class="name">filter-class</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">init-param</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">param-name</span>&gt;</span>encoding<span class="tag">&lt;/<span class="name">param-name</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">param-value</span>&gt;</span>UTF-8<span class="tag">&lt;/<span class="name">param-value</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">init-param</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">init-param</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">param-name</span>&gt;</span>forceEncoding<span class="tag">&lt;/<span class="name">param-name</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">param-value</span>&gt;</span>true<span class="tag">&lt;/<span class="name">param-value</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">init-param</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">filter</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">filter-mapping</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">filter-name</span>&gt;</span>encodingFilter<span class="tag">&lt;/<span class="name">filter-name</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">url-pattern</span>&gt;</span>/*<span class="tag">&lt;/<span class="name">url-pattern</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">filter-mapping</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="서버에-파일을-저장할때-고려해야-할-사항들"><a href="#서버에-파일을-저장할때-고려해야-할-사항들" class="headerlink" title="서버에 파일을 저장할때 고려해야 할 사항들"></a>서버에 파일을 저장할때 고려해야 할 사항들</h3><p><strong>1.파일업로드 방식 결정하기.</strong></p>
+<p>Post 방식으로 전송할지 아니면 ajax방식으로 전송할지 결정해야 한다.<br>아마 요즘은 주로 ajax방식을 사용하는것 같다.</p>
+<p><strong>2.파일이름 중복문제.</strong></p>
+<p>DB에 파일을 저장할수도 있지만, 일반적으로 파일시스템에 파일을 저장하게된다.<br>따라서 업로드 되는 파일의 이름의 중복을 해결할 방법이 필요하다. -&gt; UUID로 해결가능</p>
+<p><strong>3.파일 저장경로에 대한문제.</strong></p>
+<p>Windows나 Linux등 운영체제에서 폴더내의 파일 개수가 너무 많아지게 되면, 속도저하 문제가 발생하게 된다.<br>특히 Windows의 파일 시스템의 경우 폴더내 최대 파일 개수의 제한이 있다.(100만단위가 넘어가긴 하지만…)<br>위 문제를 해결하기 위해서 보통 파일이 업로드 되는 시점별로 폴더를 관리한다.</p>
+<p>예를 들어 2018년 9월 6일 파일이 업로드 되면, 그 파일은 특정 폴더의 경로의 /2018/09/06/ 경로에 저장하면 위 문제를 해결 할수있다.<br>즉 업로드 할때 파일을 저장할 폴더의 유무에 따라 폴더 생성로직이 필요하다.</p>
+<p><strong>4.이미지파일의 경우 썸네일(thumbnail) 생성.</strong></p>
+<p>이미지파일인 경우 저장된 파일을 다시 화면에 보여줄때, 보통 그 이미지파일의 썸네일파일을 보여주게된다.<br>따라서 이미지파일이 서버에 저장될때는 추가적으로 그 이미지파일의 썸네일파일을 생성해 주어야 한다.<br>앞서 위에 추가한 라이브러리중 imgscalr-lib가 이미지의 썸네일 생성을 해준다.</p>
+<hr>
+<h3 id="서버에-파일을-저장할-유틸리티-클래스-생성"><a href="#서버에-파일을-저장할-유틸리티-클래스-생성" class="headerlink" title="서버에 파일을 저장할 유틸리티 클래스 생성"></a>서버에 파일을 저장할 유틸리티 클래스 생성</h3><p><strong>MediaUtils.java</strong> 생성</p>
+<p>이 유틸리티 파일은 이미지파일을 걸러주는 유틸리티 파일이다.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.hanumoka.sample.util;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.HashMap;</span><br><span class="line"><span class="keyword">import</span> java.util.Map;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.springframework.http.MediaType;</span><br><span class="line"></span><br><span class="line"><span class="comment">//업로드한 파일중 이미지 파일만 거르는 클래스</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MediaUtils</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> Map&lt;String, MediaType&gt; mediaMap;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">static</span> &#123;</span><br><span class="line">		mediaMap = <span class="keyword">new</span> HashMap&lt;String, MediaType&gt;();</span><br><span class="line">		mediaMap.put(<span class="string">"JPG"</span>, MediaType.IMAGE_JPEG);</span><br><span class="line">		mediaMap.put(<span class="string">"GIF"</span>, MediaType.IMAGE_GIF);</span><br><span class="line">		mediaMap.put(<span class="string">"PNG"</span>, MediaType.IMAGE_PNG);</span><br><span class="line">	&#125;<span class="comment">//</span></span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> MediaType <span class="title">getMediaType</span><span class="params">(String type)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> mediaMap.get(type.toUpperCase());</span><br><span class="line">	&#125;<span class="comment">//</span></span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>UploadFileUtils.java</strong> 생성</p>
+<p>이 파일을 실질적으로 업로드된 파일을 저장한다.<br>중점적으로 볼 함수는 uploadFile 이다.<br>화면단에서 전달받은 파일정보를가지고 스프링의 컨트롤러는 UploadFileUtils.uploadFile를 호출함으로써 파일을 저장하게 된다.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.hanumoka.sample.util;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.awt.image.BufferedImage;</span><br><span class="line"><span class="keyword">import</span> java.io.File;</span><br><span class="line"><span class="keyword">import</span> java.text.DecimalFormat;</span><br><span class="line"><span class="keyword">import</span> java.util.Calendar;</span><br><span class="line"><span class="keyword">import</span> java.util.UUID;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.imageio.ImageIO;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.imgscalr.Scalr;</span><br><span class="line"><span class="keyword">import</span> org.slf4j.Logger;</span><br><span class="line"><span class="keyword">import</span> org.slf4j.LoggerFactory;</span><br><span class="line"><span class="keyword">import</span> org.springframework.util.FileCopyUtils;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UploadFileUtils</span> </span>&#123;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Logger logger = LoggerFactory.getLogger(UploadFileUtils<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">uploadFile</span><span class="params">(String uploadPath, String originalName, <span class="keyword">byte</span>[] fileData)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">		</span><br><span class="line">		<span class="comment">//겹쳐지지 않는 파일명을 위한 유니크한 값 생성</span></span><br><span class="line">		UUID uid = UUID.randomUUID();</span><br><span class="line">		</span><br><span class="line">		<span class="comment">//원본파일 이름과 UUID 결합</span></span><br><span class="line">		String savedName = uid.toString() + <span class="string">"_"</span> + originalName;</span><br><span class="line">		</span><br><span class="line">		<span class="comment">//파일을 저장할 폴더 생성(년 월 일 기준)</span></span><br><span class="line">		String savedPath = calcPath(uploadPath);</span><br><span class="line">		</span><br><span class="line">		<span class="comment">//저장할 파일준비</span></span><br><span class="line">		File target = <span class="keyword">new</span> File(uploadPath + savedPath, savedName);</span><br><span class="line">		</span><br><span class="line">		<span class="comment">//파일을 저장</span></span><br><span class="line">		FileCopyUtils.copy(fileData, target);</span><br><span class="line">		</span><br><span class="line">		String formatName = originalName.substring(originalName.lastIndexOf(<span class="string">"."</span>)+<span class="number">1</span>);</span><br><span class="line">		</span><br><span class="line">		String uploadedFileName = <span class="keyword">null</span>;</span><br><span class="line">		</span><br><span class="line">		<span class="comment">//파일의 확장자에 따라 썸네일(이미지일경우) 또는 아이콘을 생성함.</span></span><br><span class="line">		<span class="keyword">if</span>(MediaUtils.getMediaType(formatName) != <span class="keyword">null</span>) &#123;</span><br><span class="line">			uploadedFileName = makeThumbnail(uploadPath, savedPath, savedName);</span><br><span class="line">		&#125;<span class="keyword">else</span> &#123;</span><br><span class="line">			uploadedFileName = makeIcon(uploadPath, savedPath, savedName);</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		<span class="comment">//uploadedFileName는 썸네일명으로 화면에 전달된다.</span></span><br><span class="line">		<span class="keyword">return</span> uploadedFileName;</span><br><span class="line">	&#125;<span class="comment">//</span></span><br><span class="line">	</span><br><span class="line">	<span class="comment">//폴더 생성 함수</span></span><br><span class="line">	<span class="meta">@SuppressWarnings</span>(<span class="string">"unused"</span>)</span><br><span class="line">	<span class="function"><span class="keyword">private</span> <span class="keyword">static</span> String <span class="title">calcPath</span><span class="params">(String uploadPath)</span> </span>&#123;</span><br><span class="line">		</span><br><span class="line">		Calendar cal = Calendar.getInstance();</span><br><span class="line">		</span><br><span class="line">		String yearPath = File.separator + cal.get(Calendar.YEAR);</span><br><span class="line">		</span><br><span class="line">		String monthPath = yearPath + File.separator + <span class="keyword">new</span> DecimalFormat(<span class="string">"00"</span>).format(cal.get(Calendar.MONTH)+<span class="number">1</span>);</span><br><span class="line">		</span><br><span class="line">		String datePath = monthPath + File.separator + <span class="keyword">new</span> DecimalFormat(<span class="string">"00"</span>).format(cal.get(Calendar.DATE));</span><br><span class="line">		</span><br><span class="line">		makeDir(uploadPath, yearPath, monthPath, datePath);</span><br><span class="line">		</span><br><span class="line">		logger.info(datePath);</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">return</span> datePath;</span><br><span class="line">	&#125;<span class="comment">//calcPath</span></span><br><span class="line">	</span><br><span class="line">	<span class="comment">//폴더 생성 함수</span></span><br><span class="line">	<span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">makeDir</span><span class="params">(String uploadPath, String... paths)</span> </span>&#123;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">if</span>(<span class="keyword">new</span> File(uploadPath + paths[paths.length -<span class="number">1</span>]).exists()) &#123;</span><br><span class="line">			<span class="keyword">return</span>;</span><br><span class="line">		&#125;<span class="comment">//if</span></span><br><span class="line">		</span><br><span class="line">		<span class="keyword">for</span>(String path : paths) &#123;</span><br><span class="line">			</span><br><span class="line">			File dirPath = <span class="keyword">new</span> File(uploadPath + path);</span><br><span class="line">			</span><br><span class="line">			<span class="keyword">if</span>(!dirPath.exists()) &#123;</span><br><span class="line">				dirPath.mkdir();</span><br><span class="line">			&#125;<span class="comment">//if</span></span><br><span class="line">			</span><br><span class="line">		&#125;<span class="comment">//for</span></span><br><span class="line">		</span><br><span class="line">	&#125;<span class="comment">//makeDir</span></span><br><span class="line">	</span><br><span class="line">	<span class="comment">//음??? 아이콘? 이미지 파일이 아닌경우  썸네일을 대신?</span></span><br><span class="line">	<span class="function"><span class="keyword">private</span> <span class="keyword">static</span> String <span class="title">makeIcon</span><span class="params">(String uploadPath, String path, String fileName)</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">		String iconName = uploadPath + path + File.separator + fileName;</span><br><span class="line">		<span class="keyword">return</span> iconName.substring(uploadPath.length()).replace(File.separatorChar, <span class="string">'/'</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">//썸네일 이미지 생성</span></span><br><span class="line">	<span class="function"><span class="keyword">private</span> <span class="keyword">static</span> String <span class="title">makeThumbnail</span><span class="params">(String uploadPath, String path, String fileName)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">		</span><br><span class="line">		BufferedImage sourceImg = ImageIO.read(<span class="keyword">new</span> File(uploadPath + path, fileName));</span><br><span class="line">		</span><br><span class="line">		BufferedImage destImg = Scalr.resize(sourceImg, Scalr.Method.AUTOMATIC, Scalr.Mode.FIT_TO_HEIGHT, <span class="number">100</span>);</span><br><span class="line">		</span><br><span class="line">		String thumbnailName = uploadPath + path + File.separator + <span class="string">"s_"</span> + fileName;</span><br><span class="line">		</span><br><span class="line">		File newFile = <span class="keyword">new</span> File(thumbnailName);</span><br><span class="line">		String formatName = fileName.substring(fileName.lastIndexOf(<span class="string">"."</span>)+<span class="number">1</span>);</span><br><span class="line">		</span><br><span class="line">		ImageIO.write(destImg, formatName.toUpperCase(), newFile);</span><br><span class="line"></span><br><span class="line">		<span class="keyword">return</span> thumbnailName.substring(uploadPath.length()).replace(File.separatorChar, <span class="string">'/'</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="예제소스"><a href="#예제소스" class="headerlink" title="예제소스"></a>예제소스</h3><p>위 설정과 유틸리티를 만들었다면, 아래예제 화면2개, 컨트롤러1 파일 업로드 테스트가 가능하다.<br>thymeleaf를 사용한 예제이다.<br>jsp에 html만 옮기고 url만 잡아주면 동작할 것이다.</p>
+<p><strong>1.Post방식으로 파일업로드.</strong></p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">xmlns:th</span>=<span class="string">"http://www.thymeleaf.org"</span></span></span><br><span class="line"><span class="tag">	<span class="attr">xmlns:layout</span>=<span class="string">"http://www.ultraq.net.nz/thymeleaf/layout"</span></span></span><br><span class="line"><span class="tag">	<span class="attr">data-layout-decorate</span>=<span class="string">"~&#123;sample/layout/sampleLayout&#125;"</span></span></span><br><span class="line"><span class="tag">	&gt;</span></span><br><span class="line">	</span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">th:inline</span>=<span class="string">"javascript"</span>&gt;</span></span><br><span class="line"><span class="actionscript"><span class="comment">/*&lt;![CDATA[*/</span></span></span><br><span class="line"><span class="javascript">$(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="actionscript"><span class="comment">/*]]&gt;*/</span></span></span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">layout:fragment</span>=<span class="string">"content"</span>&gt;</span></span><br><span class="line">	<span class="comment">&lt;!-- Content Wrapper. Contains page content --&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"content-wrapper"</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- Content Header (Page header) --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">section</span> <span class="attr">class</span>=<span class="string">"content-header"</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">h1</span>&gt;</span></span><br><span class="line">        파일 업로드 테스트1</span><br><span class="line">        <span class="tag">&lt;<span class="name">small</span>&gt;</span>Optional description<span class="tag">&lt;/<span class="name">small</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">ol</span> <span class="attr">class</span>=<span class="string">"breadcrumb"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"#"</span>&gt;</span><span class="tag">&lt;<span class="name">i</span> <span class="attr">class</span>=<span class="string">"fa fa-dashboard"</span>&gt;</span><span class="tag">&lt;/<span class="name">i</span>&gt;</span> 예제<span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">li</span> <span class="attr">class</span>=<span class="string">"active"</span>&gt;</span>read<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">ol</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">section</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!-- Main content --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">section</span> <span class="attr">class</span>=<span class="string">"content container-fluid"</span>&gt;</span></span><br><span class="line"></span><br><span class="line">      <span class="comment">&lt;!--------------------------</span></span><br><span class="line"><span class="comment">        | Your Page Content Here |</span></span><br><span class="line"><span class="comment">        --------------------------&gt;</span></span><br><span class="line">        </span><br><span class="line">        <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"box box-primary"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"box-header with-border"</span>&gt;</span></span><br><span class="line">              <span class="tag">&lt;<span class="name">h3</span> <span class="attr">class</span>=<span class="string">"box-title"</span>&gt;</span>파일업로드 테스트 1<span class="tag">&lt;/<span class="name">h3</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">            <span class="comment">&lt;!-- /.box-header --&gt;</span></span><br><span class="line">            <span class="comment">&lt;!-- form start --&gt;</span></span><br><span class="line">            <span class="comment">&lt;!-- &lt;form id="form1" action="/sample/upload/uploadForm" method="post" enctype="multipart/form-data"&gt; --&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">form</span> <span class="attr">id</span>=<span class="string">"form"</span> <span class="attr">action</span>=<span class="string">"/sample/upload/uploadForm"</span> <span class="attr">method</span>=<span class="string">"post"</span> <span class="attr">enctype</span>=<span class="string">"multipart/form-data"</span>&gt;</span></span><br><span class="line">              <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"box-body"</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"form-group"</span>&gt;</span></span><br><span class="line">                  <span class="comment">&lt;!-- &lt;label for="exampleInputBoardTitle"&gt;Title&lt;/label&gt;</span></span><br><span class="line"><span class="comment">                  &lt;input type="text"  class="form-control"&gt; --&gt;</span></span><br><span class="line">                  <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"file"</span> <span class="attr">name</span>=<span class="string">"file"</span>&gt;</span><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"submit"</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">              <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">              <span class="comment">&lt;!-- /.box-body --&gt;</span></span><br><span class="line"></span><br><span class="line">              <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"box-footer"</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">button</span> <span class="attr">type</span>=<span class="string">"submit"</span> <span class="attr">class</span>=<span class="string">"btn btn-warning"</span>&gt;</span>제출<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line">                <span class="comment">&lt;!-- &lt;button type="submit" class="btn btn-danger"&gt;Remove&lt;/button&gt;</span></span><br><span class="line"><span class="comment">                &lt;button type="submit" class="btn btn-primary"&gt;ListPage&lt;/button&gt; --&gt;</span></span><br><span class="line">              <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">form</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">          <span class="comment">&lt;!-- /.box --&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;/<span class="name">section</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- /.content --&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">  <span class="comment">&lt;!-- /.content-wrapper --&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>2.ajax 파일 업로드 화면.</strong></p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">xmlns:th</span>=<span class="string">"http://www.thymeleaf.org"</span></span></span><br><span class="line"><span class="tag">	<span class="attr">xmlns:layout</span>=<span class="string">"http://www.ultraq.net.nz/thymeleaf/layout"</span></span></span><br><span class="line"><span class="tag">	<span class="attr">data-layout-decorate</span>=<span class="string">"~&#123;sample/layout/sampleLayout&#125;"</span></span></span><br><span class="line"><span class="tag">	&gt;</span></span><br><span class="line">	</span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">th:inline</span>=<span class="string">"javascript"</span>&gt;</span></span><br><span class="line"><span class="actionscript"><span class="comment">/*&lt;![CDATA[*/</span></span></span><br><span class="line"><span class="javascript">$(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span></span><br><span class="line"></span><br><span class="line"><span class="javascript">	$(<span class="string">".fileDrop"</span>).on(<span class="string">"dragenter dragover"</span>, <span class="function"><span class="keyword">function</span>(<span class="params">event</span>)</span>&#123;</span></span><br><span class="line">		event.preventDefault();</span><br><span class="line">	&#125;);</span><br><span class="line">	</span><br><span class="line"><span class="javascript">	$(<span class="string">".fileDrop"</span>).on(<span class="string">"drop"</span>, <span class="function"><span class="keyword">function</span>(<span class="params">event</span>)</span>&#123;</span></span><br><span class="line">		event.preventDefault();</span><br><span class="line">		</span><br><span class="line"><span class="actionscript">		<span class="keyword">var</span> files = event.originalEvent.dataTransfer.files;</span></span><br><span class="line">		</span><br><span class="line"><span class="actionscript">		<span class="keyword">var</span> file = files[<span class="number">0</span>];</span></span><br><span class="line">		</span><br><span class="line"><span class="actionscript">		<span class="comment">//console.log(file);</span></span></span><br><span class="line">		</span><br><span class="line"><span class="actionscript">		<span class="keyword">var</span> formData = <span class="keyword">new</span> FormData(); <span class="comment">// HTML5</span></span></span><br><span class="line"><span class="actionscript">		formData.append(<span class="string">"file"</span>, file);</span></span><br><span class="line">		</span><br><span class="line"><span class="javascript">		$.ajax(&#123;</span></span><br><span class="line"><span class="actionscript">			url: <span class="string">'/sample/upload/uploadAjax'</span>,</span></span><br><span class="line">			data: formData,</span><br><span class="line"><span class="actionscript">			dataType: <span class="string">'text'</span>,</span></span><br><span class="line"><span class="actionscript">			processData: <span class="literal">false</span>,</span></span><br><span class="line"><span class="actionscript">			contentType: <span class="literal">false</span>,</span></span><br><span class="line"><span class="actionscript">			type: <span class="string">'POST'</span>,</span></span><br><span class="line"><span class="actionscript">			success: <span class="function"><span class="keyword">function</span><span class="params">(data)</span></span>&#123;</span></span><br><span class="line"><span class="actionscript">				<span class="comment">//alert(data);</span></span></span><br><span class="line"><span class="actionscript">				<span class="comment">//서버로 파일을 전송한 다음에 그 파일을 다시 받아온다.?</span></span></span><br><span class="line">				</span><br><span class="line"><span class="actionscript">				<span class="comment">//이미지 인경우 썸네일을 보여준다.</span></span></span><br><span class="line">				if(checkImageType(data))&#123;</span><br><span class="line"><span class="actionscript">					str = <span class="string">"&lt;div&gt;"</span></span></span><br><span class="line"><span class="actionscript">						+ <span class="string">"&lt;a href='/sample/upload/displayFile?fileName="</span> + getImageLink(data) + <span class="string">"'&gt;"</span></span></span><br><span class="line"><span class="actionscript">						+ <span class="string">"&lt;img src='/sample/upload/displayFile?fileName="</span> + data + <span class="string">"'/&gt;"</span></span></span><br><span class="line"><span class="actionscript">						+ <span class="string">"&lt;/a&gt;"</span></span></span><br><span class="line"><span class="handlebars"><span class="xml">						+ "<span class="tag">&lt;<span class="name">small</span> <span class="attr">data-src</span>=<span class="string">'" + data + "'</span>&gt;</span>X<span class="tag">&lt;/<span class="name">small</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span>";</span></span></span><br><span class="line"><span class="actionscript">				&#125;<span class="keyword">else</span> &#123;</span></span><br><span class="line"><span class="actionscript">					str = <span class="string">"&lt;div&gt;"</span></span></span><br><span class="line"><span class="actionscript">						+ <span class="string">"&lt;a href='/sample/upload/displayFile?fileName="</span> + data + <span class="string">"'&gt;"</span></span></span><br><span class="line"><span class="actionscript">						+ getOriginalName(data) + <span class="string">"&lt;/a&gt;"</span></span></span><br><span class="line"><span class="handlebars"><span class="xml">						+ "<span class="tag">&lt;<span class="name">small</span> <span class="attr">data-src</span>=<span class="string">'" + data + "'</span>&gt;</span>X<span class="tag">&lt;/<span class="name">small</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span>";</span></span></span><br><span class="line"><span class="actionscript">				&#125;<span class="comment">//else</span></span></span><br><span class="line">					</span><br><span class="line"><span class="javascript">				$(<span class="string">".uploadedList"</span>).append(str);	</span></span><br><span class="line">			&#125;,</span><br><span class="line"><span class="actionscript">		&#125;);<span class="comment">// ajax</span></span></span><br><span class="line">		</span><br><span class="line">	&#125;);</span><br><span class="line">	</span><br><span class="line">	</span><br><span class="line"><span class="actionscript">	<span class="comment">/* 컨트롤러로 부터 전송받은 파일이 이미지 파일인지 확인하는 함수 */</span></span></span><br><span class="line"><span class="actionscript">	<span class="function"><span class="keyword">function</span> <span class="title">checkImageType</span><span class="params">(fileName)</span></span>&#123;</span></span><br><span class="line"><span class="javascript">		<span class="keyword">var</span> pattern = <span class="regexp">/jpg$|gif$|png$|jpeg$/i</span>;</span></span><br><span class="line"><span class="actionscript">		<span class="keyword">return</span> fileName.match(pattern);</span></span><br><span class="line"><span class="actionscript">	&#125;<span class="comment">//checkImageType</span></span></span><br><span class="line">	</span><br><span class="line"><span class="actionscript">	<span class="comment">//파일 이름 처리 : UUID 가짜 이름 제거</span></span></span><br><span class="line"><span class="actionscript">	<span class="function"><span class="keyword">function</span> <span class="title">getOriginalName</span><span class="params">(fileName)</span></span>&#123;</span></span><br><span class="line">		if(checkImageType(fileName))&#123;</span><br><span class="line"><span class="actionscript">			<span class="keyword">return</span>;</span></span><br><span class="line">	&#125;</span><br><span class="line">		</span><br><span class="line"><span class="actionscript">		<span class="keyword">var</span> idx = fileName.indexOf(<span class="string">"_"</span>) + <span class="number">1</span>;</span></span><br><span class="line"><span class="actionscript">		<span class="keyword">return</span> fileName.substr(idx);</span></span><br><span class="line">			</span><br><span class="line"><span class="actionscript">	&#125;<span class="comment">//getOriginalName</span></span></span><br><span class="line">	</span><br><span class="line"><span class="actionscript">	<span class="comment">//이미지 원본 링크 제공</span></span></span><br><span class="line"><span class="actionscript">	<span class="function"><span class="keyword">function</span> <span class="title">getImageLink</span><span class="params">(fileName)</span></span>&#123;</span></span><br><span class="line">		</span><br><span class="line">		if(!checkImageType(fileName))&#123;</span><br><span class="line"><span class="actionscript">			<span class="keyword">return</span>;</span></span><br><span class="line"><span class="actionscript">		&#125;<span class="comment">//if</span></span></span><br><span class="line">		</span><br><span class="line"><span class="actionscript">		<span class="keyword">var</span> front = fileName.substr(<span class="number">0</span>, <span class="number">12</span>);</span></span><br><span class="line"><span class="actionscript">		<span class="keyword">var</span> end = fileName.substr(<span class="number">14</span>);</span></span><br><span class="line">		</span><br><span class="line"><span class="actionscript">		<span class="keyword">return</span> front + end;</span></span><br><span class="line">		</span><br><span class="line"><span class="actionscript">	&#125;<span class="comment">//getImageLink</span></span></span><br><span class="line">	</span><br><span class="line">	</span><br><span class="line"><span class="actionscript">	<span class="comment">//업로드 파일 삭제 처리</span></span></span><br><span class="line"><span class="javascript">	$(<span class="string">".uploadedList"</span>).on(<span class="string">"click"</span>, <span class="string">"small"</span>, <span class="function"><span class="keyword">function</span>(<span class="params">event</span>)</span>&#123;</span></span><br><span class="line">		</span><br><span class="line"><span class="javascript">		<span class="keyword">var</span> that = $(<span class="keyword">this</span>);</span></span><br><span class="line">		</span><br><span class="line"><span class="javascript">		alert($(<span class="keyword">this</span>).attr(<span class="string">"data-src"</span>));</span></span><br><span class="line">		</span><br><span class="line"><span class="javascript">		$.ajax(&#123;</span></span><br><span class="line"><span class="actionscript">			url: <span class="string">"/sample/upload/deleteFile"</span>,</span></span><br><span class="line"><span class="actionscript">			type: <span class="string">"post"</span>,</span></span><br><span class="line"><span class="javascript">			data: &#123;<span class="attr">fileName</span>:$(<span class="keyword">this</span>).attr(<span class="string">"data-src"</span>)&#125;,</span></span><br><span class="line"><span class="actionscript">			dataType: <span class="string">"text"</span>,</span></span><br><span class="line"><span class="actionscript">			success : <span class="function"><span class="keyword">function</span><span class="params">(result)</span></span>&#123;</span></span><br><span class="line"><span class="actionscript">				<span class="keyword">if</span>(result == <span class="string">'deleted'</span>)&#123;</span></span><br><span class="line"><span class="actionscript">					<span class="comment">//alert("deleted");</span></span></span><br><span class="line"><span class="actionscript">					that.parent(<span class="string">"div"</span>).remove();</span></span><br><span class="line"><span class="actionscript">				&#125;<span class="comment">//</span></span></span><br><span class="line">			&#125;,</span><br><span class="line">		&#125;);</span><br><span class="line">		</span><br><span class="line"><span class="actionscript">	&#125;);<span class="comment">//uploadedList</span></span></span><br><span class="line">	</span><br><span class="line">&#125;);</span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">style</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="css"><span class="selector-class">.fileDrop</span>&#123;</span></span><br><span class="line">	width: 100%;</span><br><span class="line">	height: 200px;</span><br><span class="line">	border: 1px dotted blue;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">small &#123;</span><br><span class="line">	margin-left: 3px;</span><br><span class="line">	font-weight: bold;</span><br><span class="line">	color: gray;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">layout:fragment</span>=<span class="string">"content"</span>&gt;</span></span><br><span class="line">	<span class="comment">&lt;!-- Content Wrapper. Contains page content --&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"content-wrapper"</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- Content Header (Page header) --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">section</span> <span class="attr">class</span>=<span class="string">"content-header"</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">h1</span>&gt;</span></span><br><span class="line">       Ajax 파일 업로드</span><br><span class="line">        <span class="tag">&lt;<span class="name">small</span>&gt;</span>Optional description<span class="tag">&lt;/<span class="name">small</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">ol</span> <span class="attr">class</span>=<span class="string">"breadcrumb"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"#"</span>&gt;</span><span class="tag">&lt;<span class="name">i</span> <span class="attr">class</span>=<span class="string">"fa fa-dashboard"</span>&gt;</span><span class="tag">&lt;/<span class="name">i</span>&gt;</span> 예제<span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">li</span> <span class="attr">class</span>=<span class="string">"active"</span>&gt;</span>read<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">ol</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">section</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!-- Main content --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">section</span> <span class="attr">class</span>=<span class="string">"content container-fluid"</span>&gt;</span></span><br><span class="line"></span><br><span class="line">      <span class="comment">&lt;!--------------------------</span></span><br><span class="line"><span class="comment">        | Your Page Content Here |</span></span><br><span class="line"><span class="comment">        --------------------------&gt;</span></span><br><span class="line">        </span><br><span class="line">        <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"box box-primary"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"box-header with-border"</span>&gt;</span></span><br><span class="line">              <span class="tag">&lt;<span class="name">h3</span> <span class="attr">class</span>=<span class="string">"box-title"</span>&gt;</span>Ajax File Upload<span class="tag">&lt;/<span class="name">h3</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">            <span class="comment">&lt;!-- /.box-header --&gt;</span></span><br><span class="line">            <span class="comment">&lt;!-- form start --&gt;</span></span><br><span class="line">            <span class="comment">&lt;!-- &lt;form id="form1" action="/sample/upload/uploadForm" method="post" enctype="multipart/form-data"&gt; --&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">form</span> <span class="attr">id</span>=<span class="string">"form"</span> <span class="attr">action</span>=<span class="string">"/sample/upload/uploadForm"</span> <span class="attr">method</span>=<span class="string">"post"</span> <span class="attr">enctype</span>=<span class="string">"multipart/form-data"</span>&gt;</span></span><br><span class="line">              <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"box-body"</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"form-group"</span>&gt;</span></span><br><span class="line">				  <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"fileDrop"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span>	</span><br><span class="line">                <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">              <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">              <span class="comment">&lt;!-- /.box-body --&gt;</span></span><br><span class="line"></span><br><span class="line">              <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"box-footer"</span>&gt;</span></span><br><span class="line">                <span class="comment">&lt;!-- &lt;button type="submit" class="btn btn-warning"&gt;제출&lt;/button&gt; --&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"uploadedList"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">              <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">form</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">          <span class="comment">&lt;!-- /.box --&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;/<span class="name">section</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- /.content --&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">  <span class="comment">&lt;!-- /.content-wrapper --&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>UploadController.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.hanumoka.sample.controller;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.File;</span><br><span class="line"><span class="keyword">import</span> java.io.FileInputStream;</span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.io.InputStream;</span><br><span class="line"><span class="keyword">import</span> java.util.UUID;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.annotation.Resource;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.apache.commons.io.IOUtils;</span><br><span class="line"><span class="keyword">import</span> org.slf4j.Logger;</span><br><span class="line"><span class="keyword">import</span> org.slf4j.LoggerFactory;</span><br><span class="line"><span class="keyword">import</span> org.springframework.http.HttpHeaders;</span><br><span class="line"><span class="keyword">import</span> org.springframework.http.HttpStatus;</span><br><span class="line"><span class="keyword">import</span> org.springframework.http.MediaType;</span><br><span class="line"><span class="keyword">import</span> org.springframework.http.ResponseEntity;</span><br><span class="line"><span class="keyword">import</span> org.springframework.stereotype.Controller;</span><br><span class="line"><span class="keyword">import</span> org.springframework.ui.Model;</span><br><span class="line"><span class="keyword">import</span> org.springframework.util.FileCopyUtils;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.RequestMapping;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.RequestMethod;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.ResponseBody;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.multipart.MultipartFile;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.hanumoka.sample.util.MediaUtils;</span><br><span class="line"><span class="keyword">import</span> com.hanumoka.sample.util.UploadFileUtils;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Controller</span></span><br><span class="line"><span class="meta">@RequestMapping</span>(<span class="string">"/sample/upload/*"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UploadController</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Logger logger = LoggerFactory.getLogger(UploadController<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="meta">@Resource</span>(name = <span class="string">"uploadPath"</span>)</span><br><span class="line">	<span class="keyword">private</span> String uploadPath;</span><br><span class="line">	</span><br><span class="line">	<span class="meta">@RequestMapping</span>(value = <span class="string">"/uploadForm"</span>, method = RequestMethod.GET)</span><br><span class="line">	<span class="function"><span class="keyword">public</span> String <span class="title">uploadFormGET</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="string">"/sample/upload/uploadForm"</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">//Post 방식 파일 업로드</span></span><br><span class="line">	<span class="meta">@RequestMapping</span>(value = <span class="string">"/uploadForm"</span>, method = RequestMethod.POST)</span><br><span class="line">	<span class="function"><span class="keyword">public</span> String <span class="title">uploadFormPOST</span><span class="params">(MultipartFile file, Model model)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">		</span><br><span class="line">		logger.info(<span class="string">"uploadFormPost"</span>);</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">if</span>(file != <span class="keyword">null</span>) &#123;</span><br><span class="line">			logger.info(<span class="string">"originalName:"</span> + file.getOriginalFilename());</span><br><span class="line">			logger.info(<span class="string">"size:"</span> + file.getSize());</span><br><span class="line">			logger.info(<span class="string">"ContentType:"</span> + file.getContentType());</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		String savedName = uploadFile(file.getOriginalFilename(), file.getBytes());</span><br><span class="line">		</span><br><span class="line">		model.addAttribute(<span class="string">"savedName"</span>, savedName);</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">return</span> <span class="string">"/sample/upload/uploadForm"</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">//업로드된 파일을 저장하는 함수</span></span><br><span class="line">	<span class="function"><span class="keyword">private</span> String <span class="title">uploadFile</span><span class="params">(String originalName, <span class="keyword">byte</span>[] fileDate)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">		</span><br><span class="line">		UUID uid = UUID.randomUUID();</span><br><span class="line">		</span><br><span class="line">		String savedName = uid.toString() + <span class="string">"_"</span> + originalName;</span><br><span class="line">		File target = <span class="keyword">new</span> File(uploadPath, savedName);</span><br><span class="line">		</span><br><span class="line">		<span class="comment">//org.springframework.util 패키지의 FileCopyUtils는 파일 데이터를 파일로 처리하거나, 복사하는 등의 기능이 있다.</span></span><br><span class="line">		FileCopyUtils.copy(fileDate, target);</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">return</span> savedName;</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">//Ajax 파일 업로드</span></span><br><span class="line">	<span class="meta">@RequestMapping</span>(value=<span class="string">"/sample/upload/uploadAjax"</span>, method = RequestMethod.GET)</span><br><span class="line">	<span class="function"><span class="keyword">public</span> String <span class="title">uploadAjaxGET</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="string">"/sample/upload/uploadAjax"</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	</span><br><span class="line">	<span class="comment">//Ajax 파일 업로드 produces는 한국어를 정상적으로 전송하기 위한 속성</span></span><br><span class="line">	<span class="meta">@ResponseBody</span></span><br><span class="line">	<span class="meta">@RequestMapping</span>(value=<span class="string">"/sample/upload/uploadAjax"</span>, method = RequestMethod.POST, produces = <span class="string">"text/plain;charset=UTF-8"</span>)</span><br><span class="line">	<span class="function"><span class="keyword">public</span> ResponseEntity&lt;String&gt; <span class="title">uploadAjaxPOST</span><span class="params">(MultipartFile file)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">		</span><br><span class="line">		logger.info(<span class="string">"originalName:"</span> + file.getOriginalFilename());</span><br><span class="line">		logger.info(<span class="string">"size:"</span> + file.getSize());</span><br><span class="line">		logger.info(<span class="string">"contentType:"</span> + file.getContentType());</span><br><span class="line">		</span><br><span class="line">		<span class="comment">//String savedName = uploadFile(file.getOriginalFilename(), file.getBytes());</span></span><br><span class="line">		</span><br><span class="line">		<span class="comment">//HttpStatus.CREATED : 리소스가 정상적으로 생성되었다는 상태코드.</span></span><br><span class="line">		<span class="comment">//return new ResponseEntity&lt;&gt;(file.getOriginalFilename(), HttpStatus.CREATED);</span></span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">new</span> ResponseEntity&lt;&gt;(UploadFileUtils.uploadFile(uploadPath, file.getOriginalFilename(), file.getBytes()), HttpStatus.CREATED);</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">//화면에 저장된 파일을 보여주는 컨트롤러 /년/월/일/파일명 형태로 입력 받는다.</span></span><br><span class="line">	<span class="comment">// displayFile?fileName=/년/월/일/파일명</span></span><br><span class="line">	<span class="meta">@ResponseBody</span></span><br><span class="line">	<span class="meta">@RequestMapping</span>(value=<span class="string">"/sample/upload/displayFile"</span>, method = RequestMethod.GET)</span><br><span class="line">	<span class="keyword">public</span> ResponseEntity&lt;<span class="keyword">byte</span>[]&gt; displayFile(String fileName) <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">		</span><br><span class="line">		InputStream in = <span class="keyword">null</span>;</span><br><span class="line">		ResponseEntity&lt;<span class="keyword">byte</span>[]&gt; entity = <span class="keyword">null</span>;</span><br><span class="line">		</span><br><span class="line">		logger.info(<span class="string">"File name: "</span> + fileName);</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">try</span> &#123;</span><br><span class="line">			String formatName = fileName.substring(fileName.lastIndexOf(<span class="string">"."</span>)+<span class="number">1</span>);</span><br><span class="line">			</span><br><span class="line">			MediaType mType = MediaUtils.getMediaType(formatName);</span><br><span class="line">			</span><br><span class="line">			HttpHeaders headers = <span class="keyword">new</span> HttpHeaders();</span><br><span class="line">			</span><br><span class="line">			in = <span class="keyword">new</span> FileInputStream(uploadPath + fileName);</span><br><span class="line">			</span><br><span class="line">			</span><br><span class="line">			<span class="keyword">if</span>(mType != <span class="keyword">null</span>) &#123;</span><br><span class="line">				headers.setContentType(mType);</span><br><span class="line">			&#125;<span class="keyword">else</span> &#123;</span><br><span class="line">				fileName = fileName.substring(fileName.indexOf(<span class="string">"_"</span>)+<span class="number">1</span>);</span><br><span class="line">				headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);</span><br><span class="line">				headers.add(<span class="string">"Content-Disposition"</span>, <span class="string">"attachment; filename=\""</span> + <span class="keyword">new</span> String(fileName.getBytes(<span class="string">"UTF-8"</span>), <span class="string">"ISO-8859-1"</span>) + <span class="string">"\""</span>);</span><br><span class="line">			&#125;<span class="comment">// else</span></span><br><span class="line">			</span><br><span class="line">			entity = <span class="keyword">new</span> ResponseEntity&lt;<span class="keyword">byte</span>[]&gt;(IOUtils.toByteArray(in), headers, HttpStatus.CREATED);</span><br><span class="line">			</span><br><span class="line">		&#125; <span class="keyword">catch</span>(Exception e) &#123;</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">			entity = <span class="keyword">new</span> ResponseEntity&lt;<span class="keyword">byte</span>[]&gt;(HttpStatus.BAD_REQUEST);</span><br><span class="line">		&#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">			in.close();</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">return</span> entity;</span><br><span class="line">	&#125;<span class="comment">// displayFile</span></span><br><span class="line">	</span><br><span class="line">	</span><br><span class="line">	<span class="comment">//업로드된 파일 삭제 처리</span></span><br><span class="line">	<span class="meta">@ResponseBody</span></span><br><span class="line">	<span class="meta">@RequestMapping</span>(value=<span class="string">"/sample/upload/deleteFile"</span>, method = RequestMethod.POST)</span><br><span class="line">	<span class="function"><span class="keyword">public</span> ResponseEntity&lt;String&gt; <span class="title">deleteFile</span><span class="params">(String fileName)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">		</span><br><span class="line">		logger.info(<span class="string">"delete file:"</span> + fileName);</span><br><span class="line">		</span><br><span class="line">		String formatName = fileName.substring(fileName.lastIndexOf(<span class="string">"."</span>)+<span class="number">1</span>);</span><br><span class="line">		</span><br><span class="line">		MediaType mType = MediaUtils.getMediaType(formatName);</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">if</span>(mType != <span class="keyword">null</span>) &#123;</span><br><span class="line">			String front = fileName.substring(<span class="number">0</span>, <span class="number">12</span>);</span><br><span class="line">			String end = fileName.substring(<span class="number">14</span>);</span><br><span class="line">			<span class="keyword">new</span> File(uploadPath + (front+end).replace(<span class="string">'/'</span>, File.separatorChar)).delete();</span><br><span class="line">		&#125;<span class="comment">//if</span></span><br><span class="line">		</span><br><span class="line">		<span class="keyword">new</span> File(uploadPath + fileName.replace(<span class="string">'/'</span>, File.separatorChar)).delete();</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">new</span> ResponseEntity&lt;String&gt;(<span class="string">"deleted"</span>, HttpStatus.OK);</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<p><img src="/images/20180906-spring-file-upload_1.png" alt="동작예시"></p>
+<h3 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h3><p>코드로 배우는 스프링 웹 프로젝트(남가람북스)</p>
+
+      
+      
+          
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+      
+
+
+  
+  
+  
+  
+
+        
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2018/09/04/javascript-20180904-javascript-design-patterns/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Hanumoka">
+      <meta itemprop="description" content="아마추어 개발자의 블로그">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hanumoka, IT Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2018/09/04/javascript-20180904-javascript-design-patterns/" class="post-title-link" itemprop="url">javascript - Module 패턴(전역스코프를 지켜라)</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">작성일</span>
+
+              <time title="Post created: 2018-09-04 00:50:53" itemprop="dateCreated datePublished" datetime="2018-09-04T00:50:53+09:00">2018-09-04</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Updated at: 2020-04-16 01:50:11" itemprop="dateModified" datetime="2020-04-16T01:50:11+09:00">2020-04-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/javascript/" itemprop="url" rel="index">
+                    <span itemprop="name">javascript</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 20200427hexo_post_head -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h3><p>웹 프로젝트를 하다보면 공통적으로 사용할 유틸리티 등을 common.js 와 같이 분리하여 개발할 필요가 생긴다.<br>이때 고려할점은 자바스크립트의 전역 스코프의 변수명 관리가 힘들다는 것이다.</p>
+<p>예를 들어 common1.js와 common2.js 두개를 동시에 참조하여 사용파는 페이지가 있다고 가정했을때,</p>
+<p><strong>common1.js 내부</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">var</span> commonObj1 = &#123;&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> someUtil = &#123;&#125;;</span><br></pre></td></tr></table></figure>
+
+<p><strong>common2.js 내부</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">var</span> commonObj2 = <span class="string">"test"</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> someUtil = &#123;&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>위처럼 전역변수의 명이 겹쳐지는 상황이 발생할 수도 있다.<br>만약 수십개의 js 파일에 각각 수십개의 변수명이 선언된다면…<br>아무리 개발룰을 통일해서 잘 개발한다 하더라도 전역스코프에 변수명이 겹쳐지는 위험성을 피할수는 없다.<br>Module 패턴을 이용하면 위와 같은 전역스코프의 오염을 <strong>어느정도</strong> 줄일수 있다.</p>
+<hr>
+<h3 id="Module-패턴"><a href="#Module-패턴" class="headerlink" title="Module 패턴"></a>Module 패턴</h3><p>javascript에서 java와 같은 고급언어의 클래스의 캡슐레이션을 구현하기 위해 사용되는 패턴이다.<br>말 그대로 자바스크립트 코드를 모듈화 하여 사용한다.</p>
+<p><strong>기본구조</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> someObj = (<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// private 변수들과 함수들 위치</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> &#123;</span><br><span class="line">     <span class="comment">//public 변수들과 함수들 선언</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure>
+
+<p>모듈패턴은 자바스크립트의 클로저와 즉시실행함수를 이용하여 구현된다.<br>즉시실행함수를 통해 <strong>위 코드는 로드가 되는 순간 바로 동작하여 1개의 객채를 리턴</strong>하여 someObj에 할당하게 된다.<br>즉 someObj는 java의 static 클래스와 비슷해진다.</p>
+<p>구체적으로 예들 들면 아래와 같다.</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> obj1 = (<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// private 변수들 함수</span></span><br><span class="line">  <span class="keyword">var</span> _age = <span class="number">12</span>; <span class="comment">// java로 따지면 static 변수가 된다.</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> &#123;</span><br><span class="line"></span><br><span class="line">    getAge : <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">      <span class="keyword">return</span> _age;</span><br><span class="line">    &#125;,</span><br><span class="line">    setAge : <span class="function"><span class="keyword">function</span>(<span class="params">age</span>)</span>&#123;</span><br><span class="line">      _age = age</span><br><span class="line">    &#125;,</span><br><span class="line">    getOld : <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">      _age++;</span><br><span class="line">    &#125;,</span><br><span class="line">    getYoung : <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">      _age--;</span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;)();</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(obj1.getAge());</span><br><span class="line"></span><br><span class="line">obj1.setAge(<span class="number">20</span>)</span><br><span class="line"><span class="built_in">console</span>.log(obj1.getAge());</span><br><span class="line"></span><br><span class="line">obj1.getOld()</span><br><span class="line"><span class="built_in">console</span>.log(obj1.getAge());</span><br><span class="line"></span><br><span class="line">obj1.getYoung()</span><br><span class="line"><span class="built_in">console</span>.log(obj1.getAge());</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/20180904-javascript-design-patterns_1.png" alt="위 코드의 실행결과"></p>
+<p>모듈 패턴을 사용하여 자바스크립트의 소스코드를 모듈화 하고, 전역스코프를 어느정도 깨끗하게 유지할수 있다.<br>하지만 궁극적으로 모듈명, 즉 위의 obj1의 이름의 충돌 자체는 막을수 없다.<br>이를 위해서 어느정도 개발규약이 필요하다.</p>
+<p><strong>모듈명의 충돌을 막기위해, 모듈명은 js파일명과 동일하게 하여 최대한 유니크성을 지켜야 한다.</strong></p>
+<hr>
+<h3 id="마무리"><a href="#마무리" class="headerlink" title="마무리"></a>마무리</h3><p>자바스크립트를 조금 보니 별별 패턴이 다있다.<br>아마도 위 모듈명이 충돌되는 것도 방지하는 무언가 이미 있지 않을까 생각된다.<br>아 공부를 하면 할수록 아는것 보다 모르는게 많아지는 느낌이다.</p>
+<hr>
+<h3 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h3><p><a href="https://kkd927.github.io/general/web/javascript/2017/04/12/4-JavaScript-Design-Patterns-You-Should-Know.html" target="_blank" rel="external nofollow noopener noreferrer">https://kkd927.github.io/general/web/javascript/2017/04/12/4-JavaScript-Design-Patterns-You-Should-Know.html</a></p>
+
+      
+      
+          
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+      
+
+
+  
+  
+  
+  
+
+        
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2018/09/02/spring-20180902-Spring4-Rest-HiddenMethod/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Hanumoka">
+      <meta itemprop="description" content="아마추어 개발자의 블로그">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hanumoka, IT Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2018/09/02/spring-20180902-Spring4-Rest-HiddenMethod/" class="post-title-link" itemprop="url">Spring4 HiddenHttpMethodFilter HiddenMethod(REST를 지원하지 않는 브라우저 처리)</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">작성일</span>
+
+              <time title="Post created: 2018-09-02 15:56:23" itemprop="dateCreated datePublished" datetime="2018-09-02T15:56:23+09:00">2018-09-02</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Updated at: 2020-04-16 01:50:12" itemprop="dateModified" datetime="2020-04-16T01:50:12+09:00">2020-04-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/spring/" itemprop="url" rel="index">
+                    <span itemprop="name">spring</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 20200427hexo_post_head -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><img src="/images/20180902-Spring4-Rest-HiddenMethod_1.png" alt="스프링로고"></p>
+<h3 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h3><p>혹시나 하는 마음으로 메모를 한다.<br>PUT, PATCH, DELETE 방식의 메소드를 지원하지 않는 브라우저가 있다고 하는데….<br>이를 위해 스프링 진영에서 HiddenHttpMethodFilter 라는 것을 제공한다.</p>
+<p>HiddenHttpMethodFilter 맥락은 HiddenMethod(지원이 안되는 메소드명을 _method라는 이름에 담아서) + POST 요청을 스프링 컨트롤러에 전송하는 방법이다.<br>HiddenHttpMethodFilter 는 요청에서 _method 의 값을 필터링 해서 적절한 컨트롤러로 연결해주는 것 같다.</p>
+<h3 id="web-xml-설정"><a href="#web-xml-설정" class="headerlink" title="web.xml 설정"></a>web.xml 설정</h3><p>web.xml 에 아래 필터를 <strong>추가</strong>한다.</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- Enables support for DELETE and PUT request methods with web browser clients --&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">filter</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">filter-name</span>&gt;</span>hiddenHttpMethodFilter<span class="tag">&lt;/<span class="name">filter-name</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">filter-class</span>&gt;</span>org.springframework.web.filter.HiddenHttpMethodFilter<span class="tag">&lt;/<span class="name">filter-class</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">filter</span>&gt;</span></span><br><span class="line"></span><br><span class="line">	<span class="tag">&lt;<span class="name">filter-mapping</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">filter-name</span>&gt;</span>hiddenHttpMethodFilter<span class="tag">&lt;/<span class="name">filter-name</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">url-pattern</span>&gt;</span>/*<span class="tag">&lt;/<span class="name">url-pattern</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">filter-mapping</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="화면단"><a href="#화면단" class="headerlink" title="화면단"></a>화면단</h3><p>회원을 삭제하는 요청을 아래처럼 만들수 있다.<br>중요한 것은 form의 method는 post이고, form 내부에 _method라는 이름에 delete 값을 갖는 input 태그가 있다.<br>위에서 말했듯이 아래 form을 전송하면 form method대로 post형식으로 리퀘스트가 스프링에게 전송된다.<br>hiddenHttpMethodFilter는 리퀘스트를 후킹해서 _mehtod 값을 읽어 그 내용과 일체하는 컨트롤러를 찾아 연결해준다.</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">form</span> <span class="attr">action</span>=<span class="string">"/sample/deleteUser"</span> <span class="attr">method</span>=<span class="string">"post"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"hidden"</span> <span class="attr">name</span>=<span class="string">"_mehtod"</span> <span class="attr">value</span>=<span class="string">"delete"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">name</span>=<span class="string">"id"</span> &gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"submit"</span> <span class="attr">value</span>=<span class="string">"deleteUser"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">form</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="마무리"><a href="#마무리" class="headerlink" title="마무리"></a>마무리</h3><p>사실 요즘 REST가 지원이 안되는 브라우저가 있는지는 모르겠다.<br>혹시나 해서….</p>
+
+      
+      
+          
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+      
+
+
+  
+  
+  
+  
+
+        
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
     <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2018/09/01/spring-20180901-spring-AOP-summary/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -868,581 +1478,6 @@ gtag('config', 'UA-100596920-1');
   
   
 
-        
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
-    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2018/08/22/vue-20180822-vue-Vue-CLI/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Hanumoka">
-      <meta itemprop="description" content="아마추어 개발자의 블로그">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hanumoka, IT Blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2018/08/22/vue-20180822-vue-Vue-CLI/" class="post-title-link" itemprop="url">Vue CLI를 이용해서 프로젝트 만들어보기.</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">작성일</span>
-
-              <time title="Post created: 2018-08-22 15:53:21" itemprop="dateCreated datePublished" datetime="2018-08-22T15:53:21+09:00">2018-08-22</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Updated at: 2020-04-16 01:50:12" itemprop="dateModified" datetime="2020-04-16T01:50:12+09:00">2020-04-16</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/vue/" itemprop="url" rel="index">
-                    <span itemprop="name">vue</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-      <!-- 20200427hexo_post_head -->
-      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
-      <script>
-          (adsbygoogle = window.adsbygoogle || []).push({});
-      </script>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h3><p>저번 포스트에서 Vue 개발환경을 설정했다.<br>이번에는 Vue CLI를 이용해서 간편하게 Vue 프로젝트를 만들어보자.<br>Node와 Vue-Cli를 미리 설치해야 한다. </p>
-<h3 id="Vue-CLI-Commnad-Line-Interface-란"><a href="#Vue-CLI-Commnad-Line-Interface-란" class="headerlink" title="Vue CLI(Commnad Line Interface) 란?"></a>Vue CLI(Commnad Line Interface) 란?</h3><p>뷰 코어팀에서 제공하는 일종의 터미널용 도구이다.<br>저번 글에서 node를 설치한 뒤에 아래 명령어로, Vue CLI를 설치했다.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">install vue-cli -global</span><br></pre></td></tr></table></figure>
-
-<p>Vue CLI를 설치하면 터미널에서 간단한 명령어를 통해서 프로토타입 프로젝트를 쉽게 만들수 있다.<br>(사실 처음 CLI라는 용어에 <em>이건 뭐지? Vue 전용 터미멀 프로그램인가?</em> 라고 혼동이 좀 왔었다.)</p>
-<p><img src="/images/20180822-vue-Vue-CLI_1.png" alt="cmd창에서 vue 명령을 입력해서 위처럼 나와야 vue cli 설치가 된 것이다."></p>
-<h3 id="Vue-CLI-프로젝트-생성-명령어"><a href="#Vue-CLI-프로젝트-생성-명령어" class="headerlink" title="Vue CLI 프로젝트 생성 명령어"></a>Vue CLI 프로젝트 생성 명령어</h3><table>
-<thead>
-<tr>
-<th>템플릿 종류</th>
-<th>설명</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>vue init webpack</td>
-<td>고급 웹팩 기능을 활용한 프로젝트 구성 방식, 테스팅, 문법 검사 등을 지원</td>
-</tr>
-<tr>
-<td>vue init webpack-simple</td>
-<td>웹팩 최소 기능을 활용한 프로젝트 구성방식, 빠른 화면 프로토타이핑용</td>
-</tr>
-<tr>
-<td>vue init browserify</td>
-<td>고급 브라우저파리 기능을 활용한 프로젝트 구성 방식, 테스팅, 문법 검사 등을 지원</td>
-</tr>
-<tr>
-<td>vue init browserify-simple</td>
-<td>브라우저파이 최소 기능을 활용한 프로젝트 구성 방식, 빠른 화면 프로토타이핑용</td>
-</tr>
-<tr>
-<td>vue init simple</td>
-<td>최소 뷰 기능만 들어간 HTML 파일 1개 생성</td>
-</tr>
-<tr>
-<td>vue init pwa</td>
-<td>웹팩 기반의 프로그레시브 웹 앱(PWA, Progressive Web App) 기능을 지원하는 뷰 프로젝트</td>
-</tr>
-</tbody></table>
-<p>webpack, browserify 같은 모듈 번들러 프로젝트는 자체적으로 Vue 로더를 포함하고 있다.<br>Vue 로더는 vue.확장자 파일을 HTML, SCRIPT, STYLE로 변환해 준다.<br>따라서 Vue 로더가 포함돤 프로젝트를 생성하면 Vue 확장자 파일을 사용 할 수 있다.</p>
-<h3 id="Vue-CLI-로-webpack-simple-프로젝트-생성하기"><a href="#Vue-CLI-로-webpack-simple-프로젝트-생성하기" class="headerlink" title="Vue CLI 로 webpack-simple 프로젝트 생성하기."></a>Vue CLI 로 webpack-simple 프로젝트 생성하기.</h3><p>원하는 경로에 프로젝트 폴더를 생성하고, cmd로 그 경로로 이동하여 vue init webpack-simple 명령어를 입력하자.<br>나는 TestVue라는 폴더를 만들었다.</p>
-<p><img src="/images/20180822-vue-Vue-CLI_2.png" alt="Vue init webpack-simple을 입력하고 프로젝트 관련된 설정을 입력해야한다."></p>
-<p><img src="/images/20180822-vue-Vue-CLI_3.png" alt="해당 경로로 이동하면 폴더와 파일이 생성된 것을 확인 할 수 있다."></p>
-<p><strong>index.html:</strong> 뷰로 만든 웹 앱의 시작점. npm run dev 실생시 로딩되는 엔트리 파일이다.<br><strong>webpack.config.js:</strong> 웹 팩 설정파일. 웹팩 빌드를 위해 필요한 로직들을 정의 하는 파일이다.<br><strong>package.json:</strong> npm 설정파일이 있다. Vue 어플리케이션에서 필요한 라이브러리 정보를 포함하고 있다.</p>
-<p>pakcage.json을 보면 알겠지만, 초기 프로젝트 생성시 npm intall을 이용해서 라이브러리를 받아야 한다.<br>cmd 에서 npm install 을 입력하자.</p>
-<p><img src="/images/20180822-vue-Vue-CLI_4.png" alt="npm install을 입력한뒤, node_modules 폴더 생성을 확인하자."></p>
-<p>package.json 파일 내부를 보면 아래와 같은데</p>
-<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"name"</span>: <span class="string">"webpack-cli-template"</span>,</span><br><span class="line">  <span class="attr">"description"</span>: <span class="string">"vue project"</span>,</span><br><span class="line">  <span class="attr">"version"</span>: <span class="string">"1.0.0"</span>,</span><br><span class="line">  <span class="attr">"author"</span>: <span class="string">"hanumoka"</span>,</span><br><span class="line">  <span class="attr">"license"</span>: <span class="string">"MIT"</span>,</span><br><span class="line">  <span class="attr">"private"</span>: <span class="literal">true</span>,</span><br><span class="line">  <span class="attr">"scripts"</span>: &#123;</span><br><span class="line">    <span class="attr">"dev"</span>: <span class="string">"cross-env NODE_ENV=development webpack-dev-server --open --hot"</span>,</span><br><span class="line">    <span class="attr">"build"</span>: <span class="string">"cross-env NODE_ENV=production webpack --progress --hide-modules"</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">"dependencies"</span>: &#123;</span><br><span class="line">    <span class="attr">"vue"</span>: <span class="string">"^2.5.11"</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">"browserslist"</span>: [</span><br><span class="line">    <span class="string">"&gt; 1%"</span>,</span><br><span class="line">    <span class="string">"last 2 versions"</span>,</span><br><span class="line">    <span class="string">"not ie &lt;= 8"</span></span><br><span class="line">  ],</span><br><span class="line">  <span class="attr">"devDependencies"</span>: &#123;</span><br><span class="line">    <span class="attr">"babel-core"</span>: <span class="string">"^6.26.0"</span>,</span><br><span class="line">    <span class="attr">"babel-loader"</span>: <span class="string">"^7.1.2"</span>,</span><br><span class="line">    <span class="attr">"babel-preset-env"</span>: <span class="string">"^1.6.0"</span>,</span><br><span class="line">    <span class="attr">"babel-preset-stage-3"</span>: <span class="string">"^6.24.1"</span>,</span><br><span class="line">    <span class="attr">"cross-env"</span>: <span class="string">"^5.0.5"</span>,</span><br><span class="line">    <span class="attr">"css-loader"</span>: <span class="string">"^0.28.7"</span>,</span><br><span class="line">    <span class="attr">"file-loader"</span>: <span class="string">"^1.1.4"</span>,</span><br><span class="line">    <span class="attr">"vue-loader"</span>: <span class="string">"^13.0.5"</span>,</span><br><span class="line">    <span class="attr">"vue-template-compiler"</span>: <span class="string">"^2.4.4"</span>,</span><br><span class="line">    <span class="attr">"webpack"</span>: <span class="string">"^3.6.0"</span>,</span><br><span class="line">    <span class="attr">"webpack-dev-server"</span>: <span class="string">"^2.9.1"</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>scripts 부분을 보면 dev, build 명령어를 확인 할 수 있다.<br><strong>npm run dev, npm run build</strong> 명령어가 등록되어 있다.</p>
-<p><strong>npm run dev</strong>를 cmd에 입력해 보면 webpack-dev-server(node 기반 웹서버) 가 자동으로 동작하며 자동으로 브라우저가 열리며(localhost:8080) 아래처럼 방금 생성한 Vue프로젝트가 열린다.(index.html)</p>
-<p><img src="/images/20180822-vue-Vue-CLI_5.png" alt="npm run dev를 이용하여 Vue 프로젝트 실행하기."></p>
-<p>서버가 실행되어 있는 동안 코드를 수정하면 바로바로 적용된다.<br>만 그대로 개발할때 사용하는 용도이다.</p>
-<p><strong>npm run build</strong>명령을 입력하면 dist폴더에 빌드 webpack이 빌드 결과물을 생성하는데, 이부분은 webpack에 대한 지식과 vue의 실제 배포방법을 몰라서 넘어가겠다.</p>
-<p>조금더 공부하고, 다음글에서 위 Vue 프로젝트를 빌드 + 배포하는 방법을 알아보겠다.</p>
-
-      
-      
-          
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-
-  
-      
-
-
-  
-  
-  
-  
-
-        
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
-    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2018/08/21/vue-20180821-vue-develoment-enviroments-at-windows10/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Hanumoka">
-      <meta itemprop="description" content="아마추어 개발자의 블로그">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hanumoka, IT Blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2018/08/21/vue-20180821-vue-develoment-enviroments-at-windows10/" class="post-title-link" itemprop="url">Vue.js 개발환경 잡기(Widnwos10)</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">작성일</span>
-
-              <time title="Post created: 2018-08-21 10:46:34" itemprop="dateCreated datePublished" datetime="2018-08-21T10:46:34+09:00">2018-08-21</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Updated at: 2020-04-16 01:50:12" itemprop="dateModified" datetime="2020-04-16T01:50:12+09:00">2020-04-16</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/vue/" itemprop="url" rel="index">
-                    <span itemprop="name">vue</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-      <!-- 20200427hexo_post_head -->
-      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
-      <script>
-          (adsbygoogle = window.adsbygoogle || []).push({});
-      </script>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="크롬브라우저에서-Vue-개발자-도구-설치하기"><a href="#크롬브라우저에서-Vue-개발자-도구-설치하기" class="headerlink" title="크롬브라우저에서 Vue 개발자 도구 설치하기"></a>크롬브라우저에서 Vue 개발자 도구 설치하기</h3><p>크롬 웹 스토어에서 vue를 검색해서 Vue.js devtools 를 설치하자.</p>
-<p><img src="/images/20180821-vue-develoment-enviroments-at-windows10_1.png" alt="난 이미 설치가 되어있어서 평가하기 버튼으로 설치버튼이 평가하기 버튼으로 나온다."></p>
-<hr>
-<h3 id="Vue를-개발할-개발툴-Atom-을-설치하고-개발에-필요한-패키지등을-설치하기"><a href="#Vue를-개발할-개발툴-Atom-을-설치하고-개발에-필요한-패키지등을-설치하기" class="headerlink" title="Vue를 개발할 개발툴 Atom 을 설치하고, 개발에 필요한 패키지등을 설치하기"></a>Vue를 개발할 개발툴 Atom 을 설치하고, 개발에 필요한 패키지등을 설치하기</h3><p>뭐 이건 개인이 편한걸 되지만, Atom써보니 썩 괜찮은 툴인거 같다.<br>뭔가 툴이 찰지다고 해야 하나? 타이핑하면서 툴의 반응이 찰지다.</p>
-<p><img src="/images/20180821-vue-develoment-enviroments-at-windows10_2.png" alt="그냥 홈페이지 가서 설치하면 된다."></p>
-<p>설치가 완료되면, 테마를 바꿔보자.</p>
-<h4 id="아톰-테마-설치"><a href="#아톰-테마-설치" class="headerlink" title="아톰 테마 설치"></a>아톰 테마 설치</h4><p><img src="/images/20180821-vue-develoment-enviroments-at-windows10_3.png" alt="file -&gt; settings -&gt; Install 로 이동하여 Themes 를 선택하고 seti-ui 를 검색하여 Install 하자."></p>
-<p>seti-ui를 설치한뒤 atom-material-syntax-dark 도 검색하여 설치하자.<br>seti-ui는 직관적인 파일아이콘등을 표시해주는 테마이고, atom-material-syntax-dark는 자바스크립트 코드 구문을 강조해주는 테마이다.</p>
-<p><img src="/images/20180821-vue-develoment-enviroments-at-windows10_4.png" alt="atom-material-syntax-dark 테마도 설치하자."></p>
-<p>Atom에서는 설치한 테마를 수동으로 적용해 줘야 한다.<br>Settins의 Themes로 이동하여 Ui Theme에 방금 설치한 seti를 선택하자.</p>
-<p><img src="/images/20180821-vue-develoment-enviroments-at-windows10_5.png" alt="선택하면 그 즉시 테마가 적용된다. 기본테마보다는 뭔가 뚜렷하고 색감이 진해져서 보기가 좋다."></p>
-<p><img src="/images/20180821-vue-develoment-enviroments-at-windows10_6.png" alt="Syntax Theme도 방금 설치한 atom material dark로 변경해주자. 이녀석은 소스 구문테마라 지금 딱히 변화는 없다."></p>
-<h4 id="아톰-패키지-설치"><a href="#아톰-패키지-설치" class="headerlink" title="아톰 패키지 설치"></a>아톰 패키지 설치</h4><p>이번에는 Atom에서 Vue 개발시 쓸만한 패키지를 설치해보자.<br>Settings의 Install 탭으로 가서 Packages 버튼을 클릭하자.<br>검색어로 language-vue 를 검색해서 설치하자.</p>
-<p><img src="/images/20180821-vue-develoment-enviroments-at-windows10_7.png" alt="패키지는 테마와 달리 설치히 바로 적용이 된다."></p>
-<p><img src="/images/20180821-vue-develoment-enviroments-at-windows10_8.png" alt="테마가 적용되어 파일확장자에 따라 아이콘이 다른것을 확인 할수 있다."></p>
-<p>그리고 language-vue 가 아주 편한점이 있는데, 이 패키지는 vue 파일에서 태그를 아주 쉽게 생성해준다.<br>vue 파일에서 작성을 하고 싶은 태그를 그냥 타이핑하다가 tab을 누르면 자동으로 생성해준다.</p>
-<p>예를 들어 html태그를 생성하고 싶다면, 그냥 htm까지만(꺽쇠는 빼고) 치고 탭을 누르면 아래처럼 자동으로 생성해준다.</p>
-<p><img src="/images/20180821-vue-develoment-enviroments-at-windows10_9.png" alt="원하는 태그를 꺽쇠 없이 치다가 tab을 눌러주면"></p>
-<p><img src="/images/20180821-vue-develoment-enviroments-at-windows10_10.png" alt="이렇게 자동으로 만들어준다."></p>
-<p>vue에서 tempate, script, style 태그등을 자주 사용하는데 아주 편한 기능인 것 같다.</p>
-<hr>
-<h3 id="Node-js-설치하기"><a href="#Node-js-설치하기" class="headerlink" title="Node.js 설치하기"></a>Node.js 설치하기</h3><p>뭐 Angular오 마찬가지로 Vue의 다양한 프로토타이핑 프로젝트를 CLI로 생성하기 위해서 반드시 필요하다.<br>이것도 그냥 홈페이지 가서 설치하면 된다.<br>다만 LTS 버전 설치를 추천한다.</p>
-<p><img src="/images/20180821-vue-develoment-enviroments-at-windows10_11.png" alt="그냥 설치해주면 된다."></p>
-<p><img src="/images/20180821-vue-develoment-enviroments-at-windows10_12.png" alt="설치가 끝난다음, cmd 에서 node -v 를 입력해서 버전확인을 할 수 있다."></p>
-<h3 id="Vue-CLI-설치하고-간단한-Vue-프로젝트를-만들어-실행해보자"><a href="#Vue-CLI-설치하고-간단한-Vue-프로젝트를-만들어-실행해보자" class="headerlink" title="Vue CLI 설치하고 간단한 Vue 프로젝트를 만들어 실행해보자."></a>Vue CLI 설치하고 간단한 Vue 프로젝트를 만들어 실행해보자.</h3><p>cmd 창을 열고 <strong>install vue-cli -global</strong>을 입력하여 Vue CLI를 설치하자.<br>이것을 설치하면 터미널에서 커맨드 명령어로 다양한 Vue 프로토타입 프로젝트를 생성 할 수있다.</p>
-<p><img src="/images/20180821-vue-develoment-enviroments-at-windows10_13.png" alt="터미널을 열고 install vue-cli -global를 입력하여 설치."></p>
-<p>설치가 끝나면 vue명령어를 입력해보자.<br>vue list를 입력하면 생성할수 있는 vue 프로토타입 프로젝트의 종류가 보인다.</p>
-<p><img src="/images/20180821-vue-develoment-enviroments-at-windows10_14.png" alt="vue 명령어로 vue 설치 확인."></p>
-<p><strong>Vue.js 개발환경 만들기 끝!!!</strong></p>
-<hr>
-<h3 id="마무리"><a href="#마무리" class="headerlink" title="마무리"></a>마무리</h3><p>다음 글에서는 Vue CLI 로 간단한 프로젝트를 만드는 방법에 대해서 알아보겠다.</p>
-
-      
-      
-          
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-
-  
-      
-
-
-  
-  
-  
-  
-
-        
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
-    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2018/08/19/programing-etc-20180819-log4j-logback-log4j2-SLF4J/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Hanumoka">
-      <meta itemprop="description" content="아마추어 개발자의 블로그">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hanumoka, IT Blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2018/08/19/programing-etc-20180819-log4j-logback-log4j2-SLF4J/" class="post-title-link" itemprop="url">Log4j, Log4j2, Logback, SLF4J 간단 용어정리</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">작성일</span>
-
-              <time title="Post created: 2018-08-19 16:38:14" itemprop="dateCreated datePublished" datetime="2018-08-19T16:38:14+09:00">2018-08-19</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Updated at: 2020-04-16 01:50:12" itemprop="dateModified" datetime="2020-04-16T01:50:12+09:00">2020-04-16</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/programing-etc/" itemprop="url" rel="index">
-                    <span itemprop="name">programing_etc</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-      <!-- 20200427hexo_post_head -->
-      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
-      <script>
-          (adsbygoogle = window.adsbygoogle || []).push({});
-      </script>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h3><p>그냥 맥락정도만 파악을 위해 후려친 용어정리이다. </p>
-<hr>
-<h3 id="log4j-logj42-logback-이란-무엇인가"><a href="#log4j-logj42-logback-이란-무엇인가" class="headerlink" title="log4j, logj42, logback 이란 무엇인가?"></a>log4j, logj42, logback 이란 무엇인가?</h3><p>3개다 Java기반 로깅 유틸리이다.<br>일단 간단히 시간 순서로 보면 Log4j -&gt; Logback -&gt; Log4j2 순서이다.<br>즉 Log4j2가 가장 진화?된 로그 유틸리티이다.<br>Logback, Log4j2 둘다 Log4j를 기반으로 하고 있어서 설정방법, 사용법 등이 비슷하다.(정확하게 같지는 않다.)<br>Logback은 약간 Log4j의 서자 느낌, Log4j2는 말그대로 Log4j의 2버전으로 적자의 느낌이 강하다.</p>
-<hr>
-<h3 id="SLF4J-Simple-Logging-Facade-for-Java-란"><a href="#SLF4J-Simple-Logging-Facade-for-Java-란" class="headerlink" title="SLF4J(Simple Logging Facade for Java) 란?"></a>SLF4J(Simple Logging Facade for Java) 란?</h3><p>java 진영에 java.util.logging, Logback, Log4j와 같이 다양한 Loging framework가 있다.<br>문제는 이 각각 Loging framework의 사용법이 다르다는 것이다.</p>
-<p>SLF4J는 java 진영의 Loging framwork들의 fascede(추상체) 역할을 한다.<br>인터페이스와 비슷한 역할을 하여, 사용중인 Loging framework 가 변경되더라도 Java 소스코드의 변경을 방지해준다.</p>
-<p>Spring MVC lagacy 프로젝트를 생성하면, 기본적으로 SLF4J + Log4j 구조로 되어있다.</p>
-<p><img src="/images/20180819-log4j-logback-log4j2-SLF4J_1.png" alt="Spring MVC lagacy 기본 로깅 라이브러리"></p>
-<hr>
-<h3 id="마무리"><a href="#마무리" class="headerlink" title="마무리"></a>마무리</h3><p>아무래도 최신 로깅유틸인 Log4j2 를 사용하는 것이 좋아보인다.<br>Log4j는 java 버전에 올라갈수록 호환이 안될 가능성이 있다는 풍문이 있다.</p>
-
-      
-      
-          
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-
-  
-      
-
-
-  
-  
-  
-  
-
-        
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
-    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2018/08/18/chrome-20180818-google-app-Restlet-Client/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Hanumoka">
-      <meta itemprop="description" content="아마추어 개발자의 블로그">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hanumoka, IT Blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2018/08/18/chrome-20180818-google-app-Restlet-Client/" class="post-title-link" itemprop="url">Chrome 웹스토어 - Restlet Client(REST 요청결과 받을수 있는 툴)</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">작성일</span>
-
-              <time title="Post created: 2018-08-18 22:00:31" itemprop="dateCreated datePublished" datetime="2018-08-18T22:00:31+09:00">2018-08-18</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Updated at: 2020-04-16 01:50:11" itemprop="dateModified" datetime="2020-04-16T01:50:11+09:00">2020-04-16</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/chrome/" itemprop="url" rel="index">
-                    <span itemprop="name">chrome</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-      <!-- 20200427hexo_post_head -->
-      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
-      <script>
-          (adsbygoogle = window.adsbygoogle || []).push({});
-      </script>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h1><p>REST를 개발할때에는 웹 페이지가 존재하지 않을 경우가 있다.<br>하지만 구글 크롬에서 REST요청에 대한 결과를 받아볼수 있는 도구가 있어 간편하게 테스트가 가능하다.</p>
-<p>Chrome 웹스토어 스토어에서 rest client 라고 검색해보자.</p>
-<p><img src="/images/20180818-google-app-Restlet-Client_1.png" alt="확장 프로그램으로 Restlet Client - REST API Testing이라는 도구가 있다 설치하자."></p>
-<p><img src="/images/20180818-google-app-Restlet-Client_2.png" alt="설치하면 크롬창에 작은 아이콘이 생긴다."></p>
-<p>아이콘을 클릭해서 들어가면 다음과 같은 창이 나오는데, 여기에 원하는 REST응답을 해줄 URL을 입력하고 send를 보내면 그 결과를 받아 볼수 있다.<br>테스트 해본결과 REST뿐만 아니라 일반 URI 요청에서도 동작을 한다. </p>
-<p><img src="/images/20180818-google-app-Restlet-Client_3.png" alt="REST요청에 대한 결과 확인."></p>
-
-      
-      
-          
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-
-  
-      
-
-
-  
-  
-  
-  
-
-        
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
-    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2018/08/18/web-20180818-web-http-status-code/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Hanumoka">
-      <meta itemprop="description" content="아마추어 개발자의 블로그">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hanumoka, IT Blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2018/08/18/web-20180818-web-http-status-code/" class="post-title-link" itemprop="url">많이 사용되는 http 상태 코드(http status code)</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">작성일</span>
-
-              <time title="Post created: 2018-08-18 21:41:22" itemprop="dateCreated datePublished" datetime="2018-08-18T21:41:22+09:00">2018-08-18</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Updated at: 2020-04-16 01:50:12" itemprop="dateModified" datetime="2020-04-16T01:50:12+09:00">2020-04-16</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/web/" itemprop="url" rel="index">
-                    <span itemprop="name">web</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-      <!-- 20200427hexo_post_head -->
-      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
-      <script>
-          (adsbygoogle = window.adsbygoogle || []).push({});
-      </script>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="100번대-데이터의-처리중인-상태"><a href="#100번대-데이터의-처리중인-상태" class="headerlink" title="100번대: 데이터의 처리중인 상태"></a>100번대: 데이터의 처리중인 상태</h3><ul>
-<li>100: 데이터의 일부를 서버가 받은 상태</li>
-</ul>
-<h3 id="200번대-정상적인-응답"><a href="#200번대-정상적인-응답" class="headerlink" title="200번대: 정상적인 응답"></a>200번대: 정상적인 응답</h3><ul>
-<li>200: 에러 없이 정상처리</li>
-<li>204: 정상처리 되었으나 서버에서 보내줄 데이터 없음</li>
-</ul>
-<h3 id="300번대-다른-URL-처리"><a href="#300번대-다른-URL-처리" class="headerlink" title="300번대: 다른 URL 처리"></a>300번대: 다른 URL 처리</h3><ul>
-<li>301: 요청된 페이지가 새 URL로 변경되었음</li>
-<li>304: 이미 기존의 데이터와 변경된 것이 없음</li>
-</ul>
-<h3 id="400번대-서버에서-인식할-수-없음"><a href="#400번대-서버에서-인식할-수-없음" class="headerlink" title="400번대: 서버에서 인식할 수 없음"></a>400번대: 서버에서 인식할 수 없음</h3><ul>
-<li>400: 전송된 Request에 문제가 있어서 서버에가 인식할 수 없음</li>
-<li>403: 서버에서 허락되지 않음</li>
-<li>404: URL에 해당하는 자원을 찾을 수 없음</li>
-<li>406: 전송 방식이 허락되지 않음 (REST에서 자주 발생)</li>
-</ul>
-<p><img src="/images/20180818-web-http-status-code_1.png" alt="가장 많이 보는 404"></p>
-<h3 id="500번대-서버-내부의-문제"><a href="#500번대-서버-내부의-문제" class="headerlink" title="500번대: 서버 내부의 문제"></a>500번대: 서버 내부의 문제</h3><ul>
-<li>500: 서버에서 처리 시 문제가 발생</li>
-<li>502: 게이트웨이나ㅐ 프록시 상태의 문제(과부하 등)</li>
-<li>503: 일시적인 과부하나 서비스 중단 상태</li>
-<li>504: 지정된 처리시간이 지나서 처리되지 못함</li>
-</ul>
-
-      
-      
-          
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-
-  
-      
-
-
-  
-  
-  
-  
-
   </div>
 
   
@@ -1513,7 +1548,7 @@ gtag('config', 'UA-100596920-1');
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">214</span>
+          <span class="site-state-item-count">219</span>
           <span class="site-state-item-name">포스트</span>
         </a>
       </div>
@@ -1526,7 +1561,7 @@ gtag('config', 'UA-100596920-1');
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">585</span>
+        <span class="site-state-item-count">592</span>
         <span class="site-state-item-name">태그</span></a>
       </div>
   </nav>
@@ -1568,7 +1603,7 @@ gtag('config', 'UA-100596920-1');
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>

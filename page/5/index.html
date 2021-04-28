@@ -245,6 +245,755 @@ gtag('config', 'UA-100596920-1');
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2019/10/04/springBoot-20191004-springboot-gradle-multimodule/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Hanumoka">
+      <meta itemprop="description" content="아마추어 개발자의 블로그">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hanumoka, IT Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/10/04/springBoot-20191004-springboot-gradle-multimodule/" class="post-title-link" itemprop="url">springboot - gradle을 이용한 멀티모듈 프로젝트 만들기</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">작성일</span>
+
+              <time title="Post created: 2019-10-04 01:54:26" itemprop="dateCreated datePublished" datetime="2019-10-04T01:54:26+09:00">2019-10-04</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Updated at: 2020-04-16 01:50:12" itemprop="dateModified" datetime="2020-04-16T01:50:12+09:00">2020-04-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/springBoot/" itemprop="url" rel="index">
+                    <span itemprop="name">springBoot</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 20200427hexo_post_head -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="springboot-gradle-멀티모듈-프로젝트-만들기"><a href="#springboot-gradle-멀티모듈-프로젝트-만들기" class="headerlink" title="springboot gradle 멀티모듈 프로젝트 만들기"></a>springboot gradle 멀티모듈 프로젝트 만들기</h1><h1 id="개발환경"><a href="#개발환경" class="headerlink" title="개발환경"></a>개발환경</h1><p>windows10</p>
+<p>intelliJ 커뮤니티 버전</p>
+<p>jdk1.8</p>
+<h1 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h1><p>intelliJ 에서 gradle 기반 springboot 멀티 모듈 프로젝트를 한번 만들어보자.</p>
+<p>멀티모듈을 어떻게 디자인 해야하는지는 다루지 않고, gradle을 이용해서 어떻게 모듈을 생성하고 모듈간의 의존성을 셋팅을 하는가에 중점을 둔 글이다.</p>
+<h3 id="1-인텔리J에서-gradle-프로젝트-생성"><a href="#1-인텔리J에서-gradle-프로젝트-생성" class="headerlink" title="1. 인텔리J에서 gradle 프로젝트 생성"></a>1. 인텔리J에서 gradle 프로젝트 생성</h3><p>일단 intelliJ 에서 gradle 프로젝트를 생성하자.</p>
+<p><a href="http://start.spring.io" target="_blank" rel="external nofollow noopener noreferrer">http://start.spring.io</a> 로 이동해서 spring boot gradle 프로젝트를 생성하자.</p>
+<p>(나는 인텔리J 커뮤니티 버전을 사용중이라 springboot 프로젝트를 생성할 때 주로 <a href="http://start.spring.io" target="_blank" rel="external nofollow noopener noreferrer">http://start.spring.io</a> 를 주로 사용한다.)</p>
+<p>아래처럼 설정하여 프로젝트를 생성하자.</p>
+<p><strong>Project</strong> : Gradle Project</p>
+<p><strong>Language</strong>: Java</p>
+<p><strong>Spring Boot</strong>: 2.1.9(현재 2점대 이상으로 선택하면 될듯)</p>
+<p><strong>Project Metadata</strong></p>
+<p><strong>Group</strong> : com.hanumoka.go</p>
+<p><strong>Artifact</strong> : go-modules</p>
+<p><strong>Option</strong> </p>
+<p><strong>Packaging</strong>: War</p>
+<p><strong>Java</strong> : 8</p>
+<p><strong>Dependencies</strong>: Spring web, Thymeleaf</p>
+<p>위에서 중요한 부분은 Group이다. </p>
+<p>com.hanumoka.go는 이 프로젝트의 공통 패키지이며, Artifact: go-modules 는 실제 생성되는 실행 프로그램을 구별하는 명칭이 아니라 모듈의 묶음일 뿐이다.</p>
+<p>개인적으로 프로젝트를 war로 설정해서 생성한 이유는 애시당초 war로 프로젝트를 생성하면 프로젝트 빌드시 war, jar 빌드가 쉽기 때문이다.</p>
+<p><img src="/images/2019/Untitled-5341e670-96cc-4c30-87ce-b3b5e1f8f70e.png" alt></p>
+<p><img src="/images/2019/Untitled-74760319-2255-4c62-8e0e-420b86d1ff1f.png" alt></p>
+<p><img src="/images/2019/Untitled-d9a4929d-6637-4b35-abe6-7f30e72831a3.png" alt></p>
+<p>Spring web은 필수이며  Thymeleaf 스프링 컨트롤러의 동작을 확인하기 위해 추가했다.</p>
+<p>설정된 값을을 이용해서 압축된 프로젝트를 다운로드 하자.</p>
+<p><img src="/images/2019/Untitled-b2e2e41a-d83f-42c6-8d3a-b8be0f1620e9.png" alt></p>
+<p>해당 파일을 압축을 풀고 intelliJ로 open하자.</p>
+<p><img src="/images/2019/Untitled-cb15ce0d-2329-42a8-a064-88a35931aa4f.png" alt></p>
+<p>위처럼 gradle 이 제대로 빌드 되는지 확인하자.</p>
+<p>컨트롤러와 html 페이지를 추가해서 스프링 컨트롤러 동작을 한번 시켜보자.</p>
+<p>com.hanumoka.go.gomodules 패키지를 선택하고 controller 패키지를 생성하고, HomeController를 생성하고 html을 리다이렉팅 할 수 있는 RequestMapping 메소드를 추가하자.</p>
+<p><img src="/images/2019/Untitled-1de55a38-69bf-4f45-aa47-c4b608000a3a.png" alt></p>
+<p><img src="/images/2019/Untitled-453cfccc-a5da-4ab9-bc06-32d1dd1da2d8.png" alt></p>
+<p>GoModulesApplication 를 선택하고 run 시켜서, <a href="http://localhost:8080" target="_blank" rel="external nofollow noopener noreferrer">http://localhost:8080</a> 로 접속해서 컨트롤러가 동작하는지 보자.</p>
+<p><img src="/images/2019/Untitled-a0b353dd-cff9-46b3-91e9-162e3b25cf80.png" alt></p>
+<p><img src="/images/2019/Untitled-c37042c7-7134-4ea7-a560-0d269625b277.png" alt></p>
+<p>스프링 컨트롤러가 정상 동작하는 것을 확인 할 수 있다.</p>
+<h3 id="2-모듈-추가하기"><a href="#2-모듈-추가하기" class="headerlink" title="2. 모듈 추가하기"></a>2. 모듈 추가하기</h3><p>1번에서 한 일은 그냥 gradle 기반 springboot 프로젝트를 생성하고 동작시킨 것이다.</p>
+<p>이제 실제 사용할 모듈을 구상하고 추가하고 셋팅해야 한다.</p>
+<p>이 글은 gradle환경에서 springboot 프로젝트에서 모듈을 추가하고 연결하는 설정을 기록하는데 초점을 두고 있다.</p>
+<p>따라서 간단하게 Service 모듈과 Controller 모듈을 생성하고 Controller 모듈이 Service 모듈을 사용하는 시나리오로 진행 하겠다.</p>
+<p>실제 모듈을 설계하고 구성하는 일은 많은 고심이 필요해 보인다.(이부분은 나중에 좀 연구해 봐야 겠다.)</p>
+<p><img src="/images/2019/Untitled-763d4bb6-6264-4ddd-ad37-e1bbf1583016.png" alt></p>
+<p>일단 프로젝트 루트 경로의 build.gradle, settigns.gradle 은 프로젝트 전체에 적용되는 설정 파일이다. </p>
+<p>사실 gradle을 잘 몰라 자세한 설명을 할 수가 없다. </p>
+<p>하지만 이후로 추가될 모듈에 관련된 공통적인 설정은 이 두 파일에 기술된다.</p>
+<p><img src="/images/2019/Untitled-0409dc23-9fe8-4d84-af69-622f0b2d146c.png" alt></p>
+<p>그리고 프로젝트 루트 경로의 src 폴더는 모듈을 추가함으로써 사라질 예정이다.</p>
+<p><img src="/images/2019/Untitled-1bf0b85f-d119-4e8d-8e5a-1ff8ff2e5f39.png" alt></p>
+<h3 id="일단-a-module-이라는-이름의-모듈을-추가해보자"><a href="#일단-a-module-이라는-이름의-모듈을-추가해보자" class="headerlink" title="일단 a-module 이라는 이름의 모듈을 추가해보자."></a>일단 a-module 이라는 이름의 모듈을 추가해보자.</h3><p>일단 루트 경로의 settings.gradle을  확인해보자.</p>
+<p>아래처럼 루트 프로젝트 네임만 있을 것이다. 나중에 모듈을 추가하면 모듈 정보가 추가될 것이다.</p>
+<p>일단 넘어가자.</p>
+<pre><code>rootProject.name = &apos;go-modules&apos;</code></pre><p>그리고 루트 경로의 build.gradle 파일을 열어서 내용물을 모두 지우고 아래 내용으로 치환하자.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">buildscript &#123;</span><br><span class="line">    ext &#123;</span><br><span class="line">        springBootVersion &#x3D; &#39;2.1.9.RELEASE&#39;</span><br><span class="line">    &#125;</span><br><span class="line">    repositories &#123;</span><br><span class="line">        mavenCentral()</span><br><span class="line">    &#125;</span><br><span class="line">    dependencies &#123;</span><br><span class="line">        classpath(&quot;org.springframework.boot:spring-boot-gradle-plugin:$&#123;springBootVersion&#125;&quot;)</span><br><span class="line">        classpath &quot;io.spring.gradle:dependency-management-plugin:1.0.8.RELEASE&quot;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">subprojects &#123;</span><br><span class="line"></span><br><span class="line">    apply plugin: &#39;java&#39;</span><br><span class="line">    apply plugin: &#39;eclipse&#39;</span><br><span class="line">    apply plugin: &#39;org.springframework.boot&#39;</span><br><span class="line">    apply plugin: &#39;io.spring.dependency-management&#39;</span><br><span class="line"></span><br><span class="line">    group &#x3D; &#39;com.hanumoka.go&#39;</span><br><span class="line">    version &#x3D; &#39;0.0.0&#39;</span><br><span class="line">    sourceCompatibility &#x3D; 1.8</span><br><span class="line"></span><br><span class="line">    repositories &#123;</span><br><span class="line">        mavenCentral()</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    task initSourceFolders &#123;</span><br><span class="line">        sourceSets*.java.srcDirs*.each &#123;</span><br><span class="line">            if( !it.exists() ) &#123;</span><br><span class="line">                it.mkdirs()</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        sourceSets*.resources.srcDirs*.each &#123;</span><br><span class="line">            if( !it.exists() ) &#123;</span><br><span class="line">                it.mkdirs()</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    dependencies &#123;</span><br><span class="line">        compileOnly(&#39;org.projectlombok:lombok&#39;)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>buildscript  부분에서 공통 스브링부트 버전등을 설정한다.</p>
+<p>subprojects 는 추가될 모듈둘에 공통적으로 적용될 내용들이 기술되어 있다.</p>
+<p>이제 a-module 을 추가해보자. 아래처럼 모듈을 클릭하자.</p>
+<p><img src="/images/2019/Untitled-64586004-bf5a-4a95-af5d-2c80215154e5.png" alt></p>
+<p>아래 내용을 확인하고 next 버튼을 클릭하자.</p>
+<p><img src="/images/2019/Untitled-728f02ae-0958-433b-aded-dfc20c6639c0.png" alt></p>
+<p>아래처럼 GroupId : com.hanumoka.go</p>
+<p>ArtifactId : a-module 를 입력하고 next 를 클릭하자.</p>
+<p><img src="/images/2019/Untitled-3919234e-a81d-45fa-a06c-07f35ff6d8c2.png" alt></p>
+<p>a-module 이라는 모듈명을 확인하고 Finish 버튼을 클릭하자.</p>
+<p><img src="/images/2019/Untitled-cdbb921e-edd1-48e7-8419-f4f584e6e5e6.png" alt></p>
+<p>아래처럼 a-module이 추가되었다. 하늘색 작은 상자가 표시 되어 있는데, 이것이 모듈을 의미한다.</p>
+<p><img src="/images/2019/Untitled-9e0e20d4-d3d0-4bfb-8da3-b0fa3b9190a0.png" alt></p>
+<p>모듈을 추가했으니 프로젝트 루트 경로의 settings.gradle 파일을 열어보자.</p>
+<p>아래처럼 include ‘a-module’ 이라는 내용이 자동으로 추가된 것을 확인 할 수 있다.</p>
+<p>만약 없다면, 추가해주자.</p>
+<p><img src="/images/2019/Untitled-d4e72ab9-3593-449c-8bcf-074294dda1a3.png" alt></p>
+<p>그리고 루트 경로의 settings.gradle 파일을 열어보자.</p>
+<p>그리고 아래 내용을 추가해주자. 프로젝트해당 모듈이 있다고 등록하는 것이다. 나중에 이 모듈에 대한 디펜던시도 추가할 것이다.</p>
+<pre><code>project(&apos;:a-module&apos;) {
+}</code></pre><p><img src="/images/2019/Untitled-8ef73c78-899a-4472-acd5-7c4fd6dab19c.png" alt></p>
+<p>이제 생성했던 a-module 폴더로 들어가서 a-module 폴더의 build.gradle 파일을 열어보자.</p>
+<p>기존의 내용들을 지우고 아래 내용으로 치환하자.</p>
+<p>이 파일은 a-module을 위한 독자적인 파일이다.</p>
+<pre><code>dependencies {
+    compile(&apos;org.springframework.boot:spring-boot-starter-thymeleaf&apos;)
+    compile(&apos;org.springframework.boot:spring-boot-starter-web&apos;)
+    testCompile(&apos;org.springframework.boot:spring-boot-starter-test&apos;)
+}</code></pre><p><img src="/images/2019/Untitled-4f8a1a40-e697-482a-8733-3e0c749dcf7b.png" alt></p>
+<p>그리고 아래처럼 모듈 내부의 패키지와 파일들을 구성하자.</p>
+<p><img src="/images/2019/Untitled-cc91f841-ef40-40ed-9499-79c23105eb78.png" alt></p>
+<p><strong>공통 패키지는 com.hanumoka.go 이다.</strong></p>
+<p><strong>BeanScan의 기준이 되는 AmoduleApp.class, ServletInitializer.class 는 이곳이 둬야 한다.</strong></p>
+<p>아래 AmoduleApp.class 파일이다.</p>
+<pre><code>package com.hanumoka.go;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class AmoduleApp {
+    public static void main(String[] args) {
+        SpringApplication.run(AmoduleApp.class, args);
+    }
+}</code></pre><p>아래 ServletInitializer.class 파일이다.</p>
+<pre><code>package com.hanumoka.go;
+
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
+
+public class ServletInitializer extends SpringBootServletInitializer {
+
+    @Override
+    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+        return application.sources(AmoduleApp.class);
+    }
+
+}</code></pre><p>아래 HomeController.class 이다.</p>
+<p>추가한 a-module을 다른 모듈과 구분하기 위해 amodule 을 추가했다.</p>
+<pre><code>package com.hanumoka.go.amodule.controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+@Controller
+public class HomeController {
+
+    @RequestMapping(&quot;/&quot;)
+    public String index(){
+        return &quot;index&quot;;
+    }
+}</code></pre><p>기존에 루트 경로에 있던 src 폴더 내부를 옮겨와서 AmoduleApp 파일명만 변경한 것이다.</p>
+<p>그리고 루트 경로의 src 폴더를 제거하자.</p>
+<p>지금까지 작업은 기존의 단일 프로젝트의 src를 a-module로 옮긴것이다.</p>
+<p>AmoduleApp 을 실행 하면, 스프링 앱이 동작하고 <a href="http://localhost:8080" target="_blank" rel="external nofollow noopener noreferrer">http://localhost:8080</a> 접근시 index.html 이 보여야 한다.</p>
+<p>지금까지 한 작업으로 springboot 단일 프로젝트를 springboot 모듈 프로젝트로 변경 되었다.</p>
+<p>이제 b-module을 추가하고 a-module에서 b-module을 사용하는 구조로 만들어보자.</p>
+<h3 id="b-module-이라는-모듈-추가하기"><a href="#b-module-이라는-모듈-추가하기" class="headerlink" title="b-module 이라는 모듈 추가하기"></a>b-module 이라는 모듈 추가하기</h3><p>앞서 a-module 추가하듯이 b-module도 추가하자.</p>
+<p>아래와 같은 구조가 될 것이고, src 폴더는 앞에서 말한것 처럼 제거 했다.</p>
+<p><img src="/images/2019/Untitled-eb7e58f7-4c94-4821-9647-63d58d52c801.png" alt></p>
+<p>루트 경로에 settings.gradle 폴더르르 보면 역시 b-module 이 추가된 것을 볼 수 있다.</p>
+<p><img src="/images/2019/Untitled-2a9d2015-3aa7-4c45-ae73-e04758fb8bcb.png" alt></p>
+<p>루트 경로의 build.gradle 에 가서 앞서 등록했던 a-module에 dependencies 를 방금 추가한 b-module 로 추가하자.</p>
+<p>해당 내용은 a-modul이 b-module에 의존성을 갖는다는 것이다.</p>
+<pre><code>project(&apos;:a-module&apos;) {
+    dependencies {
+        compile project(&apos;:b-module&apos;)
+    }
+}</code></pre><p><img src="/images/2019/Untitled-a5baeacc-585a-4ad5-90dd-24effcf2ab22.png" alt></p>
+<p>b-module을 열고 아래처럼 구성하자.</p>
+<p>b-module은 a-module에서 사용할 서비스로 Bservice.class를 제공한다.</p>
+<p><img src="/images/2019/Untitled-e2cf2f53-0c69-4946-b61f-ffb807c0fdfd.png" alt></p>
+<p>Bservice.class</p>
+<pre><code>package com.hanumoka.go.bmodule.service;
+
+import org.springframework.stereotype.Service;
+
+@Service
+public class Bservice {
+    public String test(){
+        return &quot;Bservice test()...&quot;;
+    }
+}</code></pre><p>그리고 b-module 하위이 build.gradle 을 아래로 치환 했다.</p>
+<pre><code>bootJar{
+    enabled = false;
+}
+jar {
+    enabled = true;
+}
+
+dependencies {
+    compile(&apos;org.springframework.boot:spring-boot-starter&apos;)
+}</code></pre><h3 id="A-module-컨트롤러에서-B-module-서비스를-사용해보자"><a href="#A-module-컨트롤러에서-B-module-서비스를-사용해보자" class="headerlink" title="A-module 컨트롤러에서 B-module 서비스를 사용해보자."></a>A-module 컨트롤러에서 B-module 서비스를 사용해보자.</h3><p>A-module의 HomeController.class를 아래처럼 수정하자.</p>
+<pre><code>package com.hanumoka.go.amodule.controller;
+
+import com.hanumoka.go.bmodule.service.Bservice;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+@Controller
+public class HomeController {
+
+    @Autowired
+    Bservice bservice;
+
+    @RequestMapping(&quot;/&quot;)
+    public String index(){
+
+        System.out.println(bservice.test());
+        return &quot;index&quot;;
+    }
+}</code></pre><p><img src="/images/2019/Untitled-c078d4ae-a987-432f-857e-3aa2797fcdbd.png" alt></p>
+<p>이제 a-module의 AmoduleApp을 실행해서 a-module의 컨트롤러가 동작할때 b-module의 서비스를 호출하는지 확인해보자.</p>
+<p>아래처럼 동작을 확인 할 수 있다.</p>
+<p><img src="/images/2019/Untitled-f2b2ebe0-c361-4915-86dc-2941cf8b1bfc.png" alt></p>
+<p>go-module 을 빌드하면 아래처럼 a-module 의 빌드 결과물을 확인 할 수 있다.</p>
+<p>화면에는 안 보이지만 b-module 역시 빌드 결과물이 생겼다.</p>
+<p>하지만 a-module에만 SpringBootApplication을 등록했으므로, 실제 실행 시킬수 있는 jar 파일은</p>
+<p>a-module-0.0.0.jar 이다.</p>
+<p><img src="/images/2019/Untitled-97d20444-23a5-49dc-b013-d79fa718d076.png" alt></p>
+<p>직접 jar를 실행시켜, 정상동작을 확인하자.</p>
+<pre><code>java -jar a-module-0.0.0.jar </code></pre><h3 id="마무리"><a href="#마무리" class="headerlink" title="마무리"></a>마무리</h3><p>이 글에서는 간단하게 gradle 기반으로 spring boot 멀티 모듈을 구축하는 방법을 정리하였다.</p>
+<p>사실 실제 멀티 모듈을 설계하고 구축하는 일은 어려운 일이고, 많은 고민이 필요해 보인다.</p>
+<p>하지만 나처럼 gradle 자체를 잘 모르는 사람은 실제 구축 자체가 어려운 일이므로 이렇게 기록해 놓는다.</p>
+<p><strong>해당 예제는 아래 github에 올려놓았다.</strong></p>
+<p><a href="https://github.com/hanumoka/springboot_gradle_multimodule" target="_blank" rel="external nofollow noopener noreferrer">https://github.com/hanumoka/springboot_gradle_multimodule</a></p>
+<h3 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h3><p><a href="https://bkjeon1614.tistory.com/38" target="_blank" rel="external nofollow noopener noreferrer">https://bkjeon1614.tistory.com/38</a></p>
+
+      
+      
+          
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+      
+
+
+  
+  
+  
+  
+
+        
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2019/09/21/spring-20190921-spring-mybatis-sqlinjectionsafe/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Hanumoka">
+      <meta itemprop="description" content="아마추어 개발자의 블로그">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hanumoka, IT Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/09/21/spring-20190921-spring-mybatis-sqlinjectionsafe/" class="post-title-link" itemprop="url">springboot mybatis ${} 사용시 sql injection 방어하기</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">작성일</span>
+
+              <time title="Post created: 2019-09-21 13:51:59" itemprop="dateCreated datePublished" datetime="2019-09-21T13:51:59+09:00">2019-09-21</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Updated at: 2020-04-16 01:50:12" itemprop="dateModified" datetime="2020-04-16T01:50:12+09:00">2020-04-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/spring/" itemprop="url" rel="index">
+                    <span itemprop="name">spring</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 20200427hexo_post_head -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="개발환경"><a href="#개발환경" class="headerlink" title="개발환경"></a>개발환경</h1><p>springboot</p>
+<p>jdk1.8</p>
+<p>mysql</p>
+<p>mybatis</p>
+<h1 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h1><p>spring 개발을 할때, 난 일반적으로 mybatis를 사용했다.</p>
+<p>음 빨리 JPA도 공부를 해야 할거 같다.</p>
+<p>일반적으로 mybatis를 사용할 경우 ${param1}, #{param2} 이렇게 두가지 방식으로  파라미터를 받을 수 있다.</p>
+<p>나는 보통 #{param2} 를 사용해서, 파라미터를 받는다.</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> *</span><br><span class="line"><span class="keyword">FROM</span> <span class="keyword">USERS</span></span><br><span class="line"><span class="keyword">WHERE</span> <span class="number">1</span>=<span class="number">1</span></span><br><span class="line"><span class="keyword">AND</span> USER_ID = <span class="comment">#&#123;userId&#125;</span></span><br></pre></td></tr></table></figure>
+
+
+<p>#{} 는 내부적으로 PreparedStatement를 사용하기 때문에  SQLInjection 공격에 안전하기 때문이다.</p>
+<p>참고로 PreparedStatement는 값을 바인딩 하는 시점에서 전달된 값에 대한 특수문자, 쿼리등을 필터링하여 SQLinjection을 막는다.</p>
+<p>이렇게 mybatis를 사용할때 보통 #{}를 사용하면 평화롭고, 안전한 코딩을 할 수 있다.</p>
+<p>하지만 간혹 ${}를 사용하고 싶을 때가 있다.</p>
+<p>바로 쿼리의 파라미터로 컬럼명을 화면에서 받고 싶은 경우인데,</p>
+<p>보통 select 쿼리에 호출시 정렬을 하고 싶을 때 이다.</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span></span><br><span class="line">    	USER_ID</span><br><span class="line">     ,USER_NAME</span><br><span class="line">     ,USER_AGE</span><br><span class="line">    <span class="keyword">FROM</span> <span class="keyword">USERS</span></span><br><span class="line"><span class="keyword">WHERE</span> <span class="number">1</span>=<span class="number">1</span></span><br><span class="line"><span class="keyword">ORDER</span> <span class="keyword">BY</span> $&#123;sort_column&#125; $&#123;sort_type&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>위처럼 동적으로 파라미터를 외부에 주입 받기 위해서는 #{}가 아닌 ${}를 사용 해야 한다.</p>
+<p>${}는 입력받은 파라미터를 쿼리에 직접 치환해주기 때문이다.</p>
+<p>하지만 여기에는 SQLInjection에 대한 위험이 존재한다.</p>
+<p>어떻게 하면 ${}를 사용하면서, SQL Injection을 방어 할 수 있을까?</p>
+<p>스프링 필터를 사용해야하나?  AOP를 사용해야 하나?</p>
+<p>고민하다가 인터넷에서 괜찮은 라이브리러를 찾았다.</p>
+<h1 id="어노테이션으로-SQL-Injection-방어"><a href="#어노테이션으로-SQL-Injection-방어" class="headerlink" title="어노테이션으로 SQL Injection 방어"></a>어노테이션으로 SQL Injection 방어</h1><p><a href="https://github.com/rkpunjal/sql-injection-safe/" target="_blank" rel="external nofollow noopener noreferrer">https://github.com/rkpunjal/sql-injection-safe/</a></p>
+<p>sql-injection-safe 라는 라이브러리이다. </p>
+<p>아이디어는 어노테이션으로 VO의 필드에 SqlInjection을 방어하는 방법이다.</p>
+<p>아래로 가보면 간단하게 테스트 할수 있는 예제 샘플도 있다.</p>
+<p><a href="https://github.com/rkpunjal/sql-safe-annotation-example" target="_blank" rel="external nofollow noopener noreferrer">https://github.com/rkpunjal/sql-safe-annotation-example</a></p>
+<p>일단 동적으로 sql의 컬럼을 받을 VO를 만들어보자.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">GridDto</span></span>&#123;</span><br><span class="line">	<span class="keyword">private</span> String sortColumn;</span><br><span class="line">  <span class="keyword">private</span> String sortType;</span><br><span class="line"></span><br><span class="line">  <span class="comment">//getter, setter 생략</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SomethingGridDto</span> <span class="keyword">extends</span> <span class="title">GridDto</span> </span>&#123;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">int</span> column_1;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">int</span> column_2;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">int</span> column_3;</span><br><span class="line">  <span class="comment">//getter, setter 생략</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<p>위처럼 대충 DTO를 만들었다. </p>
+<p>자 이제 라이브러리를 추가하자. pom.xml 아래처럼 추가하자.</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.github.rkpunjal.sqlsafe<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>sql-injection-safe<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.0.2<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+<p>라이브러리가 추가 되었다면, Sql Injection 위험이 있는 DTO의 필드에 @SQLInjectionSafe 어노테이션을 추가해준다.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">GridDto</span></span>&#123;</span><br><span class="line">    	<span class="keyword">private</span> <span class="meta">@SQLInjectionSafe</span> String sortColumn;</span><br><span class="line">      <span class="keyword">private</span> <span class="meta">@SQLInjectionSafe</span> String sortType;</span><br><span class="line">    </span><br><span class="line">      <span class="comment">//getter, setter 생략</span></span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>그리고 해당 DTO를 받은 컨트롤러에서 @valid를 적용해주면 된다.</p>
+<p>굉장히 간단하게 스프링 컨트롤러에서 전달되는 파라미터에 어노테이션으로 SQL Injection을 방어 할 수 있다.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RequestMapping</span>(value = <span class="string">"/queryGrid"</span>, produces=APPLICATION_JSON_UTF_8)</span><br><span class="line"><span class="keyword">public</span> <span class="meta">@ResponseBody</span> <span class="function">WebResponse <span class="title">queryGrid</span><span class="params">(@Valid @ModelAttribute()</span> SomethingGridDto paramDto) </span>&#123;</span><br><span class="line">    		<span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>@Valid 가 동작하면서 @SQLInjectionSafe 동작한다.</p>
+<p>만약 sortColumn 멤버변수에 SQL Injection의 위험이 되는 문구가 있는 경우 BindException 이 발생하게된다.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@ExceptionHandler</span>(BindException<span class="class">.<span class="keyword">class</span>)</span></span><br><span class="line"><span class="class"><span class="title">public</span> @<span class="title">ResponseBody</span> <span class="title">WebResponse</span> <span class="title">handleBindException</span>(<span class="title">BindException</span> <span class="title">be</span> )</span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> MyResponseObject(<span class="keyword">false</span>,</span><br><span class="line">  	getBindExceptionMessage(be) <span class="comment">// custom method to find and send an appropriate response</span></span><br><span class="line">  );</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<p><a href="https://github.com/rkpunjal/sql-safe-annotation-example" target="_blank" rel="external nofollow noopener noreferrer">https://github.com/rkpunjal/sql-safe-annotation-example</a></p>
+<p>위 예제 샘플을 받아서 구동해보면 아래처럼 @SQLInjectionSafe 내용을 확인 할 수 있다.</p>
+<p>SQLInjection을 정규식으로 잡아내는 것을 확인 할 수 있다.</p>
+<p>뭔가 부족하다면 커스텀 하면 될거 같다.</p>
+<p><img src="/images/2019/Untitled-f94f04e9-1bf2-441e-b4bd-370d5bd88c77.png" alt="SQLInjectionSafe"></p>
+<h3 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h3><p><a href="https://lng1982.tistory.com/246" target="_blank" rel="external nofollow noopener noreferrer">https://lng1982.tistory.com/246</a></p>
+<p><a href="https://m.blog.naver.com/PostView.nhn?blogId=blogpyh&logNo=220675109307&proxyReferer=https%3A%2F%2Fwww.google.com%2F" target="_blank" rel="external nofollow noopener noreferrer">https://m.blog.naver.com/PostView.nhn?blogId=blogpyh&amp;logNo=220675109307&amp;proxyReferer=https%3A%2F%2Fwww.google.com%2F</a></p>
+<p><a href="https://hackbyr0k.tistory.com/2" target="_blank" rel="external nofollow noopener noreferrer">https://hackbyr0k.tistory.com/2</a></p>
+
+      
+      
+          
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+      
+
+
+  
+  
+  
+  
+
+        
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2019/08/17/ubuntu-20190817-ubuntu-docker/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Hanumoka">
+      <meta itemprop="description" content="아마추어 개발자의 블로그">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hanumoka, IT Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/08/17/ubuntu-20190817-ubuntu-docker/" class="post-title-link" itemprop="url">Ubuntu1804에 docker 설치</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">작성일</span>
+
+              <time title="Post created: 2019-08-17 19:19:41" itemprop="dateCreated datePublished" datetime="2019-08-17T19:19:41+09:00">2019-08-17</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Updated at: 2020-04-16 01:50:12" itemprop="dateModified" datetime="2020-04-16T01:50:12+09:00">2020-04-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ubuntu/" itemprop="url" rel="index">
+                    <span itemprop="name">ubuntu</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 20200427hexo_post_head -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h1><p>음 docker는 상당히 편리한 녀석이다.</p>
+<p>VitualBox에 설치된 Ubuntu1804에 docker를 설치 해보려한다.</p>
+<p>솔직히 이게 재대로 될지 잘 모르지만, 일단 해보자.</p>
+<p>별거 없다. 아래 명령어를 한줄 한줄 주욱 입력해주자.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">sudo apt update</span><br><span class="line"></span><br><span class="line">sudo apt install apt-transport-https ca-certificates curl software-properties-common</span><br><span class="line"></span><br><span class="line">curl -fsSL https:&#x2F;&#x2F;download.docker.com&#x2F;linux&#x2F;ubuntu&#x2F;gpg | sudo apt-key add -</span><br><span class="line"></span><br><span class="line">sudo add-apt-repository &quot;deb [arch&#x3D;amd64] https:&#x2F;&#x2F;download.docker.com&#x2F;linux&#x2F;ubuntu bionic stable&quot;</span><br><span class="line"></span><br><span class="line">sudo apt update</span><br><span class="line"></span><br><span class="line">apt-cache policy docker-ce</span><br><span class="line"></span><br><span class="line">sudo apt install docker-ce</span><br><span class="line"></span><br><span class="line">sudo systemctl status docker</span><br></pre></td></tr></table></figure>
+
+<h3 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h3><p>[<a href="https://blog.cosmosfarm.com/archives/248/우분투-18-04-도커-docker-설치-방법/]" target="_blank" rel="external nofollow noopener noreferrer">https://blog.cosmosfarm.com/archives/248/우분투-18-04-도커-docker-설치-방법/]</a>(</p>
+
+      
+      
+          
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+      
+
+
+  
+  
+  
+  
+
+        
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2019/08/17/ubuntu-20190817-ubuntu-nvm-node/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Hanumoka">
+      <meta itemprop="description" content="아마추어 개발자의 블로그">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hanumoka, IT Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/08/17/ubuntu-20190817-ubuntu-nvm-node/" class="post-title-link" itemprop="url">ubuntu nvm node</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">작성일</span>
+
+              <time title="Post created: 2019-08-17 19:18:16" itemprop="dateCreated datePublished" datetime="2019-08-17T19:18:16+09:00">2019-08-17</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Updated at: 2020-04-16 01:50:12" itemprop="dateModified" datetime="2020-04-16T01:50:12+09:00">2020-04-16</time>
+              </span>
+
+          
+
+        </div>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 20200427hexo_post_head -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h1><p>우분투에 nvm을 이용해서 node를 설치해보자.</p>
+<p>nvm은 Node.js version manager로 여러가지 버전을 손쉽게 설치하고 거기서 원하는 버전을 골라서 사용할수 있게 해준다.</p>
+<p>우분투 저장소에서 vnm에 필요한 패키지를 설치하자.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get update</span><br><span class="line">sudo apt-get install build-essential libssl-dev</span><br></pre></td></tr></table></figure>
+
+<p>그리고 nvm 설치 스크립트를 다운로드 후 실행하자.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">curl -sL https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;creationix&#x2F;nvm&#x2F;v0.31.0&#x2F;install.sh -o install_nvm.sh </span><br><span class="line">bash install_nvm.sh </span><br><span class="line">source ~&#x2F;.profile</span><br></pre></td></tr></table></figure>
+
+<p>nvm 설치가 완료가 되었다면, 아래 명령어를 입력하여 설치 가능한 node.js 버전들을 확인할 수 있다.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nvm ls-remote</span><br></pre></td></tr></table></figure>
+
+<p>현재 LTS 버전인 10.16.2 버전을 설치해보겠다.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nvm install 10.16.2</span><br></pre></td></tr></table></figure>
+
+<p>설치가 끝나면 </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">node -v</span><br></pre></td></tr></table></figure>
+
+<p>위 명령어로 설치된 node의 버전을 확인 할 수 있다.</p>
+<p>추가로 </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nvm use 6.0.0</span><br></pre></td></tr></table></figure>
+
+<p>위처럼 만약 다른 버전의 node가 설치되어 있다면 버전을 바꿔서 사용할 수도 있다.</p>
+<p>설치된 node 버전을 보려면 아래 명령어로 확인 할 수 있다.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nvm ls</span><br></pre></td></tr></table></figure>
+
+<h3 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h3><p><a href="https://itstory.tk/entry/Ubuntu-1604-nodejs-%EC%99%80-npm-%EC%84%A4%EC%B9%98" target="_blank" rel="external nofollow noopener noreferrer">https://itstory.tk/entry/Ubuntu-1604-nodejs-와-npm-설치</a></p>
+<p><a href="https://zetawiki.com/wiki/%EC%9A%B0%EB%B6%84%ED%88%AC_curl_%EC%84%A4%EC%B9%98" target="_blank" rel="external nofollow noopener noreferrer">https://zetawiki.com/wiki/우분투_curl_설치</a></p>
+
+      
+      
+          
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+      
+
+
+  
+  
+  
+  
+
+        
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2019/08/17/ubuntu-20190817-ubuntu-visual-studio-code/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Hanumoka">
+      <meta itemprop="description" content="아마추어 개발자의 블로그">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hanumoka, IT Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/08/17/ubuntu-20190817-ubuntu-visual-studio-code/" class="post-title-link" itemprop="url">Ubuntu1804 VisualStudioCode 설치</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">작성일</span>
+
+              <time title="Post created: 2019-08-17 19:15:20" itemprop="dateCreated datePublished" datetime="2019-08-17T19:15:20+09:00">2019-08-17</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Updated at: 2020-04-16 01:50:12" itemprop="dateModified" datetime="2020-04-16T01:50:12+09:00">2020-04-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ubuntu/" itemprop="url" rel="index">
+                    <span itemprop="name">ubuntu</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 20200427hexo_post_head -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>이번에는 우분투에 VisualStudioCode를 설치해보겠다.</p>
+<p>다 필요 없고 아래 명령어를 순서대로 주욱 입력하면 된다.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">curl https:&#x2F;&#x2F;packages.microsoft.com&#x2F;keys&#x2F;microsoft.asc | gpg --dearmor &gt; microsoft.gpg</span><br><span class="line"></span><br><span class="line">sudo mv microsoft.gpg &#x2F;etc&#x2F;apt&#x2F;trusted.gpg.d&#x2F;microsoft.gpg</span><br><span class="line"></span><br><span class="line">sudo sh -c &#39;echo &quot;deb [arch&#x3D;amd64] https:&#x2F;&#x2F;packages.microsoft.com&#x2F;repos&#x2F;vscode stable main&quot; &gt; &#x2F;etc&#x2F;apt&#x2F;sources.list.d&#x2F;vscode.list&#39;</span><br><span class="line"></span><br><span class="line">sudo apt-get update</span><br><span class="line"></span><br><span class="line">sudo apt-get install code</span><br><span class="line"></span><br><span class="line">sudo rm &#x2F;etc&#x2F;apt&#x2F;sources.list.d&#x2F;vscode.list</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/2019/5/Untitled-98ac3bd7-2b8b-4b30-a077-884178fb9ce6.png" alt></p>
+<p>위처럼 설치를 확인 할 수 있다.</p>
+<p>끝!!!</p>
+<h3 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h3><p><a href="https://yjcode.tistory.com/1" target="_blank" rel="external nofollow noopener noreferrer">https://yjcode.tistory.com/1</a></p>
+<p>[<a href="https://lukelee91.github.io/blog/vscode-installation-on-ubuntu/]" target="_blank" rel="external nofollow noopener noreferrer">https://lukelee91.github.io/blog/vscode-installation-on-ubuntu/]</a>(</p>
+
+      
+      
+          
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+      
+
+
+  
+  
+  
+  
+
+        
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
     <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2019/08/17/ubuntu-20190817-ubuntu-git/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -843,607 +1592,6 @@ gtag('config', 'UA-100596920-1');
   
   
 
-        
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
-    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2019/08/17/ubuntu-20190817-ubuntu-chrome/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Hanumoka">
-      <meta itemprop="description" content="아마추어 개발자의 블로그">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hanumoka, IT Blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/08/17/ubuntu-20190817-ubuntu-chrome/" class="post-title-link" itemprop="url">Ubuntu1804에 크롬브라우저 설치</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">작성일</span>
-
-              <time title="Post created: 2019-08-17 18:54:52" itemprop="dateCreated datePublished" datetime="2019-08-17T18:54:52+09:00">2019-08-17</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Updated at: 2020-04-16 01:50:12" itemprop="dateModified" datetime="2020-04-16T01:50:12+09:00">2020-04-16</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/ubuntu/" itemprop="url" rel="index">
-                    <span itemprop="name">ubuntu</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-      <!-- 20200427hexo_post_head -->
-      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
-      <script>
-          (adsbygoogle = window.adsbygoogle || []).push({});
-      </script>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h1><p>우분투 데스크탑을 설치 했으니, 음 뭔가 일반적이 pc처럼 사용하기 위한 필수적인 프로그램들을 설치해보자.</p>
-<h3 id="우분투에-구글-크롬-설치하기"><a href="#우분투에-구글-크롬-설치하기" class="headerlink" title="우분투에 구글 크롬 설치하기"></a>우분투에 구글 크롬 설치하기</h3><p>기본적으로 파이어폭스가 있지만, 구글크롬만한 브라우저가 어디 있을까?</p>
-<p>일단 우분투에서 터미널을 열고 크롬 브라우저 패키지 설치용 인증키를 받자.</p>
-<p>아래 명령어를 입력하자.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget -q -O - https:&#x2F;&#x2F;dl-ssl.google.com&#x2F;linux&#x2F;linux_signing_key.pub | sudo apt-key add -</span><br></pre></td></tr></table></figure>
-
-<p><img src="/images/2019/Untitled-bd83912f-0b74-48be-968e-9da370252ac3.png" alt></p>
-<p>그리고 아래 명령어도 입력해주자. 실제 구글크롬 패키지를 다운 받는 설정정보인듯 하다.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo sh -c &#39;echo &quot;deb [arch&#x3D;amd64] http:&#x2F;&#x2F;dl.google.com&#x2F;linux&#x2F;chrome&#x2F;deb&#x2F; stable main&quot; &gt;&gt; &#x2F;etc&#x2F;apt&#x2F;sources.list.d&#x2F;google.list&#39;</span><br></pre></td></tr></table></figure>
-
-<p><img src="/images/2019/Untitled-16d4a724-cdc7-451a-9c13-35510664b6c0.png" alt></p>
-<p>그리고 아래 명령으로 패키지 리스트를 업데이트 해준다.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get update</span><br></pre></td></tr></table></figure>
-
-<p><img src="/images/2019/Untitled-dc322d97-d21f-4554-90a0-84e2f2b026db.png" alt></p>
-<p>아래 명령으로 크롬을 설치하자.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install google-chrome-stable</span><br></pre></td></tr></table></figure>
-
-<p><img src="/images/2019/Untitled-89e4b1f6-2db4-4f8f-9f77-2e065aa0c80c.png" alt></p>
-<p>설치를 위해 생성햇던 파일을 지워주자.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ls &#x2F;etc&#x2F;apt&#x2F;sources.list.d&#x2F;google*</span><br><span class="line">sudo rm -rf &#x2F;etc&#x2F;apt&#x2F;sources.list.d&#x2F;google.list</span><br></pre></td></tr></table></figure>
-
-<p><img src="/images/2019/Untitled-b1f19b2c-8dbf-498a-9ff4-6e534b84afb1.png" alt></p>
-<p>위 아이콘을 눌러 설치된 크롬을 확인하자.</p>
-<p><img src="/images/2019/Untitled-6fe37658-8910-48df-a200-07835c008fd8.png" alt></p>
-<p>끝!!!</p>
-<h3 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h3><p><a href="https://webnautes.tistory.com/1184" target="_blank" rel="external nofollow noopener noreferrer">https://webnautes.tistory.com/1184</a></p>
-
-      
-      
-          
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-
-  
-      
-
-
-  
-  
-  
-  
-
-        
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
-    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2019/08/17/ubuntu-20190817-ubuntu-vim/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Hanumoka">
-      <meta itemprop="description" content="아마추어 개발자의 블로그">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hanumoka, IT Blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/08/17/ubuntu-20190817-ubuntu-vim/" class="post-title-link" itemprop="url">ubuntu1804 vim설치</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">작성일</span>
-
-              <time title="Post created: 2019-08-17 18:52:25" itemprop="dateCreated datePublished" datetime="2019-08-17T18:52:25+09:00">2019-08-17</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Updated at: 2020-04-16 01:50:12" itemprop="dateModified" datetime="2020-04-16T01:50:12+09:00">2020-04-16</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/ubuntu/" itemprop="url" rel="index">
-                    <span itemprop="name">ubuntu</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-      <!-- 20200427hexo_post_head -->
-      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
-      <script>
-          (adsbygoogle = window.adsbygoogle || []).push({});
-      </script>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="vim-설치하기"><a href="#vim-설치하기" class="headerlink" title="vim 설치하기"></a>vim 설치하기</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get update</span><br><span class="line">sudo apt-get install vim</span><br></pre></td></tr></table></figure>
-
-<p>위 두줄로 아주 간단하게 설치가 된다.</p>
-<p>하지만 vim을 제대로 사용하려면 vim 설정파일을 만들어 줘야 한다.</p>
-<h3 id="vim-설정파일-셋팅"><a href="#vim-설정파일-셋팅" class="headerlink" title="vim 설정파일 셋팅"></a>vim 설정파일 셋팅</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vi ~&#x2F;.vimrc</span><br></pre></td></tr></table></figure>
-
-<p>위 명령어로 home 디렉토리에 .vimrc라는 vim 설정파일을 생성하자.</p>
-<p>그리고 아래 내용을 복사 붙여넣기 하자.</p>
-<p>우분투에 붙여 넣기 할때에는 Shift+Insert 키를 눌러주면 된다.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">set number    &quot; line 표시</span><br><span class="line">set ai    &quot; auto indent</span><br><span class="line">set si &quot; smart indent</span><br><span class="line">set cindent    &quot; c style indent</span><br><span class="line">set shiftwidth&#x3D;4    &quot; 자동 공백 채움 시 4칸</span><br><span class="line">set tabstop&#x3D;4    &quot; tab을 4칸 공백으로</span><br><span class="line">set ignorecase    &quot; 검색 시 대소문자 무시</span><br><span class="line">set hlsearch    &quot; 검색 시 하이라이트</span><br><span class="line">set nocompatible    &quot; 방향키로 이동 가능</span><br><span class="line">set fileencodings&#x3D;utf-8,euc-kr    &quot; 파일 저장 인코딩 : utf-8, euc-kr</span><br><span class="line">set fencs&#x3D;ucs-bom,utf-8,euc-kr    &quot; 한글 파일은 euc-kr, 유니코드는 유니코드</span><br><span class="line">set bs&#x3D;indent,eol,start    &quot; backspace 사용가능</span><br><span class="line">set ruler    &quot; 상태 표시줄에 커서 위치 표시</span><br><span class="line">set title    &quot; 제목 표시</span><br><span class="line">set showmatch    &quot; 다른 코딩 프로그램처럼 매칭되는 괄호 보여줌</span><br><span class="line">set wmnu    &quot; tab 을 눌렀을 때 자동완성 가능한 목록</span><br><span class="line">syntax on    &quot; 문법 하이라이트 on</span><br><span class="line">filetype indent on    &quot; 파일 종류에 따른 구문 강조</span><br><span class="line">set mouse&#x3D;a    &quot; 커서 이동을 마우스로 가능하도록</span><br></pre></td></tr></table></figure>
-
-<p>끝!!!</p>
-<h3 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h3><p><a href="https://gabii.tistory.com/entry/Ubuntu-vim-%EC%84%A4%EC%B9%98-%EB%B0%8F-%EC%84%A4%EC%A0%95" target="_blank" rel="external nofollow noopener noreferrer">https://gabii.tistory.com/entry/Ubuntu-vim-설치-및-설정</a></p>
-
-      
-      
-          
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-
-  
-      
-
-
-  
-  
-  
-  
-
-        
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
-    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2019/08/17/ubuntu-20190817-ubuntu-virtualbox-ftp/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Hanumoka">
-      <meta itemprop="description" content="아마추어 개발자의 블로그">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hanumoka, IT Blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/08/17/ubuntu-20190817-ubuntu-virtualbox-ftp/" class="post-title-link" itemprop="url">virtualbox ubuntu1804 ftp 설치 및 접근(sftp)</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">작성일</span>
-
-              <time title="Post created: 2019-08-17 18:47:55" itemprop="dateCreated datePublished" datetime="2019-08-17T18:47:55+09:00">2019-08-17</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Updated at: 2020-04-16 01:50:12" itemprop="dateModified" datetime="2020-04-16T01:50:12+09:00">2020-04-16</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/ubuntu/" itemprop="url" rel="index">
-                    <span itemprop="name">ubuntu</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-      <!-- 20200427hexo_post_head -->
-      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
-      <script>
-          (adsbygoogle = window.adsbygoogle || []).push({});
-      </script>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h1><p>개발환경 용도로 사용하려는 ubuntu 1804 이미지에 ftp를 설치하고 호스트PC인 windows에서 파일질라로 접근해서 파일을 전송 해보려 한다.</p>
-<p>아 별것 아닌데, 리눅스를 잘 몰라서 엄청난 시간을 헤매었다.</p>
-<p>결론으로 sftp 접근으로 성공하였다.</p>
-<p>해당 내용은 실 서버로 사용하는 ubuntu ftp 접근 설명이 아니라, 로컬에서 virtualbox에 설치된 개발환경용 ubuntu 1804에 ftp 설치 방법을 설명하는 것이다.</p>
-<p>ftp 사용이 되는것이 목적이므로, 방화벽 설명등 기타 내용은 포함하고 있지 않다.</p>
-<hr>
-<h3 id="virtualbox에서-ubuntu-ftp-포트포워딩-설정"><a href="#virtualbox에서-ubuntu-ftp-포트포워딩-설정" class="headerlink" title="virtualbox에서 ubuntu ftp 포트포워딩 설정"></a>virtualbox에서 ubuntu ftp 포트포워딩 설정</h3><p>일단 virtualbox에서 해당 이미지의 설정으로 들어가 아래처럼 ftp 용 포트포워딩 설정을 해주자.</p>
-<p>아 참고로 난 NAT 네트워크 설정으로 사용중이다.</p>
-<p><img src="/images/2019/Untitled-eeb9f885-a11e-41d7-9969-f928484bbdff.png" alt></p>
-<p>말 그대로 호스트PC에 22포트로 요청을 게스트IP 10.0.2.15:22로 포트포워딩 한다는 설정이다.</p>
-<p>게스트IP는 ifconfig로 확인하시길, 별다른 설정을 안했다면 위와 동일 할 것이다.</p>
-<h3 id="우분투에-FTP-설치하기"><a href="#우분투에-FTP-설치하기" class="headerlink" title="우분투에 FTP 설치하기"></a>우분투에 FTP 설치하기</h3><p>이제 해당 우분투 이미지를 실행하고 FTP 서버를 설치하자.</p>
-<p>아래 명령어로 패키지를 최신화 하고 업그레이드를 일단 하자.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt update</span><br><span class="line">sudo apt upgrade</span><br></pre></td></tr></table></figure>
-
-<p>그리고 아래 명령어로 ftp를 설치하자.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install vsftpd</span><br></pre></td></tr></table></figure>
-
-<p><img src="/images/2019/Untitled-f2a71105-92bc-4ee7-bd5c-14d62553157f.png" alt></p>
-<p>이제  ftp설정을 해주자</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo gedit &#x2F;etc&#x2F;vsftpd.conf</span><br></pre></td></tr></table></figure>
-
-<p>그리고 그 내용을 모두 지우고 아래 내용으로 치환하자.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">listen&#x3D;NO</span><br><span class="line">listen_ipv6&#x3D;YES</span><br><span class="line">anonymous_enable&#x3D;NO</span><br><span class="line">local_enable&#x3D;YES</span><br><span class="line">write_enable&#x3D;YES</span><br><span class="line">local_umask&#x3D;022</span><br><span class="line">dirmessage_enable&#x3D;YES</span><br><span class="line">use_localtime&#x3D;YES</span><br><span class="line">xferlog_enable&#x3D;YES</span><br><span class="line">connect_from_port_20&#x3D;YES</span><br><span class="line">chroot_local_user&#x3D;YES</span><br><span class="line">allow_writeable_chroot&#x3D;YES</span><br><span class="line">secure_chroot_dir&#x3D;&#x2F;var&#x2F;run&#x2F;vsftpd&#x2F;empty</span><br><span class="line">pam_service_name&#x3D;vsftpd</span><br><span class="line">pasv_enable&#x3D;Yes</span><br><span class="line">pasv_min_port&#x3D;10000</span><br><span class="line">pasv_max_port&#x3D;11000</span><br><span class="line">user_sub_token&#x3D;$USER</span><br></pre></td></tr></table></figure>
-
-<p>vsftpd.conf 파일을 저장하고, ftp를 재시작하고 서비스가 항상 동작하도록 설정하자. </p>
-<p>아래 명령어를 순차적으로 입력하자.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo systemctl stop vsftpd.service</span><br><span class="line">sudo systemctl start vsftpd.service</span><br><span class="line">sudo systemctl enable vsftpd.service</span><br></pre></td></tr></table></figure>
-
-<p>그리고 아래 명령어로 서비스가 재대로 동작중인지 확인하자.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo systemctl status vsftpd</span><br></pre></td></tr></table></figure>
-
-<p><img src="/images/2019/Untitled-810ab2cd-673d-490b-825e-517fe4494f60.png" alt></p>
-<p>이제 virtualbox ubuntu18.04에서 ftp로 접속해서 동작을 하는지 한번 보자.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ftp 127.0.0.1</span><br></pre></td></tr></table></figure>
-
-<p>터미널 창에 위 명령어로 접속을 시도해보자.</p>
-<p><img src="/images/2019/Untitled-03c99918-2621-4950-b406-bf0470a40590.png" alt></p>
-<p>위처럼 접근이 가능한지 확인 할수 있다.</p>
-<h3 id="호스트-PC-windows10-에서-파일질라로-게스트PC-Ubuntu1804-에-접근하기"><a href="#호스트-PC-windows10-에서-파일질라로-게스트PC-Ubuntu1804-에-접근하기" class="headerlink" title="호스트 PC(windows10)에서 파일질라로 게스트PC(Ubuntu1804)에 접근하기"></a>호스트 PC(windows10)에서 파일질라로 게스트PC(Ubuntu1804)에 접근하기</h3><p>파일질라는 무료라 구글에서 검색해서 받으면 된다.</p>
-<p>파일질라를 열자.</p>
-<p>프로토콜을 SFTP로 설정하고 계정정보를 입력하고 연결해보자.</p>
-<p><img src="/images/2019/Untitled-46e85a25-25d9-43aa-8ad6-5fab34b09cce.png" alt></p>
-<p><img src="/images/2019/Untitled-0d1abfd8-32a2-4ea2-891d-f0fd75294b09.png" alt></p>
-<p>위처럼 접속을 된 것을 확인했다.</p>
-<p>파일 업로드 다운로드 모두 확인함. </p>
-<p>끝!!!</p>
-<h3 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h3><p><a href="https://dejavuqa.tistory.com/251" target="_blank" rel="external nofollow noopener noreferrer">https://dejavuqa.tistory.com/251</a></p>
-<p><a href="https://nov19.tistory.com/64" target="_blank" rel="external nofollow noopener noreferrer">https://nov19.tistory.com/64</a></p>
-
-      
-      
-          
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-
-  
-      
-
-
-  
-  
-  
-  
-
-        
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
-    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2019/08/17/ubuntu-20190817-ubuntu-virtualbox-ssh/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Hanumoka">
-      <meta itemprop="description" content="아마추어 개발자의 블로그">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hanumoka, IT Blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/08/17/ubuntu-20190817-ubuntu-virtualbox-ssh/" class="post-title-link" itemprop="url">ubuntu virtualbox ssh</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">작성일</span>
-
-              <time title="Post created: 2019-08-17 18:40:28" itemprop="dateCreated datePublished" datetime="2019-08-17T18:40:28+09:00">2019-08-17</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Updated at: 2020-04-16 01:50:12" itemprop="dateModified" datetime="2020-04-16T01:50:12+09:00">2020-04-16</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/ubuntu/" itemprop="url" rel="index">
-                    <span itemprop="name">ubuntu</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-      <!-- 20200427hexo_post_head -->
-      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
-      <script>
-          (adsbygoogle = window.adsbygoogle || []).push({});
-      </script>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h1><p>virtualbox에 설치한 ubuntu1804에 ssh를 설치하고 호스트PC에서 putty로 접근하는 접을 알아보자.</p>
-<h3 id="virtualbox-network-설정"><a href="#virtualbox-network-설정" class="headerlink" title="virtualbox network 설정"></a>virtualbox network 설정</h3><p>나는 virtualbox ubuntu 네트워크 설정을 nat로 설정하고 사용중이다.</p>
-<p>일단 virtualbox ubuntu 에 접속해서 아이피를 확인해보자.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ifconfig</span><br></pre></td></tr></table></figure>
-
-<p><img src="/images/2019/Untitled-27e68e51-b5a1-4425-b309-8e90bc43ba60.png" alt></p>
-<p>위를 보면 디폴트로 10.0.2.15로 지정되어 있는 것을 확인 할 수 있다.</p>
-<p>VirtualBox에서 해당 이미지으 설정에 네트워크로 들어가자.</p>
-<p><img src="/images/2019/Untitled-43075031-83dd-49e8-9b14-6e186f6b1007.png" alt></p>
-<p>고급을 눌러주자.</p>
-<p>참고로 가상머신 OS를 종료하지 않고 설정해도 바로 적용된다.</p>
-<p><img src="/images/2019/Untitled-7084f1e4-7e42-4a9a-a07e-ddea670f8933.png" alt></p>
-<p>포트 포워딩을 클릭하자.</p>
-<p><img src="/images/2019/Untitled-afa803a6-b917-4019-b56a-540004d08d2c.png" alt></p>
-<p>위 처럼 입력해주자.</p>
-<p>의미는 127.0.0.1:22로 접근시도시 Virtualbox에 가상머신의 10.0.2.15:22 로 포트포워딩 해준다는 의미이다.</p>
-<p>확인 버튼으로 설정을 저장하자.</p>
-<h3 id="Ubuntu18-04-ssh-설치하기"><a href="#Ubuntu18-04-ssh-설치하기" class="headerlink" title="Ubuntu18.04 ssh 설치하기"></a>Ubuntu18.04 ssh 설치하기</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install ssh</span><br></pre></td></tr></table></figure>
-
-<p><img src="/images/2019/Untitled-73f72e7a-2a36-4d4f-9111-fa35d0daf141.png" alt></p>
-<p>위 명령으로 ubuntu에 ssh를 설치하자.</p>
-<p>설치된 ssh에 상세 설정을 변경하려면 아래 내용으로 수정해주자.</p>
-<p>나는 그냥 디폴트 설정을 쓰려 하기때문에 생략하겠다.(포트 변경등을 하려면 수정해야한다.)</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo vim &#x2F;etc&#x2F;ssh&#x2F;sshd_config</span><br></pre></td></tr></table></figure>
-
-<p><img src="/images/2019/Untitled-8d467d52-fc52-4474-ad7f-b82d45210575.png" alt></p>
-<p>해당 파일을 보면 디폴트 설정이 보이며 수정하려면 주석을 해제하고 수정하면 된다.</p>
-<h3 id="호스트PC에서-게스트-Ubuntu에-ssh-접속하기"><a href="#호스트PC에서-게스트-Ubuntu에-ssh-접속하기" class="headerlink" title="호스트PC에서 게스트 Ubuntu에 ssh 접속하기"></a>호스트PC에서 게스트 Ubuntu에 ssh 접속하기</h3><p>호스트 pc인 windows10에서 putty라는 ssh 접속 프로그램을 사용할 것이다.</p>
-<p>putty는 무료 프로그램이니 구글에서 검색해서 다운 받으면 된다.</p>
-<p><img src="/images/2019/Untitled-3646d9ff-8a3a-4a6a-af2b-1f17c4c650e5.png" alt></p>
-<p>위처럼 로컬호스트에 22번 포트로 접속경로를 입력하고 open을 눌러주자.</p>
-<p><img src="/images/2019/Untitled-efcf3fe5-a26f-419f-a039-18260ef96aee.png" alt></p>
-<p>정상적으로 접속이 된다면 위처럼 화면이 나올것이다 예를 눌러주자.</p>
-<p><img src="/images/2019/Untitled-3a3bfc19-75b3-4eca-8544-76d6ae44d1ff.png" alt></p>
-<p>위처럼 접속이 되는 것을 확인 할 수 있다.</p>
-<p>아 참고로 ubuntu18.04 에서 root에 대한 정책이 변경되었는지, 디폴트로 접속이 되질 않는다.</p>
-<p>뭔가 설정으로 root계정을 강제로 활성화 시켜줘야 사용이 가능한가보다.</p>
-<p>그냥 아래 명령어로 ubuntu에 접속 계정을 확인한 다음에 접속하면 된다.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">whoami</span><br></pre></td></tr></table></figure>
-
-<p>끝!!!</p>
-<h3 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h3><p><a href="https://sancs.tistory.com/110" target="_blank" rel="external nofollow noopener noreferrer">https://sancs.tistory.com/110</a></p>
-<p><a href="https://thdev.net/555" target="_blank" rel="external nofollow noopener noreferrer">https://thdev.net/555</a></p>
-
-      
-      
-          
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-
-  
-      
-
-
-  
-  
-  
-  
-
-        
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
-    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2019/08/17/ubuntu-20190817-ubuntu-virtualbox-copy-paste/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Hanumoka">
-      <meta itemprop="description" content="아마추어 개발자의 블로그">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hanumoka, IT Blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/08/17/ubuntu-20190817-ubuntu-virtualbox-copy-paste/" class="post-title-link" itemprop="url">버추얼박스 ubuntu에 복사 붙여넣기(클립보드)</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">작성일</span>
-
-              <time title="Post created: 2019-08-17 18:32:30" itemprop="dateCreated datePublished" datetime="2019-08-17T18:32:30+09:00">2019-08-17</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Updated at: 2020-04-16 01:50:12" itemprop="dateModified" datetime="2020-04-16T01:50:12+09:00">2020-04-16</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/ubuntu/" itemprop="url" rel="index">
-                    <span itemprop="name">ubuntu</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-      <!-- 20200427hexo_post_head -->
-      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
-      <script>
-          (adsbygoogle = window.adsbygoogle || []).push({});
-      </script>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>Virtualbox에 Ubuntu1804를 설치했다.</p>
-<p>호스트 PC인 Windows10에서 복사한 내용을 게스트PC인 Virtualbox의 Ubuntu에 붙여넣기가 하고 싶은데, 되지가 않는다. </p>
-<p>인터넷을 찾아보니 아주 간단하게 해결이 된다.</p>
-<p>일단 Virtualbox Ubuntu에서 게스트 확장 프로그램을 설치해야한다.</p>
-<p>장치 - 게스트 확장 CD 이미지 삽입을 클릭하자.</p>
-<p><img src="/images/2019/Untitled-64ebf1d9-605e-4ccd-83f5-29c971289172.png" alt></p>
-<p>OS 업그레이드 완료후 재시작 하면, virtualbox에서 장치 → 게스트 확장 CD 이미지 삽입을 클릭하자.</p>
-<p><img src="/images/2019/Untitled-20a1651b-e860-41c4-9de2-30d9cc0ced26.png" alt></p>
-<p>위와 같은 창이 열린다 실행을 클릭하면 자동으로 터미널이 열리고 무언가 설치가 된다.</p>
-<p><img src="/images/2019/Untitled-3a61933d-32ad-437e-8533-95faaaed1e0d.png" alt></p>
-<p>위처럼 Press Return to close this windows 라는 문구가 나오면 터미널에서 엔터를 클릭해서 터미널을 닫아주자.</p>
-<p>그리고 우분투를 종료하자.</p>
-<p>그리고 이미지의 설정에 들어가서 클립보드 공유를 양방향으로 설정하면 된다.</p>
-<p><img src="/images/2019/Untitled-b0ca558c-612f-4882-8b91-d93540817187.png" alt></p>
-<p>아래처럼 윈도우의 note에서 텍스트를 복사해서 게스트 우분투 터미널에 복사가 되는 것을 확인 할 수 있다.</p>
-<p><img src="/images/2019/Untitled-de71bf43-65aa-4424-abc7-95d326d55d9a.png" alt></p>
-<p><img src="/images/2019/Untitled-8affdab9-eb74-4b42-a5cb-352b5b05a019.png" alt></p>
-<p>끝!!!</p>
-<h3 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h3><p><a href="https://extrememanual.net/8257" target="_blank" rel="external nofollow noopener noreferrer">https://extrememanual.net/8257</a></p>
-
-      
-      
-          
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-
-  
-      
-
-
-  
-  
-  
-  
-
   </div>
 
   
@@ -1514,7 +1662,7 @@ gtag('config', 'UA-100596920-1');
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">214</span>
+          <span class="site-state-item-count">219</span>
           <span class="site-state-item-name">포스트</span>
         </a>
       </div>
@@ -1527,7 +1675,7 @@ gtag('config', 'UA-100596920-1');
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">585</span>
+        <span class="site-state-item-count">592</span>
         <span class="site-state-item-name">태그</span></a>
       </div>
   </nav>
@@ -1569,7 +1717,7 @@ gtag('config', 'UA-100596920-1');
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>

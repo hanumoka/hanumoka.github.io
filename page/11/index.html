@@ -245,6 +245,600 @@ gtag('config', 'UA-100596920-1');
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2018/11/02/javascript-20181102-javascript-callback-weakness-feat-callback-hell/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Hanumoka">
+      <meta itemprop="description" content="아마추어 개발자의 블로그">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hanumoka, IT Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2018/11/02/javascript-20181102-javascript-callback-weakness-feat-callback-hell/" class="post-title-link" itemprop="url">javascript 콜백사용의 위험성(클로저 그리고 let와 for문)</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">작성일</span>
+
+              <time title="Post created: 2018-11-02 21:19:49" itemprop="dateCreated datePublished" datetime="2018-11-02T21:19:49+09:00">2018-11-02</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Updated at: 2020-04-16 01:50:11" itemprop="dateModified" datetime="2020-04-16T01:50:11+09:00">2020-04-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/javascript/" itemprop="url" rel="index">
+                    <span itemprop="name">javascript</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 20200427hexo_post_head -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h1><p>콜백의 비동기적 프로그래밍을 사용할때 주의할점이 좀 있다.<br>자바스크립트의 클로저와 함께 사요할때 콜백사용의 주의점을 정리해보겠다.</p>
+<h1 id="비동기-콜백사용시-클로저영역-변수-사용의-위험성"><a href="#비동기-콜백사용시-클로저영역-변수-사용의-위험성" class="headerlink" title="비동기 콜백사용시 클로저영역 변수 사용의 위험성"></a>비동기 콜백사용시 클로저영역 변수 사용의 위험성</h1><p>비동기적 실행에서 혼란스럽고 에러도 자주 일어나는 부분은 스코프와 클로저가 비동기적 실행에 영향을 미치는 부분이다.<br>함수를 호출하면 항상 클로저가 만들어진다.<br>매개변수를 포함해 함수 안에서 만든 변수는 모두 무언가가 자신에 접근할 수 있는 한 계속 존재한다.</p>
+<p>일단 아래 코드를 보고 실행결과를 예측해보자.</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">countdown</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">  <span class="keyword">let</span> i;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">"\nCountdown start..."</span>);</span><br><span class="line">  <span class="keyword">for</span>(i =<span class="number">5</span>; i &gt;= <span class="number">0</span>; i--)&#123;</span><br><span class="line">    setTimeout(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">      <span class="built_in">console</span>.log(i===<span class="number">0</span> ? <span class="string">"GO!"</span> : i);</span><br><span class="line">    &#125;, ( <span class="number">5</span> - i ) * <span class="number">1000</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">countdown();</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/20181102-javascript-callback-weakness-feat-callback-hell_1.png" alt="위 코드의 실행 결과"></p>
+<p>위 코드의 실행결과를 예측했다면, 이미 당신은 자바스크립트 클로저 마스터!<br>결과를 보면 GO! 라는 문구는 아예 찍히지도 않고 -1만 6번 찍히는것을 확인 할 수 있다.</p>
+<p>setTimeout의 호출에 사용되는 i는 정상적으로 5-5, 5-4, 5-3, 5-2, 5-1, 5-0 총 여섯번 호출된다.</p>
+<p>문제는 setTimeout에 등록된 콜백의 호출시점과 이 콜백이 접근하는 i가 속한 클로저의 위치이다.<br>let으로 선언된 변수는 블록 스코프에 소속된다.<br>i는 현재 countdouwn 함수의 블록스코프에 소속되어 있으므로, 정작 setTimeout함수의 등록된 콜백이 실행될 시점에는 for 문에 의해 i의 값은 -1상태가 되어버린 상태이다.<br>따라서 위와 같은 결과가 나오게 된다.</p>
+<p>위 코드에서 let i의 선언 위치를 countdouwn 함수의 블록스코프가 아니라, setTimeout을 호출하는 for문의 statement에 선언하면 정상적으로 코드가 동작하다.</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">countdown</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">  <span class="comment">//let i;</span></span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">"\nCountdown start..."</span>);</span><br><span class="line">  <span class="keyword">for</span>(<span class="keyword">let</span> i =<span class="number">5</span>; i &gt;= <span class="number">0</span>; i--)&#123;</span><br><span class="line">    setTimeout(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">      <span class="built_in">console</span>.log(i===<span class="number">0</span> ? <span class="string">"GO!"</span> : i);</span><br><span class="line">    &#125;, ( <span class="number">5</span> - i ) * <span class="number">1000</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">countdown();</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/20181102-javascript-callback-weakness-feat-callback-hell_2.png" alt="위 코드의 실행 결과"></p>
+<p>결과를 보면 카운팅이 정상적으로 되고 GO가 콘솔에 찍히는 것을 확인 할 수있다.</p>
+<p>하지만 난 위 코드가 정확히 이해가 가지 않는다.<br>비록 let i 선언이 for문의 스코프에 선언되었지만,<br>정작 setTimeout의 콜백이 호출되는 시점은 for문이 종료된 시점 이다.<br>즉 이번에도 콜백에서 사용하는 i는 for문의 statement에 선언되었지만 여전히 -1이라고 생각 했었다.</p>
+<p>여기에 대해 찾아보니 for문에서 let 변수를 선언했을때의 특이점이 있다.<br><strong>for문의 Statement에 let로 선언된 변수는 for문의 반복횟수 만큼의 클로저 영역을 생성한다.</strong><br>음 함수가 아니라 블록스코프도 클로저라고 불러도 되는지는 잘 모르겠지만…</p>
+<p>즉 위의 코드에서 setTimeout이 호출되는 시점에 전달되는 <strong>for문 statement에 선언된 let i</strong>는 총 6번 전달되며, <strong>그 시점별로 6개의 클로저가 생성된다.</strong><br>setTimeout에 전달된 콜백은 자신이 setTimeout으로 호출될 당시의 for반복문의 클로저의 i 에 접근하게 되는 것이다.</p>
+<p>물론 반복횟수별로 일종의 클로저 영역이 생성되므로, 브라우저 별로 성능저하가 있다고는 한다.</p>
+<p><strong>햇갈리지 말아야 하는 점은 for문의 블록스코프에 선언된 let가 아니라 for문의 statement에 선언된 let가 위처럼 반복횟수별로 클로저를 생성한다는 것이다.</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">countdown</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">  <span class="comment">//let i;</span></span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">"\nCountdown start..."</span>);</span><br><span class="line">  <span class="keyword">for</span>(<span class="keyword">let</span> i =<span class="number">5</span>; i &gt;= <span class="number">0</span>; i--)&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">"---i:"</span>+ i);</span><br><span class="line">    <span class="keyword">let</span> a = <span class="number">0</span>;</span><br><span class="line">    setTimeout(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">      <span class="built_in">console</span>.log(<span class="string">"----a:"</span> + a++);</span><br><span class="line">      <span class="built_in">console</span>.log(i===<span class="number">0</span> ? <span class="string">"GO!"</span> : i);</span><br><span class="line">    &#125;, ( <span class="number">5</span> - i ) * <span class="number">1000</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">countdown();</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/20181102-javascript-callback-weakness-feat-callback-hell_3.png" alt="위 코드의 실행 결과"></p>
+<p>콜백이 a에 접근할 때에는 이미 for문의 동작이 모두 끝난 상태이다.<br>그리고 for문의 블록스코프에 선언된 let a는 반복횟수 만큼 생성되는 클로저의 영역에 포함되지 않는다.</p>
+<h1 id="마무리"><a href="#마무리" class="headerlink" title="마무리"></a>마무리</h1><p>promise등 콜백의 대안이 있긴 하지만, 아직도 콜백은 많이 사용되는 것 같다.<br>콜백을 사용할때 콜백이 접근할 영역의 스코프가 정확히 어디인지 주의하며 코딩할 필요가 있다.<br>끝!</p>
+
+      
+      
+          
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+      
+
+
+  
+  
+  
+  
+
+        
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2018/11/02/javascript-20181102-javascript-error-first-callback-pattern/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Hanumoka">
+      <meta itemprop="description" content="아마추어 개발자의 블로그">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hanumoka, IT Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2018/11/02/javascript-20181102-javascript-error-first-callback-pattern/" class="post-title-link" itemprop="url">javascript - 오류 우선 콜백패턴 (error-first callback pattern)</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">작성일</span>
+
+              <time title="Post created: 2018-11-02 20:53:30" itemprop="dateCreated datePublished" datetime="2018-11-02T20:53:30+09:00">2018-11-02</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Updated at: 2020-04-16 01:50:11" itemprop="dateModified" datetime="2020-04-16T01:50:11+09:00">2020-04-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/javascript/" itemprop="url" rel="index">
+                    <span itemprop="name">javascript</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 20200427hexo_post_head -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h1><p>오류 우선 콜백패턴(error-first callback pattern)은 자비스크립트에서 콜백을 사용할때, 콜백과 관련된 에러를 처리를 위한 일종의 코딩 약속과 같다.</p>
+<h1 id="오류-우선-콜백패턴-error-first-callback-pattern-규칙"><a href="#오류-우선-콜백패턴-error-first-callback-pattern-규칙" class="headerlink" title="오류 우선 콜백패턴 (error-first callback pattern) 규칙"></a>오류 우선 콜백패턴 (error-first callback pattern) 규칙</h1><ol>
+<li>콜백의 첫 번째 매개변수에 에러 객체를 사용한다.</li>
+<li>에러가 null이나 undefined이면 정상이라고 판단한다.</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">const</span> fs = <span class="built_in">require</span>(<span class="string">'fs'</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> fname = <span class="string">"hanumoka_is_good.txt"</span>;</span><br><span class="line">fs.readFile(fname, <span class="function"><span class="keyword">function</span>(<span class="params">err, data</span>)</span>&#123;</span><br><span class="line">  <span class="keyword">if</span>(err) <span class="keyword">return</span> <span class="built_in">console</span>.error(<span class="string">`error reading file <span class="subst">$&#123;fname&#125;</span> : <span class="subst">$&#123;err.message&#125;</span>`</span>);  <span class="comment">// 반드시 return을 해야 한다.</span></span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">`<span class="subst">$&#123;fname&#125;</span> contents: <span class="subst">$&#123;data&#125;</span>`</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/20181102-javascript-error-first-callback-pattern_1.png" alt="hanumoka_is_good.txt파일이 없는 상태에서 위 코드 실행결과"></p>
+<p>위 예제는 Node에서 파일을 읽어내는 소스이다.<br>if 조건문에서 err를 판단하여, 에러내용을 콘솔에 찍고 return 한다.<br><strong>중요한 점은 return을 해야 한다는 것이다.</strong></p>
+<p>예를 들어 hanumoka_is_good.txt 파일이 존재하지 않고, 위 소스를 동작시켰을때 err를 잡는 조건문에서 return을 하지 않는다면, hanumoka_is_good.txt파일이 있을경우 동작해야 할<br>다음 소스가 동작해 버리게 된다.</p>
+<p>파일이 없는대도 아래 소스가 동작 한다는 것이다.</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(<span class="string">`<span class="subst">$&#123;fname&#125;</span> contents: <span class="subst">$&#123;data&#125;</span>`</span>);</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/20181102-javascript-error-first-callback-pattern_2.png" alt="hanumoka_is_good.txt파일이 없는 상태에서 return 하지 않는 경우 실행결과."></p>
+<p>프로미스를 사용하지 않으면 오류 우선 콜백은 노드 개바의 표준이나 다름없다.<br>콜백을 사용하는 인터페이스를 만들 때는 오류 우선 콜백 패턴을 지키키면서 코딩을 해야 한다.</p>
+
+      
+      
+          
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+      
+
+
+  
+  
+  
+  
+
+        
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2018/11/02/spring-20181102-spring-mysql-error-The-server-time-zone-value/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Hanumoka">
+      <meta itemprop="description" content="아마추어 개발자의 블로그">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hanumoka, IT Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2018/11/02/spring-20181102-spring-mysql-error-The-server-time-zone-value/" class="post-title-link" itemprop="url">Spring - Mysql - The server time zone value 관련예외</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">작성일</span>
+
+              <time title="Post created: 2018-11-02 15:47:47" itemprop="dateCreated datePublished" datetime="2018-11-02T15:47:47+09:00">2018-11-02</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Updated at: 2020-04-16 01:50:12" itemprop="dateModified" datetime="2020-04-16T01:50:12+09:00">2020-04-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/spring/" itemprop="url" rel="index">
+                    <span itemprop="name">spring</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 20200427hexo_post_head -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h1><p>예전에 조물락 거리던 스프링 + mysql 프로젝트를 돌리려니 콘솔에서 예쁜 에러가 난다.</p>
+<p><img src="/images/20181102-spring-mysql-error-The-server-time-zone-value_1.png" alt="mysql time zone value 관련 에러 발생"></p>
+<p>타임존을 가져오는데 뭔가 깨져서 나온다.</p>
+<p>하… mysql 이거 뭔가 버그와 오류가 범벅이다. </p>
+<p>해결책은 있더라</p>
+<p>아래처럼 xml에 설정된 mysql 접속정보 url에 serverTimezone을 아래처럼 설정하면 된다고 한다.</p>
+<p><img src="/images/20181102-spring-mysql-error-The-server-time-zone-value_2.png" alt="그런데 이렇게 해도 뭔가 xml 설정 오류가 발생한다."></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">The reference to entity "useSSL" nust end with the ';' delimiter.</span><br></pre></td></tr></table></figure>
+
+<p>다시 구글링 해보니 아래처럼 설정하면된다.</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"url"</span> <span class="attr">value</span>=<span class="string">"jdbc:mysql://127.0.0.1:3306/mokaboard_dev?useSSL=false<span class="symbol">&amp;amp;</span>serverTimezone=UTC"</span>&gt;</span><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/20181102-spring-mysql-error-The-server-time-zone-value_3.png" alt="최종 해결 설정방법"></p>
+<h1 id="Related-Posts"><a href="#Related-Posts" class="headerlink" title="Related Posts"></a>Related Posts</h1><p><a href="http://vvh-avv.tistory.com/79" target="_blank" rel="external nofollow noopener noreferrer">http://vvh-avv.tistory.com/79</a></p>
+<p><a href="https://stackoverflow.com/questions/37596144/the-reference-to-entity-uselegacydatetimecode-must-end-with-the-delimiter" target="_blank" rel="external nofollow noopener noreferrer">https://stackoverflow.com/questions/37596144/the-reference-to-entity-uselegacydatetimecode-must-end-with-the-delimiter</a></p>
+
+      
+      
+          
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+      
+
+
+  
+  
+  
+  
+
+        
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2018/10/31/windows-20181031-Windows10-error-DPC-WatchDog-Violation/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Hanumoka">
+      <meta itemprop="description" content="아마추어 개발자의 블로그">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hanumoka, IT Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2018/10/31/windows-20181031-Windows10-error-DPC-WatchDog-Violation/" class="post-title-link" itemprop="url">Windows10 - error DPC WatchDog Violation 해결하기</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">작성일</span>
+
+              <time title="Post created: 2018-10-31 14:48:35" itemprop="dateCreated datePublished" datetime="2018-10-31T14:48:35+09:00">2018-10-31</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Updated at: 2020-04-16 01:50:12" itemprop="dateModified" datetime="2020-04-16T01:50:12+09:00">2020-04-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/windows/" itemprop="url" rel="index">
+                    <span itemprop="name">windows</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 20200427hexo_post_head -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="20181208-추가"><a href="#20181208-추가" class="headerlink" title="20181208 추가"></a>20181208 추가</h1><p>아래 방법으로 해결 안됨.<br>원인 아직 모름.<br>얼마전에 추가한 알파스캔 dp 모니터가 문제일지도 모른다는 생각이 됨.(현재 트리플 모니터 구성)</p>
+<h1 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h1><p>Windows10 64bit pro를 데스크탑에 사용중이다.<br>얼마전부터 윈도우가 갑작이 프리징되고, 조금 시간이 지나면 블루스크린과 error DPC WatchDog Violation라는 에러메세지가 발생했다.</p>
+<p>인터넷을 찾아보니 여러가지 발생이유가 있었다.<br>메인보드 드라이버, 바이오스<br>기타 드라이버 등등</p>
+<h1 id="해결방법"><a href="#해결방법" class="headerlink" title="해결방법"></a>해결방법</h1><p><a href="https://answers.microsoft.com/ko-kr/windows/forum/windows_10-performance-winpc/dpc-watchdog/39f9d597-b238-4364-9f23-3e652e8eac0a" target="_blank" rel="external nofollow noopener noreferrer">https://answers.microsoft.com/ko-kr/windows/forum/windows_10-performance-winpc/dpc-watchdog/39f9d597-b238-4364-9f23-3e652e8eac0a</a></p>
+<p><a href="https://www.youtube.com/watch?v=9otxh2qi7ys" target="_blank" rel="external nofollow noopener noreferrer">https://www.youtube.com/watch?v=9otxh2qi7ys</a></p>
+<p>위 두개의 글을 참고했다.</p>
+<p>일단.</p>
+<p>관리자 모드로 cmd 를 열어서. </p>
+<p>아래 명령 입력후 엔터.</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Dism /online /cleanup-image /restorehealth</span><br></pre></td></tr></table></figure>
+
+<p>뭔가 검사를 한다. 시간이 좀 걸린다.<br>검사가 완료되면 다음 명령을 입력하고 엔터.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sfc &#x2F;scannow</span><br></pre></td></tr></table></figure>
+
+<p>마찬가지로 시간이 걸린다.</p>
+<p><img src="/images/20181031-Windows10-error-DPC-WatchDog-Violation_1.png" alt="내경우 위처럼 결과가 나왔다. 뭔가 손상이 있었다고 하는데... 흐음"></p>
+<p>그리고 한가지 더 작업을 했다.</p>
+<p>SATA AHCI 컨트롤 드라이버 업데이트를 해야한다.</p>
+<p>제어판에 장치관리자에서 다음과 같이 표준 SATA AHCI 컨트롤을 찾는다.</p>
+<p><img src="/images/20181031-Windows10-error-DPC-WatchDog-Violation_2.png" alt="이걸 마우스 우클릭하여 드라이버 업데이트를 클릭한다."></p>
+<p><img src="/images/20181031-Windows10-error-DPC-WatchDog-Violation_3.png" alt="컴퓨터에서 드라이버 소프트웨어 검색을 클릭"></p>
+<p><img src="/images/20181031-Windows10-error-DPC-WatchDog-Violation_4.png" alt="컴퓨터의 사용 가능한 드라이버 목록에서 직접 선택 클릭"></p>
+<p><img src="/images/20181031-Windows10-error-DPC-WatchDog-Violation_5.png" alt="표준 SATA AHCI 컨트롤러 선택후 다음 클릭"></p>
+<p>위 까지 하면 업데이트를 하고 컴퓨터 리부팅을 한다.</p>
+<p>위 두가지 작업을했으며, 아직까지 동일한 증상의 문제는 발생하지 않고 있다.</p>
+
+      
+      
+          
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+      
+
+
+  
+  
+  
+  
+
+        
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2018/10/24/javascript-20181024-javascript-callback/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Hanumoka">
+      <meta itemprop="description" content="아마추어 개발자의 블로그">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hanumoka, IT Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2018/10/24/javascript-20181024-javascript-callback/" class="post-title-link" itemprop="url">Javascript - 콜백함수(Callback function)이란?</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">작성일</span>
+
+              <time title="Post created: 2018-10-24 08:31:11" itemprop="dateCreated datePublished" datetime="2018-10-24T08:31:11+09:00">2018-10-24</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Updated at: 2020-04-16 01:50:11" itemprop="dateModified" datetime="2020-04-16T01:50:11+09:00">2020-04-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/javascript/" itemprop="url" rel="index">
+                    <span itemprop="name">javascript</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 20200427hexo_post_head -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h1><p>Callback 함수를 모르지는 않는다. 하지만 잘 안다고 말할수도 없다.<br>요즘 Node, Vue 등을 공부하면서 callback 함수의 진화형인 Promise, async 등을 접했고 곧 벽에 막혔다.<br>이 글을 통해 Javascript callback 함수를 제대로 공부하고, 정리하고자 한다.</p>
+<h1 id="CallBack-콜백함수란"><a href="#CallBack-콜백함수란" class="headerlink" title="CallBack 콜백함수란"></a>CallBack 콜백함수란</h1><p>CallBack 함수란 이름 그대로 나중에 호출되는 함수를 말한다.<br>콜백함수라고 해서 그 자체로 특별한 선언이나 문법적 특징을 가지고 있지는 않다.<br>콜백함수도 일반적인 자바스크립트 함수일 뿐이다.<br>콜백 함수는 코드를 통해 명시적으로 호출하는 함수가 아니라, 개발자는 단지 함수를 동록하기만 하고, <strong>어떤 이벤트가 발생했거나 특정 시점에 도달했을 때 시스템에서 호출하는 함수를 말한다.</strong><br>즉 콜백함수는 콜백함수라는 유니크한 문법적 특징을 가지고 있는 것이 아니라, 호출방식에 의한 구분이다.</p>
+<p>대표적인 콜백 함수의 사용 예로는 자바스크립트에서 이벤트 핸들러 처리이다.</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">button</span> <span class="attr">id</span>=<span class="string">"button1"</span> <span class="attr">onclick</span>=<span class="string">"button1_click();"</span>&gt;</span>버튼1<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="actionscript"><span class="function"><span class="keyword">function</span> <span class="title">button1_click</span><span class="params">()</span> </span>&#123;</span></span><br><span class="line"><span class="actionscript">	alert(<span class="string">"버튼1을 누르셨습니다."</span>);</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>Html에 onclick에 button1_click함수는 브라우저의 javascript API에서 DOM 이벤트 핸들러에 전달(등록)되고, 해당 버튼에 클릭이벤트가 발생했을 이벤트 핸들러가 콜백함수를 호출한다.</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$( <span class="string">"#target"</span> ).click(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  alert( <span class="string">"Handler for .click() called."</span> );</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>위처럼 Jquery에서도 콜백함수를 자주 사용하게 된다.</p>
+<p>콜백함수란 특정함수에 전달되어 특정함수가 어떤조건에 의해 호출하는 함수라고 후려칠수 있겠다.</p>
+<hr>
+<h1 id="Callback을-활용한-비동기적-프로그래밍"><a href="#Callback을-활용한-비동기적-프로그래밍" class="headerlink" title="Callback을 활용한 비동기적 프로그래밍"></a>Callback을 활용한 비동기적 프로그래밍</h1><p>Callback 함수를 사용하는 이유는, 자바스크립트에서 비동기적 프로그래밍을 할수 있기 때문이다.<br>이 콜백함수기법은 자바스크립트에서 가장 오래된 비동기적 메커니즘이라고 한다.</p>
+<p><strong>비동기적 테크닉</strong> : 소중한 싱글스레드의 멈춤을 방지한다. 즉 블록킹을 방지하여 싱글스레드가 논블록킹으로 동작하게 한다.</p>
+<p>비동기적 프로그래밍이 필요한 이유는 다음과 같다.</p>
+<h2 id="비동기적-테크닉을-사용하는-경우"><a href="#비동기적-테크닉을-사용하는-경우" class="headerlink" title="비동기적 테크닉을 사용하는 경우"></a>비동기적 테크닉을 사용하는 경우</h2><p><strong>1.사용자 이벤트 처리</strong></p>
+<p>브라우저 화면에서 발생하는 사용자의 이벤트는 예측이 불가능하다.<br>따라서 이런 화면이벤트를 관리담당하는 녀석에게 우리는 특정이벤트가 발생할 때 호출을 원하는 내용을 callback 함수에 전달하게 된다.</p>
+<p><strong>2.네트워크 응답 처리</strong></p>
+<p>화면단에서 서버에게 요청을 보냈을 때, 그 응답이 언제 올지 알 수 없다.<br>따라서 이런 서버에 대한 응답처리 등도 비동기적으로 처리해야 한다.</p>
+<p><strong>3.파일을 읽고 쓰는 등의 파일 시스템 작업</strong></p>
+<p><strong>4.의도적으로 시간 지연을 사용하는 기능(알람 등)</strong></p>
+<p>위와 같이 이벤트 등을 기다리는데 하나뿐인 소중한 스레드를 사용한다면, 또 서버의 응답을 기다리기 위해 하나뿐인 소중한 스레드를 사용한다면…<br>사용자는 멈춰져 있는 화면을 보게되는 것이다.<br>위와 같이 스레드의 블록킹을 야기하는 작업은 필수적으로 비동기적 프로그래밍을 해야 한다.</p>
+<hr>
+<h1 id="Callback-함수의-비동기적-사용의-예"><a href="#Callback-함수의-비동기적-사용의-예" class="headerlink" title="Callback 함수의 비동기적 사용의 예"></a>Callback 함수의 비동기적 사용의 예</h1><p>콜백 함수는 일반적으로 다른 함수에 넘기거나 객체의 프로퍼티로 사용한다.<br>드물게는 배열에 넣어서 쓸 때도 있다.<br>항상 그런건 아니지만 보통의 콜백함수는 익명함수로 사용한다.</p>
+<p>중요한 점은 콜백함수는 그냥 일반적인 함수이다.<br>우리는 비동기적 프로그래밍을 하기 위해서는, <strong>비동기적으로 콜백함수를 호출하는 함수</strong>에게 <strong>비동기적으로 호출되기를 원하는 코드</strong>를 <strong>콜백함수</strong>에 담아서 전달해야 한다.</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">fn_fakeAsync</span>(<span class="params">callback</span>)</span>&#123;</span><br><span class="line">  calback();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">"------- fn_fakeAsync 호출 직전 -------"</span>);</span><br><span class="line"></span><br><span class="line">fn_fakeAsync(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">"이게 비동기적으로 동작하길 바래"</span>);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">"------- fn_fakeAsync 호출 이후 -------"</span>);</span><br></pre></td></tr></table></figure>
+
+<p>위 코드 결과</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">------- fn_fakeAsync 호출 직전 -------</span><br><span class="line">이게 비동기적으로 동작하길 바래</span><br><span class="line">------- fn_fakeAsync 호출 이후 ------</span><br></pre></td></tr></table></figure>
+
+<p>위처럼 단순히 아무 함수에게나 콜백함수를 전달하여 호출시키는 것으로는 비동기적으로 콜백함수를 호출 할수 없다.</p>
+<p>다시한번 말하지만 자바스크립트에서 비동기프로그래밍을 하려면 <strong>비동기적으로 콜백함수를 호출하는 함수</strong>와 <strong>비동기적으로 호출되기를 원하는 콜백함수</strong>가 필요하다.</p>
+<p>그럼 비동기적으로 콜백함수를 실행하는 시스템 함수들을 알아보자.</p>
+<h2 id="setTimeout-함수"><a href="#setTimeout-함수" class="headerlink" title="setTimeout 함수"></a>setTimeout 함수</h2><p>setTimeout은 콜백함수의 실행을 지정된 밀리초만큼 지연하는 내장함수이다.</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">fn_newCallBack</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">"비동기적으로 호출되고 싶다."</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">"-------  호출 직전 -------"</span>);</span><br><span class="line"></span><br><span class="line">setTimeout(fn_newCallBack, <span class="number">3</span> * <span class="number">1000</span>); <span class="comment">// 3초 뒤 콜백 호출</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">"-------  호출 이후 -------"</span>);</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">-------  호출 직전 -------</span><br><span class="line">-------  호출 이후 -------</span><br><span class="line">비동기적으로 호출되고 싶다.</span><br></pre></td></tr></table></figure>
+
+<p>3초뒤에 fn_newCallBack함수가 호출되는 것을 확인 할 수 있다.<br>여기서 이게 무슨 비동기적 프로그래밍인지 갸웃 할수 있다.</p>
+<p>동기적 프로그래밍에서 만약 3초뒤에 fn_newCallBack를 호출시키려 한다면, 3초를 자바스크립트의 하나뿐인 메인스레드가 카운팅을 하고 있어야 한다.<br>즉 프로그래밍이 멈추는 것이다.<br>setTimeout함수는 메인스레드가 할일을 자바스크립트 API에게 위임시킴으로써 메인쓰레드의 멈춤(블록킹)을 피하게 해준다.</p>
+<p>다음 예제를 보자.</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">fn_newCallBack</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">"비동기적으로 호출되고 싶다."</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">"-------  호출 직전 -------"</span>);</span><br><span class="line"></span><br><span class="line">setTimeout(fn_newCallBack, <span class="number">0</span>); <span class="comment">// 즉시 실행되지 않을까?</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">"-------  호출 이후 -------"</span>);</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">-------  호출 직전 -------</span><br><span class="line">-------  호출 이후 -------</span><br><span class="line">비동기적으로 호출되고 싶다.</span><br></pre></td></tr></table></figure>
+
+<p>위 코드를 보면 setTimeout함수에 지연시간을 0으로 설정하여 즉시 실행하게 하였다.<br>그 결과를 보면 3초 셋팅과 마찬가지로 맨 마지막에 호출되는 것을 확인 할 수 있다.<br>물론 딜레이 없이 console에 찍히는것은 3초 셋팅과 다르긴 하다.<br>음 setTimeout에 지연시간을 0으로해도 내장으로 지연시간이 있는 것일까?</p>
+<p>그렇다면 다음코드는 어떻까?</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">fn_newCallBack</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">"비동기적으로 호출되고 싶다."</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">"-------  호출 직전 -------"</span>);</span><br><span class="line"></span><br><span class="line">setTimeout(fn_newCallBack, <span class="number">0</span>); <span class="comment">// 콜백이 언제 동작할지 예측해보자.</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">"-------  호출 이후 -------"</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//무한로프로 콘솔을 찍어낸다.</span></span><br><span class="line"><span class="keyword">while</span>(<span class="literal">true</span>)&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">"한국 일교차 너무해..."</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>위 코드를 실행하면 while문의 콘솔이 무한히 찍기고 fn_newCallBack함수는 절대 호출되지 않는다.<br>이게 무슨 말일까?</p>
+<p>javascript의 비동기적 동작을 이 글에서 다 설명하기에는 너무 빡세니, 간단히 설명해보겠다.<br>setTimeout함수에 전달된 콜백함수는 javascript 실행환경의 어느 바구니에 담겨진다.<br>그러면 javascript API가 setTimeout의 지연시간을 보고 카운팅을 대신 해준다.</p>
+<p>음? 그런데 지연시간이 0이네? javascript API는 이 콜백함수를 바구니에 꺼내서, TaskQueue라는 곳에 적재한다.<br>이 TaskQueue는 현재 동작중인 메인스레드가 일을 다 끝내면, 다음으로 해야할 일들이 있는 Queue이다.</p>
+<p>즉 위 코드에서 while의 무한루프로 메인스레드가 자기일을 끝내지 못하기 때문에 TaskQueue에 적재된 콜백함수가 호출되지 못하는 것이다.</p>
+<p>여기서 중요한 점은 setTimeout과 같은 비동기적으로 콜백을 호출 시켜주는 함수는, 전달된 콜백함수를 현재 실행중인 싱글스레드에서 뽑아내어 특정 장소에 보관하고 특정 조건을 만족시킬때 호출이 가능하게 한다는 점이다.<br>setTimeout은 시간을 카운팅하는 기능 외에, 콜백함수를 비동기영역으로 넘기는 역할을 하는 것이다.</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">setTimeout(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">  <span class="comment">//나라의 말이 중국과 달라</span></span><br><span class="line">  <span class="comment">//문자와 서로 맞지 아니해서</span></span><br><span class="line">  <span class="comment">//이러한 까닭으로 어리석은 백성이 말하고자 할 바가 있어도</span></span><br><span class="line">  <span class="comment">//마침내 제 뜻을 능히 펴지 못하는 사람이 많으니라</span></span><br><span class="line">  <span class="comment">//내 이를 위하여 가엾게 여겨</span></span><br><span class="line">  <span class="comment">//새로 스물여떯 자를 만드노니</span></span><br><span class="line">  <span class="comment">//사람마다 하여금 쉬이 익혀 날로 쓰며 편안케 하고자 할 다름이니라</span></span><br><span class="line">&#125;</span><br><span class="line">, <span class="number">1000</span> * <span class="number">5</span>);</span><br></pre></td></tr></table></figure>
+
+<p>setTimeout에 콜백으로 익명함수를 주로 사용하는데 익명함수가 길어질 경우 두번째 인자를 식별하기 어려울 수 있다.<br>다라서 위처럼 두번째 식별인자는 마지막 행에 분리하는 것이 사용팁이다.</p>
+<h2 id="setInterval함수와-clearInterval함수"><a href="#setInterval함수와-clearInterval함수" class="headerlink" title="setInterval함수와 clearInterval함수"></a>setInterval함수와 clearInterval함수</h2><p>setInterval도 setTimeout과 같이 콜백을 비동기적으로 호출 가능하게 해주는 함수이다.<br>차이점은 지정된 시간을 기준으로 반복적으로 콜백을 호출해준다는 것이다.</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> i = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">const</span> intervalId = setInterval(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">if</span>(i === <span class="number">3</span>) <span class="keyword">return</span> clearInterval(interbalId);</span><br><span class="line"></span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">`<span class="subst">$&#123;i++&#125;</span>: 인터벌로 호출 되는 콜백입니다.`</span>);</span><br><span class="line">  </span><br><span class="line">&#125;</span><br><span class="line">, <span class="number">5</span> * <span class="number">1000</span>);</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/20181024-javascript-callback_1.png" alt="setInterval 실행결과"></p>
+<p>위 코드에서 console.log 내부에 문자열을 감싼 것은 싱글쿼터가 아니라 백틱(키보드 esc 아래에 있음)이다.<br>Es2015 부터 백틱을 사용하여 위 처럼 템플릿 문자열을 사용 할 수 있다.</p>
+<p>setInterval의 기능은 단순하다 중요한 것은 고유의 intervalId를 리턴하고 이것을 clearInterval 함수에 넘겨 해당 setInterval을 중지시킬수 있다.<br>특시 Node등 서버단에서 setInterval를 사용할 경우 반드시 clearInterval로 인터벌을 정지시키지 않을경우 서버 메모리 누수가 발생할 수도 있으니 주의해야 한다.</p>
+<p>지금까지 setTimeout, setInterval, clearInterval등은 모두 전역 객체(브라우저에서는 Window, 노드에서는 global)에 정의 되어 있으므로 어디서나 사용할 수 있다.</p>
+<h1 id="마무리"><a href="#마무리" class="headerlink" title="마무리"></a>마무리</h1><p>setTimeout 등을 이용하여 javascript의 콜백함수의 비동기적 용법에 대해 간단히 알아보았다.<br>콜백을 사용할때 주의할점과, 문제점등 정리할 것이 많이 있지만 글이 너무 길어지는 것 같아 줄인다.<br>다음 글에서 나머지 것들을 정리해 보겠다.</p>
+<h1 id="Related-Posts"><a href="#Related-Posts" class="headerlink" title="Related Posts"></a>Related Posts</h1><p><a href="/2018/10/06/javascript-20181006-javascript-callback/">자바스크립트 동기, 비동기 프로그래밍</a></p>
+
+      
+      
+          
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+      
+
+
+  
+  
+  
+  
+
+        
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
     <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2018/10/21/mysql-20181021-mysql-install-at-windows/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -977,616 +1571,6 @@ gtag('config', 'UA-100596920-1');
   
   
 
-        
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
-    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2018/09/17/javascript-20180917-javascript-spread-operator/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Hanumoka">
-      <meta itemprop="description" content="아마추어 개발자의 블로그">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hanumoka, IT Blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2018/09/17/javascript-20180917-javascript-spread-operator/" class="post-title-link" itemprop="url">javascript - 전개연산자 spread operator(...)</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">작성일</span>
-
-              <time title="Post created: 2018-09-17 21:13:24" itemprop="dateCreated datePublished" datetime="2018-09-17T21:13:24+09:00">2018-09-17</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Updated at: 2020-04-16 01:50:11" itemprop="dateModified" datetime="2020-04-16T01:50:11+09:00">2020-04-16</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/javascript/" itemprop="url" rel="index">
-                    <span itemprop="name">javascript</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-      <!-- 20200427hexo_post_head -->
-      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
-      <script>
-          (adsbygoogle = window.adsbygoogle || []).push({});
-      </script>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h1><p>아 프론트엔드 진짜 너무 어렵다.<br>누군가 만들어논 Vue bootstrap 템플릿을 분석중인데, 진짜 뇌에 마비가 올것 같다.</p>
-<p>Vue 소스중에 다음과 같은 소스를 찾았다. </p>
-<p><img src="/images/20180917-javascript-spread-operator_1.png" alt="위 코드의 실행결과"></p>
-<p>저 ...  라는 자바스크립트 표현은 전개연산자(spread operator)라 불린다.</p>
-<p>전개연산자(spread operator)를 후려쳐서 말하자면, 배열 x에 전개연산자를 적용하면 배열 x를 복사한 뒤 배열 껍대기를 지워 버린다.</p>
-<p>아래 소스를 보면 이해가 될 것이다.</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">test</span>(<span class="params">a, b, c</span>)</span>&#123;&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> x = [<span class="number">1</span>, <span class="number">2</span>, <span class="string">'d'</span>];</span><br><span class="line"></span><br><span class="line">test(...x);</span><br></pre></td></tr></table></figure>
-
-<p>test 함수는 인자로 a, b, c 3개의 값을 받는다.<br>x라는 변수는 배열로 인덱스를 3개 같는다.<br>전개연산자를 배열 앞에 붙일 경우 그 배열을 복사한 뒤 배열 대 괄호를 지워버린다. </p>
-<p><img src="/images/20180917-javascript-spread-operator_2.png" alt="전개연산자를 대충 그림으로 표현하자면..."></p>
-<p>배열을 함수등에 파라미터로 넘길때 유용하게 사용되는 듯하다. </p>
-<p>자세한 사용법은 아래 MDN을 참고!</p>
-<hr>
-<h3 id="Related-Posts"><a href="#Related-Posts" class="headerlink" title="Related Posts"></a>Related Posts</h3><p>자바스크립트 전개연산자 MDN<br><a href="https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Operators/Spread_operator" target="_blank" rel="external nofollow noopener noreferrer">https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Operators/Spread_operator</a></p>
-<p>분석중인 VUE bootstrap 템플릿<br><a href="https://github.com/epicmaxco/vuestic-admin" target="_blank" rel="external nofollow noopener noreferrer">https://github.com/epicmaxco/vuestic-admin</a></p>
-
-      
-      
-          
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-
-  
-      
-
-
-  
-  
-  
-  
-
-        
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
-    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2018/09/11/spring-20180911-spring-Transactional/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Hanumoka">
-      <meta itemprop="description" content="아마추어 개발자의 블로그">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hanumoka, IT Blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2018/09/11/spring-20180911-spring-Transactional/" class="post-title-link" itemprop="url">spring - @Transactional(스프링 트랜잭션 적용하기.)</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">작성일</span>
-
-              <time title="Post created: 2018-09-11 15:08:14" itemprop="dateCreated datePublished" datetime="2018-09-11T15:08:14+09:00">2018-09-11</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Updated at: 2020-04-16 01:50:12" itemprop="dateModified" datetime="2020-04-16T01:50:12+09:00">2020-04-16</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/spring/" itemprop="url" rel="index">
-                    <span itemprop="name">spring</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-      <!-- 20200427hexo_post_head -->
-      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
-      <script>
-          (adsbygoogle = window.adsbygoogle || []).push({});
-      </script>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><img src="/images/20180911-spring-Transactional_1.png" alt="스프링로고"></p>
-<h3 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h3><p>Spring에서 트랜잭션을 설정하는 방법은 크게 XML파일을 이용한 설정과, 어노테이션을 이용한 설정이 있다.</p>
-<p>이 글에서는 @Transactional 어노테이션을 이용하면 간단하게 트랜잭션 처리에 대해 정리하겠다.</p>
-<p>AOP + tx:advice 태그를 이용한 트랜잭션 보다 간단하게 사용 할 수 있다.</p>
-<hr>
-<h3 id="root-contenxt-xml에-transactionManager-설정하기"><a href="#root-contenxt-xml에-transactionManager-설정하기" class="headerlink" title="root-contenxt.xml에 transactionManager 설정하기"></a>root-contenxt.xml에 transactionManager 설정하기</h3><p>일단 root-context.xml 파일에 트랜잭션 처리를 위한  transactionManager를 설정해야 한다.<br>아래 내용을 root-context.xml 파일에 추가하자.</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 트랜젝션 매니저 --&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"transactionManager"</span> <span class="attr">class</span>=<span class="string">"org.springframework.jdbc.datasource.DataSourceTransactionManager"</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"dataSource"</span> <span class="attr">ref</span>=<span class="string">"dataSource"</span>&gt;</span><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line">	</span><br><span class="line">	<span class="comment">&lt;!-- @Transactional 애노테이션을 sacn하기 위한 설정 --&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">tx:annotation-driven</span>/&gt;</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="트랜잭션이-필요한-서비스에-Transactional-어노테이션을-달아주자"><a href="#트랜잭션이-필요한-서비스에-Transactional-어노테이션을-달아주자" class="headerlink" title="트랜잭션이 필요한 서비스에 @Transactional 어노테이션을 달아주자."></a>트랜잭션이 필요한 서비스에 @Transactional 어노테이션을 달아주자.</h3><p>정말 간단하다. 트랜잭션이 필요한 서비스 클래스에 @Transactional 어노테이션을 달아주면된다.</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">//게시글 삭제</span></span><br><span class="line"><span class="meta">@Transactional</span></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">removeBoard</span><span class="params">(BoardVO vo)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line"></span><br><span class="line">  replyDAO.removeAllRepl(vo.bno);  <span class="comment">//삭제할 게시글의 답글 삭제</span></span><br><span class="line">  boardDAO.deleteBoard(vo.bno);    <span class="comment">//게시글 삭제</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>위처럼 간단한 설정으로 트랜잭션 설정을 할 수 있다.</p>
-<hr>
-<h3 id="Transactional에-대한-조금더-자세한-설정"><a href="#Transactional에-대한-조금더-자세한-설정" class="headerlink" title="@Transactional에 대한 조금더 자세한 설정"></a>@Transactional에 대한 조금더 자세한 설정</h3><p>@Transactional 애노테이션은 위 예제의 처럼 <strong>클래스의 메소드</strong> 뿐만 아니라, <strong>인터페이스</strong>, <strong>클래스</strong> 선언에도 사용할수 있다.</p>
-<p>메소드에 선언된 @Transactional의 설정이 가산 우선되기 때문에, 공통적인 규칙은 인터페이스, 클래스 등에 적용하고 특별한 설정은 메소드에 적용할수 있다.</p>
-<hr>
-<h3 id="Transactional-속성"><a href="#Transactional-속성" class="headerlink" title="@Transactional 속성"></a>@Transactional 속성</h3><p><strong>isolation (격리레벨)</strong></p>
-<ul>
-<li>DEFAULT: DB 설정, 기본 격리 수준(기본설정)</li>
-<li>SERIALIZABLE : 가장 높은 격리, 성능 저하의 우려가 있음</li>
-<li>READ_UNCOMMITED : 커밋되지 않는 데이터에 대한 읽기를 허용</li>
-<li>READ_COMMITED : 커밋된 데이터에 대해 읽기 허용</li>
-<li>REPEATEABLE_READ : 동일 필드에 대해 다중 접근 시 모두 동일한 결과를 보장</li>
-</ul>
-<p>설정 예: @Transactional(isolation=Isolation.DEFAULT)</p>
-<p><strong>propagation (전파속성)</strong></p>
-<ul>
-<li>PROPAGATION_MANDATORY : 작업은 반드시 특정한 트랜잭션이 존재한 상태에서만 가능</li>
-<li>PROPAGATION_NESTED : 기존에 트랜잭션이 있는 경우, 포함되어서 실행</li>
-<li>PROPAGATION_NEVER : 트랜잭션 상황에 실행되면 예외 발생</li>
-<li>PROPAGATION_NOT_SUPPORTED : 트랜잭션이 있는 경우에는 트랜잭션이 끝날 때까지 보류된 후 실행</li>
-<li><strong>PROPAGATION_REQUIRED : 트랜젝션이 있으면 그 상황에서 실행, 없으면 새로운 트랜잭션 실행(기본설정)</strong></li>
-<li>PROPAGATION_REQUIRED_NEW : 대상은 자신만의 고유한 트랜잭션으로 실행</li>
-<li>PROPAGATION_SUPPORTS : 트랜젝션을 필요료 하지 않으나, 트랜잭션 상황에 있다면 포함되어서 실행</li>
-</ul>
-<p>설정 예: @Transactional(propagation=Propagation.REQUIRED)</p>
-<p><strong>readOnly 속성</strong></p>
-<ul>
-<li>true인 경우 insert, update, delete 실행 시 예외 발생, 기본 설정은 false</li>
-</ul>
-<p>설정 예: @Transactional(readOnly = true)</p>
-<p><strong>rollbackFor 속성</strong></p>
-<ul>
-<li>특정 예외가 발생 시 강제로 Rollback</li>
-</ul>
-<p>설정 예: @Transactional(rollbackFor=Exception.class)</p>
-<p><strong>noRollbackFor 속성</strong></p>
-<ul>
-<li>특정 예외의 발생 시 Rollback 처리되지 않음</li>
-</ul>
-<p>설정 예: @Transactional(noRollbackFor=Exception.class)</p>
-<p><strong>timeout 속성</strong></p>
-<ul>
-<li>지정한 시간 내에 해당 메소드 수행이 완료되이 않은 경우 rollback 수행. -1일 경우 no timeout(Default=-1)</li>
-</ul>
-<p>설정 예: @Transactional(timeout=10)</p>
-<h3 id="마무리"><a href="#마무리" class="headerlink" title="마무리"></a>마무리</h3><p>음.. 전파속성은 어떤경우에 사용할까???</p>
-
-      
-      
-          
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-
-  
-      
-
-
-  
-  
-  
-  
-
-        
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
-    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2018/09/06/spring-20180906-spring-file-upload/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Hanumoka">
-      <meta itemprop="description" content="아마추어 개발자의 블로그">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hanumoka, IT Blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2018/09/06/spring-20180906-spring-file-upload/" class="post-title-link" itemprop="url">Spring - File Upload 개발요약정리</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">작성일</span>
-
-              <time title="Post created: 2018-09-06 22:43:10" itemprop="dateCreated datePublished" datetime="2018-09-06T22:43:10+09:00">2018-09-06</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Updated at: 2020-04-16 01:50:12" itemprop="dateModified" datetime="2020-04-16T01:50:12+09:00">2020-04-16</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/spring/" itemprop="url" rel="index">
-                    <span itemprop="name">spring</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-      <!-- 20200427hexo_post_head -->
-      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
-      <script>
-          (adsbygoogle = window.adsbygoogle || []).push({});
-      </script>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h3><p>이번에는 Spring에서 File Upload를 개발할때 필요한 라이브러리, 개념, 특정 기술들을 정리하겠다.<br>업로드할 파일은 이미지 파일과 일반파일로 나뉘며, 저용량 파일업로드를 기준한다.<br>완전한 실습이 아니라 요약정리임을 미리 알린다.(DB없이 실제 파일의 업로드만…)</p>
-<hr>
-<h3 id="필요한-라이브러리"><a href="#필요한-라이브러리" class="headerlink" title="필요한 라이브러리"></a>필요한 라이브러리</h3><p>pom.xml 파일에 아래 라이브러리를 추가한다.</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 파일업로드 관련 : 이미지 썸네일 생성 라이브러리--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.imgscalr<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>imgscalr-lib<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">version</span>&gt;</span>4.2<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">		</span><br><span class="line"><span class="comment">&lt;!-- 파일업로드 관련--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">groupId</span>&gt;</span>commons-fileupload<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>commons-fileupload<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">version</span>&gt;</span>1.3.2<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<hr>
-<h3 id="스프링-mulipartResolver-선언"><a href="#스프링-mulipartResolver-선언" class="headerlink" title="스프링 mulipartResolver 선언"></a>스프링 mulipartResolver 선언</h3><p>화면단에서 mutipart/form-date방식으로 서버에 전송되는 데이터를 스프링 MVC의 mulipartResolver로 처리할수 있다.</p>
-<p>servlet-context.xml 파일에 아래와 내용을 추가하자</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 파일 업로드로 들어오는 데이터를 처리하는 객체 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">beans:bean</span> <span class="attr">id</span>=<span class="string">"multipartResolver"</span> <span class="attr">class</span>=<span class="string">"org.springframework.web.multipart.commons.CommonsMultipartResolver"</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">beans:property</span> <span class="attr">name</span>=<span class="string">"maxUploadSize"</span> <span class="attr">value</span>=<span class="string">"10485760"</span> /&gt;</span> <span class="comment">&lt;!-- 10mb 제한 --&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">beans:bean</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<hr>
-<h3 id="업로드할-파일위치-지정하기"><a href="#업로드할-파일위치-지정하기" class="headerlink" title="업로드할 파일위치 지정하기"></a>업로드할 파일위치 지정하기</h3><p>업로드할 파일의 위치를 지정해야 한다.</p>
-<p>servlet-context.xml 파일을 열어서 아래 내용을 추가하자.</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 업로드된 파일의 저장 위치 지정 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">beans:bean</span> <span class="attr">id</span>=<span class="string">"uploadPath"</span> <span class="attr">class</span>=<span class="string">"java.lang.String"</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">beans:constructor-arg</span> <span class="attr">value</span>=<span class="string">"D:\\SpringUploadRepo\\upload"</span>&gt;</span><span class="tag">&lt;/<span class="name">beans:constructor-arg</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">beans:bean</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p>maxUploadSize 프로퍼티를 통해 업로드할 파일의 용량을 제한할수 있다.</p>
-<hr>
-<h3 id="web-xml-파일의-한글파일-인코딩-처리"><a href="#web-xml-파일의-한글파일-인코딩-처리" class="headerlink" title="web.xml 파일의 한글파일 인코딩 처리"></a>web.xml 파일의 한글파일 인코딩 처리</h3><p>한글파일이 업로드될때 파일명이 깨지는 것을 해결하기 위해 web.xml 파일에 아래 내용을 추가하자.</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- Ensure UTF-8 character encoding is used --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">filter</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">filter-name</span>&gt;</span>encodingFilter<span class="tag">&lt;/<span class="name">filter-name</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">filter-class</span>&gt;</span>org.springframework.web.filter.CharacterEncodingFilter<span class="tag">&lt;/<span class="name">filter-class</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">init-param</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">param-name</span>&gt;</span>encoding<span class="tag">&lt;/<span class="name">param-name</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">param-value</span>&gt;</span>UTF-8<span class="tag">&lt;/<span class="name">param-value</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">init-param</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">init-param</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">param-name</span>&gt;</span>forceEncoding<span class="tag">&lt;/<span class="name">param-name</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">param-value</span>&gt;</span>true<span class="tag">&lt;/<span class="name">param-value</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">init-param</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">filter</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">filter-mapping</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">filter-name</span>&gt;</span>encodingFilter<span class="tag">&lt;/<span class="name">filter-name</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">url-pattern</span>&gt;</span>/*<span class="tag">&lt;/<span class="name">url-pattern</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">filter-mapping</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<hr>
-<h3 id="서버에-파일을-저장할때-고려해야-할-사항들"><a href="#서버에-파일을-저장할때-고려해야-할-사항들" class="headerlink" title="서버에 파일을 저장할때 고려해야 할 사항들"></a>서버에 파일을 저장할때 고려해야 할 사항들</h3><p><strong>1.파일업로드 방식 결정하기.</strong></p>
-<p>Post 방식으로 전송할지 아니면 ajax방식으로 전송할지 결정해야 한다.<br>아마 요즘은 주로 ajax방식을 사용하는것 같다.</p>
-<p><strong>2.파일이름 중복문제.</strong></p>
-<p>DB에 파일을 저장할수도 있지만, 일반적으로 파일시스템에 파일을 저장하게된다.<br>따라서 업로드 되는 파일의 이름의 중복을 해결할 방법이 필요하다. -&gt; UUID로 해결가능</p>
-<p><strong>3.파일 저장경로에 대한문제.</strong></p>
-<p>Windows나 Linux등 운영체제에서 폴더내의 파일 개수가 너무 많아지게 되면, 속도저하 문제가 발생하게 된다.<br>특히 Windows의 파일 시스템의 경우 폴더내 최대 파일 개수의 제한이 있다.(100만단위가 넘어가긴 하지만…)<br>위 문제를 해결하기 위해서 보통 파일이 업로드 되는 시점별로 폴더를 관리한다.</p>
-<p>예를 들어 2018년 9월 6일 파일이 업로드 되면, 그 파일은 특정 폴더의 경로의 /2018/09/06/ 경로에 저장하면 위 문제를 해결 할수있다.<br>즉 업로드 할때 파일을 저장할 폴더의 유무에 따라 폴더 생성로직이 필요하다.</p>
-<p><strong>4.이미지파일의 경우 썸네일(thumbnail) 생성.</strong></p>
-<p>이미지파일인 경우 저장된 파일을 다시 화면에 보여줄때, 보통 그 이미지파일의 썸네일파일을 보여주게된다.<br>따라서 이미지파일이 서버에 저장될때는 추가적으로 그 이미지파일의 썸네일파일을 생성해 주어야 한다.<br>앞서 위에 추가한 라이브러리중 imgscalr-lib가 이미지의 썸네일 생성을 해준다.</p>
-<hr>
-<h3 id="서버에-파일을-저장할-유틸리티-클래스-생성"><a href="#서버에-파일을-저장할-유틸리티-클래스-생성" class="headerlink" title="서버에 파일을 저장할 유틸리티 클래스 생성"></a>서버에 파일을 저장할 유틸리티 클래스 생성</h3><p><strong>MediaUtils.java</strong> 생성</p>
-<p>이 유틸리티 파일은 이미지파일을 걸러주는 유틸리티 파일이다.</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.hanumoka.sample.util;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.HashMap;</span><br><span class="line"><span class="keyword">import</span> java.util.Map;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.springframework.http.MediaType;</span><br><span class="line"></span><br><span class="line"><span class="comment">//업로드한 파일중 이미지 파일만 거르는 클래스</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MediaUtils</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> Map&lt;String, MediaType&gt; mediaMap;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">static</span> &#123;</span><br><span class="line">		mediaMap = <span class="keyword">new</span> HashMap&lt;String, MediaType&gt;();</span><br><span class="line">		mediaMap.put(<span class="string">"JPG"</span>, MediaType.IMAGE_JPEG);</span><br><span class="line">		mediaMap.put(<span class="string">"GIF"</span>, MediaType.IMAGE_GIF);</span><br><span class="line">		mediaMap.put(<span class="string">"PNG"</span>, MediaType.IMAGE_PNG);</span><br><span class="line">	&#125;<span class="comment">//</span></span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> MediaType <span class="title">getMediaType</span><span class="params">(String type)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> mediaMap.get(type.toUpperCase());</span><br><span class="line">	&#125;<span class="comment">//</span></span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><strong>UploadFileUtils.java</strong> 생성</p>
-<p>이 파일을 실질적으로 업로드된 파일을 저장한다.<br>중점적으로 볼 함수는 uploadFile 이다.<br>화면단에서 전달받은 파일정보를가지고 스프링의 컨트롤러는 UploadFileUtils.uploadFile를 호출함으로써 파일을 저장하게 된다.</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.hanumoka.sample.util;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.awt.image.BufferedImage;</span><br><span class="line"><span class="keyword">import</span> java.io.File;</span><br><span class="line"><span class="keyword">import</span> java.text.DecimalFormat;</span><br><span class="line"><span class="keyword">import</span> java.util.Calendar;</span><br><span class="line"><span class="keyword">import</span> java.util.UUID;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.imageio.ImageIO;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.imgscalr.Scalr;</span><br><span class="line"><span class="keyword">import</span> org.slf4j.Logger;</span><br><span class="line"><span class="keyword">import</span> org.slf4j.LoggerFactory;</span><br><span class="line"><span class="keyword">import</span> org.springframework.util.FileCopyUtils;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UploadFileUtils</span> </span>&#123;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Logger logger = LoggerFactory.getLogger(UploadFileUtils<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">uploadFile</span><span class="params">(String uploadPath, String originalName, <span class="keyword">byte</span>[] fileData)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">		</span><br><span class="line">		<span class="comment">//겹쳐지지 않는 파일명을 위한 유니크한 값 생성</span></span><br><span class="line">		UUID uid = UUID.randomUUID();</span><br><span class="line">		</span><br><span class="line">		<span class="comment">//원본파일 이름과 UUID 결합</span></span><br><span class="line">		String savedName = uid.toString() + <span class="string">"_"</span> + originalName;</span><br><span class="line">		</span><br><span class="line">		<span class="comment">//파일을 저장할 폴더 생성(년 월 일 기준)</span></span><br><span class="line">		String savedPath = calcPath(uploadPath);</span><br><span class="line">		</span><br><span class="line">		<span class="comment">//저장할 파일준비</span></span><br><span class="line">		File target = <span class="keyword">new</span> File(uploadPath + savedPath, savedName);</span><br><span class="line">		</span><br><span class="line">		<span class="comment">//파일을 저장</span></span><br><span class="line">		FileCopyUtils.copy(fileData, target);</span><br><span class="line">		</span><br><span class="line">		String formatName = originalName.substring(originalName.lastIndexOf(<span class="string">"."</span>)+<span class="number">1</span>);</span><br><span class="line">		</span><br><span class="line">		String uploadedFileName = <span class="keyword">null</span>;</span><br><span class="line">		</span><br><span class="line">		<span class="comment">//파일의 확장자에 따라 썸네일(이미지일경우) 또는 아이콘을 생성함.</span></span><br><span class="line">		<span class="keyword">if</span>(MediaUtils.getMediaType(formatName) != <span class="keyword">null</span>) &#123;</span><br><span class="line">			uploadedFileName = makeThumbnail(uploadPath, savedPath, savedName);</span><br><span class="line">		&#125;<span class="keyword">else</span> &#123;</span><br><span class="line">			uploadedFileName = makeIcon(uploadPath, savedPath, savedName);</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		<span class="comment">//uploadedFileName는 썸네일명으로 화면에 전달된다.</span></span><br><span class="line">		<span class="keyword">return</span> uploadedFileName;</span><br><span class="line">	&#125;<span class="comment">//</span></span><br><span class="line">	</span><br><span class="line">	<span class="comment">//폴더 생성 함수</span></span><br><span class="line">	<span class="meta">@SuppressWarnings</span>(<span class="string">"unused"</span>)</span><br><span class="line">	<span class="function"><span class="keyword">private</span> <span class="keyword">static</span> String <span class="title">calcPath</span><span class="params">(String uploadPath)</span> </span>&#123;</span><br><span class="line">		</span><br><span class="line">		Calendar cal = Calendar.getInstance();</span><br><span class="line">		</span><br><span class="line">		String yearPath = File.separator + cal.get(Calendar.YEAR);</span><br><span class="line">		</span><br><span class="line">		String monthPath = yearPath + File.separator + <span class="keyword">new</span> DecimalFormat(<span class="string">"00"</span>).format(cal.get(Calendar.MONTH)+<span class="number">1</span>);</span><br><span class="line">		</span><br><span class="line">		String datePath = monthPath + File.separator + <span class="keyword">new</span> DecimalFormat(<span class="string">"00"</span>).format(cal.get(Calendar.DATE));</span><br><span class="line">		</span><br><span class="line">		makeDir(uploadPath, yearPath, monthPath, datePath);</span><br><span class="line">		</span><br><span class="line">		logger.info(datePath);</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">return</span> datePath;</span><br><span class="line">	&#125;<span class="comment">//calcPath</span></span><br><span class="line">	</span><br><span class="line">	<span class="comment">//폴더 생성 함수</span></span><br><span class="line">	<span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">makeDir</span><span class="params">(String uploadPath, String... paths)</span> </span>&#123;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">if</span>(<span class="keyword">new</span> File(uploadPath + paths[paths.length -<span class="number">1</span>]).exists()) &#123;</span><br><span class="line">			<span class="keyword">return</span>;</span><br><span class="line">		&#125;<span class="comment">//if</span></span><br><span class="line">		</span><br><span class="line">		<span class="keyword">for</span>(String path : paths) &#123;</span><br><span class="line">			</span><br><span class="line">			File dirPath = <span class="keyword">new</span> File(uploadPath + path);</span><br><span class="line">			</span><br><span class="line">			<span class="keyword">if</span>(!dirPath.exists()) &#123;</span><br><span class="line">				dirPath.mkdir();</span><br><span class="line">			&#125;<span class="comment">//if</span></span><br><span class="line">			</span><br><span class="line">		&#125;<span class="comment">//for</span></span><br><span class="line">		</span><br><span class="line">	&#125;<span class="comment">//makeDir</span></span><br><span class="line">	</span><br><span class="line">	<span class="comment">//음??? 아이콘? 이미지 파일이 아닌경우  썸네일을 대신?</span></span><br><span class="line">	<span class="function"><span class="keyword">private</span> <span class="keyword">static</span> String <span class="title">makeIcon</span><span class="params">(String uploadPath, String path, String fileName)</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">		String iconName = uploadPath + path + File.separator + fileName;</span><br><span class="line">		<span class="keyword">return</span> iconName.substring(uploadPath.length()).replace(File.separatorChar, <span class="string">'/'</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">//썸네일 이미지 생성</span></span><br><span class="line">	<span class="function"><span class="keyword">private</span> <span class="keyword">static</span> String <span class="title">makeThumbnail</span><span class="params">(String uploadPath, String path, String fileName)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">		</span><br><span class="line">		BufferedImage sourceImg = ImageIO.read(<span class="keyword">new</span> File(uploadPath + path, fileName));</span><br><span class="line">		</span><br><span class="line">		BufferedImage destImg = Scalr.resize(sourceImg, Scalr.Method.AUTOMATIC, Scalr.Mode.FIT_TO_HEIGHT, <span class="number">100</span>);</span><br><span class="line">		</span><br><span class="line">		String thumbnailName = uploadPath + path + File.separator + <span class="string">"s_"</span> + fileName;</span><br><span class="line">		</span><br><span class="line">		File newFile = <span class="keyword">new</span> File(thumbnailName);</span><br><span class="line">		String formatName = fileName.substring(fileName.lastIndexOf(<span class="string">"."</span>)+<span class="number">1</span>);</span><br><span class="line">		</span><br><span class="line">		ImageIO.write(destImg, formatName.toUpperCase(), newFile);</span><br><span class="line"></span><br><span class="line">		<span class="keyword">return</span> thumbnailName.substring(uploadPath.length()).replace(File.separatorChar, <span class="string">'/'</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<hr>
-<h3 id="예제소스"><a href="#예제소스" class="headerlink" title="예제소스"></a>예제소스</h3><p>위 설정과 유틸리티를 만들었다면, 아래예제 화면2개, 컨트롤러1 파일 업로드 테스트가 가능하다.<br>thymeleaf를 사용한 예제이다.<br>jsp에 html만 옮기고 url만 잡아주면 동작할 것이다.</p>
-<p><strong>1.Post방식으로 파일업로드.</strong></p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">xmlns:th</span>=<span class="string">"http://www.thymeleaf.org"</span></span></span><br><span class="line"><span class="tag">	<span class="attr">xmlns:layout</span>=<span class="string">"http://www.ultraq.net.nz/thymeleaf/layout"</span></span></span><br><span class="line"><span class="tag">	<span class="attr">data-layout-decorate</span>=<span class="string">"~&#123;sample/layout/sampleLayout&#125;"</span></span></span><br><span class="line"><span class="tag">	&gt;</span></span><br><span class="line">	</span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">th:inline</span>=<span class="string">"javascript"</span>&gt;</span></span><br><span class="line"><span class="actionscript"><span class="comment">/*&lt;![CDATA[*/</span></span></span><br><span class="line"><span class="javascript">$(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="actionscript"><span class="comment">/*]]&gt;*/</span></span></span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">layout:fragment</span>=<span class="string">"content"</span>&gt;</span></span><br><span class="line">	<span class="comment">&lt;!-- Content Wrapper. Contains page content --&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"content-wrapper"</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- Content Header (Page header) --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">section</span> <span class="attr">class</span>=<span class="string">"content-header"</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">h1</span>&gt;</span></span><br><span class="line">        파일 업로드 테스트1</span><br><span class="line">        <span class="tag">&lt;<span class="name">small</span>&gt;</span>Optional description<span class="tag">&lt;/<span class="name">small</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">ol</span> <span class="attr">class</span>=<span class="string">"breadcrumb"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"#"</span>&gt;</span><span class="tag">&lt;<span class="name">i</span> <span class="attr">class</span>=<span class="string">"fa fa-dashboard"</span>&gt;</span><span class="tag">&lt;/<span class="name">i</span>&gt;</span> 예제<span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">li</span> <span class="attr">class</span>=<span class="string">"active"</span>&gt;</span>read<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">ol</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">section</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!-- Main content --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">section</span> <span class="attr">class</span>=<span class="string">"content container-fluid"</span>&gt;</span></span><br><span class="line"></span><br><span class="line">      <span class="comment">&lt;!--------------------------</span></span><br><span class="line"><span class="comment">        | Your Page Content Here |</span></span><br><span class="line"><span class="comment">        --------------------------&gt;</span></span><br><span class="line">        </span><br><span class="line">        <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"box box-primary"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"box-header with-border"</span>&gt;</span></span><br><span class="line">              <span class="tag">&lt;<span class="name">h3</span> <span class="attr">class</span>=<span class="string">"box-title"</span>&gt;</span>파일업로드 테스트 1<span class="tag">&lt;/<span class="name">h3</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">            <span class="comment">&lt;!-- /.box-header --&gt;</span></span><br><span class="line">            <span class="comment">&lt;!-- form start --&gt;</span></span><br><span class="line">            <span class="comment">&lt;!-- &lt;form id="form1" action="/sample/upload/uploadForm" method="post" enctype="multipart/form-data"&gt; --&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">form</span> <span class="attr">id</span>=<span class="string">"form"</span> <span class="attr">action</span>=<span class="string">"/sample/upload/uploadForm"</span> <span class="attr">method</span>=<span class="string">"post"</span> <span class="attr">enctype</span>=<span class="string">"multipart/form-data"</span>&gt;</span></span><br><span class="line">              <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"box-body"</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"form-group"</span>&gt;</span></span><br><span class="line">                  <span class="comment">&lt;!-- &lt;label for="exampleInputBoardTitle"&gt;Title&lt;/label&gt;</span></span><br><span class="line"><span class="comment">                  &lt;input type="text"  class="form-control"&gt; --&gt;</span></span><br><span class="line">                  <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"file"</span> <span class="attr">name</span>=<span class="string">"file"</span>&gt;</span><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"submit"</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">              <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">              <span class="comment">&lt;!-- /.box-body --&gt;</span></span><br><span class="line"></span><br><span class="line">              <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"box-footer"</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">button</span> <span class="attr">type</span>=<span class="string">"submit"</span> <span class="attr">class</span>=<span class="string">"btn btn-warning"</span>&gt;</span>제출<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line">                <span class="comment">&lt;!-- &lt;button type="submit" class="btn btn-danger"&gt;Remove&lt;/button&gt;</span></span><br><span class="line"><span class="comment">                &lt;button type="submit" class="btn btn-primary"&gt;ListPage&lt;/button&gt; --&gt;</span></span><br><span class="line">              <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">form</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">          <span class="comment">&lt;!-- /.box --&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;/<span class="name">section</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- /.content --&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">  <span class="comment">&lt;!-- /.content-wrapper --&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p><strong>2.ajax 파일 업로드 화면.</strong></p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">xmlns:th</span>=<span class="string">"http://www.thymeleaf.org"</span></span></span><br><span class="line"><span class="tag">	<span class="attr">xmlns:layout</span>=<span class="string">"http://www.ultraq.net.nz/thymeleaf/layout"</span></span></span><br><span class="line"><span class="tag">	<span class="attr">data-layout-decorate</span>=<span class="string">"~&#123;sample/layout/sampleLayout&#125;"</span></span></span><br><span class="line"><span class="tag">	&gt;</span></span><br><span class="line">	</span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">th:inline</span>=<span class="string">"javascript"</span>&gt;</span></span><br><span class="line"><span class="actionscript"><span class="comment">/*&lt;![CDATA[*/</span></span></span><br><span class="line"><span class="javascript">$(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span></span><br><span class="line"></span><br><span class="line"><span class="javascript">	$(<span class="string">".fileDrop"</span>).on(<span class="string">"dragenter dragover"</span>, <span class="function"><span class="keyword">function</span>(<span class="params">event</span>)</span>&#123;</span></span><br><span class="line">		event.preventDefault();</span><br><span class="line">	&#125;);</span><br><span class="line">	</span><br><span class="line"><span class="javascript">	$(<span class="string">".fileDrop"</span>).on(<span class="string">"drop"</span>, <span class="function"><span class="keyword">function</span>(<span class="params">event</span>)</span>&#123;</span></span><br><span class="line">		event.preventDefault();</span><br><span class="line">		</span><br><span class="line"><span class="actionscript">		<span class="keyword">var</span> files = event.originalEvent.dataTransfer.files;</span></span><br><span class="line">		</span><br><span class="line"><span class="actionscript">		<span class="keyword">var</span> file = files[<span class="number">0</span>];</span></span><br><span class="line">		</span><br><span class="line"><span class="actionscript">		<span class="comment">//console.log(file);</span></span></span><br><span class="line">		</span><br><span class="line"><span class="actionscript">		<span class="keyword">var</span> formData = <span class="keyword">new</span> FormData(); <span class="comment">// HTML5</span></span></span><br><span class="line"><span class="actionscript">		formData.append(<span class="string">"file"</span>, file);</span></span><br><span class="line">		</span><br><span class="line"><span class="javascript">		$.ajax(&#123;</span></span><br><span class="line"><span class="actionscript">			url: <span class="string">'/sample/upload/uploadAjax'</span>,</span></span><br><span class="line">			data: formData,</span><br><span class="line"><span class="actionscript">			dataType: <span class="string">'text'</span>,</span></span><br><span class="line"><span class="actionscript">			processData: <span class="literal">false</span>,</span></span><br><span class="line"><span class="actionscript">			contentType: <span class="literal">false</span>,</span></span><br><span class="line"><span class="actionscript">			type: <span class="string">'POST'</span>,</span></span><br><span class="line"><span class="actionscript">			success: <span class="function"><span class="keyword">function</span><span class="params">(data)</span></span>&#123;</span></span><br><span class="line"><span class="actionscript">				<span class="comment">//alert(data);</span></span></span><br><span class="line"><span class="actionscript">				<span class="comment">//서버로 파일을 전송한 다음에 그 파일을 다시 받아온다.?</span></span></span><br><span class="line">				</span><br><span class="line"><span class="actionscript">				<span class="comment">//이미지 인경우 썸네일을 보여준다.</span></span></span><br><span class="line">				if(checkImageType(data))&#123;</span><br><span class="line"><span class="actionscript">					str = <span class="string">"&lt;div&gt;"</span></span></span><br><span class="line"><span class="actionscript">						+ <span class="string">"&lt;a href='/sample/upload/displayFile?fileName="</span> + getImageLink(data) + <span class="string">"'&gt;"</span></span></span><br><span class="line"><span class="actionscript">						+ <span class="string">"&lt;img src='/sample/upload/displayFile?fileName="</span> + data + <span class="string">"'/&gt;"</span></span></span><br><span class="line"><span class="actionscript">						+ <span class="string">"&lt;/a&gt;"</span></span></span><br><span class="line"><span class="handlebars"><span class="xml">						+ "<span class="tag">&lt;<span class="name">small</span> <span class="attr">data-src</span>=<span class="string">'" + data + "'</span>&gt;</span>X<span class="tag">&lt;/<span class="name">small</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span>";</span></span></span><br><span class="line"><span class="actionscript">				&#125;<span class="keyword">else</span> &#123;</span></span><br><span class="line"><span class="actionscript">					str = <span class="string">"&lt;div&gt;"</span></span></span><br><span class="line"><span class="actionscript">						+ <span class="string">"&lt;a href='/sample/upload/displayFile?fileName="</span> + data + <span class="string">"'&gt;"</span></span></span><br><span class="line"><span class="actionscript">						+ getOriginalName(data) + <span class="string">"&lt;/a&gt;"</span></span></span><br><span class="line"><span class="handlebars"><span class="xml">						+ "<span class="tag">&lt;<span class="name">small</span> <span class="attr">data-src</span>=<span class="string">'" + data + "'</span>&gt;</span>X<span class="tag">&lt;/<span class="name">small</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span>";</span></span></span><br><span class="line"><span class="actionscript">				&#125;<span class="comment">//else</span></span></span><br><span class="line">					</span><br><span class="line"><span class="javascript">				$(<span class="string">".uploadedList"</span>).append(str);	</span></span><br><span class="line">			&#125;,</span><br><span class="line"><span class="actionscript">		&#125;);<span class="comment">// ajax</span></span></span><br><span class="line">		</span><br><span class="line">	&#125;);</span><br><span class="line">	</span><br><span class="line">	</span><br><span class="line"><span class="actionscript">	<span class="comment">/* 컨트롤러로 부터 전송받은 파일이 이미지 파일인지 확인하는 함수 */</span></span></span><br><span class="line"><span class="actionscript">	<span class="function"><span class="keyword">function</span> <span class="title">checkImageType</span><span class="params">(fileName)</span></span>&#123;</span></span><br><span class="line"><span class="javascript">		<span class="keyword">var</span> pattern = <span class="regexp">/jpg$|gif$|png$|jpeg$/i</span>;</span></span><br><span class="line"><span class="actionscript">		<span class="keyword">return</span> fileName.match(pattern);</span></span><br><span class="line"><span class="actionscript">	&#125;<span class="comment">//checkImageType</span></span></span><br><span class="line">	</span><br><span class="line"><span class="actionscript">	<span class="comment">//파일 이름 처리 : UUID 가짜 이름 제거</span></span></span><br><span class="line"><span class="actionscript">	<span class="function"><span class="keyword">function</span> <span class="title">getOriginalName</span><span class="params">(fileName)</span></span>&#123;</span></span><br><span class="line">		if(checkImageType(fileName))&#123;</span><br><span class="line"><span class="actionscript">			<span class="keyword">return</span>;</span></span><br><span class="line">	&#125;</span><br><span class="line">		</span><br><span class="line"><span class="actionscript">		<span class="keyword">var</span> idx = fileName.indexOf(<span class="string">"_"</span>) + <span class="number">1</span>;</span></span><br><span class="line"><span class="actionscript">		<span class="keyword">return</span> fileName.substr(idx);</span></span><br><span class="line">			</span><br><span class="line"><span class="actionscript">	&#125;<span class="comment">//getOriginalName</span></span></span><br><span class="line">	</span><br><span class="line"><span class="actionscript">	<span class="comment">//이미지 원본 링크 제공</span></span></span><br><span class="line"><span class="actionscript">	<span class="function"><span class="keyword">function</span> <span class="title">getImageLink</span><span class="params">(fileName)</span></span>&#123;</span></span><br><span class="line">		</span><br><span class="line">		if(!checkImageType(fileName))&#123;</span><br><span class="line"><span class="actionscript">			<span class="keyword">return</span>;</span></span><br><span class="line"><span class="actionscript">		&#125;<span class="comment">//if</span></span></span><br><span class="line">		</span><br><span class="line"><span class="actionscript">		<span class="keyword">var</span> front = fileName.substr(<span class="number">0</span>, <span class="number">12</span>);</span></span><br><span class="line"><span class="actionscript">		<span class="keyword">var</span> end = fileName.substr(<span class="number">14</span>);</span></span><br><span class="line">		</span><br><span class="line"><span class="actionscript">		<span class="keyword">return</span> front + end;</span></span><br><span class="line">		</span><br><span class="line"><span class="actionscript">	&#125;<span class="comment">//getImageLink</span></span></span><br><span class="line">	</span><br><span class="line">	</span><br><span class="line"><span class="actionscript">	<span class="comment">//업로드 파일 삭제 처리</span></span></span><br><span class="line"><span class="javascript">	$(<span class="string">".uploadedList"</span>).on(<span class="string">"click"</span>, <span class="string">"small"</span>, <span class="function"><span class="keyword">function</span>(<span class="params">event</span>)</span>&#123;</span></span><br><span class="line">		</span><br><span class="line"><span class="javascript">		<span class="keyword">var</span> that = $(<span class="keyword">this</span>);</span></span><br><span class="line">		</span><br><span class="line"><span class="javascript">		alert($(<span class="keyword">this</span>).attr(<span class="string">"data-src"</span>));</span></span><br><span class="line">		</span><br><span class="line"><span class="javascript">		$.ajax(&#123;</span></span><br><span class="line"><span class="actionscript">			url: <span class="string">"/sample/upload/deleteFile"</span>,</span></span><br><span class="line"><span class="actionscript">			type: <span class="string">"post"</span>,</span></span><br><span class="line"><span class="javascript">			data: &#123;<span class="attr">fileName</span>:$(<span class="keyword">this</span>).attr(<span class="string">"data-src"</span>)&#125;,</span></span><br><span class="line"><span class="actionscript">			dataType: <span class="string">"text"</span>,</span></span><br><span class="line"><span class="actionscript">			success : <span class="function"><span class="keyword">function</span><span class="params">(result)</span></span>&#123;</span></span><br><span class="line"><span class="actionscript">				<span class="keyword">if</span>(result == <span class="string">'deleted'</span>)&#123;</span></span><br><span class="line"><span class="actionscript">					<span class="comment">//alert("deleted");</span></span></span><br><span class="line"><span class="actionscript">					that.parent(<span class="string">"div"</span>).remove();</span></span><br><span class="line"><span class="actionscript">				&#125;<span class="comment">//</span></span></span><br><span class="line">			&#125;,</span><br><span class="line">		&#125;);</span><br><span class="line">		</span><br><span class="line"><span class="actionscript">	&#125;);<span class="comment">//uploadedList</span></span></span><br><span class="line">	</span><br><span class="line">&#125;);</span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">style</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="css"><span class="selector-class">.fileDrop</span>&#123;</span></span><br><span class="line">	width: 100%;</span><br><span class="line">	height: 200px;</span><br><span class="line">	border: 1px dotted blue;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">small &#123;</span><br><span class="line">	margin-left: 3px;</span><br><span class="line">	font-weight: bold;</span><br><span class="line">	color: gray;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">layout:fragment</span>=<span class="string">"content"</span>&gt;</span></span><br><span class="line">	<span class="comment">&lt;!-- Content Wrapper. Contains page content --&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"content-wrapper"</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- Content Header (Page header) --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">section</span> <span class="attr">class</span>=<span class="string">"content-header"</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">h1</span>&gt;</span></span><br><span class="line">       Ajax 파일 업로드</span><br><span class="line">        <span class="tag">&lt;<span class="name">small</span>&gt;</span>Optional description<span class="tag">&lt;/<span class="name">small</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">ol</span> <span class="attr">class</span>=<span class="string">"breadcrumb"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"#"</span>&gt;</span><span class="tag">&lt;<span class="name">i</span> <span class="attr">class</span>=<span class="string">"fa fa-dashboard"</span>&gt;</span><span class="tag">&lt;/<span class="name">i</span>&gt;</span> 예제<span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">li</span> <span class="attr">class</span>=<span class="string">"active"</span>&gt;</span>read<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">ol</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">section</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!-- Main content --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">section</span> <span class="attr">class</span>=<span class="string">"content container-fluid"</span>&gt;</span></span><br><span class="line"></span><br><span class="line">      <span class="comment">&lt;!--------------------------</span></span><br><span class="line"><span class="comment">        | Your Page Content Here |</span></span><br><span class="line"><span class="comment">        --------------------------&gt;</span></span><br><span class="line">        </span><br><span class="line">        <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"box box-primary"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"box-header with-border"</span>&gt;</span></span><br><span class="line">              <span class="tag">&lt;<span class="name">h3</span> <span class="attr">class</span>=<span class="string">"box-title"</span>&gt;</span>Ajax File Upload<span class="tag">&lt;/<span class="name">h3</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">            <span class="comment">&lt;!-- /.box-header --&gt;</span></span><br><span class="line">            <span class="comment">&lt;!-- form start --&gt;</span></span><br><span class="line">            <span class="comment">&lt;!-- &lt;form id="form1" action="/sample/upload/uploadForm" method="post" enctype="multipart/form-data"&gt; --&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">form</span> <span class="attr">id</span>=<span class="string">"form"</span> <span class="attr">action</span>=<span class="string">"/sample/upload/uploadForm"</span> <span class="attr">method</span>=<span class="string">"post"</span> <span class="attr">enctype</span>=<span class="string">"multipart/form-data"</span>&gt;</span></span><br><span class="line">              <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"box-body"</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"form-group"</span>&gt;</span></span><br><span class="line">				  <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"fileDrop"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span>	</span><br><span class="line">                <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">              <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">              <span class="comment">&lt;!-- /.box-body --&gt;</span></span><br><span class="line"></span><br><span class="line">              <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"box-footer"</span>&gt;</span></span><br><span class="line">                <span class="comment">&lt;!-- &lt;button type="submit" class="btn btn-warning"&gt;제출&lt;/button&gt; --&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"uploadedList"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">              <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">form</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">          <span class="comment">&lt;!-- /.box --&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;/<span class="name">section</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- /.content --&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">  <span class="comment">&lt;!-- /.content-wrapper --&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p>UploadController.java</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.hanumoka.sample.controller;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.File;</span><br><span class="line"><span class="keyword">import</span> java.io.FileInputStream;</span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.io.InputStream;</span><br><span class="line"><span class="keyword">import</span> java.util.UUID;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.annotation.Resource;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.apache.commons.io.IOUtils;</span><br><span class="line"><span class="keyword">import</span> org.slf4j.Logger;</span><br><span class="line"><span class="keyword">import</span> org.slf4j.LoggerFactory;</span><br><span class="line"><span class="keyword">import</span> org.springframework.http.HttpHeaders;</span><br><span class="line"><span class="keyword">import</span> org.springframework.http.HttpStatus;</span><br><span class="line"><span class="keyword">import</span> org.springframework.http.MediaType;</span><br><span class="line"><span class="keyword">import</span> org.springframework.http.ResponseEntity;</span><br><span class="line"><span class="keyword">import</span> org.springframework.stereotype.Controller;</span><br><span class="line"><span class="keyword">import</span> org.springframework.ui.Model;</span><br><span class="line"><span class="keyword">import</span> org.springframework.util.FileCopyUtils;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.RequestMapping;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.RequestMethod;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.ResponseBody;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.multipart.MultipartFile;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.hanumoka.sample.util.MediaUtils;</span><br><span class="line"><span class="keyword">import</span> com.hanumoka.sample.util.UploadFileUtils;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Controller</span></span><br><span class="line"><span class="meta">@RequestMapping</span>(<span class="string">"/sample/upload/*"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UploadController</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Logger logger = LoggerFactory.getLogger(UploadController<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="meta">@Resource</span>(name = <span class="string">"uploadPath"</span>)</span><br><span class="line">	<span class="keyword">private</span> String uploadPath;</span><br><span class="line">	</span><br><span class="line">	<span class="meta">@RequestMapping</span>(value = <span class="string">"/uploadForm"</span>, method = RequestMethod.GET)</span><br><span class="line">	<span class="function"><span class="keyword">public</span> String <span class="title">uploadFormGET</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="string">"/sample/upload/uploadForm"</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">//Post 방식 파일 업로드</span></span><br><span class="line">	<span class="meta">@RequestMapping</span>(value = <span class="string">"/uploadForm"</span>, method = RequestMethod.POST)</span><br><span class="line">	<span class="function"><span class="keyword">public</span> String <span class="title">uploadFormPOST</span><span class="params">(MultipartFile file, Model model)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">		</span><br><span class="line">		logger.info(<span class="string">"uploadFormPost"</span>);</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">if</span>(file != <span class="keyword">null</span>) &#123;</span><br><span class="line">			logger.info(<span class="string">"originalName:"</span> + file.getOriginalFilename());</span><br><span class="line">			logger.info(<span class="string">"size:"</span> + file.getSize());</span><br><span class="line">			logger.info(<span class="string">"ContentType:"</span> + file.getContentType());</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		String savedName = uploadFile(file.getOriginalFilename(), file.getBytes());</span><br><span class="line">		</span><br><span class="line">		model.addAttribute(<span class="string">"savedName"</span>, savedName);</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">return</span> <span class="string">"/sample/upload/uploadForm"</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">//업로드된 파일을 저장하는 함수</span></span><br><span class="line">	<span class="function"><span class="keyword">private</span> String <span class="title">uploadFile</span><span class="params">(String originalName, <span class="keyword">byte</span>[] fileDate)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">		</span><br><span class="line">		UUID uid = UUID.randomUUID();</span><br><span class="line">		</span><br><span class="line">		String savedName = uid.toString() + <span class="string">"_"</span> + originalName;</span><br><span class="line">		File target = <span class="keyword">new</span> File(uploadPath, savedName);</span><br><span class="line">		</span><br><span class="line">		<span class="comment">//org.springframework.util 패키지의 FileCopyUtils는 파일 데이터를 파일로 처리하거나, 복사하는 등의 기능이 있다.</span></span><br><span class="line">		FileCopyUtils.copy(fileDate, target);</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">return</span> savedName;</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">//Ajax 파일 업로드</span></span><br><span class="line">	<span class="meta">@RequestMapping</span>(value=<span class="string">"/sample/upload/uploadAjax"</span>, method = RequestMethod.GET)</span><br><span class="line">	<span class="function"><span class="keyword">public</span> String <span class="title">uploadAjaxGET</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="string">"/sample/upload/uploadAjax"</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	</span><br><span class="line">	<span class="comment">//Ajax 파일 업로드 produces는 한국어를 정상적으로 전송하기 위한 속성</span></span><br><span class="line">	<span class="meta">@ResponseBody</span></span><br><span class="line">	<span class="meta">@RequestMapping</span>(value=<span class="string">"/sample/upload/uploadAjax"</span>, method = RequestMethod.POST, produces = <span class="string">"text/plain;charset=UTF-8"</span>)</span><br><span class="line">	<span class="function"><span class="keyword">public</span> ResponseEntity&lt;String&gt; <span class="title">uploadAjaxPOST</span><span class="params">(MultipartFile file)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">		</span><br><span class="line">		logger.info(<span class="string">"originalName:"</span> + file.getOriginalFilename());</span><br><span class="line">		logger.info(<span class="string">"size:"</span> + file.getSize());</span><br><span class="line">		logger.info(<span class="string">"contentType:"</span> + file.getContentType());</span><br><span class="line">		</span><br><span class="line">		<span class="comment">//String savedName = uploadFile(file.getOriginalFilename(), file.getBytes());</span></span><br><span class="line">		</span><br><span class="line">		<span class="comment">//HttpStatus.CREATED : 리소스가 정상적으로 생성되었다는 상태코드.</span></span><br><span class="line">		<span class="comment">//return new ResponseEntity&lt;&gt;(file.getOriginalFilename(), HttpStatus.CREATED);</span></span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">new</span> ResponseEntity&lt;&gt;(UploadFileUtils.uploadFile(uploadPath, file.getOriginalFilename(), file.getBytes()), HttpStatus.CREATED);</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">//화면에 저장된 파일을 보여주는 컨트롤러 /년/월/일/파일명 형태로 입력 받는다.</span></span><br><span class="line">	<span class="comment">// displayFile?fileName=/년/월/일/파일명</span></span><br><span class="line">	<span class="meta">@ResponseBody</span></span><br><span class="line">	<span class="meta">@RequestMapping</span>(value=<span class="string">"/sample/upload/displayFile"</span>, method = RequestMethod.GET)</span><br><span class="line">	<span class="keyword">public</span> ResponseEntity&lt;<span class="keyword">byte</span>[]&gt; displayFile(String fileName) <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">		</span><br><span class="line">		InputStream in = <span class="keyword">null</span>;</span><br><span class="line">		ResponseEntity&lt;<span class="keyword">byte</span>[]&gt; entity = <span class="keyword">null</span>;</span><br><span class="line">		</span><br><span class="line">		logger.info(<span class="string">"File name: "</span> + fileName);</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">try</span> &#123;</span><br><span class="line">			String formatName = fileName.substring(fileName.lastIndexOf(<span class="string">"."</span>)+<span class="number">1</span>);</span><br><span class="line">			</span><br><span class="line">			MediaType mType = MediaUtils.getMediaType(formatName);</span><br><span class="line">			</span><br><span class="line">			HttpHeaders headers = <span class="keyword">new</span> HttpHeaders();</span><br><span class="line">			</span><br><span class="line">			in = <span class="keyword">new</span> FileInputStream(uploadPath + fileName);</span><br><span class="line">			</span><br><span class="line">			</span><br><span class="line">			<span class="keyword">if</span>(mType != <span class="keyword">null</span>) &#123;</span><br><span class="line">				headers.setContentType(mType);</span><br><span class="line">			&#125;<span class="keyword">else</span> &#123;</span><br><span class="line">				fileName = fileName.substring(fileName.indexOf(<span class="string">"_"</span>)+<span class="number">1</span>);</span><br><span class="line">				headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);</span><br><span class="line">				headers.add(<span class="string">"Content-Disposition"</span>, <span class="string">"attachment; filename=\""</span> + <span class="keyword">new</span> String(fileName.getBytes(<span class="string">"UTF-8"</span>), <span class="string">"ISO-8859-1"</span>) + <span class="string">"\""</span>);</span><br><span class="line">			&#125;<span class="comment">// else</span></span><br><span class="line">			</span><br><span class="line">			entity = <span class="keyword">new</span> ResponseEntity&lt;<span class="keyword">byte</span>[]&gt;(IOUtils.toByteArray(in), headers, HttpStatus.CREATED);</span><br><span class="line">			</span><br><span class="line">		&#125; <span class="keyword">catch</span>(Exception e) &#123;</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">			entity = <span class="keyword">new</span> ResponseEntity&lt;<span class="keyword">byte</span>[]&gt;(HttpStatus.BAD_REQUEST);</span><br><span class="line">		&#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">			in.close();</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">return</span> entity;</span><br><span class="line">	&#125;<span class="comment">// displayFile</span></span><br><span class="line">	</span><br><span class="line">	</span><br><span class="line">	<span class="comment">//업로드된 파일 삭제 처리</span></span><br><span class="line">	<span class="meta">@ResponseBody</span></span><br><span class="line">	<span class="meta">@RequestMapping</span>(value=<span class="string">"/sample/upload/deleteFile"</span>, method = RequestMethod.POST)</span><br><span class="line">	<span class="function"><span class="keyword">public</span> ResponseEntity&lt;String&gt; <span class="title">deleteFile</span><span class="params">(String fileName)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">		</span><br><span class="line">		logger.info(<span class="string">"delete file:"</span> + fileName);</span><br><span class="line">		</span><br><span class="line">		String formatName = fileName.substring(fileName.lastIndexOf(<span class="string">"."</span>)+<span class="number">1</span>);</span><br><span class="line">		</span><br><span class="line">		MediaType mType = MediaUtils.getMediaType(formatName);</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">if</span>(mType != <span class="keyword">null</span>) &#123;</span><br><span class="line">			String front = fileName.substring(<span class="number">0</span>, <span class="number">12</span>);</span><br><span class="line">			String end = fileName.substring(<span class="number">14</span>);</span><br><span class="line">			<span class="keyword">new</span> File(uploadPath + (front+end).replace(<span class="string">'/'</span>, File.separatorChar)).delete();</span><br><span class="line">		&#125;<span class="comment">//if</span></span><br><span class="line">		</span><br><span class="line">		<span class="keyword">new</span> File(uploadPath + fileName.replace(<span class="string">'/'</span>, File.separatorChar)).delete();</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">new</span> ResponseEntity&lt;String&gt;(<span class="string">"deleted"</span>, HttpStatus.OK);</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-<p><img src="/images/20180906-spring-file-upload_1.png" alt="동작예시"></p>
-<h3 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h3><p>코드로 배우는 스프링 웹 프로젝트(남가람북스)</p>
-
-      
-      
-          
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-
-  
-      
-
-
-  
-  
-  
-  
-
-        
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
-    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2018/09/04/javascript-20180904-javascript-design-patterns/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Hanumoka">
-      <meta itemprop="description" content="아마추어 개발자의 블로그">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hanumoka, IT Blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2018/09/04/javascript-20180904-javascript-design-patterns/" class="post-title-link" itemprop="url">javascript - Module 패턴(전역스코프를 지켜라)</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">작성일</span>
-
-              <time title="Post created: 2018-09-04 00:50:53" itemprop="dateCreated datePublished" datetime="2018-09-04T00:50:53+09:00">2018-09-04</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Updated at: 2020-04-16 01:50:11" itemprop="dateModified" datetime="2020-04-16T01:50:11+09:00">2020-04-16</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/javascript/" itemprop="url" rel="index">
-                    <span itemprop="name">javascript</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-      <!-- 20200427hexo_post_head -->
-      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
-      <script>
-          (adsbygoogle = window.adsbygoogle || []).push({});
-      </script>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h3><p>웹 프로젝트를 하다보면 공통적으로 사용할 유틸리티 등을 common.js 와 같이 분리하여 개발할 필요가 생긴다.<br>이때 고려할점은 자바스크립트의 전역 스코프의 변수명 관리가 힘들다는 것이다.</p>
-<p>예를 들어 common1.js와 common2.js 두개를 동시에 참조하여 사용파는 페이지가 있다고 가정했을때,</p>
-<p><strong>common1.js 내부</strong></p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">var</span> commonObj1 = &#123;&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> someUtil = &#123;&#125;;</span><br></pre></td></tr></table></figure>
-
-<p><strong>common2.js 내부</strong></p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">var</span> commonObj2 = <span class="string">"test"</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> someUtil = &#123;&#125;;</span><br></pre></td></tr></table></figure>
-
-<p>위처럼 전역변수의 명이 겹쳐지는 상황이 발생할 수도 있다.<br>만약 수십개의 js 파일에 각각 수십개의 변수명이 선언된다면…<br>아무리 개발룰을 통일해서 잘 개발한다 하더라도 전역스코프에 변수명이 겹쳐지는 위험성을 피할수는 없다.<br>Module 패턴을 이용하면 위와 같은 전역스코프의 오염을 <strong>어느정도</strong> 줄일수 있다.</p>
-<hr>
-<h3 id="Module-패턴"><a href="#Module-패턴" class="headerlink" title="Module 패턴"></a>Module 패턴</h3><p>javascript에서 java와 같은 고급언어의 클래스의 캡슐레이션을 구현하기 위해 사용되는 패턴이다.<br>말 그대로 자바스크립트 코드를 모듈화 하여 사용한다.</p>
-<p><strong>기본구조</strong></p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> someObj = (<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// private 변수들과 함수들 위치</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> &#123;</span><br><span class="line">     <span class="comment">//public 변수들과 함수들 선언</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure>
-
-<p>모듈패턴은 자바스크립트의 클로저와 즉시실행함수를 이용하여 구현된다.<br>즉시실행함수를 통해 <strong>위 코드는 로드가 되는 순간 바로 동작하여 1개의 객채를 리턴</strong>하여 someObj에 할당하게 된다.<br>즉 someObj는 java의 static 클래스와 비슷해진다.</p>
-<p>구체적으로 예들 들면 아래와 같다.</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> obj1 = (<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// private 변수들 함수</span></span><br><span class="line">  <span class="keyword">var</span> _age = <span class="number">12</span>; <span class="comment">// java로 따지면 static 변수가 된다.</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> &#123;</span><br><span class="line"></span><br><span class="line">    getAge : <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">      <span class="keyword">return</span> _age;</span><br><span class="line">    &#125;,</span><br><span class="line">    setAge : <span class="function"><span class="keyword">function</span>(<span class="params">age</span>)</span>&#123;</span><br><span class="line">      _age = age</span><br><span class="line">    &#125;,</span><br><span class="line">    getOld : <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">      _age++;</span><br><span class="line">    &#125;,</span><br><span class="line">    getYoung : <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">      _age--;</span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;)();</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(obj1.getAge());</span><br><span class="line"></span><br><span class="line">obj1.setAge(<span class="number">20</span>)</span><br><span class="line"><span class="built_in">console</span>.log(obj1.getAge());</span><br><span class="line"></span><br><span class="line">obj1.getOld()</span><br><span class="line"><span class="built_in">console</span>.log(obj1.getAge());</span><br><span class="line"></span><br><span class="line">obj1.getYoung()</span><br><span class="line"><span class="built_in">console</span>.log(obj1.getAge());</span><br></pre></td></tr></table></figure>
-
-<p><img src="/images/20180904-javascript-design-patterns_1.png" alt="위 코드의 실행결과"></p>
-<p>모듈 패턴을 사용하여 자바스크립트의 소스코드를 모듈화 하고, 전역스코프를 어느정도 깨끗하게 유지할수 있다.<br>하지만 궁극적으로 모듈명, 즉 위의 obj1의 이름의 충돌 자체는 막을수 없다.<br>이를 위해서 어느정도 개발규약이 필요하다.</p>
-<p><strong>모듈명의 충돌을 막기위해, 모듈명은 js파일명과 동일하게 하여 최대한 유니크성을 지켜야 한다.</strong></p>
-<hr>
-<h3 id="마무리"><a href="#마무리" class="headerlink" title="마무리"></a>마무리</h3><p>자바스크립트를 조금 보니 별별 패턴이 다있다.<br>아마도 위 모듈명이 충돌되는 것도 방지하는 무언가 이미 있지 않을까 생각된다.<br>아 공부를 하면 할수록 아는것 보다 모르는게 많아지는 느낌이다.</p>
-<hr>
-<h3 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h3><p><a href="https://kkd927.github.io/general/web/javascript/2017/04/12/4-JavaScript-Design-Patterns-You-Should-Know.html" target="_blank" rel="external nofollow noopener noreferrer">https://kkd927.github.io/general/web/javascript/2017/04/12/4-JavaScript-Design-Patterns-You-Should-Know.html</a></p>
-
-      
-      
-          
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-
-  
-      
-
-
-  
-  
-  
-  
-
-        
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
-    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2018/09/02/spring-20180902-Spring4-Rest-HiddenMethod/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Hanumoka">
-      <meta itemprop="description" content="아마추어 개발자의 블로그">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hanumoka, IT Blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2018/09/02/spring-20180902-Spring4-Rest-HiddenMethod/" class="post-title-link" itemprop="url">Spring4 HiddenHttpMethodFilter HiddenMethod(REST를 지원하지 않는 브라우저 처리)</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">작성일</span>
-
-              <time title="Post created: 2018-09-02 15:56:23" itemprop="dateCreated datePublished" datetime="2018-09-02T15:56:23+09:00">2018-09-02</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Updated at: 2020-04-16 01:50:12" itemprop="dateModified" datetime="2020-04-16T01:50:12+09:00">2020-04-16</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/spring/" itemprop="url" rel="index">
-                    <span itemprop="name">spring</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-      <!-- 20200427hexo_post_head -->
-      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
-      <script>
-          (adsbygoogle = window.adsbygoogle || []).push({});
-      </script>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><img src="/images/20180902-Spring4-Rest-HiddenMethod_1.png" alt="스프링로고"></p>
-<h3 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h3><p>혹시나 하는 마음으로 메모를 한다.<br>PUT, PATCH, DELETE 방식의 메소드를 지원하지 않는 브라우저가 있다고 하는데….<br>이를 위해 스프링 진영에서 HiddenHttpMethodFilter 라는 것을 제공한다.</p>
-<p>HiddenHttpMethodFilter 맥락은 HiddenMethod(지원이 안되는 메소드명을 _method라는 이름에 담아서) + POST 요청을 스프링 컨트롤러에 전송하는 방법이다.<br>HiddenHttpMethodFilter 는 요청에서 _method 의 값을 필터링 해서 적절한 컨트롤러로 연결해주는 것 같다.</p>
-<h3 id="web-xml-설정"><a href="#web-xml-설정" class="headerlink" title="web.xml 설정"></a>web.xml 설정</h3><p>web.xml 에 아래 필터를 <strong>추가</strong>한다.</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- Enables support for DELETE and PUT request methods with web browser clients --&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">filter</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">filter-name</span>&gt;</span>hiddenHttpMethodFilter<span class="tag">&lt;/<span class="name">filter-name</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">filter-class</span>&gt;</span>org.springframework.web.filter.HiddenHttpMethodFilter<span class="tag">&lt;/<span class="name">filter-class</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">filter</span>&gt;</span></span><br><span class="line"></span><br><span class="line">	<span class="tag">&lt;<span class="name">filter-mapping</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">filter-name</span>&gt;</span>hiddenHttpMethodFilter<span class="tag">&lt;/<span class="name">filter-name</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">url-pattern</span>&gt;</span>/*<span class="tag">&lt;/<span class="name">url-pattern</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">filter-mapping</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="화면단"><a href="#화면단" class="headerlink" title="화면단"></a>화면단</h3><p>회원을 삭제하는 요청을 아래처럼 만들수 있다.<br>중요한 것은 form의 method는 post이고, form 내부에 _method라는 이름에 delete 값을 갖는 input 태그가 있다.<br>위에서 말했듯이 아래 form을 전송하면 form method대로 post형식으로 리퀘스트가 스프링에게 전송된다.<br>hiddenHttpMethodFilter는 리퀘스트를 후킹해서 _mehtod 값을 읽어 그 내용과 일체하는 컨트롤러를 찾아 연결해준다.</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">form</span> <span class="attr">action</span>=<span class="string">"/sample/deleteUser"</span> <span class="attr">method</span>=<span class="string">"post"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"hidden"</span> <span class="attr">name</span>=<span class="string">"_mehtod"</span> <span class="attr">value</span>=<span class="string">"delete"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">name</span>=<span class="string">"id"</span> &gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"submit"</span> <span class="attr">value</span>=<span class="string">"deleteUser"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">form</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="마무리"><a href="#마무리" class="headerlink" title="마무리"></a>마무리</h3><p>사실 요즘 REST가 지원이 안되는 브라우저가 있는지는 모르겠다.<br>혹시나 해서….</p>
-
-      
-      
-          
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-
-  
-      
-
-
-  
-  
-  
-  
-
   </div>
 
   
@@ -1657,7 +1641,7 @@ gtag('config', 'UA-100596920-1');
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">214</span>
+          <span class="site-state-item-count">219</span>
           <span class="site-state-item-name">포스트</span>
         </a>
       </div>
@@ -1670,7 +1654,7 @@ gtag('config', 'UA-100596920-1');
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">585</span>
+        <span class="site-state-item-count">592</span>
         <span class="site-state-item-name">태그</span></a>
       </div>
   </nav>
@@ -1712,7 +1696,7 @@ gtag('config', 'UA-100596920-1');
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>
