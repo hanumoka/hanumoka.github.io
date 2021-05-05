@@ -8,6 +8,20 @@
     </url>
 
     <url>
+        <loc>https://www.hanumoka.net/categories/ToyProject/MotorLatte/</loc>
+        <lastmod>2021-05-05T11:49:55.953Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>https://www.hanumoka.net/categories/ToyProject/</loc>
+        <lastmod>2021-05-05T11:49:55.953Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
         <loc>https://www.hanumoka.net/categories/react/</loc>
         <lastmod>2021-04-28T10:35:42.644Z</lastmod>
         <changefreq>weekly</changefreq>

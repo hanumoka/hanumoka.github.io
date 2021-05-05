@@ -245,6 +245,382 @@ gtag('config', 'UA-100596920-1');
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2020/05/21/springBoot-20200521-springboot-thymeleaf-layout-dialect/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Hanumoka">
+      <meta itemprop="description" content="아마추어 개발자의 블로그">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hanumoka, IT Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/05/21/springBoot-20200521-springboot-thymeleaf-layout-dialect/" class="post-title-link" itemprop="url">Springboot에 thymeleaf-layout-dialect적용하기</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">작성일</span>
+              
+
+              <time title="Post created: 2020-05-21 23:19:44 / Updated at: 23:29:12" itemprop="dateCreated datePublished" datetime="2020-05-21T23:19:44+09:00">2020-05-21</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/springBoot/" itemprop="url" rel="index">
+                    <span itemprop="name">springBoot</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 20200427hexo_post_head -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h1><p>springboot 프로젝트에 thymeleaf-layout-dialectt이라는 라이브러리를 사용해서 thymeleaf 템플릿 엔진에 레이아웃을 적용해 보겠다.</p>
+<p>보통 웹 페이지를 만들면 화면을 header, contents, footer 등으로 나누고 header와 footer는 고정한 뒤 contents 영역만 바꿔가면서 렌더링을 해야 한다.</p>
+<p>thymeleaf-layout-dialect 라이브러리가 thymeleaf에서 이런 레이아웃을 가능하게 도와준다.</p>
+<h2 id="주의"><a href="#주의" class="headerlink" title="주의"></a>주의</h2><p><strong>실습 마지막 부분에, 오래된 문법 교체작업이 있다.</strong></p>
+<h2 id="실습환경"><a href="#실습환경" class="headerlink" title="실습환경"></a>실습환경</h2><ul>
+<li>windows10</li>
+<li>intellij comunity</li>
+<li>jdk1.8 <strong>(2020-05-21 기준으로 jdk 1.8을 추천한다.)</strong></li>
+<li>thymeleaf-layout-dialect 2.4.1</li>
+<li>springboot 2.3.0</li>
+<li>gradle</li>
+</ul>
+<h2 id="목표"><a href="#목표" class="headerlink" title="목표"></a>목표</h2><p>아래처럼 header, footer는 고정하고, page url에 따라서 contents 영역만 바뀌게 하는 것이 목표이다.</p>
+<p><img src="/images/2020/Springboot%20thymeleaf%20layout%20dialect%20f1913625c1b946eca3591005c7e07316/Untitled.png" alt="Springboot%20thymeleaf%20layout%20dialect%20f1913625c1b946eca3591005c7e07316/Untitled.png"></p>
+<h1 id="실습"><a href="#실습" class="headerlink" title="실습"></a>실습</h1><h2 id="springboot-프로젝트-만들기"><a href="#springboot-프로젝트-만들기" class="headerlink" title="springboot 프로젝트 만들기"></a>springboot 프로젝트 만들기</h2><p>아래 spring initializr 페이지로 이동해서 springboot 프로젝트를 만들어보자.</p>
+<p><a href="https://start.spring.io/index.html" target="_blank" rel="external nofollow noopener noreferrer">https://start.spring.io/index.html</a></p>
+<p>디펜던시에 Spring Web, Thymeleaf 두개를 추가해주자.</p>
+<p><img src="/images/2020/Springboot%20thymeleaf%20layout%20dialect%20f1913625c1b946eca3591005c7e07316/Untitled%201.png" alt="Springboot%20thymeleaf%20layout%20dialect%20f1913625c1b946eca3591005c7e07316/Untitled%201.png"></p>
+<p>일단 thymeleaf 가 잘 동작하는지 확인해 보기 위해서, HomeContoller를 추가하자.</p>
+<p><strong>HomeController.java</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> hanumoka.example.springbootthymeleaflayout;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.springframework.stereotype.Controller;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.RequestMapping;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Controller</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HomeController</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@RequestMapping</span>(<span class="string">"/"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">home</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"index"</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/2020/Springboot%20thymeleaf%20layout%20dialect%20f1913625c1b946eca3591005c7e07316/Untitled%202.png" alt="Springboot%20thymeleaf%20layout%20dialect%20f1913625c1b946eca3591005c7e07316/Untitled%202.png"></p>
+<p>앞서 프로젝트 생성시 thymeleaf를 추가했기때문에, 컨트롤러가 리턴하는 String은 프로젝트의 resources/templates 폴더 내부의 html파일과 바인딩이 된다.</p>
+<p>resources/templates 폴더에 index.html 파일을 만들오 내용을 아래처럼 채우자.</p>
+<p><strong>index.html</strong></p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">"en"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"UTF-8"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>springboot thymeleaf layout example<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    index 페이지</span><br><span class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/2020/Springboot%20thymeleaf%20layout%20dialect%20f1913625c1b946eca3591005c7e07316/Untitled%203.png" alt="Springboot%20thymeleaf%20layout%20dialect%20f1913625c1b946eca3591005c7e07316/Untitled%203.png"></p>
+<p>이제 프로젝트를 기동시켜서 thymeleaf가 잘 동작하는지 확인해보자.</p>
+<p>프로젝트를 기동하고, 브라우저에서 루트 경로로 접속하면 앞서 생성한 index.html 페이지가 렌더링 되는 것을 확인 할 수 있다.</p>
+<p><img src="/images/2020/Springboot%20thymeleaf%20layout%20dialect%20f1913625c1b946eca3591005c7e07316/Untitled%204.png" alt="Springboot%20thymeleaf%20layout%20dialect%20f1913625c1b946eca3591005c7e07316/Untitled%204.png"></p>
+<h2 id="Springboot에-thymeleaf-dialect-layout-라이브러리를-적용해서-thymeleaf-레이아웃을-구성해보자"><a href="#Springboot에-thymeleaf-dialect-layout-라이브러리를-적용해서-thymeleaf-레이아웃을-구성해보자" class="headerlink" title="Springboot에 thymeleaf dialect layout 라이브러리를 적용해서 thymeleaf 레이아웃을 구성해보자."></a>Springboot에 thymeleaf dialect layout 라이브러리를 적용해서 thymeleaf 레이아웃을 구성해보자.</h2><p>메이븐 리파지토리에서 thymeleaf 를 검색해보자.</p>
+<p><a href="https://mvnrepository.com/" target="_blank" rel="external nofollow noopener noreferrer">https://mvnrepository.com/</a></p>
+<p>다섯번째 정도에 Thymeleaf Layout dialect가 보인다.</p>
+<p><img src="/images/2020/Springboot%20thymeleaf%20layout%20dialect%20f1913625c1b946eca3591005c7e07316/Untitled%205.png" alt="Springboot%20thymeleaf%20layout%20dialect%20f1913625c1b946eca3591005c7e07316/Untitled%205.png"></p>
+<p>들어가서 2020-05-21 기준 최신버전인 2.4.1의 gradle 방식의 의존성 스크립트를 복사한다.</p>
+<p><img src="/images/2020/Springboot%20thymeleaf%20layout%20dialect%20f1913625c1b946eca3591005c7e07316/Untitled%206.png" alt="Springboot%20thymeleaf%20layout%20dialect%20f1913625c1b946eca3591005c7e07316/Untitled%206.png"></p>
+<p>프로젝트의 build.gradle에 해당 내용을 추가해준다.</p>
+<p><strong>build.gradle</strong></p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">plugins &#123;</span><br><span class="line">	id <span class="string">'org.springframework.boot'</span> version <span class="string">'2.3.0.RELEASE'</span></span><br><span class="line">	id <span class="string">'io.spring.dependency-management'</span> version <span class="string">'1.0.9.RELEASE'</span></span><br><span class="line">	id <span class="string">'java'</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">group = <span class="string">'hanumoka.example'</span></span><br><span class="line">version = <span class="string">'0.0.1-SNAPSHOT'</span></span><br><span class="line">sourceCompatibility = <span class="string">'1.8'</span></span><br><span class="line"></span><br><span class="line">repositories &#123;</span><br><span class="line">	mavenCentral()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">dependencies &#123;</span><br><span class="line">	implementation <span class="string">'org.springframework.boot:spring-boot-starter-thymeleaf'</span></span><br><span class="line">	implementation <span class="string">group:</span> <span class="string">'nz.net.ultraq.thymeleaf'</span>, <span class="string">name:</span> <span class="string">'thymeleaf-layout-dialect'</span>, <span class="string">version:</span> <span class="string">'2.4.1'</span></span><br><span class="line">	implementation <span class="string">'org.springframework.boot:spring-boot-starter-web'</span></span><br><span class="line">	testImplementation(<span class="string">'org.springframework.boot:spring-boot-starter-test'</span>) &#123;</span><br><span class="line">		exclude <span class="string">group:</span> <span class="string">'org.junit.vintage'</span>, <span class="string">module:</span> <span class="string">'junit-vintage-engine'</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">test &#123;</span><br><span class="line">	useJUnitPlatform()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/2020/Springboot%20thymeleaf%20layout%20dialect%20f1913625c1b946eca3591005c7e07316/Untitled%207.png" alt="Springboot%20thymeleaf%20layout%20dialect%20f1913625c1b946eca3591005c7e07316/Untitled%207.png"></p>
+<p>gradle에 관해서 잘 모르지만, compile방식은 구식이라 implementation구문으로 변경 했다.</p>
+<blockquote>
+<p>주의, jdk가 1.8보다 높은 경우 thymeleaf-layout-dialect에서 groovy관련 문제가 발생할 수 있다. jdk1.8을 추천한다.</p>
+</blockquote>
+<p><strong>jdk11 + thymeleaf-layout-dialect 2.4.1 적용시 오류 내용</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">WARNING: An inllegal reflective access operation has occurred</span><br><span class="line">WARNING: Illegal reflective access by org.codehaus.groovy.reflection.CachedClass ~</span><br><span class="line">WARNING: Please consider reporting this to the maintainers of org.codehaus.grovy.refleaction.CachedClass</span><br><span class="line">WARNING: Use --illegal-access=warn to <span class="built_in">enable</span> warnings of fucther inllegal reflective access operations</span><br><span class="line">WARNING: All illegal access operations will be denied <span class="keyword">in</span> a future release</span><br><span class="line">WARNING: An inllegal reflective access operation has occurred</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/2020/Springboot%20thymeleaf%20layout%20dialect%20f1913625c1b946eca3591005c7e07316/Untitled%208.png" alt="Springboot%20thymeleaf%20layout%20dialect%20f1913625c1b946eca3591005c7e07316/Untitled%208.png"></p>
+<p>jdk11에서 위처럼 경고가 나면서, 서버가 동작 될때도 있었고 아닐때도 있었다.</p>
+<p>jdk1.8로 변경 후 문제가 해결되었다.</p>
+<h2 id="thymeleaf-layout-dialect로-thymeleaf-레이아웃-셋팅하기"><a href="#thymeleaf-layout-dialect로-thymeleaf-레이아웃-셋팅하기" class="headerlink" title="thymeleaf-layout-dialect로 thymeleaf 레이아웃 셋팅하기"></a>thymeleaf-layout-dialect<strong>로 thymeleaf 레이아웃 셋팅하기</strong></h2><p>아래처럼 templates폴더 내부에 <strong>fragments</strong>, <strong>layouts</strong>폴더와 html파일들을 만들어주자.</p>
+<p><img src="/images/2020/Springboot%20thymeleaf%20layout%20dialect%20f1913625c1b946eca3591005c7e07316/Untitled%209.png" alt="Springboot%20thymeleaf%20layout%20dialect%20f1913625c1b946eca3591005c7e07316/Untitled%209.png"></p>
+<p><strong>layouts</strong>폴더 내부의 html파일은 말그대로 레이아웃으로 사용할 html 파일이다.</p>
+<p><strong>fragments</strong>폴더 내부의 파일들은 layout파일에서 공통적이며 반복적으로 사용 할 레이아웃 구성요소 html파일들이다.</p>
+<p><strong>templates/layouts/layout.html</strong></p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span></span></span><br><span class="line"><span class="tag">  <span class="attr">lagn</span>=<span class="string">"ko"</span></span></span><br><span class="line"><span class="tag">  <span class="attr">xmlns:th</span>=<span class="string">"http://www.thymeleaf.org"</span></span></span><br><span class="line"><span class="tag">  <span class="attr">xmlns:layout</span>=<span class="string">"http://www.ultraq.net.nz/thymeleaf/layout"</span></span></span><br><span class="line"><span class="tag">&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">head</span> <span class="attr">th:replace</span>=<span class="string">"fragments/config :: configFragment"</span>&gt;</span><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="tag">&lt;<span class="name">header</span> <span class="attr">th:replace</span>=<span class="string">"fragments/header :: headerFragment"</span>&gt;</span><span class="tag">&lt;/<span class="name">header</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">layout:fragment</span>=<span class="string">"content"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="tag">&lt;<span class="name">footer</span> <span class="attr">th:replace</span>=<span class="string">"fragments/footer :: footerFragment"</span>&gt;</span><span class="tag">&lt;/<span class="name">footer</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>레이아웃 html 페이지에서는 fragments폴더 내부의 html 들을 부속으로 호출한다.</p>
+<p>config, header, footer 들은 레이아웃으 공통 구성 요소이고,</p>
+<p>아래 부분이 실제 page url에 따라 바뀔 부분이다.</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">layout:fragment</span>=<span class="string">"content"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>templates/fragments/config.html</strong></p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span></span></span><br><span class="line"><span class="tag">  <span class="attr">xmlns:th</span>=<span class="string">"http://www.thymeleaf.org"</span></span></span><br><span class="line"><span class="tag">  <span class="attr">xmlns:layout</span>=<span class="string">"http://www.ultraq.net.nz/thymeleaf/layout"</span></span></span><br><span class="line"><span class="tag">&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">head</span> <span class="attr">th:fragment</span>=<span class="string">"configFragment"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"UTF-8"</span> /&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 공통으로 쓰이는 css파일을넣는다.--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">link</span></span></span><br><span class="line"><span class="tag">      <span class="attr">rel</span>=<span class="string">"stylesheet"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">href</span>=<span class="string">"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"</span></span></span><br><span class="line"><span class="tag">    /&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 컨텐츠페이지의 CSS 영역이 들어감 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">th:block</span> <span class="attr">layout:fragment</span>=<span class="string">"css"</span>&gt;</span><span class="tag">&lt;/<span class="name">th:block</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!-- 공통으로 쓰이는 css파일을넣는다.--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"https://code.jquery.com/jquery-2.2.4.min.js"</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 컨텐츠페이지의 스크립트 영역이 들어감 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">th:block</span> <span class="attr">layout:fragment</span>=<span class="string">"script"</span>&gt;</span><span class="tag">&lt;/<span class="name">th:block</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>config.html은 렌더링 되는 페이지에서 공통으로 사용할 css, script등을 설정한다.</p>
+<p><strong>아래부분에서 라우팅 될 contents 페이지에 설정된 css, script등을 역으로 받아온다.</strong></p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 컨텐츠페이지의 CSS 영역이 들어감 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">th:block</span> <span class="attr">layout:fragment</span>=<span class="string">"css"</span>&gt;</span><span class="tag">&lt;/<span class="name">th:block</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- 컨텐츠페이지의 스크립트 영역이 들어감 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">th:block</span> <span class="attr">layout:fragment</span>=<span class="string">"script"</span>&gt;</span><span class="tag">&lt;/<span class="name">th:block</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>위 부분은 나중에 페이지가 동작하는 것을 보고 더 설명 하겠다.</p>
+<p><strong>templates/fragments/header.html</strong></p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">xmlns:th</span>=<span class="string">"http://www.thymeleaf.org"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">header</span> <span class="attr">th:fragment</span>=<span class="string">"headerFragment"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">style</span>=<span class="string">"border: 1px solid green"</span>&gt;</span></span><br><span class="line">      header.html 입니다.</span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">header</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>templates/fragments/footer.html</strong></p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">xmlns:th</span>=<span class="string">"http://www.thymeleaf.org"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">footer</span> <span class="attr">th:fragment</span>=<span class="string">"footerFragment"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">style</span>=<span class="string">"border: 1px solid gold"</span>&gt;</span></span><br><span class="line">      Footer영역입니다.</span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">footer</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>templates/index.html(컨텐츠 페이지)</strong></p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span></span></span><br><span class="line"><span class="tag">  <span class="attr">xmlns:th</span>=<span class="string">"http://www.thymeleaf.org"</span></span></span><br><span class="line"><span class="tag">  <span class="attr">xmlns:layout</span>=<span class="string">"http://www.ultraq.net.nz/thymeleaf/layout"</span></span></span><br><span class="line"><span class="tag">  <span class="attr">layout:decorator</span>=<span class="string">"layouts/layout"</span></span></span><br><span class="line"><span class="tag">&gt;</span></span><br><span class="line">  <span class="comment">&lt;!-- index.html 고유 CSS 추가 --&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">th:block</span> <span class="attr">layout:fragment</span>=<span class="string">"css"</span>&gt;</span> <span class="tag">&lt;/<span class="name">th:block</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">&lt;!-- index.html 고유 스크립트 추가 --&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">th:block</span> <span class="attr">layout:fragment</span>=<span class="string">"script"</span>&gt;</span> <span class="tag">&lt;/<span class="name">th:block</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">layout:fragment</span>=<span class="string">"content"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">style</span>=<span class="string">"border: 1px solid red"</span>&gt;</span></span><br><span class="line">      index.html 입니다. 즉 컨텐츠 영역</span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>templates/hello.html(컨텐츠 페이지)</strong></p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span></span></span><br><span class="line"><span class="tag">  <span class="attr">xmlns:th</span>=<span class="string">"http://www.thymeleaf.org"</span></span></span><br><span class="line"><span class="tag">  <span class="attr">xmlns:layout</span>=<span class="string">"http://www.ultraq.net.nz/thymeleaf/layout"</span></span></span><br><span class="line"><span class="tag">  <span class="attr">layout:decorator</span>=<span class="string">"layouts/layout"</span></span></span><br><span class="line"><span class="tag">&gt;</span></span><br><span class="line">  <span class="comment">&lt;!-- hello.html 고유 CSS 추가 --&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">th:block</span> <span class="attr">layout:fragment</span>=<span class="string">"css"</span>&gt;</span> <span class="tag">&lt;/<span class="name">th:block</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">&lt;!-- hello.html 고유 스크립트 추가 --&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">th:block</span> <span class="attr">layout:fragment</span>=<span class="string">"script"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="actionscript">      alert(<span class="string">"hello.html"</span>);</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">th:block</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">layout:fragment</span>=<span class="string">"content"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">style</span>=<span class="string">"border: 1px solid red"</span>&gt;</span></span><br><span class="line">      hello.html 입니다. 즉 컨텐츠 영역</span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>index.html, hello.html 은 컨텐츠 페이지다. 대충 코드를 보면 감이 올것이다.</p>
+<p>아래처럼 index.html의 layout:fragment=”content” 영역이 layout.html의 layout:fragment=”content”에 치환되는 방식이다.</p>
+<p><img src="/images/2020/Springboot%20thymeleaf%20layout%20dialect%20f1913625c1b946eca3591005c7e07316/Untitled%2010.png" alt="Springboot%20thymeleaf%20layout%20dialect%20f1913625c1b946eca3591005c7e07316/Untitled%2010.png"></p>
+<p>위에서 fragments/config 부분을 설명하다 말았는데, 여기서 보자</p>
+<p>아래 이미지를 보면 이해가 될 것이다. hello.html 이 렌더링 되면 아래처럼 조립이 된다.</p>
+<p>즉 config.html 파일을 통해서, contents 페이지 고유의 css, script등을 고립 시킬 수 가 있다.</p>
+<p><img src="/images/2020/Springboot%20thymeleaf%20layout%20dialect%20f1913625c1b946eca3591005c7e07316/Untitled%2011.png" alt="Springboot%20thymeleaf%20layout%20dialect%20f1913625c1b946eca3591005c7e07316/Untitled%2011.png"></p>
+<p>hello.html을 리다이렉트 할 메소드도 추가해주자.</p>
+<p><strong>HomeController.java</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> hanumoka.example.springbootthymeleaflayout;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.springframework.stereotype.Controller;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.RequestMapping;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Controller</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HomeController</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@RequestMapping</span>(<span class="string">"/"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">home</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"index"</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@RequestMapping</span>(<span class="string">"/hello"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">hello</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"hello"</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>java코드는 레이아웃을 적용한다고 해도 딱히 문법적으로 바뀌는 부분이 없다.</p>
+<p>이제 프로젝트를 기동시키고 <a href="http://localhost:8080/" target="_blank" rel="external nofollow noopener noreferrer">http://localhost:8080/</a>, <a href="http://localhost:8080/hello" target="_blank" rel="external nofollow noopener noreferrer">http://localhost:8080/hello</a> 페이지 url 접근해서 제대로 동작하는 지 확인 해보자.</p>
+<p><img src="/images/2020/Springboot%20thymeleaf%20layout%20dialect%20f1913625c1b946eca3591005c7e07316/Untitled%2012.png" alt="Springboot%20thymeleaf%20layout%20dialect%20f1913625c1b946eca3591005c7e07316/Untitled%2012.png"></p>
+<p>hello에서는 javascript 코드인 alert 창이 동작한다.(window.onload 코드를 생략해서 alert이 먼저 동작 했다.)</p>
+<p><img src="/images/2020/Springboot%20thymeleaf%20layout%20dialect%20f1913625c1b946eca3591005c7e07316/Untitled%2013.png" alt="Springboot%20thymeleaf%20layout%20dialect%20f1913625c1b946eca3591005c7e07316/Untitled%2013.png"></p>
+<h2 id="추가"><a href="#추가" class="headerlink" title="추가"></a>추가</h2><p>위 예제로 정상 동작 하지만, 일부 문법이 deprecated 될거라는 WARN이 발생한다.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">2020</span>-<span class="number">05</span>-<span class="number">21</span> <span class="number">22</span>:<span class="number">28</span>:<span class="number">23.122</span>  WARN <span class="number">15980</span> --- [nio-<span class="number">8080</span>-exec-<span class="number">1</span>] n.n.u.t.decorators.DecoratorProcessor    : The layout:decorator/data-layout-decorator processor has been deprecated and will be removed in the next major version of the layout dialect.  Please use layout:decorate/data-layout-decorate instead to future-proof your code.  See https:<span class="comment">//github.com/ultraq/thymeleaf-layout-dialect/issues/95 for more information.</span></span><br><span class="line"><span class="number">2020</span>-<span class="number">05</span>-<span class="number">21</span> <span class="number">22</span>:<span class="number">28</span>:<span class="number">23.207</span>  WARN <span class="number">15980</span> --- [nio-<span class="number">8080</span>-exec-<span class="number">1</span>] n.n.u.t.expressions.ExpressionProcessor  : Fragment expression <span class="string">"layouts/layout"</span> is being wrapped as a Thymeleaf <span class="number">3</span> <span class="function">fragment <span class="title">expression</span> <span class="params">(~&#123;...&#125;)</span> <span class="keyword">for</span> backwards compatibility purposes.  This wrapping will be dropped in the next major version of the expression processor, so please rewrite as a Thymeleaf 3 fragment expression to future-proof your code.  See https:<span class="comment">//github.com/thymeleaf/thymeleaf/issues/451 for more information.</span></span></span><br><span class="line"><span class="function">2020-05-21 22:28:23.373  WARN 15980 --- [nio-8080-exec-1] n.n.u.t.fragments.FragmentProcessor      : You don't need to put the layout:fragment/data-layout-fragment attribute into the &lt;head&gt; section - the decoration process will automatically copy the &lt;head&gt; section of your content templates into your layout page.</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/2020/Springboot%20thymeleaf%20layout%20dialect%20f1913625c1b946eca3591005c7e07316/Untitled%2014.png" alt="Springboot%20thymeleaf%20layout%20dialect%20f1913625c1b946eca3591005c7e07316/Untitled%2014.png"></p>
+<p>음… 위 예제는 몇 년전에 내가 만든 기준으로 해서 문법 변경이 조금 있었나 보다.</p>
+<p>빠르게 수정해보자.</p>
+<p>일단 기존에 사용하던 config.html 파일을 이제 사용할 필요가 없다.</p>
+<p><strong>layout.html</strong></p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span></span></span><br><span class="line"><span class="tag">  <span class="attr">lagn</span>=<span class="string">"ko"</span></span></span><br><span class="line"><span class="tag">  <span class="attr">xmlns:th</span>=<span class="string">"http://www.thymeleaf.org"</span></span></span><br><span class="line"><span class="tag">  <span class="attr">xmlns:layout</span>=<span class="string">"http://www.ultraq.net.nz/thymeleaf/layout"</span></span></span><br><span class="line"><span class="tag">&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"UTF-8"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">link</span></span></span><br><span class="line"><span class="tag">      <span class="attr">rel</span>=<span class="string">"stylesheet"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">href</span>=<span class="string">"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"</span></span></span><br><span class="line"><span class="tag">    /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"https://code.jquery.com/jquery-2.2.4.min.js"</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="tag">&lt;<span class="name">header</span> <span class="attr">th:replace</span>=<span class="string">"fragments/header :: headerFragment"</span>&gt;</span><span class="tag">&lt;/<span class="name">header</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">layout:fragment</span>=<span class="string">"content"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="tag">&lt;<span class="name">footer</span> <span class="attr">th:replace</span>=<span class="string">"fragments/footer :: footerFragment"</span>&gt;</span><span class="tag">&lt;/<span class="name">footer</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>fragments/config 부분을 지워주고, config.html에 있던 공통 css, script 등을 layout.html head태그로 옮긴다.</p>
+<p>아래 이미지 처럼 contents.html의 head태그가 렌더링 될 때, 자동으로 layout.html head 태그에 추가 된다.(치환이 아니라 추가 된다.)</p>
+<p><img src="/images/2020/Springboot%20thymeleaf%20layout%20dialect%20f1913625c1b946eca3591005c7e07316/Untitled%2015.png" alt="Springboot%20thymeleaf%20layout%20dialect%20f1913625c1b946eca3591005c7e07316/Untitled%2015.png"></p>
+<p><strong>index.html</strong></p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span></span></span><br><span class="line"><span class="tag">  <span class="attr">xmlns:th</span>=<span class="string">"http://www.thymeleaf.org"</span></span></span><br><span class="line"><span class="tag">  <span class="attr">xmlns:layout</span>=<span class="string">"http://www.ultraq.net.nz/thymeleaf/layout"</span></span></span><br><span class="line"><span class="tag">  <span class="attr">layout:decorate</span>=<span class="string">"~&#123;layouts/layout&#125;"</span></span></span><br><span class="line"><span class="tag">&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--    thymeleaf layout dialect가 contents페이지의 head태그를 layout의 head태그에 자동으로 추가해준다. --&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--    필요힌 css, script 추가영역 --&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">layout:fragment</span>=<span class="string">"content"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">style</span>=<span class="string">"border: 1px solid red"</span>&gt;</span></span><br><span class="line">      index.html 입니다. 즉 컨텐츠 영역</span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>contents html 페이지에서는 <strong>layout:decorator=”layouts/layout” 설정도 layout:decorate=”~{layouts/layout}” 이렇게 변경 되었다.</strong></p>
+<p>수정하고 확인해보면, 정상동작 아래처럼 잘 동작 한다.</p>
+<p><img src="/images/2020/Springboot%20thymeleaf%20layout%20dialect%20f1913625c1b946eca3591005c7e07316/Untitled%2016.png" alt="Springboot%20thymeleaf%20layout%20dialect%20f1913625c1b946eca3591005c7e07316/Untitled%2016.png"></p>
+<p><strong>끝</strong></p>
+<h1 id="github-소스"><a href="#github-소스" class="headerlink" title="github 소스"></a>github 소스</h1><p><a href="https://github.com/blog-examples/20200520-springboot-tymeleaf-dialect" target="_blank" rel="external nofollow noopener noreferrer">https://github.com/blog-examples/20200520-springboot-tymeleaf-dialect</a></p>
+<h1 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h1><p><a href="https://ultraq.github.io/thymeleaf-layout-dialect/Examples.html#passing-data-to-layouts" target="_blank" rel="external nofollow noopener noreferrer">https://ultraq.github.io/thymeleaf-layout-dialect/Examples.html#passing-data-to-layouts</a></p>
+
+      
+      
+          
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+      
+
+
+  
+  
+  
+  
+
+        
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2020/05/19/security-20200519-make-ssl-crt-for-test-https/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Hanumoka">
+      <meta itemprop="description" content="아마추어 개발자의 블로그">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hanumoka, IT Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/05/19/security-20200519-make-ssl-crt-for-test-https/" class="post-title-link" itemprop="url">개발시 HTTPS 테스트를 위한 SSL인증서(OpenSSL) 생성하기</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">작성일</span>
+              
+
+              <time title="Post created: 2020-05-19 23:22:25 / Updated at: 23:31:49" itemprop="dateCreated datePublished" datetime="2020-05-19T23:22:25+09:00">2020-05-19</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/security/" itemprop="url" rel="index">
+                    <span itemprop="name">security</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 20200427hexo_post_head -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h1><p>이 예제는 Nginx등과 같은 웹서버에 HTTPS를 적용하기 위한 테스트용 SSL 인증서를 생성하는 예제이다.</p>
+<h2 id="실습환경"><a href="#실습환경" class="headerlink" title="실습환경"></a>실습환경</h2><ul>
+<li>Windows10</li>
+<li>OpenSSL</li>
+<li>cmd</li>
+</ul>
+<h1 id="테스트용-HTTPS-인증서-생성하기"><a href="#테스트용-HTTPS-인증서-생성하기" class="headerlink" title="테스트용 HTTPS 인증서 생성하기"></a>테스트용 HTTPS 인증서 생성하기</h1><p>웹서버에 HTTPS를 적용하려면, CA에서 발급하는 SSL인증서가 필요하다.<br>보통 사설업체에 Domain을 기준으로 돈을 주고 인증서를 신청하는데, 지금은 테스트 용이므로 로컬에서 가짜 인증서를 만들어 보자.</p>
+<h2 id="Windows10에-OpenSSL-설치하기"><a href="#Windows10에-OpenSSL-설치하기" class="headerlink" title="Windows10에 OpenSSL 설치하기"></a>Windows10에 OpenSSL 설치하기</h2><p>인증서를 생성하기 위해서는 OpenSSL이라는 툴이 필요하다. 아래 링크해서 해당 툴을 다운 받자.</p>
+<p><a href="https://sourceforge.net/projects/openssl/files/latest/download?source=typ_redirect" target="_blank" rel="external nofollow noopener noreferrer">https://sourceforge.net/projects/openssl/files/latest/download?source=typ_redirect</a></p>
+<p><img src="/images/2020/HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled.png" alt="HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled.png"></p>
+<p>광고를 좀 봐주면서 시간이 지나면, OpenSSL zip파일이 다운로드가 된다.</p>
+<p>아래처럼 zip파일 압축을 풀어주자.</p>
+<p><img src="/images/2020/HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled%201.png" alt="HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled%201.png"></p>
+<p>압축이 풀린 폴더 내부에 bin폴더 내부로 들어가 보면 아래처럼 openssl.exe 파일이 있다.<br>해당 파일을 관리자 권한으로 실행한 cmd로 실행해보자.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">openssl-1.0.2j-fips-x86_64\OpenSSL\bin\openssl.exe</span><br></pre></td></tr></table></figure>
+
+<p>내 경우 문제가 발생했는데, openssl.exe 실행시 openssl.cnf 파일을 읽어오시 못한다는 경고가 나온다. </p>
+<p><img src="/images/2020/HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled%202.png" alt="HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled%202.png"></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">WARNING: can<span class="string">'t open config file: C:/OpenSSL/openssl.cnf</span></span><br></pre></td></tr></table></figure>
+
+<p>경고 메세지를 보면 OepnSSL 폴더가 C 드라이브 바로 아래에서 읽어 오고 있다.</p>
+<p>따라서 OpenSSL 폴더를 C 드라이브 경로로 옮겨서 다시 실행해보자.</p>
+<p><img src="/images/2020/HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled%203.png" alt="HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled%203.png"></p>
+<p>OpenSSL 폴더를 C 드라이브로 옮겼다.</p>
+<p><img src="/images/2020/HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled%204.png" alt="HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled%204.png"></p>
+<p>C:\OpenSSL\bin\openssl.cnf 파일을 복해서 C:\OpenSSL로 옮겨주자.</p>
+<p><img src="/images/2020/HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled%205.png" alt="HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled%205.png"></p>
+<p>다시 C:\OpenSSL\bin\openssl.exe 파일을 관리자 권한 cmd로 실행해보자.</p>
+<p><img src="/images/2020/HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled%206.png" alt="HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled%206.png"></p>
+<p>아래처럼 정상적으로 openSSL이 실행된다.</p>
+<p><img src="/images/2020/HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled%207.png" alt="HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled%207.png"></p>
+<h2 id="RSA-개인키를-생성하자"><a href="#RSA-개인키를-생성하자" class="headerlink" title="RSA 개인키를 생성하자."></a>RSA 개인키를 생성하자.</h2><p>OpenSSL 커멘드에 아래 명령어를 입력해서 개인키를 생성하자.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">genrsa -out private.key 2048</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/2020/HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled%208.png" alt="HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled%208.png"></p>
+<p>아래처럼 openSSL.exe 실행경로에 private.key 파일이 생성된 것을 확인 할 수 있다.</p>
+<p><img src="/images/2020/HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled%209.png" alt="HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled%209.png"></p>
+<p>파일을 열어보면 아래처럼 개인키가 보인다.</p>
+<p>테스트 용도라서 이렇게 노출하지만, 실제 절대 외부로 노출되서는 안되는 개인키 이다.</p>
+<p><img src="/images/2020/HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled%2010.png" alt="HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled%2010.png"></p>
+<h2 id="RSA-개인키를-이용해서-RSA-공개키를-생성하자"><a href="#RSA-개인키를-이용해서-RSA-공개키를-생성하자" class="headerlink" title="RSA 개인키를 이용해서 RSA 공개키를 생성하자."></a>RSA 개인키를 이용해서 RSA 공개키를 생성하자.</h2><p>개인키가 있는 경로에서 아래 명령어를 입력해서 공개키를 생성하자.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rsa -<span class="keyword">in</span> private.key -pubout -out public.key</span><br></pre></td></tr></table></figure>
+
+<p>아래처럼 public.key 가 생성된다. (이미지에서는 명령어 입력시 오타를 쳐서 파일명이 이상하다.)</p>
+<p><img src="/images/2020/HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled%2011.png" alt="HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled%2011.png"></p>
+<p>공개키 파일을 열어보면 아래와 같다.</p>
+<p><img src="/images/2020/HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled%2012.png" alt="HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled%2012.png"></p>
+<h1 id="CSR-인증요청서-생성하기"><a href="#CSR-인증요청서-생성하기" class="headerlink" title="CSR(인증요청서) 생성하기"></a>CSR(인증요청서) 생성하기</h1><p>CA 인증기관에게 인증서를 받기위한 인증요청서를 생성해야 한다.<br>신청할 때에는 국가코드, 도시, 회사명, 부서명, 이메일, 도메인주소등 다양한 정보를 입력 받게된다.</p>
+<p>이 CSR은 앞서 생성한 RSA 개인키를 이용해서 생성 할 수 있다.</p>
+<p>openSSL커맨드로 아래 명령어를 입력하자.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">req -new -key private.key -out private.csr</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/2020/HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled%2013.png" alt="HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled%2013.png"></p>
+<p>아래처럼 국가 코드를 입력하라고 나온다. kr 이라고 입력하고 넘어가면</p>
+<p>아래처럼 추가정보를 입력하라고 주르륵 나온다. 테스트 용이니 대충 입력하고 넘기자.</p>
+<p><img src="/images/2020/HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled%2014.png" alt="HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled%2014.png"></p>
+<p>아래처럼 private.csr 인증 요청서가 생성 되었다.</p>
+<p><img src="/images/2020/HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled%2015.png" alt="HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled%2015.png"></p>
+<h1 id="CRT-인증서-만들기"><a href="#CRT-인증서-만들기" class="headerlink" title="CRT(인증서)만들기"></a>CRT(인증서)만들기</h1><p>이제 인증요청서로 테스트 용도의 가짜 CRT를 만들어보자.</p>
+<h2 id="CA-역할을-할-CA-대칭키-생성"><a href="#CA-역할을-할-CA-대칭키-생성" class="headerlink" title="CA 역할을 할 CA 대칭키 생성"></a>CA 역할을 할 CA 대칭키 생성</h2><p>아래 명령어로 CA역할을 할 CA 대칭키(aes256)를 생성하자.</p>
+<p>(사실 왜 대칭키를 생성하는지 모르겠다.)</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">genrsa -aes256 -out rootCA.key 2048</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/2020/HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled%2016.png" alt="HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled%2016.png"></p>
+<p>아래처럼 rootCA.key 가 생성 되었다.</p>
+<p><img src="/images/2020/HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled%2017.png" alt="HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled%2017.png"></p>
+<h2 id="rootCA-key를-이용해서-rootCA-pem-생성"><a href="#rootCA-key를-이용해서-rootCA-pem-생성" class="headerlink" title="rootCA.key를 이용해서 rootCA.pem 생성"></a>rootCA.key를 이용해서 rootCA.pem 생성</h2><p>(사실 이녀석도 뭔지 잘 모르겠다.)</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">req -X509 -new -nodes -key rootCA.key -days 2650 -out rootCA.pem</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/2020/HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled%2018.png" alt="HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled%2018.png"></p>
+<p>비밀번호등 국가코드, 도시 기타 등등 정보를 입력해야 한다.(테스트니 대충 넣자)</p>
+<p>아래처럼 rootCA.pem 파일이 생성된다.</p>
+<p><img src="/images/2020/HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled%2019.png" alt="HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled%2019.png"></p>
+<h2 id="웹서버에-HTTPS적용을-위해-필요한-CRT-인증서를-생성"><a href="#웹서버에-HTTPS적용을-위해-필요한-CRT-인증서를-생성" class="headerlink" title="웹서버에 HTTPS적용을 위해 필요한 CRT 인증서를 생성"></a>웹서버에 HTTPS적용을 위해 필요한 CRT 인증서를 생성</h2><p>이제 마지막으로 CRT를 즉 웹서버에 HTTPS를 적용하기 위한 인증서를 생성해보자.</p>
+<p>아래 명령어를 이용해서 앞서 생성한, 인증 요청서(private.csr) , rootCA.pem, rootCA.key 를 이용해서 웹서버에 등록할 CA 인증서 private.crt 를 생성하자.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">x509 -req -<span class="keyword">in</span> private.csr -CA rootCA.pem -CAkey rootCA.key -CAcreateserial -out private.crt -days 3650</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/2020/HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled%2020.png" alt="HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled%2020.png"></p>
+<p>아래처럼 private.crt 파일이 생성되었다. 모양세도 지금까지 생성한 파일과는 좀 다르다.</p>
+<p><img src="/images/2020/HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled%2021.png" alt="HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled%2021.png"></p>
+<p>파일을 열어보면 아래처럼 나온다.</p>
+<p><img src="/images/2020/HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled%2022.png" alt="HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled%2022.png"></p>
+<p>실습 끝!!!</p>
+<h1 id="ps"><a href="#ps" class="headerlink" title="ps"></a>ps</h1><p>사실 이런 인증서 부분에 대해 정확히 알지 못해, 실습을 하면서도 다 이해하지 못했다.<br>특히 CA 인증서 생성부분… 시간이 좀 나면 해당 내용을 공부해서 보충 해야 겠다.</p>
+<h1 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h1><p><a href="https://namjackson.tistory.com/24" target="_blank" rel="external nofollow noopener noreferrer">https://namjackson.tistory.com/24</a><br><a href="https://opentutorials.org/course/228/4894" target="_blank" rel="external nofollow noopener noreferrer">https://opentutorials.org/course/228/4894</a></p>
+
+      
+      
+          
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+      
+
+
+  
+  
+  
+  
+
+        
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
     <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2020/04/27/docker-20200427-docker-react-nginx/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1469,241 +1845,11 @@ ls -al</code></pre><p><img src="/images/2020/Github%20push%20pull%20ssh%20window
   
   
 
-        
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
-    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2019/12/28/ubuntu-20191228-ubuntu-create-react-app/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Hanumoka">
-      <meta itemprop="description" content="아마추어 개발자의 블로그">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hanumoka, IT Blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/12/28/ubuntu-20191228-ubuntu-create-react-app/" class="post-title-link" itemprop="url">Ubuntu18.04 Create react app 개발 환경</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">작성일</span>
-
-              <time title="Post created: 2019-12-28 21:53:22" itemprop="dateCreated datePublished" datetime="2019-12-28T21:53:22+09:00">2019-12-28</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Updated at: 2020-04-16 01:50:12" itemprop="dateModified" datetime="2020-04-16T01:50:12+09:00">2020-04-16</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/ubuntu/" itemprop="url" rel="index">
-                    <span itemprop="name">ubuntu</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-      <!-- 20200427hexo_post_head -->
-      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
-      <script>
-          (adsbygoogle = window.adsbygoogle || []).push({});
-      </script>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="개요"><a href="#개요" class="headerlink" title="개요"></a>개요</h1><p>ubuntu 18.04 에 NVM, node, npm 을 설치하고 react 를 개발할수 있는 create react app을 설치해보자.</p>
-<h1 id="NVM-설치하기"><a href="#NVM-설치하기" class="headerlink" title="NVM 설치하기"></a>NVM 설치하기</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -sL https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;creationix&#x2F;nvm&#x2F;v0.33.11&#x2F;install.sh -o install_nvm.sh</span><br></pre></td></tr></table></figure>
-<p>위 명령어를 이용해서 nvm 설치스크립트를 다운로드 한다.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bash install_nvm.sh</span><br></pre></td></tr></table></figure>
-<p>위 명령어를 이용해서 다운로드한 nvm 설치 스크립트를 실행 시킨다.</p>
-<p>설치 스크립트가 실행되면서 export명령이 자동으로 동작하여 nvm에 필요한 환경변수를 설정해 준다. </p>
-<p>아래 명령어로 os 가 리부트 되도 환경변수가 유지되게 설정하자.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">source ~&#x2F;.profile</span><br></pre></td></tr></table></figure>
-<p><img src="/images/2019/20191218Ubuntu1804Createreactapp/Untitled.png" alt></p>
-<p>아래 명령어를 사용하면 이제 nvm으로 사용가능한 node 버전이 리스트로 출력된다.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nvm ls-remote</span><br></pre></td></tr></table></figure>
-<p><img src="/images/2019/20191218Ubuntu1804Createreactapp/Untitled%201.png" alt></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nvm install 12.14.0</span><br></pre></td></tr></table></figure>
-<p>2019.12.28 기준으로 node 12.14.0이 최신 LTS라고 나온다.</p>
-<p>위 명령으로 원하는 버전의 node를 설치하자.</p>
-<p>아래처럼 node와 npm이 설치된 것을 확인할 수 있다.</p>
-<p><img src="/images/2019/20191218Ubuntu1804Createreactapp/Untitled%202.png" alt></p>
-<h1 id="Create-react-app-설치"><a href="#Create-react-app-설치" class="headerlink" title="Create react app 설치"></a>Create react app 설치</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">npm install -g create-react-app</span><br><span class="line">create-react-app test-react-project</span><br></pre></td></tr></table></figure>
-<p>위 명령어를 이용해서 create-react-app을 전역에 설치하고 react 프로젝트를 생성 할수 있지만, 아래의 npx 명령으로 create-react-app을 이용해서 react 프로젝트를 만들기를 추천한다.</p>
-<p>NPM 5.2 버전 이후 NPX라는 node.js package 메니저를 이용해서 create-react-app을 실행할 수도 있다.</p>
-<p>npx 명령어는 npm의 진화형태라고 보면된다. </p>
-<p>속도도 npm보다 빠르다고 하며, 필요한 패키지를 전역에 설치하지 않고 필요할때 최신 패키지를 임시로 받아와서 설치해서 사용하게 된다.</p>
-<p>npm 을 사용할 경우 글로벌 모듈이 혼잡해지는 것을 npx로 해결한다고 한다.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npx create-react-app test-react-project</span><br></pre></td></tr></table></figure>
-<p>생성된 프로젝트에 진입해서 react를 실행시키자.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd test-react-project</span><br><span class="line">npm</span><br></pre></td></tr></table></figure>
-
-<p>프로젝트가 실행되면 <a href="http://localhost:3000/" target="_blank" rel="external nofollow noopener noreferrer">http://localhost:3000/</a> 로 접속해서 확인해 볼 수 있다.</p>
-<h3 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h3><p><strong>ubuntu create-react-app 설치</strong></p>
-<p><a href="https://www.techomoro.com/how-to-install-and-setup-a-react-app-on-ubuntu-18-04-1/" target="_blank" rel="external nofollow noopener noreferrer">https://www.techomoro.com/how-to-install-and-setup-a-react-app-on-ubuntu-18-04-1/</a></p>
-<p><strong>npx 설명</strong></p>
-<p>[<a href="https://ljh86029926.gitbook.io/coding-apple-react/undefined/npm-npx]" target="_blank" rel="external nofollow noopener noreferrer">https://ljh86029926.gitbook.io/coding-apple-react/undefined/npm-npx]</a>(</p>
-
-      
-      
-          
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-
-  
-      
-
-
-  
-  
-  
-  
-
-        
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
-    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2019/12/28/ubuntu-20191228-ubuntu-install-nvm/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Hanumoka">
-      <meta itemprop="description" content="아마추어 개발자의 블로그">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hanumoka, IT Blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/12/28/ubuntu-20191228-ubuntu-install-nvm/" class="post-title-link" itemprop="url">Ubuntu18.04 NVM으로 NODE 설치하기</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">작성일</span>
-
-              <time title="Post created: 2019-12-28 21:13:48" itemprop="dateCreated datePublished" datetime="2019-12-28T21:13:48+09:00">2019-12-28</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Updated at: 2020-04-16 01:50:12" itemprop="dateModified" datetime="2020-04-16T01:50:12+09:00">2020-04-16</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/ubuntu/" itemprop="url" rel="index">
-                    <span itemprop="name">ubuntu</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-      <!-- 20200427hexo_post_head -->
-      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
-      <script>
-          (adsbygoogle = window.adsbygoogle || []).push({});
-      </script>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="개요"><a href="#개요" class="headerlink" title="개요"></a>개요</h1><p>ubuntu18.04에 NVM으로 Node를 설치해보겠다.</p>
-<p>ubuntu에 node를 설치해보신 분들을 알겠지만, 이게 여간 귀찮은 것이 아니다.</p>
-<p>ubuntu에 패키지 메니저인 apt로 node를 설치할경우 2019.12.28 현재 기준으로 node 8버전을 설치시켜준다. ㅡㅡ;;;;;</p>
-<p>물론 최신 버전을 설치할 수 있지만, 리눅스에서는 NVM(Node Versioin Manager)를 이용해서, 동시에 여러개의 node를 설치하고 상황에 따라서 원하는 버전을 선택해서 사용할 수 있다.</p>
-<h1 id="NVM-설치하기"><a href="#NVM-설치하기" class="headerlink" title="NVM 설치하기"></a>NVM 설치하기</h1><pre><code>curl -sL https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh -o install_nvm.sh</code></pre><p>위 명령어를 이용해서 nvm 설치스크립트를 다운로드 한다.</p>
-<pre><code>bash install_nvm.sh</code></pre><p>위 명령어를 이용해서 다운로드한 nvm 설치 스크립트를 실행 시킨다.</p>
-<p>설치 스크립트가 실행되면서 export명령이 자동으로 동작하여 nvm에 필요한 환경변수를 설정해 준다. </p>
-<p>아래 명령어로 os 가 리부트 되도 환경변수가 유지되게 설정하자.</p>
-<pre><code>source ~/.profile</code></pre><p><img src="/images/2019/20191228Ubuntu1804NVMNODE/Untitled.png" alt="Ubuntu18%2004%20NVM%20NODE/Untitled.png"></p>
-<p>아래 명령어를 사용하면 이제 nvm으로 사용가능한 node 버전이 리스트로 출력된다.</p>
-<pre><code>nvm ls-remote</code></pre><p><img src="/images/2019/20191228Ubuntu1804NVMNODE/Untitled%201.png" alt="Ubuntu18%2004%20NVM%20NODE/Untitled%201.png"></p>
-<pre><code>nvm install 12.14.0</code></pre><p>2019.12.28 기준으로 node 12.14.0이 최신 LTS라고 나온다.</p>
-<p>위 명령으로 원하는 버전의 node를 설치하자.</p>
-<p>아래처럼 node와 npm이 설치된 것을 확인할 수 있다.</p>
-<p><img src="/images/2019/20191228Ubuntu1804NVMNODE/Untitled%202.png" alt="Ubuntu18%2004%20NVM%20NODE/Untitled%202.png"></p>
-<p>끝!!!</p>
-<p>NVM에 더 자세한 사용법등을 알고 싶다면, 아래 참고자료를 살피길 바란다.</p>
-<h3 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h3><p><a href="https://www.digitalocean.com/community/tutorials/how-to-install-node-js-on-ubuntu-18-04" target="_blank" rel="external nofollow noopener noreferrer">https://www.digitalocean.com/community/tutorials/how-to-install-node-js-on-ubuntu-18-04</a></p>
-
-      
-      
-          
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-
-  
-      
-
-
-  
-  
-  
-  
-
   </div>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left" aria-label="이전 페이지"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/22/">22</a><a class="extend next" rel="next" href="/page/4/"><i class="fa fa-angle-right" aria-label="다음 페이지"></i></a>
+    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left" aria-label="이전 페이지"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/23/">23</a><a class="extend next" rel="next" href="/page/4/"><i class="fa fa-angle-right" aria-label="다음 페이지"></i></a>
   </nav>
 
 
@@ -1769,20 +1915,20 @@ ls -al</code></pre><p><img src="/images/2020/Github%20push%20pull%20ssh%20window
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">219</span>
+          <span class="site-state-item-count">221</span>
           <span class="site-state-item-name">포스트</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">38</span>
+        <span class="site-state-item-count">40</span>
         <span class="site-state-item-name">카테고리</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">592</span>
+        <span class="site-state-item-count">596</span>
         <span class="site-state-item-name">태그</span></a>
       </div>
   </nav>

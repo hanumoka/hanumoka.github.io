@@ -245,6 +245,237 @@ gtag('config', 'UA-100596920-1');
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2018/04/07/spring-20180407-spring-install-sts/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Hanumoka">
+      <meta itemprop="description" content="아마추어 개발자의 블로그">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hanumoka, IT Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2018/04/07/spring-20180407-spring-install-sts/" class="post-title-link" itemprop="url">STS로 Spring 프레임워크 개발환경셋팅</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">작성일</span>
+
+              <time title="Post created: 2018-04-07 23:43:45" itemprop="dateCreated datePublished" datetime="2018-04-07T23:43:45+09:00">2018-04-07</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Updated at: 2020-04-16 01:50:12" itemprop="dateModified" datetime="2020-04-16T01:50:12+09:00">2020-04-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/spring/" itemprop="url" rel="index">
+                    <span itemprop="name">spring</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 20200427hexo_post_head -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>Spring 프로젝트를 개발하기 위해 STS(Spring tool suite)를 설치해보자.</p>
+<h4 id="개발환경"><a href="#개발환경" class="headerlink" title="개발환경"></a>개발환경</h4><p>Windows10(64bit), java 1.8</p>
+<hr>
+<h3 id="Related-Posts"><a href="#Related-Posts" class="headerlink" title="Related Posts"></a>Related Posts</h3><p><a href="/2018/04/07/spring-install-sts/">1.STS로 Spring 프레임워크 개발환경셋팅</a><br><a href="/2018/04/08/spring-start-spring-legacy-project/">2.Spring MVC 프로젝트를 생성하여 톰캣에서 실행하기</a><br><a href="/2018/04/18/spring-set-korean/">3.spring mvc 프로젝트 한글설정(utf8)</a></p>
+<p><a href="/2018/04/28/windows10pro-install-docker/">4.Windows10pro docker 설치하기</a><br><a href="/2018/04/29/docker-install-mysql/">5.Docker에서 mysql설치하고 접속해보기</a></p>
+<p><a href="/2018/04/29/spring-mysql-junit-connection-test/">6.Spring 프로젝트 mysql접속 junit 테스트 하기</a><br><a href="/2018/04/29/spring-mybatis-mysql-setting/">7.SpringFramework MyBatis MySQL 연동하기</a></p>
+<hr>
+<h4 id="STS-다운로드"><a href="#STS-다운로드" class="headerlink" title="STS 다운로드"></a>STS 다운로드</h4><p><a href="https://spring.io/tools" target="_blank" rel="external nofollow noopener noreferrer">https://spring.io/tools</a> 로 이동 Seel all versions 클릭 후 자신에 맞는 운영체제의 sts 를 다운받는다.</p>
+<p><img src="/images/20180407-spring-install-sts_1.png" alt="STS 홈페이지 이동"></p>
+<p><img src="/images/20180407-spring-install-sts_2.png" alt="STS zip 버전 다운로드"></p>
+<p>Installer가 아니라 ZIP버전을 다운받았기에 OS에 설치되어 레지스터리를 더럽히지 않는 장점이 있어서 zip 방식을 선호한다.</p>
+<h4 id="STS-실행"><a href="#STS-실행" class="headerlink" title="STS 실행"></a>STS 실행</h4><p>해당 압축파일을 C 드라이브로 이동시키고 압축을 푼다.(개인적으로 편의상 C드라이브에 IDE를 설치하는 편이다.)</p>
+<p>그리고 압축푼 폴더에  sts-xxx로 시작하는 폴더에 STS.exe 파일을 실행하면 STS가 실행된다.</p>
+<p><img src="/images/20180407-spring-install-sts_3.png" alt="STS 압축풀기"><br><img src="/images/20180407-spring-install-sts_4.png" alt="STS 실행"></p>
+<h4 id="스프링-프로젝트-JDK-설정"><a href="#스프링-프로젝트-JDK-설정" class="headerlink" title="스프링 프로젝트 JDK 설정"></a>스프링 프로젝트 JDK 설정</h4><p>나는 new project에서 spring lagacy project 에서 spring MVC project로 실습을 진행했다.<br>왜인지는 모르겠으나 STS에서 스프링 MVC 프로젝트을 생성하면 JDK 버전을 1.6버전으로 생성한다.<br>따라서 프로젝트의 jdk 버전을 jdk 1.8로 변경해야한다.</p>
+<p>프로젝트를 선택하고 마우스 우클릭 -&gt; Properties -&gt; Project Facets 에서 변경이 가능하다.<br><img src="/images/20180407-spring-install-sts_5.png" alt="STS 스프링 MVC프로젝트 jdk 설정1"><br>자바 빌드패스에서도 확인차 jdk 버전을 확인해 보자.<br><img src="/images/20180407-spring-install-sts_6.png" alt="STS 스프링 MVC프로젝트 jdk 설정2"><br>자바 컴파일러에서도 확인차 jdk 버전을 확인해 보자.<br><img src="/images/20180407-spring-install-sts_7.png" alt="STS 스프링 MVC프로젝트 jdk 설정3"></p>
+<h4 id="스프링-프로젝트-pom-xml-설정"><a href="#스프링-프로젝트-pom-xml-설정" class="headerlink" title="스프링 프로젝트 pom.xml 설정"></a>스프링 프로젝트 pom.xml 설정</h4><p>이제 pom.xml로 이동하자. pom.xml에는 jdk 버전과 spring 버전이 있는데, 기본설정은 너무 낮기때문에 자신에 환경에 맞게 수정해 주자.</p>
+<p><img src="/images/20180407-spring-install-sts_8.png" alt="STS 스프링 MVC프로젝트 pom.xml 설정"><br>pom.xml의 java-version을 1.8로 올려주고, spring 버전도 4.x.x 버전대로 올려주었다.</p>
+
+      
+      
+          
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+      
+
+
+  
+  
+  
+  
+
+        
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2018/03/29/hexo-20180329-error-hexo-deploy/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Hanumoka">
+      <meta itemprop="description" content="아마추어 개발자의 블로그">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hanumoka, IT Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2018/03/29/hexo-20180329-error-hexo-deploy/" class="post-title-link" itemprop="url">hexo deploy시 fatal: could not read Username for 'https://github.com': No error 발생</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">작성일</span>
+
+              <time title="Post created: 2018-03-29 13:42:43" itemprop="dateCreated datePublished" datetime="2018-03-29T13:42:43+09:00">2018-03-29</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Updated at: 2020-04-16 01:50:11" itemprop="dateModified" datetime="2020-04-16T01:50:11+09:00">2020-04-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/hexo/" itemprop="url" rel="index">
+                    <span itemprop="name">hexo</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 20200427hexo_post_head -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>오랜만에 hexo deploy를 하는데</p>
+<p><a href="/2018/03/01/hexo-deploy-error/">기존포스트</a> 에서 해결했다고 생각한 에러가 또 발생했다.</p>
+<p><img src="/images/20180329-error-hexo-deploy_1.png" alt="hexo deploy 오류"></p>
+<h4 id="해결방법"><a href="#해결방법" class="headerlink" title="해결방법"></a>해결방법</h4><p>구글링을 해보니 기존의 hexo의 github 배포방식을 http방식이 아닌 ssh방식으로 변경하라고 한다.</p>
+<h4 id="1-로컬-pc-윈도우에서-내-github-계정에-ssh로-접근할-pc의-ssh키-생성"><a href="#1-로컬-pc-윈도우에서-내-github-계정에-ssh로-접근할-pc의-ssh키-생성" class="headerlink" title="1.로컬 pc 윈도우에서 내 github 계정에 ssh로 접근할 pc의 ssh키 생성"></a>1.로컬 pc 윈도우에서 내 github 계정에 ssh로 접근할 pc의 ssh키 생성</h4><p>일단 자신의 헥소 프로젝트에서 git bash를 열고 아래 명령을 입력하자.</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh-keygen -t rsa -b 2096 -C <span class="string">"github계정메일"</span> // 엔터</span><br></pre></td></tr></table></figure>
+<p>위 명령어를 입력하면 아래 메세지가 나오고 그냥 엔터를 눌러 진행하자</p>
+<p><a href="/images/20180329-error-hexo-deploy_2.png"></a></p>
+<p>그 다음에는 Ehter passphrase (empy for no passphrase): 라고 나오는데,</p>
+<p>ssh를 만들기 위한 기억할만한 비밀번호를 입력해주면 된다. 그리고 확인용으로 한번더 입력한다.</p>
+<p>그리고 아래 명령어를 입력하자.</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">eval</span> $(ssh-agent -s)</span><br></pre></td></tr></table></figure>
+
+<p>그리고 아래 명령어도 입력하자.</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh-add ~/.ssh/id_rsa</span><br></pre></td></tr></table></figure>
+<p>위 명령어를 입력하고 엔터 -&gt; 뭔가 나오면 그냥 엔터 -&gt; 끝</p>
+<p>이렇게 하면 ssh 개인키를 생성을 완료 한 것이다. 이제 생성된 키를 복사하여 자신의 github계정에 등록을 해야 한다.<br>아래 명령어를 입력하여 생성된 ssh키를 클립보드에 복사하자.</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">clip &lt; ~/.ssh/id_rsa.pub</span><br></pre></td></tr></table></figure>
+
+<h4 id="생성된-ssh키를-github-계정에-등록하자"><a href="#생성된-ssh키를-github-계정에-등록하자" class="headerlink" title="생성된 ssh키를 github 계정에 등록하자."></a>생성된 ssh키를 github 계정에 등록하자.</h4><p>github 로그인 -&gt; Settings -&gt; 좌측 Personal settings 메뉴의 SSH and GPG keys 클릭</p>
+<p>-&gt;new SSH key 버튼 클릭 -&gt; Title에는 자신이 구별할수 있는 제목을 입력하고 Key에는 위에서 클립보드에 복사한 ssh키를 붙여넣기 한다.</p>
+<p>-&gt; Add SSH Key 버튼 클릭</p>
+<h4 id="hexp-deploy-설정을-http에서-ssh로-변경"><a href="#hexp-deploy-설정을-http에서-ssh로-변경" class="headerlink" title="hexp deploy 설정을 http에서 ssh로 변경"></a>hexp deploy 설정을 http에서 ssh로 변경</h4><p>헥소의 _config.yml 파일에서 deploy의 repo를 기존의 http방식에서 ssh방식으로 수정해야한다.</p>
+<p>일단 해당 핵소 프로젝트의 배포용 github 리파지토리로 이동한다.</p>
+<p>Clone or download에서 Use ssh를 클릭한 뒤, 그 내용을 복사 한다.</p>
+<p>로컬 핵소 프로젝트의 _config.yml 파일로 이동하여</p>
+<p>deploy 영역의 repo항목에 붙여 넣고, 파일을 저장한다.</p>
+<p><img src="/images/20180329-error-hexo-deploy_3.png" alt></p>
+<h4 id="결과"><a href="#결과" class="headerlink" title="결과"></a>결과</h4><p>위 작업을 순차적으로 끝냈다면, 헥소블로그의 github deploy 문제가 해결될것이다. </p>
+<p>디플로이를 시도하면, 작은 모달창이 뜨며 ssh생성시 입력했던 키를 물어볼것이다. </p>
+<p><strong>Enter passphrase (empy for no passphrase):</strong> 이때 입력했던 비밀번호를 입력해주면 된다.</p>
+<h3 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h3><p><a href="https://help.github.com/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent/" target="_blank" rel="external nofollow noopener noreferrer">github ssh 생성방법</a><br><a href="https://github.com/hexojs/hexo-deployer-git/issues/71" target="_blank" rel="external nofollow noopener noreferrer">해당이슈에 대한 깃허브 참고자료</a><br><a href="https://blooom.co.kr/%EC%9C%88%EB%8F%84%EC%9A%B0%EC%97%90%EC%84%9C-github-ssh-key-%EC%83%9D%EC%84%B1%ED%95%98%EA%B3%A0-%EB%93%B1%EB%A1%9D%ED%95%98%EA%B8%B0/" target="_blank" rel="external nofollow noopener noreferrer">github ssh 사용방법(윈도우)</a></p>
+<h3 id="Related-Posts"><a href="#Related-Posts" class="headerlink" title="Related Posts"></a>Related Posts</h3><p><a href="/2018/03/01/hexo-deploy-error/">기존포스트</a></p>
+
+      
+      
+          
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+      
+
+
+  
+  
+  
+  
+
+        
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
     <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2018/03/29/centOs-20180329-centos-vi-swap-file/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1134,332 +1365,11 @@ gtag('config', 'UA-100596920-1');
   
   
 
-        
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
-    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2017/12/30/android-20171230-android-hierachy-event-model/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Hanumoka">
-      <meta itemprop="description" content="아마추어 개발자의 블로그">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hanumoka, IT Blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2017/12/30/android-20171230-android-hierachy-event-model/" class="post-title-link" itemprop="url">안드로이드 하이어라키(하이라키) 이벤트 모델(Hierachy Event Model)</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">작성일</span>
-
-              <time title="Post created: 2017-12-30 02:42:39" itemprop="dateCreated datePublished" datetime="2017-12-30T02:42:39+09:00">2017-12-30</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Updated at: 2020-04-16 01:50:11" itemprop="dateModified" datetime="2020-04-16T01:50:11+09:00">2020-04-16</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/android/" itemprop="url" rel="index">
-                    <span itemprop="name">android</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-      <!-- 20200427hexo_post_head -->
-      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
-      <script>
-          (adsbygoogle = window.adsbygoogle || []).push({});
-      </script>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h4 id="하이어라키-이벤트-모델로-할수-있는-것"><a href="#하이어라키-이벤트-모델로-할수-있는-것" class="headerlink" title="하이어라키 이벤트 모델로 할수 있는 것"></a>하이어라키 이벤트 모델로 할수 있는 것</h4><ul>
-<li><p>안드로이드 액티비티의 터치이벤트 발생시 그 좌표값을 구할 수 있다.</p>
-</li>
-<li><p>안드로이드 단말기의 하드웨어 버튼(뒤로가기 버튼등)의 이벤트 처리를 할 수 있다.</p>
-</li>
-</ul>
-<hr>
-<h4 id="하이어라키-이벤트-모델-정의"><a href="#하이어라키-이벤트-모델-정의" class="headerlink" title="하이어라키 이벤트 모델 정의"></a>하이어라키 이벤트 모델 정의</h4><ul>
-<li>안드로이드 액티비티 화면에서 발생하는 사용자의 <strong>키 이벤트</strong>와 화면 터치 이벤트를 처리하기 위한 모델.</li>
-</ul>
-<p>[ 잠깐! 위에서 말하는 <strong>키 이벤트</strong>에 대해 좀 설명이 필요할 것 같다. ]</p>
-<p><img src="/images/20171230-android-hierachy-event-model_1.png" alt="소프트(soft) 키보드"></p>
-<p>하이어라키 이벤트 모델에서 처리하는 키 이벤트는 위의 안드로이드 앱 내부에 존재하는 소프트 키보드를 말하는 것이 아니라</p>
-<p><img src="/images/20171230-android-hierachy-event-model_2.png" alt="안드로이드 단말기 하드웨어(hardware) 키"></p>
-<p>위와 같은 메뉴버튼, 홈 버튼, 돌아가기 버튼 등과 같이, <strong>안드로이드 단말기에 하드웨어 적으로 장착된 키의 이벤트</strong>를 말한다.</p>
-<ul>
-<li>안드로이드 앱에서의 대부분의 터치 이벤트는 뷰에서 발생하기 때문에 델리게이션 이벤트 모델을 사용하는 것이 일반적이지만, 때에 따라 직접 터치 이벤트와 키 이벤트를 처리해야 할 경우 사용 된다.</li>
-</ul>
-<ul>
-<li>하이어라키 이벤트 모델로 액티비티의 터치 이벤트를 처리할 때에는 터치가 발샌한 지점등을 x,y 좌표값으로 제공하기 때문에 필요한 처리를 하는데 델리게이션 이벤트 모델보다 까다로운 면이 있다.</li>
-</ul>
-<hr>
-<h4 id="하이어라키-이벤트-모델의-특징"><a href="#하이어라키-이벤트-모델의-특징" class="headerlink" title="하이어라키 이벤트 모델의 특징"></a>하이어라키 이벤트 모델의 특징</h4><p>하이어라키 이벤트 모델은 델리게이션 모델처럼 이베트 소스 - 리스너 - 이벤트 헨들러 구조가 아니다.<br>액티비티의 전체적인 터치 이벤트 등을 관리 하기 때문에 원하는 액티비티에 이벤트 발생 시 자동 호출되는 함수만 해당 액티비티 내에 재정의 하면 된다.<br>델리게이션 이벤트 모델보다 소스코드가 직관 적이라 구조자체는 이해하기 쉽다.</p>
-<hr>
-<h4 id="하이어라키-이벤트의-터치-이벤트-안드로이드-화면-터치-좌표-구하기"><a href="#하이어라키-이벤트의-터치-이벤트-안드로이드-화면-터치-좌표-구하기" class="headerlink" title="하이어라키 이벤트의 터치 이벤트(안드로이드 화면 터치 좌표 구하기)"></a>하이어라키 이벤트의 터치 이벤트(안드로이드 화면 터치 좌표 구하기)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</span><br><span class="line">  </span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onTouchEvent</span><span class="params">(MotionEvent event)</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(event.getAction() == MotionEvent.ACTION_DOWN)&#123;</span><br><span class="line">      Toast.makeText(getApplicationContext(), <span class="string">"터치된 화면의 x 좌표 :"</span> event.getRawX(), Toast.LENGTH_LONG).show();</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>위 소스는 액티비티가 터치 될 시에 터치된 화면의 x좌표를 구하는 소스이다. 액티비티의 터치시 그 좌표값 정보를 알고 싶다면 해당 액티비티의 onTouchEvent를 위 처럼 재정의 하여 사용하면 된다. </p>
-<table>
-<thead>
-<tr>
-<th align="left">터치 이벤트 종류</th>
-<th align="left">설명</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="left">ACTION_DOWN</td>
-<td align="left">화면에 터치된 순간의 이벤트</td>
-</tr>
-<tr>
-<td align="left">ACTION_UP</td>
-<td align="left">터치를 떼는 순간의 이벤트</td>
-</tr>
-<tr>
-<td align="left">ACTION_MOVE</td>
-<td align="left">터치한 후 이동하는 순간의 이벤트</td>
-</tr>
-</tbody></table>
-<p>onTouchEvent 메소드에서 호출되는 터치 이벤트는 위와 같다. </p>
-<table>
-<thead>
-<tr>
-<th align="left">좌표정보 메소드 종류</th>
-<th align="left">설명</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="left">getX()</td>
-<td align="left">터치 이벤트가 발생한 x 좌표 but 뷰 내에서의 좌표를 반환</td>
-</tr>
-<tr>
-<td align="left">getY()</td>
-<td align="left">터치 이벤트가 발생한 y 좌표 but 뷰 내에서의 좌표를 반환</td>
-</tr>
-<tr>
-<td align="left">getRawX()</td>
-<td align="left">터치 이벤트가 발생한 화면에서의 x 좌표를 반환</td>
-</tr>
-<tr>
-<td align="left">getRawY()</td>
-<td align="left">터치 이벤트가 발생한 화면에서의 y 좌표를 반환</td>
-</tr>
-</tbody></table>
-<p>MotionEvent 객체를 통해 좌표를 가져오는 메소드는 위와 같다.</p>
-<hr>
-<h4 id="하이어라키-이벤트의-하드웨어-키-이벤트-안드로이드-단말기-뒤로가기-버튼-이벤트-처리"><a href="#하이어라키-이벤트의-하드웨어-키-이벤트-안드로이드-단말기-뒤로가기-버튼-이벤트-처리" class="headerlink" title="하이어라키 이벤트의 하드웨어 키 이벤트(안드로이드 단말기 뒤로가기 버튼 이벤트 처리)"></a>하이어라키 이벤트의 하드웨어 키 이벤트(안드로이드 단말기 뒤로가기 버튼 이벤트 처리)</h4><p>하이어라키 이벤트를 이용하여 안드로이드 하드웨어 키의 이벤트 처리를 할 수 있다.(앞서 말했듯이 소프트 키보드 이벤트 처리가 아니다.)<br>안드로이드 단말기의 하드웨어 키는 주로 홈, 뒤로가기 버튼 또는 메뉴, 검색, 오버뷰 등이 있을 수 있다.<br>안드로이드 단말기에 따라 하드웨어 키가 다를 수 있다는 것을 염두해 두어야 한다.<br>다만 홈, 전원, 오버벼 버튼은 일반 애플리케이션에서 이벤트 처리로 제어 할 수 없다.</p>
-<p><strong>따라서 앱에서 키 이벤트 처리는 뒤로가기 버튼 처리가 대부분이다.</strong><br>예를 들어 메인 액티비티에서 안드로이드 단말기의 하드웨어 뒤로가기 버튼을 눌렀을 때, 앱을 종료 시키는 경우가 있을 수 있겠다.</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</span><br><span class="line">  </span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onKeyDown</span><span class="params">(<span class="keyword">int</span> keyCode, keyEvent event)</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(keyCode == KeyEvent.KEYCODE_BACK)&#123;</span><br><span class="line">      <span class="comment">//이곳에 안드로이드 단말의 하드웨어 뒤로가기 버튼 클릭시 처리하고 싶은 코드를 넣으면 되겠다.</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//단말기 종류에 따라 접근 가능한 하드웨어 키를 제어 할 수도 있다.</span></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">super</span>.onKeyDown(keyCode, event);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>앞서 터치이벤트 처럼 단순히 액티비티의 onKeyDown메소드를 재정의 하면 된다.<br>단말기의 하드웨어 키의 이벤트 종류에 따라 다음의 메소드를 필요에 따라 재정의 하여 사용 하면 된다.</p>
-<ul>
-<li><p>onKeyDown : 안드로이드 단말기의 하드웨어 키가 눌린 이벤트발생 시 동작</p>
-</li>
-<li><p>onKeyUp : 안드로이드 단말기의 하드웨어 키가 떼는 이벤트발생 시 동작</p>
-</li>
-<li><p>onKeyLongPress : 안드로이드 단말기의 하드웨어 키가 오래 누르는 이벤트발생 시 동작</p>
-</li>
-<li><p>onBackPressed : 이 함수는 오직 단말기의 뒤로가기 버튼 제어만 목적으로 만들어 졌으므로 다른 키 이벤트는 처리할 수 없다.</p>
-</li>
-</ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</span><br><span class="line">  </span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onBackPressed</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="comment">//오직 단말기의 뒤로가기 버튼이 눌렸을 때문 동작.</span></span><br><span class="line">    <span class="keyword">super</span>.onBackPressed();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>아마도 단말기의 뒤로가기 버튼에 대한 이벤트 처리가 빈번해서 onBackPressed 메소드를 따로 만들어 둔 것이 아닌가 생각된다.<br>지금까지 하이어라키 이벤트 모델에 대하여 정리해 보았다.</p>
-<h3 id="Related-Posts"><a href="#Related-Posts" class="headerlink" title="Related Posts"></a>Related Posts</h3><p><a href="/2017/12/28/android-delegation-event-model/">델리게이션 이벤트 모델(Delegation Event Model)</a></p>
-
-      
-      
-          
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-
-  
-      
-
-
-  
-  
-  
-  
-
-        
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
-    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2017/12/28/android-20171228-android-delegation-event-model/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Hanumoka">
-      <meta itemprop="description" content="아마추어 개발자의 블로그">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hanumoka, IT Blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2017/12/28/android-20171228-android-delegation-event-model/" class="post-title-link" itemprop="url">안드로이드 델리게이션 이벤트 모델(Delegation Event Model)</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">작성일</span>
-
-              <time title="Post created: 2017-12-28 02:40:59" itemprop="dateCreated datePublished" datetime="2017-12-28T02:40:59+09:00">2017-12-28</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Updated at: 2020-04-16 01:50:11" itemprop="dateModified" datetime="2020-04-16T01:50:11+09:00">2020-04-16</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/android/" itemprop="url" rel="index">
-                    <span itemprop="name">android</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-      <!-- 20200427hexo_post_head -->
-      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
-      <script>
-          (adsbygoogle = window.adsbygoogle || []).push({});
-      </script>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>안드로이드 스마트폰 화면에서 발생하는 사용자 이벤트는 크게 두 가지 모델로 나눌 수 있다.<br>하나는 델리게이션 이벤트 모델(Delegation Event Model) 그리고 하이어라키 이벤트 모델(Hierachy Event Model)이다.<br>이번에는 델리게이션 이벤트 모델에 대해 알아보도록 하겠다.</p>
-<h4 id="델리게이션-이벤트-모델-Delegation-Event-Model"><a href="#델리게이션-이벤트-모델-Delegation-Event-Model" class="headerlink" title="델리게이션 이벤트 모델(Delegation Event Model)"></a>델리게이션 이벤트 모델(Delegation Event Model)</h4><p>간단히 말해서 안드로이드 액티비티 내부에 존재하는 다양한 뷰(View)에서 발생하는 이벤트를 처리하는 모델이다.<br>델리게이션 이벤트 모델의 기본구조는 이벤트 소스(이벤트가 발생한 뷰 객체)와 이벤트 핸들러(이벤트 처리 내용을 가지는 객체)를 리스너로 연결하여 처리하는 구조이다.</p>
-<p><img src="/images/20171228-android-delegation-event-model.jpg" alt="델리게이션 이벤트 모델 도식화"></p>
-<p>사실 액티비티에서 발생하는 터치 이벤트 등은 액티비티의 이벤트를 관리하는 하이어라키 이벤트 모델로 처리 할 수도 있다.<br>하지만, 특정 버튼의 터치 여부를 확인 하기 위해 좌표정보를 이용하는 방법은 나 같이 게으르고 아둔한 개발자에겐 버거운 일일 것이다.</p>
-<p>다음 간단하게 델리게이션 이벤트 모델의 구조를 소스코드로 확인해보자.<br>아래는 btn이라는 뷰객체의 클릭이벤트를 처리하는 간단한 소스이다.</p>
-<p>btn이라는 이름의 뷰객체에서 클릭 이벤트가 발생하면 setOnClickListener 함수의 인자의 익명객체의 onClick함수가 동작하게 된다.</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">btn.setOnClickListener(<span class="keyword">new</span> View.OnclickListener()&#123;</span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View v)</span></span>&#123;</span><br><span class="line">    <span class="comment">//...클릭 이벤트에 필요한 코드 자리</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-
-<p>위 소스를 좀 풀어서 설명하자면,<br>btn은 클릭 이벤트가 발생하는 뷰 객체이다.<br>btn.setOnClickListener 메소드는 btn에 클릭이벤트가 발생할 때 발생된 이벤트 객체를 핸들러에게 전달하는 전달자이다.</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> View.OnclickListener()&#123;</span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View v)</span></span>&#123;</span><br><span class="line">    <span class="comment">//...클릭 이벤트에 필요한 코드 자리</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>리스너의 인자로 전달되는 View.OnclickListener 인터페이스를 구현한 익명 클래스는 리스너가 뷰객체로 부터 받은 이벤트 객체를 처리할 핸들러이다.</p>
-<p>뷰는 다양한 종류가 있고 그리고 뷰에 따라 발생하는 이벤트의 차이가 있다.<br>따라서 해당 이벤트를 처리하는 핸들러도 특정 이벤트를 처리하기 위해 최소한의 구조가 필요하고, 안드로이드에서는 그 구조들을 뷰 클래스들의 인터페이스로 제공 하고 있다.<br>따라서 핸들러 클래스는 꼭 지정된 인터페이스를 구현해야 한다.</p>
-<h4 id="안드로이드-뷰에서-제공되는-주요-이벤트들"><a href="#안드로이드-뷰에서-제공되는-주요-이벤트들" class="headerlink" title="안드로이드 뷰에서 제공되는 주요 이벤트들"></a>안드로이드 뷰에서 제공되는 주요 이벤트들</h4><table>
-<thead>
-<tr>
-<th align="left">Event 종류</th>
-<th align="left">설명</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="left">OnClickListener</td>
-<td align="left">뷰 클릭 시 발생 이벤트</td>
-</tr>
-<tr>
-<td align="left">OnLongClickListener</td>
-<td align="left">뷰를 오래 클릭시 발생 이벤트</td>
-</tr>
-<tr>
-<td align="left">OnCheckedChangeListener</td>
-<td align="left">CheckBox의 상태 변경시 발생 이벤트</td>
-</tr>
-<tr>
-<td align="left">OnItemClickListener</td>
-<td align="left">ListView의 항목 선택시 이벤트</td>
-</tr>
-<tr>
-<td align="left">OnDateSetListener</td>
-<td align="left">DatePicker의 날짜 선택시 이벤트</td>
-</tr>
-<tr>
-<td align="left">OnTimeSetListener</td>
-<td align="left">TimePicker의 시간 선택시 발생 이벤트</td>
-</tr>
-</tbody></table>
-<p>앞서 예제에서 사용한 클릭이벤트 뿐만 아니라 다양한 뷰에 따른 이벤트들이 존재 한다. 델리게이션 이벤트 모델을 기초로 상황에 맞게 필요한 이벤트 인터페이스를 구현한 핸들러를 사용하면 된다.</p>
-<p>지금까지 안드로이드 뷰의 이벤트처리모델인 델리게이션 이벤트 모델에 대해 정리해 봤다.<br>자바를 책을 볼때 이 익명 클래스를 어디에서 사용하지 고개를 갸웃했었는데, 안드로이드를 보니 좀 감이 오는 것 같다. 아닌 것도 같고…</p>
-<p>다음에는 하이어라키 이벤트 모델에 대해 정리해 봐야겠다.</p>
-<h3 id="Related-Posts"><a href="#Related-Posts" class="headerlink" title="Related Posts"></a>Related Posts</h3><p><a href="/2017/12/30/android-hierachy-event-model/">하이어라키 이벤트 모델(Hierachy Event Model)</a></p>
-
-      
-      
-          
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-
-  
-      
-
-
-  
-  
-  
-  
-
   </div>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/18/"><i class="fa fa-angle-left" aria-label="이전 페이지"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/18/">18</a><span class="page-number current">19</span><a class="page-number" href="/page/20/">20</a><span class="space">&hellip;</span><a class="page-number" href="/page/22/">22</a><a class="extend next" rel="next" href="/page/20/"><i class="fa fa-angle-right" aria-label="다음 페이지"></i></a>
+    <a class="extend prev" rel="prev" href="/page/18/"><i class="fa fa-angle-left" aria-label="이전 페이지"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/18/">18</a><span class="page-number current">19</span><a class="page-number" href="/page/20/">20</a><span class="space">&hellip;</span><a class="page-number" href="/page/23/">23</a><a class="extend next" rel="next" href="/page/20/"><i class="fa fa-angle-right" aria-label="다음 페이지"></i></a>
   </nav>
 
 
@@ -1525,20 +1435,20 @@ gtag('config', 'UA-100596920-1');
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">219</span>
+          <span class="site-state-item-count">221</span>
           <span class="site-state-item-name">포스트</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">38</span>
+        <span class="site-state-item-count">40</span>
         <span class="site-state-item-name">카테고리</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">592</span>
+        <span class="site-state-item-count">596</span>
         <span class="site-state-item-name">태그</span></a>
       </div>
   </nav>

@@ -245,6 +245,237 @@ gtag('config', 'UA-100596920-1');
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2019/01/07/springBoot-20190107-springboot-thymeleaf-layout-dialect/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Hanumoka">
+      <meta itemprop="description" content="아마추어 개발자의 블로그">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hanumoka, IT Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/01/07/springBoot-20190107-springboot-thymeleaf-layout-dialect/" class="post-title-link" itemprop="url">SpringBoot - thymeleaf layout dialect(tympeleaf 레이아웃 적용하기)</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">작성일</span>
+
+              <time title="Post created: 2019-01-07 07:01:02" itemprop="dateCreated datePublished" datetime="2019-01-07T07:01:02+09:00">2019-01-07</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Updated at: 2020-04-16 01:50:12" itemprop="dateModified" datetime="2020-04-16T01:50:12+09:00">2020-04-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/springBoot/" itemprop="url" rel="index">
+                    <span itemprop="name">springBoot</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 20200427hexo_post_head -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h1><p>예전에 spring4 레거시 프로젝트 + xml 설정환경에서 tymeleaf 템플릿 엔진과 thymeleaf layout dialect(tymeleaf 레이아웃)를 적용했었다.<br>이번에는 springboot에 thymeleaf와 thymeleaf layout dialect를 적용해 보겠다.</p>
+<p>개발환경: java8, springboot2, spring5, maven</p>
+<h1 id="라이브러리-추가"><a href="#라이브러리-추가" class="headerlink" title="라이브러리 추가"></a>라이브러리 추가</h1><p>pom.xml에 thymeleaf와 thymeleaf layout dialect를 추가하자.</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-thymeleaf<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>nz.net.ultraq.thymeleaf<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>thymeleaf-layout-dialect<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">	<span class="comment">&lt;!--&lt;version&gt;2.3.0&lt;/version&gt;--&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>thymeleaf는 thymeleaf템플릿 엔진을 사용하기 위한 기초 라이브러리이며, thymeleaf-layout-dialect는 thymeleaf템플릿 엔진 기반 레이아웃을 구성할때 필요한 라이브러리이다.<br>자애로운 spring-boot-starter-parent께서 위 둘의 버전관리를 자동으로 해주시니, version을 생략해도 된다.<br>본인의 경우 2.1.1 버전이 적용되었다.</p>
+<h1 id="html파일로-레이아웃-구성"><a href="#html파일로-레이아웃-구성" class="headerlink" title="html파일로 레이아웃 구성"></a>html파일로 레이아웃 구성</h1><p><img src="/images/20190107-springboot-thymeleaf-layout-dialect_1.png" alt="폴더구조와 html파일들"></p>
+<p>springboot web 프로젝트에서 기본적으로 resources/templates에서 뷰를 찾는다.<br>template/layout/default.html은 thymeleaf의 레이아웃이 되는 파일이다.<br>template/fragments/config.html template/fragments/footer.html template/fragments/header.html 파일은 defaout.html 레이아웃의 내부를 구성하는 부품 화면이 된다.<br>template/index.html은 핵심인 contents가 되는 페이지이다.</p>
+<hr>
+<p><strong>default.html</strong></p>
+<p>이 파일이 thymeleaf 레이아웃을 잡아주는 핵심파일이 된다.<br>head th:replace는 head 영역의 부속 페이지를 말한다. 부속페이지는 fragments/config(html을 생략한다.) 그리고 그 파일의 configFragment 태그를 잘라와 사용한다는 의미이다.<br>header footer도 비슷한 의미이다.<br>layout이 되는 html의 태그는 xmlns:layout=”<a href="http://www.ultraq.net.nz/thymeleaf/layout&quot;를" target="_blank" rel="external nofollow noopener noreferrer">http://www.ultraq.net.nz/thymeleaf/layout&quot;를</a> 삽입해야 한다.<br>layout:fragment=”content” 부분은 서버의 요청별로 달라지는 컨텐츠 페이지가 된다.(index.html)</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lagn</span>=<span class="string">"ko"</span> <span class="attr">xmlns:th</span>=<span class="string">"http://www.thymeleaf.org"</span> <span class="attr">xmlns:layout</span>=<span class="string">"http://www.ultraq.net.nz/thymeleaf/layout"</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span> <span class="attr">th:replace</span>=<span class="string">"fragments/config :: configFragment"</span>&gt;</span><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">header</span> <span class="attr">th:replace</span>=<span class="string">"fragments/header :: headerFragment"</span>&gt;</span><span class="tag">&lt;/<span class="name">header</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">layout:fragment</span>=<span class="string">"content"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">footer</span> <span class="attr">th:replace</span>=<span class="string">"fragments/footer :: footerFragment"</span>&gt;</span><span class="tag">&lt;/<span class="name">footer</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<p><strong>config.html</strong></p>
+<p>head의 공통적인 부분을 담당하는 페이지이다.<br>css, js 파일따위를 관리 할 수 있다.<br>특의한 점은 &lt;th:block layout:fragment=”css”&gt; &lt;th:block layout:fragment=”script”&gt; 인데, 레이아웃의 content가 되는 index.html에 작성된 css나, js를 가져와서 적용하는 부분이다.</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">xmlns:th</span>=<span class="string">"http://www.thymeleaf.org"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">xmlns:layout</span>=<span class="string">"http://www.ultraq.net.nz/thymeleaf/layout"</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span> <span class="attr">th:fragment</span>=<span class="string">"configFragment"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"UTF-8"</span> /&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 공통으로 쓰이는 css파일을넣는다.--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">"stylesheet"</span></span></span><br><span class="line"><span class="tag">          <span class="attr">href</span>=<span class="string">"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"</span> /&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 컨텐츠페이지의 CSS 영역이 들어감 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">th:block</span> <span class="attr">layout:fragment</span>=<span class="string">"css"</span>&gt;</span><span class="tag">&lt;/<span class="name">th:block</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!-- 공통으로 쓰이는 css파일을넣는다.--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"https://code.jquery.com/jquery-2.2.4.min.js"</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 컨텐츠페이지의 스크립트 영역이 들어감 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">th:block</span> <span class="attr">layout:fragment</span>=<span class="string">"script"</span>&gt;</span><span class="tag">&lt;/<span class="name">th:block</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<hr>
+<p><strong>footer.html</strong></p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">xmlns:th</span>=<span class="string">"http://www.thymeleaf.org"</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">footer</span> <span class="attr">th:fragment</span>=<span class="string">"footerFragment"</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">style</span>=<span class="string">"border: 1px solid gold"</span>&gt;</span></span><br><span class="line">        Footer영역입니다.</span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">footer</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<p><strong>header.html</strong></p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">xmlns:th</span>=<span class="string">"http://www.thymeleaf.org"</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">header</span> <span class="attr">th:fragment</span>=<span class="string">"headerFragment"</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">style</span>=<span class="string">"border: 1px solid green"</span>&gt;</span></span><br><span class="line">        header.html 입니다.</span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line">   <span class="comment">&lt;!-- &lt;a th:href="@&#123;/index&#125;"&gt;index 페이지 이동&lt;/a&gt;--&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">header</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<p><strong>index.html</strong></p>
+<p>컨텐츠가 되는 index.html 페이지이다.<br>html 태그의 어트리뷰트가 다름을 주의하자.<br>layout:decorator 로 이 페이지가 렌더링 될때 사용살 layout을 지정한다.</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">xmlns:th</span>=<span class="string">"http://www.thymeleaf.org"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">xmlns:layout</span>=<span class="string">"http://www.ultraq.net.nz/thymeleaf/layout"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">layout:decorator</span>=<span class="string">"layout/default"</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- index.html 고유 CSS 추가 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">th:block</span> <span class="attr">layout:fragment</span>=<span class="string">"css"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">th:block</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- index.html 고유 스크립트 추가 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">th:block</span> <span class="attr">layout:fragment</span>=<span class="string">"script"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">th:block</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">layout:fragment</span>=<span class="string">"content"</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">style</span>=<span class="string">"border: 1px solid red"</span>&gt;</span></span><br><span class="line">        index.html 입니다.</span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+<h1 id="실행결과"><a href="#실행결과" class="headerlink" title="실행결과"></a>실행결과</h1><p><img src="/images/20190107-springboot-thymeleaf-layout-dialect_2.png" alt="springboot thymeleaf 레이아웃 적용 결과"></p>
+<p>간단하게 동작을 확인할 수 있다.<br>spring개발팀이 밀고 있어써 그런지 thymeleaf의 설정법은 기타 템플릿 엔진보다 간편한것 같다.</p>
+<p>끝!</p>
+
+      
+      
+          
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+      
+
+
+  
+  
+  
+  
+
+        
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2019/01/06/java-20190106-java-pojo-vs-bean/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Hanumoka">
+      <meta itemprop="description" content="아마추어 개발자의 블로그">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hanumoka, IT Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/01/06/java-20190106-java-pojo-vs-bean/" class="post-title-link" itemprop="url">java - POJO vs Java Bean</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">작성일</span>
+
+              <time title="Post created: 2019-01-06 08:18:07" itemprop="dateCreated datePublished" datetime="2019-01-06T08:18:07+09:00">2019-01-06</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Updated at: 2020-04-16 01:50:11" itemprop="dateModified" datetime="2020-04-16T01:50:11+09:00">2020-04-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/java/" itemprop="url" rel="index">
+                    <span itemprop="name">java</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 20200427hexo_post_head -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h1><p>Java 개발을 하다보면, 누구나 자동으로 접할수 밖에 없는 단어라면 아마도 POJO, Bean 이라는 것이 있다.<br>대충 보면 이 둘의 의미가 비슷한거 같기도하고, 아닌거 같기도 하다.<br>이번에 그 차이를 한번 정리해 본다.</p>
+<h1 id="POJO란"><a href="#POJO란" class="headerlink" title="POJO란"></a>POJO란</h1><p>POJO란 Plain Old Java Object의 약자로,말 그대로 평범하고 오래된 Java Object라는 의미로, 순수한 Java Object를 의미한다.<br>2000년 9월 세미나에서 마틴파울러옹이 J2EE를 까면서 내세운 단어이다.<br>과거 EJB, Strust같은 프레임워크는 비지니스 로직을 구현하기 위한 클래스를 코딩할 때 프레임워크의 특정 인터페이스등의 상속을 강요하였고, 그 결과 비지니스 로직을 코딩해야할 시간에 상속을 구현하기 위한 관용적인 코딩작업을 불필요하게 해야 했었다.<br>이렇게 프레임워크가 비지니스 로직에 특정 프레임워크의 기술에 관련된 코딩을 강제하는 것을, 침투적인 프레임워크라 하는데 무의미하고 관용적인 코딩의 반복외에도 이식성등 여러가지 문제를 가지고 있다. </p>
+<p>객체지향의 가장 중요한 개념중 하나의 느슨한 의존관계를 역행하는 이런 침투적인 프레임워크의 문제점을 강조하기 위해 마틴파울러옹은 POJO라는 말을 만들었고 이 POJO라는 말은 Java 진영외에도 다양한 프로그래밍 진영에서 사용하게 되었다.</p>
+<p>POJO른 조금 구체적으로 설명하자면, 특정 기술에 종속되지 않은 순수한 JAVA Object라고 말할 수 있겠다.</p>
+<h1 id="JAVA-Bean-이란"><a href="#JAVA-Bean-이란" class="headerlink" title="JAVA Bean 이란"></a>JAVA Bean 이란</h1><p>Java bean? Java 콩? 이게 무슨 말일까?<br>Java Bean은 데이터를 표현하기 위한 Java 클래스를 만들때의 규약이다.</p>
+<p>아래 규칙을 지킨 Java 클래스는 Java bean이라고 부른다.</p>
+<ul>
+<li>모든 클래스의 프로퍼티는 private이며 getter, setter 메소드로 제어한다.</li>
+<li>인자가 없는 public 생성자가 있어야 한다.</li>
+<li>Serializable 인터페이스를 구현해야 한다.</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> hanumoka.portfolio.nao.domain;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.Serializable;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AccountVO</span> <span class="keyword">implements</span> <span class="title">Serializable</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">long</span> serailVersionUID = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">private</span> String id;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">AccountVO</span><span class="params">()</span></span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getId</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> id;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setId</span><span class="params">(String id)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.id = id;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getName</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setName</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.name = name;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Java bean 규약은 Java EE 프레임워크에서 데이터를 저장할 Java 클래스를 만들때 제안하는 일종의 규약이다.<br>Java bean 규약은 jdk1.1부터 시작되었으며, Java 진영의 다양한 시스템에서 Java 클래스로 데이터를 공유를 위한 표준으로 사용되고 있다.</p>
+<h1 id="POJO와-JAVA-BEAN은-같다"><a href="#POJO와-JAVA-BEAN은-같다" class="headerlink" title="POJO와 JAVA BEAN은 같다?"></a>POJO와 JAVA BEAN은 같다?</h1><p>Java bean은 POJO이다.<br>그리나 POJO는 Java bena이 아니다.</p>
+<p>POJO는 java bean 보다 범주가 더 넓은 개념이다.</p>
+<h1 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h1><p><a href="https://searchmicroservices.techtarget.com/answer/What-is-a-Java-Bean-Why-it-is-useful-in-J2EE" target="_blank" rel="external nofollow noopener noreferrer">https://searchmicroservices.techtarget.com/answer/What-is-a-Java-Bean-Why-it-is-useful-in-J2EE</a><br><a href="http://www.avajava.com/tutorials/lessons/what-is-a-javabean.html" target="_blank" rel="external nofollow noopener noreferrer">http://www.avajava.com/tutorials/lessons/what-is-a-javabean.html</a><br><a href="https://stackoverflow.com/questions/3295496/what-is-a-javabean-exactly" target="_blank" rel="external nofollow noopener noreferrer">https://stackoverflow.com/questions/3295496/what-is-a-javabean-exactly</a><br><a href="https://stackoverflow.com/questions/12517905/what-is-java-pojo-class-java-bean-normal-class" target="_blank" rel="external nofollow noopener noreferrer">https://stackoverflow.com/questions/12517905/what-is-java-pojo-class-java-bean-normal-class</a></p>
+
+      
+      
+          
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+      
+
+
+  
+  
+  
+  
+
+        
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
     <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2019/01/04/springBoot-20190104-spring-applicationRunner/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1080,240 +1311,11 @@ gtag('config', 'UA-100596920-1');
   
   
 
-        
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
-    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2018/12/03/java-20181203-java8-interface-public-default-static/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Hanumoka">
-      <meta itemprop="description" content="아마추어 개발자의 블로그">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hanumoka, IT Blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2018/12/03/java-20181203-java8-interface-public-default-static/" class="post-title-link" itemprop="url">java8 interface의 public default, public static 메소드(default메소드와 접근제어자 혼동)</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">작성일</span>
-
-              <time title="Post created: 2018-12-03 03:20:47" itemprop="dateCreated datePublished" datetime="2018-12-03T03:20:47+09:00">2018-12-03</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Updated at: 2020-04-16 01:50:11" itemprop="dateModified" datetime="2020-04-16T01:50:11+09:00">2020-04-16</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/java/" itemprop="url" rel="index">
-                    <span itemprop="name">java</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-      <!-- 20200427hexo_post_head -->
-      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
-      <script>
-          (adsbygoogle = window.adsbygoogle || []).push({});
-      </script>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h1><p>아! 자과감 들고 괴로워…<br>이 글은 java8의 interface의 public default 메소드를 보며 햇갈렸던 내용을 정리한다.</p>
-<h1 id="Java8의-public-default와-public-static-메소드"><a href="#Java8의-public-default와-public-static-메소드" class="headerlink" title="Java8의 public default와 public static 메소드"></a>Java8의 public default와 public static 메소드</h1><p>Java8에서 확장성을 위해 Interface에 default, static 메소드라는 것을 추가했다.</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">testInterface</span></span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="comment">//상수</span></span><br><span class="line">  타입 상수명 = 값;</span><br><span class="line">  <span class="comment">//추상메소드 </span></span><br><span class="line">  타입 메소드명(매개변수,...);</span><br><span class="line">  </span><br><span class="line">  <span class="comment">//디폴트 메소드</span></span><br><span class="line">  <span class="keyword">default</span> 타입 메소드명(매개변수,...)&#123;</span><br><span class="line">    ...</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">//정적 메소드</span></span><br><span class="line">  <span class="keyword">static</span> 타입 메소드명(매개변수,...)&#123;</span><br><span class="line">    ....</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>디폴트 메소드는 인터페이스를 구현한 객체에서 호출할수 있으며, 정적메소드는 인터페이스명으로 접근하여 호출할수 있다.<br>직관 적이며 간단하다.</p>
-<p>그런데 자바 책을 복습겸 책을 뒤적이다보니, 이런 설명을 보았다.</p>
-<ul>
-<li>인터페이스의 디폴트 메소드는 public 특성을 갖기 때문에 public을 생략하더라도 자동적으로 컴파일 과정에서 붙게 된다.</li>
-<li>인터페이스의 정적 메소드는 public 특성을 갖기 때문에 public을 생략하더라도 자동적으로 컴파일 과정에서 붙게 된다.</li>
-</ul>
-<p>즉 컴파일 될때 아래처럼 public 접근제어자가 추가된다는 것이다.</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">testInterface</span></span>&#123;</span><br><span class="line"></span><br><span class="line">  ...</span><br><span class="line">  </span><br><span class="line">  <span class="comment">//디폴트 메소드</span></span><br><span class="line">  [<span class="keyword">public</span>] <span class="keyword">default</span> 타입 메소드명(매개변수,...)&#123;</span><br><span class="line">    ...</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">//정적 메소드</span></span><br><span class="line">  [<span class="keyword">public</span>] <span class="keyword">static</span> 타입 메소드명(매개변수,...)&#123;</span><br><span class="line">    ....</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><strong>원래 java의 interface의 메소드는 기본적으로 public 접근 제한을 갖고, 인터페이스를 구현하는 클래스는 public 보다 낮은 접근 제한으로 작성할수 없다.</strong><br>따라서 당연한 소리일 것이다.</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">TestIn</span> </span>&#123;</span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">default</span> String <span class="title">fn1</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="string">"디폴트 메소드"</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">fn2</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="string">"정적 메소드"</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">public</span> String <span class="title">fn3</span><span class="params">()</span></span>;</span><br><span class="line">		</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>위처럼 직접 타이핑으로 public default 메소드를 인터페이스에 선언할 수도 있다.</p>
-<p><strong>여기가 내가 햇갈린 부분인데, java의 접근제어자 default와 java8의 interface내부에 선언된 default 메소드이다.</strong><br>나는 위 코드를 보고, fn1메소드는 public 접근제어자와 default 접근제어자를 중복으로 갖는것인가? 라고 착각했다.</p>
-<p>아이고 copy &amp; paste만 하다보니, 확실히 감이 떨어졌다.</p>
-<h1 id="결론"><a href="#결론" class="headerlink" title="결론"></a>결론</h1><ul>
-<li><p>interface에 선언된 default라는 키워드는 접근제어자가 아니고, default method를 선언하기 위한 키워드이다.</p>
-</li>
-<li><p>그리고 default 접근제어자는 사실 default 키워드로 명시하지 않으며, 또한 어떠한 접근제어자 키워드도 사용하지 않는다.</p>
-</li>
-</ul>
-<p><strong>default 접근제어 클래스</strong></p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test2</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> String <span class="title">fn1</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="string">"메소드"</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//디폴트 클래스</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Test3</span></span>&#123;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><strong>클래스의 default 필드</strong></p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">//디폴트 클래스</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Test3</span></span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="comment">//디폴트 접근제어 멤버변수</span></span><br><span class="line">  String name;</span><br><span class="line"></span><br><span class="line">  <span class="comment">//디폴트 접근제어 메소드</span></span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">doSomething</span><span class="params">()</span></span>&#123;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h1 id="마무리"><a href="#마무리" class="headerlink" title="마무리"></a>마무리</h1><p>아이고, 아는것보다 모르는게 점점 많아지는 것은 기분탓이겠지.</p>
-
-      
-      
-          
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-
-  
-      
-
-
-  
-  
-  
-  
-
-        
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
-    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2018/12/02/jquery-20181202-jquery-noConflict/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Hanumoka">
-      <meta itemprop="description" content="아마추어 개발자의 블로그">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hanumoka, IT Blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2018/12/02/jquery-20181202-jquery-noConflict/" class="post-title-link" itemprop="url">jquery noConflict</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">작성일</span>
-
-              <time title="Post created: 2018-12-02 12:19:08" itemprop="dateCreated datePublished" datetime="2018-12-02T12:19:08+09:00">2018-12-02</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Updated at: 2020-04-16 01:50:12" itemprop="dateModified" datetime="2020-04-16T01:50:12+09:00">2020-04-16</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/jquery/" itemprop="url" rel="index">
-                    <span itemprop="name">jquery</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-      <!-- 20200427hexo_post_head -->
-      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
-      <script>
-          (adsbygoogle = window.adsbygoogle || []).push({});
-      </script>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h1><p>인터넷에서 MIT 라이센스의 bootstrap 테마를 조물락 거리는 중.</p>
-<p>Jquery의 $ 별칭이 동작을 안하는 경우가 있었다.</p>
-<p>찾아보니 Jquery의 noConflict라는 기능이었다.</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">$.noConflict();</span><br><span class="line"></span><br><span class="line">jQuery(<span class="built_in">document</span>).ready(<span class="function"><span class="keyword">function</span>(<span class="params">$</span>) </span>&#123;</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>bootstrap 테마의 main.js를 보니 위처럼 전역에 $.noConflict 라는 것이 호출되어 있었고, jquery를 사용할 때 별칭 대신 JQuery키워드로 되어 있었다.</p>
-<h1 id="Jquery의-noConflcit"><a href="#Jquery의-noConflcit" class="headerlink" title="Jquery의 noConflcit"></a>Jquery의 noConflcit</h1><p>Jquery 라이브러리를 포함해서 다른 자바스크립트 라이브러리에서도 $라는 특수문자를 함수 또는 변수명으로 사용한다.<br>Jquery에서 $ 특수문자는 JQuery의 별칭으로, 별다른 기능이 없다.<br>따라서 Jquery와 다른 기타 javascript 라이브러리를 사용할 경우, $ 특수문자의 충돌을 대비해서 Jquery에서 $ 특수문자 사용권한을 다른 라이브러리에 위힘하는 것이<br>$.noConflcit 이다.</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"other_lib.js"</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"jquery.js"</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="javascript">$.noConflict();</span></span><br><span class="line"><span class="javascript">jQuery( <span class="built_in">document</span> ).ready(<span class="function"><span class="keyword">function</span>(<span class="params"> $ </span>) </span>&#123;</span></span><br><span class="line"><span class="actionscript">  <span class="comment">// Code that uses jQuery's $ can follow here.</span></span></span><br><span class="line">&#125;);</span><br><span class="line"><span class="actionscript"><span class="comment">// Code that uses other library's $ can follow here.</span></span></span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p>위 처럼 Jquery와 다른 javascript를 동시에 사용할 경우, 만약 other_lib.js가 $ 특수문자를 내부적으로 사용할 경우, Jquery에서 $사용 권한을 포기할 필요가 있다.<br>위 처럼 전역 스코프에서 $.noConflict 메소드를 호출하여 권한을 포기하면 other_lib.js에서 $ 특수문자를 사용할 수 있다.<br>다만 위처럼 Jquery.ready 내부에서 $를 사용할수 있기는 하지만, 이 경우 $ 특수문자가 어디 라이브러리에 속해있는지 햇갈릴수 있어서 별로인 방법같다.</p>
-<h1 id="Jquery-두가지-버전을-같이-사용할-경우-noConflict"><a href="#Jquery-두가지-버전을-같이-사용할-경우-noConflict" class="headerlink" title="Jquery 두가지 버전을 같이 사용할 경우 noConflict"></a>Jquery 두가지 버전을 같이 사용할 경우 noConflict</h1><p>이런 상황이 있는지는 모르겠으나, 두가지 버전의 Jquery를 동시에 사용해야 할 경우 noConflict를 통해 Jquery 버전을 구별해서 코딩 할 수 있다.</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!doctype <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">"en"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"utf-8"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">title</span>&gt;</span>jQuery.noConflict demo<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"https://code.jquery.com/jquery-1.10.2.js"</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line"> </span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"log"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">h3</span>&gt;</span>Before $.noConflict(true)<span class="tag">&lt;/<span class="name">h3</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"https://code.jquery.com/jquery-1.6.2.js"</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"> </span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="javascript"><span class="keyword">var</span> $log = $( <span class="string">"#log"</span> );</span></span><br><span class="line"> </span><br><span class="line"><span class="javascript">$log.append( <span class="string">"2nd loaded jQuery version ($): "</span> + $.fn.jquery + <span class="string">"&lt;br&gt;"</span> );</span></span><br><span class="line"> </span><br><span class="line"><span class="actionscript"><span class="comment">// Restore globally scoped jQuery variables to the first version loaded</span></span></span><br><span class="line"><span class="actionscript"><span class="comment">// (the newer version)</span></span></span><br><span class="line"> </span><br><span class="line"><span class="actionscript">jq162 = jQuery.noConflict( <span class="literal">true</span> );</span></span><br><span class="line"> </span><br><span class="line"><span class="handlebars"><span class="xml">$log.append( "<span class="tag">&lt;<span class="name">h3</span>&gt;</span>After $.noConflict(true)<span class="tag">&lt;/<span class="name">h3</span>&gt;</span>" );</span></span></span><br><span class="line"><span class="javascript">$log.append( <span class="string">"1st loaded jQuery version ($): "</span> + $.fn.jquery + <span class="string">"&lt;br&gt;"</span> );</span></span><br><span class="line"><span class="actionscript">$log.append( <span class="string">"2nd loaded jQuery version (jq162): "</span> + jq162.fn.jquery + <span class="string">"&lt;br&gt;"</span> );</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"> </span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p>위 소스를 보면 두개의 Jquery 라이브러리를 동시에 load해서 사용하고 있다.<br>마지막으로 load된 1.6.2 버전의 Jquery가 뒤에 로드가 되었기 때문에 Jquery에 대한 </p>
-<h1 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h1><p><a href="https://www.codingfactory.net/10795" target="_blank" rel="external nofollow noopener noreferrer">https://www.codingfactory.net/10795</a><br><a href="https://api.jquery.com/jquery.noconflict/" target="_blank" rel="external nofollow noopener noreferrer">https://api.jquery.com/jquery.noconflict/</a></p>
-<p>많은 자바스크립트 라이브러리들은 사용한다 $ 를 함수 또는 변수명으로, Jquery 에서 하는 것 처럼.<br>Jquery 경우에는, $ 는 Jquery의 별칭일 뿐이다.<br>따라서 모든 기능은 $ 별칭 없이 유효하다.<br>만약 당신이 또다른 자바스크립트 라이브러리 를 사용하길 원한다면 Jquery와 같이,<br>$ 키워드의 사용권한을 다른 라이브러리로 되돌려라. $.noConfilct() 를 호출함으로써<br>Jquery가 초기화 하는 동안 $의 old refereces 들은 저장된다.<br>noconfilct()는 간단히 그것들을 원복 시킨다.</p>
-<p>만약 몇가지 이유 때문에 Jquery  두 버전을 로드했을 경우, 두번째 제이쿼리 버전에서 $.noConflict(true)를 호출하는 것은 return 할 것이다.<br>the globally scoped jQuery variables 를 첫번째 제이쿼리의 버전에게</p>
-
-      
-      
-          
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-
-  
-      
-
-
-  
-  
-  
-  
-
   </div>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/7/"><i class="fa fa-angle-left" aria-label="이전 페이지"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><span class="page-number current">8</span><a class="page-number" href="/page/9/">9</a><span class="space">&hellip;</span><a class="page-number" href="/page/22/">22</a><a class="extend next" rel="next" href="/page/9/"><i class="fa fa-angle-right" aria-label="다음 페이지"></i></a>
+    <a class="extend prev" rel="prev" href="/page/7/"><i class="fa fa-angle-left" aria-label="이전 페이지"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><span class="page-number current">8</span><a class="page-number" href="/page/9/">9</a><span class="space">&hellip;</span><a class="page-number" href="/page/23/">23</a><a class="extend next" rel="next" href="/page/9/"><i class="fa fa-angle-right" aria-label="다음 페이지"></i></a>
   </nav>
 
 
@@ -1379,20 +1381,20 @@ gtag('config', 'UA-100596920-1');
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">219</span>
+          <span class="site-state-item-count">221</span>
           <span class="site-state-item-name">포스트</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">38</span>
+        <span class="site-state-item-count">40</span>
         <span class="site-state-item-name">카테고리</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">592</span>
+        <span class="site-state-item-count">596</span>
         <span class="site-state-item-name">태그</span></a>
       </div>
   </nav>

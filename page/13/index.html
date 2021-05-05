@@ -245,6 +245,223 @@ gtag('config', 'UA-100596920-1');
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2018/08/24/spring-20180824-spring4-aop-logging/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Hanumoka">
+      <meta itemprop="description" content="아마추어 개발자의 블로그">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hanumoka, IT Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2018/08/24/spring-20180824-spring4-aop-logging/" class="post-title-link" itemprop="url">Spirng AOP를 이용하여 Service클래스에 로그 찍기</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">작성일</span>
+
+              <time title="Post created: 2018-08-24 19:48:26" itemprop="dateCreated datePublished" datetime="2018-08-24T19:48:26+09:00">2018-08-24</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Updated at: 2020-04-16 01:50:12" itemprop="dateModified" datetime="2020-04-16T01:50:12+09:00">2020-04-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/spring/" itemprop="url" rel="index">
+                    <span itemprop="name">spring</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 20200427hexo_post_head -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h3><p>Spring MVC 프로젝트에서 Service에 Aop Advice를 걸어서 log4j로그를 찍는 예제이다.<br>xml설정이 아닌 어노테이션을 이용할 것이다.</p>
+<hr>
+<p>특정 패키지의 모든 service 클래스가 동작할때 파라미터등 기타 정보를 출력하는 로그와 메소드가 동작하면서 걸린 시간을 로그하는 예제이다.</p>
+<h3 id="AOP-기초-설정하기"><a href="#AOP-기초-설정하기" class="headerlink" title="AOP 기초 설정하기"></a>AOP 기초 설정하기</h3><p><strong>1.pom.xml에 라이브러리 추가.</strong></p>
+<p>일단 properties에 aspect 공통 버전을 설정한다.</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">properties</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">java-version</span>&gt;</span>1.8<span class="tag">&lt;/<span class="name">java-version</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">org.springframework-version</span>&gt;</span>4.3.8.RELEASE<span class="tag">&lt;/<span class="name">org.springframework-version</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">org.aspectj-version</span>&gt;</span>1.8.9<span class="tag">&lt;/<span class="name">org.aspectj-version</span>&gt;</span> <span class="comment">&lt;!-- aspoect 버전 설정  --&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">org.slf4j-version</span>&gt;</span>1.6.6<span class="tag">&lt;/<span class="name">org.slf4j-version</span>&gt;</span> </span><br><span class="line"><span class="tag">&lt;/<span class="name">properties</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>그리고 spring aop, aspectj 라이브러리를 추가한다.<br>AspectJ는 자바용 AOP 지원을 제공할 목적으로 시작된 라이브러리다.</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-aop<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;org.springframework-version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- 트랜잭션 처리용 라이브러리 --&gt;</span>		</span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-tx<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;org.springframework-version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- AspectJ --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.aspectj<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>aspectjrt<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;org.aspectj-version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">		</span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.aspectj<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>aspectjtools<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;org.aspectj-version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>2.root-context.xml 설정하기.</strong></p>
+<p><img src="/images/20180824-spring4-aop-logging_1.png" alt="root-context.xml의 namesspaces탭에서 aop, tx 네임스페이스를 추가하자."></p>
+<p>그리고 root-context.xml파일에 아래 내용을 추가하자.</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- AspectJ라이브러리를 이용한 Proxy 객체를 생성 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">aop:aspectj-autoproxy</span>&gt;</span><span class="tag">&lt;/<span class="name">aop:aspectj-autoproxy</span>&gt;</span></span><br><span class="line">	</span><br><span class="line"><span class="comment">&lt;!-- XML 방식으로 AOP 기능을 설정할 때 사용 : 이 예제에는 어노테이션을 사용하므로 필요없긴 하다.--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">aop:config</span>&gt;</span><span class="tag">&lt;/<span class="name">aop:config</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>3.Advice 클래스 생성하기.</strong></p>
+<p>특정 패키지에 SampleAdvice 클래스를 생성하자.<br>내용은 아래와 같다.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.hanumoka.sample.aop;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.Arrays;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.JoinPoint;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.ProceedingJoinPoint;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.annotation.Around;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.annotation.Aspect;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.annotation.Before;</span><br><span class="line"><span class="keyword">import</span> org.slf4j.Logger;</span><br><span class="line"><span class="keyword">import</span> org.slf4j.LoggerFactory;</span><br><span class="line"><span class="keyword">import</span> org.springframework.stereotype.Component;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="meta">@Aspect</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SampleAdvice</span> </span>&#123;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Logger logger = LoggerFactory.getLogger(SampleAdvice<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">	</span><br><span class="line"><span class="comment">//@Before("execution(* com.hanumoka.sample.service.BoardService*.*(..))")</span></span><br><span class="line"><span class="comment">//target 메소도의 파라미터등 정볼르 출력한다.</span></span><br><span class="line"><span class="meta">@Before</span>(<span class="string">"execution(* com.hanumoka.sample.service.*.*(..))"</span>)</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">startLog</span><span class="params">(JoinPoint jp)</span> </span>&#123;</span><br><span class="line">		</span><br><span class="line">	logger.info(<span class="string">"-------------------------------------"</span>);</span><br><span class="line">	logger.info(<span class="string">"-------------------------------------"</span>);</span><br><span class="line"></span><br><span class="line">	<span class="comment">/* 전달되는 모든 파라미터들을 Object의 배열로 가져온다. */</span></span><br><span class="line">	 logger.info(<span class="string">"1:"</span> + Arrays.toString(jp.getArgs()));</span><br><span class="line">	    </span><br><span class="line">	<span class="comment">/* 해당 Advice의 타입을 알아낸다. */</span></span><br><span class="line">	logger.info(<span class="string">"2:"</span> + jp.getKind());</span><br><span class="line">	    </span><br><span class="line">	<span class="comment">/* 실행하는 대상 객체의 메소드에 대한 정보를 알아낼 때 사용 */</span></span><br><span class="line">	logger.info(<span class="string">"3:"</span> + jp.getSignature().getName());</span><br><span class="line">	    </span><br><span class="line">	<span class="comment">/* target 객체를 알아낼 때 사용 */</span></span><br><span class="line">	logger.info(<span class="string">"4:"</span> + jp.getTarget().toString());</span><br><span class="line">	    </span><br><span class="line">	<span class="comment">/* Advice를 행하는 객체를 알아낼 때 사용 */</span></span><br><span class="line">	logger.info(<span class="string">"5:"</span> + jp.getThis().toString());</span><br><span class="line">	    </span><br><span class="line">&#125;</span><br><span class="line">	</span><br><span class="line"><span class="comment">//target 메소드의 동작 시간을 로그한다.</span></span><br><span class="line"><span class="meta">@Around</span>(<span class="string">"execution(* com.hanumoka.sample.service.*.*(..))"</span>)</span><br><span class="line"><span class="function"><span class="keyword">public</span> Object <span class="title">timeLog</span><span class="params">(ProceedingJoinPoint pjp)</span> <span class="keyword">throws</span> Throwable </span>&#123;		</span><br><span class="line">	<span class="keyword">long</span> startTime = System.currentTimeMillis();</span><br><span class="line">	logger.info(Arrays.toString(pjp.getArgs()));</span><br><span class="line">		</span><br><span class="line">	<span class="comment">//실제 타겟을 실행하는 부분이다. 이 부분이 없으면 advice가 적용된 메소드가 동작을 안할것 같다.</span></span><br><span class="line">	Object result = pjp.proceed();  <span class="comment">//proceed는 Exception 보다 상위 Throwable을 처리해야 한다.</span></span><br><span class="line">		</span><br><span class="line">	<span class="keyword">long</span> endTime = System.currentTimeMillis();</span><br><span class="line">	logger.info(pjp.getSignature().getName() + <span class="string">" : "</span> + ( endTime - startTime));  <span class="comment">//target 메소드의 동작 시간을 출력한다.</span></span><br><span class="line">	logger.info(<span class="string">"=============================="</span>);</span><br><span class="line">		</span><br><span class="line">	<span class="comment">//Around를 사용할 경우 반드시 Object를 리턴해야 한다.</span></span><br><span class="line">	<span class="keyword">return</span> result;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>스프링 컨테이너가 위 클래스를 인식할수 있도록, @Component 어노테이션이 적용되어 있다.<br>물론 root-context.xml에서 해당 패키지를 반드시 스캔 해야 한다.</p>
+<p>어노테이션은 @Before, @Around 두개만 사용하였다.<br>com.hanumoka.sample.service 패키지의 모든 클래스의 모든 메소드를 대상으로 한다.<br>코드의 주석을 보면 대충 내용을 알수 있을 것이다.</p>
+<p>위 소스가 적용되면 STS에서 Aop를 소스상 표시해준다.<br>(난 여태 이 의미를 모르고 있었다.)</p>
+<p><img src="/images/20180824-spring4-aop-logging_2.png" alt="이미지를 클릭하여, 노란색 마킹을 보라."></p>
+<p>Advice 클래스의 메소드에는 빨간 화살표가 바깥을 향하고, 이 Advice가 적용되는 Target클래스의 메소드는 빨간 화살표가 바깥에서 안쪽을 향하고 있다.<br>이것은 AOP관련 표시를 STS에서 자동으로 해주는 것이다.</p>
+<p>com.hanumoka.sample.service 를 사용하는 컨트롤러를 동작 시켜보자.</p>
+<p><img src="/images/20180824-spring4-aop-logging_3.png" alt="아래처럼 로그가 찍힌다."></p>
+<p>끝!!!</p>
+
+      
+      
+          
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+      
+
+
+  
+  
+  
+  
+
+        
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2018/08/23/html-20180823-html-a-tag-no-action/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Hanumoka">
+      <meta itemprop="description" content="아마추어 개발자의 블로그">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hanumoka, IT Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2018/08/23/html-20180823-html-a-tag-no-action/" class="post-title-link" itemprop="url">html - a 태그 링크 동작 꺼버리기(a href)</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">작성일</span>
+
+              <time title="Post created: 2018-08-23 18:58:11" itemprop="dateCreated datePublished" datetime="2018-08-23T18:58:11+09:00">2018-08-23</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Updated at: 2020-04-16 01:50:11" itemprop="dateModified" datetime="2020-04-16T01:50:11+09:00">2020-04-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/html/" itemprop="url" rel="index">
+                    <span itemprop="name">html</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 20200427hexo_post_head -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h3><p>html a 태그(앵커)는 html 문서에서 링크를 지정하는 태그이다.<br>그 표시로 마우스 커서를 a 태그에 가져가면 커서가 손 모양으로 변한다.</p>
+<p>개발하다보면, 이 a 태그의 링크 동작이 필요 없는 경우가 있다.<br>(javascript 라이브러리로 동적으로 a 태그를 수정하는 경우…)</p>
+<p>인터넷을 찾아본 결과 한 4가지 정도의 방법을 찾았다.</p>
+<h3 id="방법"><a href="#방법" class="headerlink" title="방법"></a>방법</h3><p>아래 html 페이지가 그 예제이다.</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span><span class="tag">&lt;<span class="name">title</span>&gt;</span>a herf 링크 동작 꺼버리기<span class="tag">&lt;/<span class="name">title</span>&gt;</span><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">style</span>&gt;</span></span><br><span class="line"><span class="css">    <span class="selector-tag">a</span> &#123;<span class="attribute">cursor</span>:pointer;&#125;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"#"</span>&gt;</span>링크 테스트 #<span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;<span class="name">br</span>&gt;</span> <span class="comment">&lt;!-- #을 쓰면 해당 페이지의 최상단으로 화면이 움직인다. --&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- 아래 3가지 방법은 #을 쓰는 방식과 달리 링크를 클릭해도 해당 페이지의 최 상단으로 이동하지 않는다. href 태그에 undefined가 전달되면 링크는 동작하지 않게 된다.--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"javascript:void(0);"</span>&gt;</span>링크 테스트 javascript:void(0);<span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;<span class="name">br</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"javascript:;"</span>&gt;</span>링크 테스트 javascript:;<span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;<span class="name">br</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- 이런식으로 href 어트리뷰트를 아예 안쓸수도 있다. 다만 이 경우 마우스커서가 손가락 모양으로 변하지 않는데, 위 style태그에서 마우서커서를 pointer로 처리해서 사용한다.--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">a</span> <span class="attr">onclick</span>=<span class="string">""</span>&gt;</span>링크 테스트 onclick<span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;<span class="name">br</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span></span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/20180823-html-a-tag-no-action_1.png" alt="a 태그 테스트 화면"></p>
+<p>위 예제의 주석을 보면 대충 어떻게 쓰는지 알수 있을 것이다.</p>
+<p>인터넷을 찾아보니 위 방법중 어떤것은 좋고 나쁘고 왈가왈부가 많은데(웹표준 등등) 솔직히 난 뭐가 나쁘고 좋은지 잘 모르겠다.<br>그냥 쓰기에는 맨 마지막 방법인 href대신 onClick 이벤트를 쓰는 것이 편해보인다.</p>
+<h3 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h3><p><a href="https://blog.outsider.ne.kr/223" target="_blank" rel="external nofollow noopener noreferrer">https://blog.outsider.ne.kr/223</a></p>
+
+      
+      
+          
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+      
+
+
+  
+  
+  
+  
+
+        
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
     <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2018/08/22/vue-20180822-vue-Vue-CLI/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1123,319 +1340,11 @@ gtag('config', 'UA-100596920-1');
   
   
 
-        
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
-    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2018/08/15/vue-20180815-vue-what-is-the-vue/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Hanumoka">
-      <meta itemprop="description" content="아마추어 개발자의 블로그">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hanumoka, IT Blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2018/08/15/vue-20180815-vue-what-is-the-vue/" class="post-title-link" itemprop="url">Vue.js 란?</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">작성일</span>
-
-              <time title="Post created: 2018-08-15 07:54:18" itemprop="dateCreated datePublished" datetime="2018-08-15T07:54:18+09:00">2018-08-15</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Updated at: 2020-04-16 01:50:12" itemprop="dateModified" datetime="2020-04-16T01:50:12+09:00">2020-04-16</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/vue/" itemprop="url" rel="index">
-                    <span itemprop="name">vue</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-      <!-- 20200427hexo_post_head -->
-      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
-      <script>
-          (adsbygoogle = window.adsbygoogle || []).push({});
-      </script>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h1><p>3~4년전 Anuglar1이 나왔을때 한번 프로젝트에 적용하기 위해 공부했었던 적이 있다.<br>당시 Angular의 신박한 기능은 매력적이었지만, 한글 이슈등 다양한 문제점이 있어서 포기하고, 그냥 jsp + jquery 로 개발한 기억이 난다.</p>
-<p>요즘 다시 프론트엔드에 대한 관심이 생겨 이것저것 찾아보던중 Vue.js 라는 프론트엔드 프레임워크가 있어서 공부하는중이다.</p>
-<p>그래서 Vue.js는 머냐?</p>
-<p><img src="/images/20180815-vue-what-is-the-vue_1.png" alt="Vue.js로고"></p>
-<hr>
-<h1 id="Vue-js란"><a href="#Vue-js란" class="headerlink" title="Vue.js란?"></a>Vue.js란?</h1><p>Vue.js는 Anuglar, React와 같이 웹 페이지 화면을 개발하기 위한 프론트엔드 MVVM 프레임워크 중 하나이다.<br>여기저기 찾아보니 Vue는 프레임워크가 아니라 라이브러리라는 말도 있다.</p>
-<p>뷰 코어 라이브러리는 화면단 데이터 표현에 관한 기능들을 중점적으로 지원하지만 프레임워크의 기능인 라우터, 상태 관리, 테스팅 등을 쉽게 결합할 수 있는 형태로도 제공된다.</p>
-<p>따라서 구조상은 몰라도 기능상은 프레임워크의 기능을 하고 있는거 같기에 프레임워크가 맞다고 개인적으로 생각한다.</p>
-<hr>
-<h1 id="Vue의-장점"><a href="#Vue의-장점" class="headerlink" title="Vue의 장점"></a>Vue의 장점</h1><p><strong>1.일단 쉽단다.</strong></p>
-<p>프론트엔드의 대표적인 프레임워크인 Angular, React에 비해 쉽다고 한다.<br>angualr는 타입스크립트(TypeScript), ES6(ECMAScript 2015)에 대한 지식이 필요하다.<br>react또한 ES6와 JSX라는 리액트 전용 탬플릿 작성 언어를 알아야 한다.<br>Vue.js는 HTML, javascript, CSS 정도를 알면 배워볼만 하다.(물론 웹에 대한 지식이 필요하다.)<br>쉬운것은 항상 옳다고 본다.</p>
-<p><strong>2.타 프레임워크에 비해 성능면에서 빠르다.</strong></p>
-<p>뷰 제작팀에서 리액트와 앵귤러를 가지고 같은 테스트 케이스(test case)에서 성능을 비교한 결과 뷰가 가장 빨랐다고 한다.<br>(뷰 제작팀이 진행한 테스트라 별로 신빙성은 안가지만…)</p>
-<p>Vue.js 2버전 부터 스냅돔(snabbdom)기반의 가상돔을 통해 빠른 속도로 문서를 렌더링 하며, 메모리 소비 효율도가 최대 2~3배 정도 나온다고 하니 근거가 전혀 없는 것은 아닌것 같다.</p>
-<p><strong>3. 리액트의 장점과 앵귤러의 장점을 갖는다.</strong></p>
-<p>앵귤러의 데이터 바인딩과 리액트의 가상돔(Vitual DOM) 기반 렌더링의 특징을 모두 가지고 있다.<br>따라서 앵귤러, 리액트보다 쉽지만 기능상 뒤쳐지지 않는다.</p>
-<p><strong>4.Vue.js 공식 페이지에서 재공하는 한글문서</strong></p>
-<p>vue.js 공식페이지의 한글화가 잘 되어있어서, 별도의 책을 구입하지 않아도 공부하는데 용이 하다.</p>
-<p><a href="https://kr.vuejs.org/v2/guide/index.html" target="_blank" rel="external nofollow noopener noreferrer">Vue.js 공식 홈페이지 가이드 문서</a></p>
-<hr>
-<h1 id="Vue-js의-단점"><a href="#Vue-js의-단점" class="headerlink" title="Vue.js의 단점"></a>Vue.js의 단점</h1><p><strong>1.규모가 큰 웹 어플리케이션 구현이 어렵다.</strong></p>
-<p><strong>2.react.js 보다 생태계가 작다.</strong></p>
-
-      
-      
-          
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-
-  
-      
-
-
-  
-  
-  
-  
-
-        
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
-    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2018/08/10/spring-20180810-spring-board-paging/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Hanumoka">
-      <meta itemprop="description" content="아마추어 개발자의 블로그">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hanumoka, IT Blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2018/08/10/spring-20180810-spring-board-paging/" class="post-title-link" itemprop="url">Spring MVC로 만드는 게시판 페이징 요점 정리(Thymeleaf기반 게시판)</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">작성일</span>
-
-              <time title="Post created: 2018-08-10 06:29:18" itemprop="dateCreated datePublished" datetime="2018-08-10T06:29:18+09:00">2018-08-10</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Updated at: 2020-04-16 01:50:12" itemprop="dateModified" datetime="2020-04-16T01:50:12+09:00">2020-04-16</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/spring/" itemprop="url" rel="index">
-                    <span itemprop="name">spring</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-      <!-- 20200427hexo_post_head -->
-      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
-      <script>
-          (adsbygoogle = window.adsbygoogle || []).push({});
-      </script>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <table>
-<thead>
-<tr>
-<th>항목</th>
-<th>개발환경</th>
-<th>비고</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>운영체제</td>
-<td>Widnwos10(64)</td>
-<td></td>
-</tr>
-<tr>
-<td>백엔드프레임워크</td>
-<td>Spring MVC 4</td>
-<td></td>
-</tr>
-<tr>
-<td>개발언어</td>
-<td>java1.8</td>
-<td></td>
-</tr>
-<tr>
-<td>WAS</td>
-<td>Tomcat9</td>
-<td></td>
-</tr>
-<tr>
-<td>템플릿엔진</td>
-<td>Thymeleaf3</td>
-<td></td>
-</tr>
-<tr>
-<td>템플릿엔진레이아웃</td>
-<td>Tymeleaf-laout-dialect2</td>
-<td></td>
-</tr>
-<tr>
-<td>DB</td>
-<td>mysql8</td>
-<td></td>
-</tr>
-<tr>
-<td>ORM</td>
-<td>mybatis</td>
-<td></td>
-</tr>
-</tbody></table>
-<h1 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h1><p>난 내가 나름 개발짬좀 먹었다고 생각했다.<br>그런데 아직도 게시판 만드는것이 어렵게 느껴진다.<br>특히 어려운 부분은 페이징에 관련된 것이라 생각된다.</p>
-<p>그래서 이번에 스프링 책을 보며 페이징이 적용된 게시판 예제를 만들어 보았다.<br>이 글은 이번에 공부한 게시판의 페이징 부분에 포인트만 정리한 글이다.<br>게시판 자체의 CURD는 생략했다.</p>
-<p><img src="/images/20180810-spring-board-paging_1.png" alt="페이징이 적용된 게시판 모습"></p>
-<hr>
-<h1 id="게시판-페이징-처리원칙"><a href="#게시판-페이징-처리원칙" class="headerlink" title="게시판 페이징 처리원칙"></a>게시판 페이징 처리원칙</h1><p>게시판의 페이지는 다른 사람에게 URL로 전달하는 경우가 많기 때문에, <strong>반드시 GET 방식으로만 처리된다.</strong><br>하지만 GET방식으로 게시판을 구현하다 보면, 어쩔수 없이 귀찮은 것이 생긴다.</p>
-<p>화면을 변경할때 마다 기본적으로 유지해야 할 상태 값들을 쿼리스트링으로 URL에 달고 다녀야 하는 것이 문제다.<br>예를 들어 글을 읽으러 들어갈때, 게시판 페이징의 상태 값인 <strong>현재 페이지 번호</strong>와, <strong>한번에 보여줄 페이지 개수</strong>, <strong>한번에 보여줄 글의 개수</strong> 등을 가지고 다녀야 한다.<br>그래야 글을 다 읽고 게시판 목록으로 나올때 게시판 페이지상태를 유지할 수가 있기 때문이다.</p>
-<p>위와 같은 이유로 게시판을 만들때 발생하는 다양한 링크를 생성할 때 주의해야 한다.</p>
-<p>일단 게시판의 페이징은 크개 두개의 로직으로 나누어 진다.<br>하나는 <strong>Criteria</strong> 또 하나는 <strong>PageMaker</strong> 이다.<br>참고로 PageMaker는 Criteria를 기반한다.</p>
-<hr>
-<h1 id="특정-페이지의-게시판을-조회하기-위한-도우미-클래스-Criteria-java"><a href="#특정-페이지의-게시판을-조회하기-위한-도우미-클래스-Criteria-java" class="headerlink" title="특정 페이지의 게시판을 조회하기 위한 도우미 클래스 Criteria.java"></a>특정 페이지의 게시판을 조회하기 위한 도우미 클래스 Criteria.java</h1><p>일단 Criteria라는 말은 검색을 위한 기준데이터를 의미한다.<br>페이징이 적용된 게시판을 조회하기 위한 최소 <strong>필요 데이터</strong> 다음과 같다.</p>
-<p><strong>한 페이지당 보여줄 게시글의 개수</strong> 그리고 <strong>어떤 페이지 번호</strong>를 보여줄 것인가?</p>
-<p>위 데이터와 mysql 의 limit를 이용해서 특정 페이지를 조회하는 쿼리를 만들면 다음과 같다.</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> </span><br><span class="line">      *</span><br><span class="line">  <span class="keyword">from</span> 게시판테이블</span><br><span class="line">  <span class="keyword">where</span> <span class="number">1</span>=<span class="number">1</span></span><br><span class="line">  <span class="keyword">and</span> 게시글번호 &gt; <span class="number">0</span></span><br><span class="line">  <span class="keyword">order</span> <span class="keyword">by</span> 게시글번호 <span class="keyword">desc</span>, 등록일자 <span class="keyword">desc</span></span><br><span class="line">  <span class="keyword">limit</span> (현재 보여줄 페이지 번호 - <span class="number">1</span>) * 한 페이지당 보여줄 게시글의 개수, 한 페이지당 보여줄 게시글의 개수</span><br></pre></td></tr></table></figure>
-
-<p>그리고 위 쿼리를 실제 mybatis 매핑 쿼리로 보면 다음과 같다.</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- criteria 를 적용한 게시판 페이징 조회 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">"listCriteria"</span> <span class="attr">resultType</span>=<span class="string">"BoardVO"</span>&gt;</span></span><br><span class="line">&lt;![CDATA[</span><br><span class="line">select</span><br><span class="line">    bno, title, content, writer, regdate, viewcnt</span><br><span class="line">from</span><br><span class="line">    tbl_board</span><br><span class="line">where bno &gt; 0</span><br><span class="line">order by bno desc, regdate desc</span><br><span class="line">limit #&#123;pageStart&#125;, #&#123;perPageNum&#125;</span><br><span class="line">]]&gt;</span><br><span class="line"><span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<p><strong>pageStart:</strong> (현재 보여줄 페이지 번호 - 1) * 한 페이지당 보여줄 게시글의 개수 이다. 이 값은 Criteria.java로 부터 전달 받을 것이다.<br><strong>perPageNum:</strong> 한 페이지당 보여줄 게시글의 개수이다.</p>
-<p>시스템에 게시판은 여러종류가 있을수 있으며, 이런 페이징 부분은 공통적으로 사용해야 하므로 페이징 관련 기능은 특정 게시판 로직에 넣지 말고 별도의 클래스로 분리한다.</p>
-<p>Criteria.java는 페이징을 위해 분리한 VO종류의 클래스이며, 위 listCriteria 마이바티스 쿼리 동작시 전달될 파라미터가 된다.<br>내용은 아래와 같다.</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.hanumoka.sample.vo;</span><br><span class="line"></span><br><span class="line"><span class="comment">//게시판 페이징 전용 클래스</span></span><br><span class="line"><span class="comment">//Criteria : 사전적 의미로는 검색기준, 분류기준</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Criteria</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">int</span> page;  		    <span class="comment">// 보여줄 페이지 번호</span></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">int</span> perPageNum;   <span class="comment">// 페이지당 보여줄 게시글의 개수</span></span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">Criteria</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="comment">//최초 게시판에 진입할 때를 위해서 기본 값을 설정 해야 한다.</span></span><br><span class="line">		<span class="keyword">this</span>.page = <span class="number">1</span>;</span><br><span class="line">		<span class="keyword">this</span>.perPageNum = <span class="number">10</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getPage</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> page;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setPage</span><span class="params">(<span class="keyword">int</span> page)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span>(page &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">			<span class="keyword">this</span>.page = <span class="number">1</span>;</span><br><span class="line">			<span class="keyword">return</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">this</span>.page = page;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getPerPageNum</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> perPageNum;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setPerPageNum</span><span class="params">(<span class="keyword">int</span> perPageNum)</span> </span>&#123;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">if</span>(perPageNum &lt;= <span class="number">0</span> || perPageNum &gt; <span class="number">100</span>) &#123;</span><br><span class="line">			<span class="keyword">this</span>.perPageNum = <span class="number">10</span>;</span><br><span class="line">			<span class="keyword">return</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">this</span>.perPageNum = perPageNum;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">/* limit 구문에서 시작 위치를 지정할 때 사용된다. 예를 들어 10개씩 출력하는 경우 3페이지의 데이터는 linit 20, 10 과 같은 형태가 되어야 한다. */</span></span><br><span class="line">	<span class="comment">/* this.page 가 1이면 0이 되어야 한다 mysql limit 0, 10 해야 처음부터 10개씩 나온다. */</span></span><br><span class="line">  <span class="comment">/* 마이바티스 조회쿼리의 #&#123;pageStart&#125;에 전달된다. */</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getPageStart</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> (<span class="keyword">this</span>.page -<span class="number">1</span>) * perPageNum;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="string">"Criteria [page="</span> + page + <span class="string">", perPageNum="</span> + perPageNum + <span class="string">"]"</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>Criteria.java 와 위 조회쿼리를 이용하면 게시판을 한 페이지 씩 조회하는 것은 가능하다.<br>3번 페이지를 조회하고 10개 데이터를 추릴수가 있게 된 것이다. </p>
-<p><img src="/images/20180810-spring-board-paging_2.png" alt="Criteria의 도움으로 특정 페이지를 조회한 모습"></p>
-<hr>
-<h1 id="게시판-페이징을-실제-담당하는-클래스-PageMaker-java"><a href="#게시판-페이징을-실제-담당하는-클래스-PageMaker-java" class="headerlink" title="게시판 페이징을 실제 담당하는 클래스 PageMaker.java"></a>게시판 페이징을 실제 담당하는 클래스 PageMaker.java</h1><p>Criteria.java의 도움으로 게시판의 특정 페이지를 조회하기 위한 준비는 끝났다.<br>이제 해야 할 것은 게시판 하단에 있을 페이징 관련 부분을 만드는 기능이 필요하다.</p>
-<p><img src="/images/20180810-spring-board-paging_3.png" alt="게시판 페이징의 핵심인 페이징 버튼"></p>
-<p>이 부분은 이전페이지버튼, 다음페이지버튼 그리고 페이지번호 버튼 크게 3부분으로 나뉜다.<br>즉 이 세부분을 다루어야 하며 이것을 위한 필요 데이터가 있다.</p>
-<p><strong>필요 데이터</strong>는 다음과 같다.</p>
-<p><strong>Criteria를 통한 현재페이지번호, 한페이지 당 게시글개수</strong></p>
-<p>그리고 <strong>게시판 화면에서 한번에 보여질 페이지 번호의 개수</strong> 이다.</p>
-<p>Criteria는 이미 생성했으니 PageMaker에서는 Criteria를 그대로 사용하면 된다.</p>
-<p>위 필요데이터를 사용하여 PageMaker가 생성할 데이터는 다음과 같다. </p>
-<p><strong>생성순서1 totalCount</strong> 게시판 글 전체 개수.<br><strong>생성순서2 tempEndPage:</strong> 게시판의 실제 마지막 페이지 번호.<br><strong>생성순서3 endPage:</strong> 게시판을 화면에 보여질 마지막 페이지 번호.<br><strong>생성순서4 startPage:</strong> 게시판을 화면에 보여질 첫번째 페이지 번호.<br><strong>생성순서5 prev:</strong> 이전 페이지 버튼 활성화 여부.<br><strong>생성순서6 next:</strong> 다음 페이지 버튼 활성화 여부. </p>
-<p>생성순서는 중요하다. 뒤 순서 데이터는 앞 순서 데이터를 참조하기 때문이다.<br>데이터 생성 공식은 다음과 같다.</p>
-<p><strong>totlaCount 공식:</strong> 조회 쿼리 count(*)를 이용해서 전체 게시글 개수를 구한다.</p>
-<p><strong>tempEndPage 공식:</strong> (int)(Math.ceil(totalCount / (double)Criteria의 한페이지 당 게시글 개수))</p>
-<p><strong>endPage 공식:</strong> (int)(Math.ceil(현재 페이지번호 / (double)한번에 보여질 페이지 번호개수) * 한번에 보여질 페이지번호 개수).<br>하지만 여기서 <strong>endPage의 값은 tempEndPage보다 클수 없어야 한다.</strong></p>
-<p><strong>startPage 공식:</strong> (endPage - 한번에 보여질 페이지 번호 개수) + 1</p>
-<p><strong>prev 공식:</strong> startPage가 1이 아니면 활성화, 1이 면 비활성화</p>
-<p><strong>next 공식:</strong> (endPage * Criteria의 한페이지 당 게시글 개수) 가 totlaCount보다 크거나 같으면 비활성화, 아니면 활성화이다.<br>next공식은 책에서 나온 것인데, 그냥 endPage가 tempEndPage보다 작으면 활성화 아니면 비활성화 하는것이 더 간단해 보인다.</p>
-<p>PageMaker.java의 내용은 아래와 같다.<br>calcData메소드에서 필요한 데이터를 생성하는 것을 확인 할 수 있따.</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.hanumoka.sample.vo;</span><br><span class="line"></span><br><span class="line"><span class="comment">//게시판 페이징 하단 부문 담당</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PageMaker</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">int</span> totalCount;     <span class="comment">// 게시판 전체 데이터 개수</span></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">int</span> displayPageNum = <span class="number">10</span>;   <span class="comment">// 게시판 화면에서 한번에 보여질 페이지 번호의 개수 ( 1,2,3,4,5,6,7,9,10)</span></span><br><span class="line">	</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">int</span> startPage;      <span class="comment">// 현재 화면에서 보이는 startPage 번호</span></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">int</span> endPage;        <span class="comment">// 현재 화면에 보이는 endPage 번호</span></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">boolean</span> prev;       <span class="comment">// 페이징 이전 버튼 활성화 여부</span></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">boolean</span> next;       <span class="comment">// 페이징 다음 버튼 활서화 여부</span></span><br><span class="line">	</span><br><span class="line">	<span class="keyword">private</span> Criteria cri;       <span class="comment">// 앞서 생성한 Criteria를 주입받는다.</span></span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getTotalCount</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> totalCount;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setTotalCount</span><span class="params">(<span class="keyword">int</span> totalCount)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">this</span>.totalCount = totalCount;</span><br><span class="line">		</span><br><span class="line">		calcData();</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">calcData</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		endPage = (<span class="keyword">int</span>) (Math.ceil(cri.getPage() / (<span class="keyword">double</span>) displayPageNum) * displayPageNum);</span><br><span class="line">		</span><br><span class="line">		startPage = (endPage - displayPageNum) + <span class="number">1</span>;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">int</span> tempEndPage = (<span class="keyword">int</span>) (Math.ceil(totalCount / (<span class="keyword">double</span>) cri.getPerPageNum()));</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">if</span>(endPage &gt; tempEndPage) &#123;</span><br><span class="line">			endPage = tempEndPage;</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		prev = startPage == <span class="number">1</span> ? <span class="keyword">false</span> : <span class="keyword">true</span>;</span><br><span class="line">		</span><br><span class="line">		next = endPage * cri.getPerPageNum() &gt;= totalCount ? <span class="keyword">false</span> : <span class="keyword">true</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getStartPage</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> startPage;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setStartPage</span><span class="params">(<span class="keyword">int</span> startPage)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">this</span>.startPage = startPage;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getEndPage</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> endPage;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setEndPage</span><span class="params">(<span class="keyword">int</span> endPage)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">this</span>.endPage = endPage;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isPrev</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> prev;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setPrev</span><span class="params">(<span class="keyword">boolean</span> prev)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">this</span>.prev = prev;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isNext</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> next;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setNext</span><span class="params">(<span class="keyword">boolean</span> next)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">this</span>.next = next;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getDisplayPageNum</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> displayPageNum;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setDisplayPageNum</span><span class="params">(<span class="keyword">int</span> displayPageNum)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">this</span>.displayPageNum = displayPageNum;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> Criteria <span class="title">getCri</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> cri;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setCri</span><span class="params">(Criteria cri)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">this</span>.cri = cri;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="string">"PageMaker [totalCount="</span> + totalCount + <span class="string">", startPage="</span> + startPage + <span class="string">", endPage="</span> + endPage + <span class="string">", prev="</span></span><br><span class="line">				+ prev + <span class="string">", next="</span> + next + <span class="string">", displayPageNum="</span> + displayPageNum + <span class="string">", cri="</span> + cri + <span class="string">"]"</span>;</span><br><span class="line">	&#125;</span><br><span class="line">		</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>이제 게시판 페이징을 위한 준비물은 끝났다. </p>
-<hr>
-<h1 id="페이징-게시판-컨트롤러"><a href="#페이징-게시판-컨트롤러" class="headerlink" title="페이징 게시판 컨트롤러"></a>페이징 게시판 컨트롤러</h1><p>컨트롤러는 앞서 말한듯이 get 방식이고 파라미터는 Criteria이다.<br>Criteria에 파라미터가 없을시에 생성자에서 기본값을 셋팅될 것이다.<br>그리고 Criteria을 이용해서 특정 페이지의 게시판 리스트를 조회한다.</p>
-<p>마지막으로 게시판 하단의 페이징을 담당하는 PageMaker를 생성하고 화면에 전달한다.<br>pageMaker의 setTotalCount메소드가 호출되면서 페이징에 필요한 데이터가 생성된다.</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RequestMapping</span>(value = <span class="string">"/listPage"</span>, method = RequestMethod.GET)</span><br><span class="line">	<span class="function"><span class="keyword">public</span> String <span class="title">listPage</span><span class="params">(@ModelAttribute(<span class="string">"cri"</span>)</span> Criteria cri, Model model) <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">		</span><br><span class="line">		logger.info(cri.toString());</span><br><span class="line">		</span><br><span class="line">		model.addAttribute(<span class="string">"list"</span>, service.listCriteria(cri));  <span class="comment">// 게시판의 글 리스트</span></span><br><span class="line">		PageMaker pageMaker = <span class="keyword">new</span> PageMaker();</span><br><span class="line">		pageMaker.setCri(cri);</span><br><span class="line">		pageMaker.setTotalCount(service.listCountCriteria(cri));</span><br><span class="line">		</span><br><span class="line">		model.addAttribute(<span class="string">"pageMaker"</span>, pageMaker);  <span class="comment">// 게시판 하단의 페이징 관련, 이전페이지, 페이지 링크 , 다음 페이지</span></span><br><span class="line">		</span><br><span class="line">		<span class="keyword">return</span> <span class="string">"/samples/board/listPage"</span>;</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
-
-<hr>
-<h1 id="페이징-게시판-화면단"><a href="#페이징-게시판-화면단" class="headerlink" title="페이징 게시판 화면단"></a>페이징 게시판 화면단</h1><p>이 예제의 화면단은 jsp가 아니라 Thymeleaf3 템플릿엔진을 사용한다.<br>따라서 뷰는 html 페이지이다.<br>그리고 부트스트렙 테마를 사용중이라 소스가 좀 길다.</p>
-<p>그 내용은 다음과 같다.</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">xmlns:th</span>=<span class="string">"http://www.thymeleaf.org"</span></span></span><br><span class="line"><span class="tag">	<span class="attr">xmlns:layout</span>=<span class="string">"http://www.ultraq.net.nz/thymeleaf/layout"</span></span></span><br><span class="line"><span class="tag">	<span class="attr">data-layout-decorate</span>=<span class="string">"~&#123;samples/layout/sampleLayout&#125;"</span></span></span><br><span class="line"><span class="tag">	&gt;</span></span><br><span class="line">	</span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">title</span>&gt;</span>게시판예제-페이징<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">th:inline</span>=<span class="string">"javascript"</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="javascript">$(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span></span><br><span class="line">	</span><br><span class="line"><span class="actionscript">	<span class="keyword">var</span> result =<span class="comment">/*[[$&#123;msg&#125;]]*/</span> <span class="string">'default'</span>;</span></span><br><span class="line">	</span><br><span class="line"><span class="actionscript">	<span class="keyword">if</span>(result == <span class="string">'success'</span>)&#123;</span></span><br><span class="line"><span class="actionscript">		alert(<span class="string">"처리가 완료되었습니다. result:"</span> + result);</span></span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">layout:fragment</span>=<span class="string">"content"</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">&lt;!-- Content Wrapper. Contains page content --&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"content-wrapper"</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- Content Header (Page header) --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">section</span> <span class="attr">class</span>=<span class="string">"content-header"</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">h1</span>&gt;</span></span><br><span class="line">        게시판 페이징 적용</span><br><span class="line">        <span class="tag">&lt;<span class="name">small</span>&gt;</span>advanced tables<span class="tag">&lt;/<span class="name">small</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">ol</span> <span class="attr">class</span>=<span class="string">"breadcrumb"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"#"</span>&gt;</span><span class="tag">&lt;<span class="name">i</span> <span class="attr">class</span>=<span class="string">"fa fa-dashboard"</span>&gt;</span><span class="tag">&lt;/<span class="name">i</span>&gt;</span> Home<span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"#"</span>&gt;</span>Tables<span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">li</span> <span class="attr">class</span>=<span class="string">"active"</span>&gt;</span>Data tables<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">ol</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">section</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- Main content --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">section</span> <span class="attr">class</span>=<span class="string">"content"</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"row"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"col-xs-12"</span>&gt;</span></span><br><span class="line"></span><br><span class="line">          <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"box"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"box-header with-border"</span>&gt;</span></span><br><span class="line">              <span class="tag">&lt;<span class="name">h3</span> <span class="attr">class</span>=<span class="string">"box-title"</span>&gt;</span>게시판 + 페이징<span class="tag">&lt;/<span class="name">h3</span>&gt;</span></span><br><span class="line">              </span><br><span class="line">              <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"box-tools"</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"input-group input-group-sm"</span> <span class="attr">style</span>=<span class="string">"width: 150px;"</span>&gt;</span></span><br><span class="line">                  <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">name</span>=<span class="string">"table_search"</span> <span class="attr">class</span>=<span class="string">"form-control pull-right"</span> <span class="attr">placeholder</span>=<span class="string">"Search"</span>&gt;</span></span><br><span class="line"></span><br><span class="line">                  <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"input-group-btn"</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">button</span> <span class="attr">type</span>=<span class="string">"submit"</span> <span class="attr">class</span>=<span class="string">"btn btn-default"</span>&gt;</span><span class="tag">&lt;<span class="name">i</span> <span class="attr">class</span>=<span class="string">"fa fa-search"</span>&gt;</span><span class="tag">&lt;/<span class="name">i</span>&gt;</span><span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line">                  <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">              <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">              </span><br><span class="line">            <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">            <span class="comment">&lt;!-- /.box-header --&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"box-body"</span>&gt;</span></span><br><span class="line">              <span class="tag">&lt;<span class="name">table</span> <span class="attr">class</span>=<span class="string">"table table-bordered"</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">tr</span>&gt;</span></span><br><span class="line">                  <span class="tag">&lt;<span class="name">th</span> <span class="attr">style</span>=<span class="string">"width: 10px"</span>&gt;</span>BNO<span class="tag">&lt;/<span class="name">th</span>&gt;</span></span><br><span class="line">                  <span class="tag">&lt;<span class="name">th</span>&gt;</span>TITLE<span class="tag">&lt;/<span class="name">th</span>&gt;</span></span><br><span class="line">                  <span class="tag">&lt;<span class="name">th</span> <span class="attr">style</span>=<span class="string">"width: 200px"</span>&gt;</span>WRITER<span class="tag">&lt;/<span class="name">th</span>&gt;</span></span><br><span class="line">                  <span class="tag">&lt;<span class="name">th</span> <span class="attr">style</span>=<span class="string">"width: 200px"</span>&gt;</span>REGDATE<span class="tag">&lt;/<span class="name">th</span>&gt;</span></span><br><span class="line">                  <span class="tag">&lt;<span class="name">th</span> <span class="attr">style</span>=<span class="string">"width: 40px"</span>&gt;</span>VIEWCNT<span class="tag">&lt;/<span class="name">th</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">tr</span>&gt;</span></span><br><span class="line">                </span><br><span class="line">                <span class="tag">&lt;<span class="name">tr</span> <span class="attr">th:each</span>=<span class="string">"boardVO : $&#123;list&#125;"</span>&gt;</span></span><br><span class="line">	                  <span class="tag">&lt;<span class="name">td</span> <span class="attr">th:text</span>=<span class="string">"$&#123;boardVO.bno&#125;"</span>&gt;</span>BNO<span class="tag">&lt;/<span class="name">td</span>&gt;</span></span><br><span class="line">	                  <span class="tag">&lt;<span class="name">td</span>&gt;</span><span class="tag">&lt;<span class="name">a</span> <span class="attr">th:href</span>=<span class="string">"@&#123;/samplehome/board/readPage(bno=$&#123;boardVO.bno&#125;,page=$&#123;pageMaker.cri.page&#125;,perPageNum=$&#123;pageMaker.cri.perPageNum&#125;)&#125;"</span> <span class="attr">th:text</span>=<span class="string">"$&#123;boardVO.title&#125;"</span>&gt;</span>TITLE<span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;/<span class="name">td</span>&gt;</span></span><br><span class="line">	                  <span class="tag">&lt;<span class="name">td</span> <span class="attr">th:text</span>=<span class="string">"$&#123;boardVO.writer&#125;"</span>&gt;</span>WRITER<span class="tag">&lt;/<span class="name">td</span>&gt;</span></span><br><span class="line">	                  <span class="tag">&lt;<span class="name">td</span> <span class="attr">th:text</span>=<span class="string">"$&#123;#dates.format(boardVO.regdate, 'yyyy-MM-dd HH:mm')&#125;"</span>&gt;</span>REGDATE<span class="tag">&lt;/<span class="name">td</span>&gt;</span></span><br><span class="line">	                  <span class="tag">&lt;<span class="name">td</span> <span class="attr">th:text</span>=<span class="string">"$&#123;boardVO.viewcnt&#125;"</span>&gt;</span>VIEWCNT<span class="tag">&lt;/<span class="name">td</span>&gt;</span></span><br><span class="line">	             <span class="tag">&lt;/<span class="name">tr</span>&gt;</span></span><br><span class="line">               </span><br><span class="line">              <span class="tag">&lt;/<span class="name">table</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">            <span class="comment">&lt;!-- /.box-body --&gt;</span></span><br><span class="line">            </span><br><span class="line">            <span class="comment">&lt;!-- 게시판 하단의 페이징 버튼 --&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"box-footer clearfix"</span>&gt;</span></span><br><span class="line">              <span class="tag">&lt;<span class="name">ul</span> <span class="attr">class</span>=<span class="string">"pagination pagination-sm no-margin pull-right"</span>&gt;</span></span><br><span class="line">              </span><br><span class="line">              <span class="tag">&lt;<span class="name">li</span> <span class="attr">th:if</span>=<span class="string">"$&#123;pageMaker.prev&#125; == true"</span>&gt;</span></span><br><span class="line">              	<span class="tag">&lt;<span class="name">a</span> <span class="attr">th:href</span>=<span class="string">"@&#123;/samplehome/board/listPage(page=$&#123;pageMaker.startPage&#125;-1,perPageNum=$&#123;pageMaker.cri.perPageNum&#125;)&#125;"</span>&gt;</span><span class="symbol">&amp;laquo;</span><span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line">              <span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">              </span><br><span class="line">              <span class="tag">&lt;<span class="name">li</span> <span class="attr">th:each</span>=<span class="string">"idx,iterStat : $&#123;#numbers.sequence(pageMaker.startPage,pageMaker.endPage)&#125;"</span>  <span class="attr">th:classappend</span>=<span class="string">"$&#123;pageMaker.cri.page&#125; == $&#123;idx&#125; ? active : null"</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">a</span> <span class="attr">th:href</span>=<span class="string">"@&#123;/samplehome/board/listPage(page=$&#123;idx&#125;,perPageNum=$&#123;pageMaker.cri.perPageNum&#125;)&#125;"</span> <span class="attr">th:text</span>=<span class="string">"$&#123;idx&#125;"</span>&gt;</span><span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line">              <span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">                </span><br><span class="line">              <span class="tag">&lt;<span class="name">li</span> <span class="attr">th:if</span>=<span class="string">"$&#123;pageMaker.next&#125; == true and $&#123;pageMaker.endPage &gt; 0&#125;"</span>&gt;</span></span><br><span class="line">              	<span class="tag">&lt;<span class="name">a</span> <span class="attr">th:href</span>=<span class="string">"@&#123;/samplehome/board/listPage(page=$&#123;pageMaker.endPage&#125;+1,perPageNum=$&#123;pageMaker.cri.perPageNum&#125;)&#125;"</span>&gt;</span><span class="symbol">&amp;raquo;</span><span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line">              <span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">              </span><br><span class="line">              <span class="tag">&lt;/<span class="name">ul</span>&gt;</span></span><br><span class="line">              </span><br><span class="line">            <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">          <span class="comment">&lt;!-- /.box --&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!-- /.col --&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">      <span class="comment">&lt;!-- /.row --&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">section</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- /.content --&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">  <span class="comment">&lt;!-- /.content-wrapper --&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p>뷰 단에서 중요한 점을 <strong>첫째는 모든 링크는 get방식의 링크이며, 항상 현재 페이지 정보와 페이지당 보여줄 게시글 개수 데이터를 가지고 다녀야 한다.</strong></p>
-<p>게시판에서 다른페이지로 이동, 다음 페이지로 이동, 글을 읽다가 글 목록으로 나올때 등등 페이지 상태를 유지해야 하기 때문에 이 부분을 유념해야 한다.</p>
-<p>끝!!!!</p>
-
-      
-      
-          
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-
-  
-      
-
-
-  
-  
-  
-  
-
   </div>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/12/"><i class="fa fa-angle-left" aria-label="이전 페이지"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/12/">12</a><span class="page-number current">13</span><a class="page-number" href="/page/14/">14</a><span class="space">&hellip;</span><a class="page-number" href="/page/22/">22</a><a class="extend next" rel="next" href="/page/14/"><i class="fa fa-angle-right" aria-label="다음 페이지"></i></a>
+    <a class="extend prev" rel="prev" href="/page/12/"><i class="fa fa-angle-left" aria-label="이전 페이지"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/12/">12</a><span class="page-number current">13</span><a class="page-number" href="/page/14/">14</a><span class="space">&hellip;</span><a class="page-number" href="/page/23/">23</a><a class="extend next" rel="next" href="/page/14/"><i class="fa fa-angle-right" aria-label="다음 페이지"></i></a>
   </nav>
 
 
@@ -1501,20 +1410,20 @@ gtag('config', 'UA-100596920-1');
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">219</span>
+          <span class="site-state-item-count">221</span>
           <span class="site-state-item-name">포스트</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">38</span>
+        <span class="site-state-item-count">40</span>
         <span class="site-state-item-name">카테고리</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">592</span>
+        <span class="site-state-item-count">596</span>
         <span class="site-state-item-name">태그</span></a>
       </div>
   </nav>

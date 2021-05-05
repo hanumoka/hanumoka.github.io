@@ -245,6 +245,417 @@ gtag('config', 'UA-100596920-1');
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2020/07/11/python-20200711-python-scrapy-selenium/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Hanumoka">
+      <meta itemprop="description" content="아마추어 개발자의 블로그">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hanumoka, IT Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/07/11/python-20200711-python-scrapy-selenium/" class="post-title-link" itemprop="url">Scrapy와 Selenium을 연동하기</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">작성일</span>
+
+              <time title="Post created: 2020-07-11 16:01:34" itemprop="dateCreated datePublished" datetime="2020-07-11T16:01:34+09:00">2020-07-11</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Updated at: 2020-10-17 19:26:38" itemprop="dateModified" datetime="2020-10-17T19:26:38+09:00">2020-10-17</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 20200427hexo_post_head -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h1><p>scrapy만으로는 크롤링 결과물에 동적인 이벤트를 발생해서 그 결과물을 크롤링 할 수 없다.</p>
+<p>따라서 scrapy에서 이런 동적 크롤링을 지원하는 selenium을 연동해서 사용할 필요가 있다.</p>
+<p>이 글은 scrapy로 간단한 프로젝트를 생성하고 seleinum을 연동하여 크롤링하는 예제를 만드는 과정을 기록한다.</p>
+<p>scrapy의 모든 기능을 담고 있지 않다.(item, pipeline)</p>
+<h1 id="실습"><a href="#실습" class="headerlink" title="실습"></a>실습</h1><h2 id="실습환경"><a href="#실습환경" class="headerlink" title="실습환경"></a>실습환경</h2><ul>
+<li>windows 10(64)</li>
+<li>anaconda</li>
+<li>python 3.7</li>
+<li>scrapy</li>
+<li>selenium</li>
+<li>chrome dirver</li>
+<li>pycham</li>
+</ul>
+<h2 id="scrapy-프로젝트-생성"><a href="#scrapy-프로젝트-생성" class="headerlink" title="scrapy 프로젝트 생성"></a>scrapy 프로젝트 생성</h2><p>anaconda 프롬프트에서 다음 명령으로 예제 scrapy 프로젝트를 생성하자.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">scrapy startproject scrapy_with_selenium</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/2020/Scrapy%20Selenium%20921481638b2f47b8addcc35b00f25926/Untitled.png" alt="Scrapy%20Selenium%20921481638b2f47b8addcc35b00f25926/Untitled.png"></p>
+<p>별 오류 없이 명령어가 실행되면, 명령어를 실행한 경로에서 해당 프로젝트라 폴더로 생성된다.</p>
+<p><img src="/images/2020/Scrapy%20Selenium%20921481638b2f47b8addcc35b00f25926/Untitled%201.png" alt="Scrapy%20Selenium%20921481638b2f47b8addcc35b00f25926/Untitled%201.png"></p>
+<p>해당 폴더를 pycham으로 열어보자.</p>
+<p>아래구조와 같이 프로젝트가 생성된다.</p>
+<p><img src="/images/2020/Scrapy%20Selenium%20921481638b2f47b8addcc35b00f25926/Untitled%202.png" alt="Scrapy%20Selenium%20921481638b2f47b8addcc35b00f25926/Untitled%202.png"></p>
+<p>scrapy로 프로젝트를 생성했으니, 실습에 사용할 간단한 spider를 생성하자.</p>
+<p>크롤링할 대상 페이지는 아래와 같다.</p>
+<p><a href="https://auto.naver.com/bike/mainList.nhn" target="_blank" rel="external nofollow noopener noreferrer">https://auto.naver.com/bike/mainList.nhn</a></p>
+<p><img src="/images/2020/Scrapy%20Selenium%20921481638b2f47b8addcc35b00f25926/Untitled%203.png" alt="Scrapy%20Selenium%20921481638b2f47b8addcc35b00f25926/Untitled%203.png"></p>
+<p>네이버의 오토바이 검색 페이지를 크롤링 실습으로 사용해 보겠다.</p>
+<h2 id="spider-생성"><a href="#spider-생성" class="headerlink" title="spider 생성"></a>spider 생성</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">scrapy genspider naverbike auto.naver.com/bike/mainList.nhn</span><br></pre></td></tr></table></figure>
+
+<p>위 명령어로 네이버 오토바이 페이지를 크롤링할 spider를 생성하자.</p>
+<p><img src="/images/2020/Scrapy%20Selenium%20921481638b2f47b8addcc35b00f25926/Untitled%204.png" alt="Scrapy%20Selenium%20921481638b2f47b8addcc35b00f25926/Untitled%204.png"></p>
+<p>명령어를 실행하면 아래처럼 spider 파일이 자동으로 생성된다.</p>
+<p><img src="/images/2020/Scrapy%20Selenium%20921481638b2f47b8addcc35b00f25926/Untitled%205.png" alt="Scrapy%20Selenium%20921481638b2f47b8addcc35b00f25926/Untitled%205.png"></p>
+<p>여기서 기초적일 설정이 필요하다.</p>
+<p>settings.py 파일에서 ROBOTSTXT_OBEY = False로 변경하자.</p>
+<p>해당설정은 웹 서버가 크롤링을 거부해도 강제로 진행하는 옵션이다.</p>
+<p><img src="/images/2020/Scrapy%20Selenium%20921481638b2f47b8addcc35b00f25926/Untitled%206.png" alt="Scrapy%20Selenium%20921481638b2f47b8addcc35b00f25926/Untitled%206.png"></p>
+<p>그리고 앞서 생성한 naverbike.py 라는 스파이더의코드를 아래처럼 수정해주자.</p>
+<p>scrapy 명령으로 생성한 spider 코드의 start_urls 리스트를 보면 url 맨 뒤에 슬래시가 있는데 아래처럼 제거해주자. 아래 이미지를 처럼, xxxxxx/mainList.nhn 으로 맨 뒤에 슬래시가 없어야 정상적으로 크롤링이 될 것이다.</p>
+<p>그리고 parse 메소드에서 reposen.text를 출력해서 크롤링이 재대로 되는지 확인해보자.</p>
+<p><img src="/images/2020/Scrapy%20Selenium%20921481638b2f47b8addcc35b00f25926/Untitled%207.png" alt="Scrapy%20Selenium%20921481638b2f47b8addcc35b00f25926/Untitled%207.png"></p>
+<p>터미널에서 아래 명령어로 해당 spider를 동작시켜 크롤링 결과가 출력되는지 확인해보자</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">scrapy crawl naverbike</span><br></pre></td></tr></table></figure>
+
+<p>아래처럼 크롤링 결과가 정상적으로 출력이 되는 것을 확인 할 수 있다.</p>
+<p><img src="/images/2020/Scrapy%20Selenium%20921481638b2f47b8addcc35b00f25926/Untitled%208.png" alt="Scrapy%20Selenium%20921481638b2f47b8addcc35b00f25926/Untitled%208.png"></p>
+<p>지금 까지 한 작업은 순수하게 scrapy를 사용해서 크롤링을 해본 것이다.</p>
+<p>이제 여기에 selenium을 연동시켜 보자.</p>
+<h1 id="scrapy에-seleinum연동하기"><a href="#scrapy에-seleinum연동하기" class="headerlink" title="scrapy에 seleinum연동하기"></a>scrapy에 seleinum연동하기</h1><p>scrapy에 selenum을 연동하는 것은 생각 보다 간단하다.</p>
+<p>scrapy 프로젝트를 생성할 때 같이 생성된 middleware 라는것에 적용하면 된다</p>
+<p><strong>요약</strong></p>
+<ul>
+<li>download middleware에 selenium설정과 selenium크롤링 코드를 작성한다.</li>
+<li>spider에서 selenium을 설정한 download middleware를 사용한다고 옵션으로 지정해준다.</li>
+<li>해당 spider를 크롤링하게 되면, selenium으로 크롤링 하게 된다.</li>
+</ul>
+<h3 id="scrapy의-middleware란"><a href="#scrapy의-middleware란" class="headerlink" title="scrapy의 middleware란?"></a>scrapy의 middleware란?</h3><p>미들웨어란 보통 흐름, 처리 과정중 중간에 삽입되어 무언가를 처리하는 것을 말하는데, scrapy 의 middleware도 그런 역할이다.</p>
+<p>앞서 생성한 scrapy 프로젝트의 디렉토리를 보면 아래처럼 middleware.py라는 파일이 자동으로 생성되어 있다.</p>
+<p><img src="/images/2020/Scrapy%20Selenium%20921481638b2f47b8addcc35b00f25926/Untitled%209.png" alt="Scrapy%20Selenium%20921481638b2f47b8addcc35b00f25926/Untitled%209.png"></p>
+<p>파일 안을 보면 기본적으로 <strong>프로젝트명SpiderMiddleware</strong>라는 클래스가 있다.</p>
+<p>그리고 좀 아래로 내려가다 보면 <strong>프로젝트명DownloadMiddleware</strong>라는 클래스가 있다.</p>
+<p>이렇게 <strong>SpiderMiddleware</strong>, <strong>DownloadMiddleware</strong>라는 두개의 클래스가 디폴트로 생성된다.</p>
+<p>일단 실습에 앞서 이 미들웨어들에 대해서 간단하게 알아보자.</p>
+<p>scrapy의 미들웨어를 설명하기 전에 scrapy의 동작에 대해서 살짝 맛을 보자.</p>
+<h3 id="scrapy의-동작-과정설명"><a href="#scrapy의-동작-과정설명" class="headerlink" title="scrapy의 동작 과정설명"></a>scrapy의 동작 과정설명</h3><p><img src="/images/2020/Scrapy%20Selenium%20921481638b2f47b8addcc35b00f25926/Untitled%2010.png" alt="Scrapy%20Selenium%20921481638b2f47b8addcc35b00f25926/Untitled%2010.png"></p>
+<p>아래는 document의 원문이다. 내 짧은 영어로 발번역을 첨부한다.</p>
+<ol>
+<li>The <a href="https://docs.scrapy.org/en/latest/topics/architecture.html#component-engine" target="_blank" rel="external nofollow noopener noreferrer">Engine</a> gets the initial Requests to crawl from the <a href="https://docs.scrapy.org/en/latest/topics/architecture.html#component-spiders" target="_blank" rel="external nofollow noopener noreferrer">Spider</a>.<br>[<strong><em>우리가 spider에게 크롤링을 명령하면(ex:scpay crawl naverbike) spider는 Engine에게 request를 보낸다.</em></strong> ]</li>
+<li>The <a href="https://docs.scrapy.org/en/latest/topics/architecture.html#component-engine" target="_blank" rel="external nofollow noopener noreferrer">Engine</a> schedules the Requests in the <a href="https://docs.scrapy.org/en/latest/topics/architecture.html#component-scheduler" target="_blank" rel="external nofollow noopener noreferrer">Scheduler</a> and asks for the next Requests to crawl.<br>[<strong><em>Engine은 spider로 부터 받은 최초의 request를 받아서 scheduler에 전달한다. scheduler는 일종의 크롤링 request를 저장하고 여유가 되면 동작시키는 일종의 이벤트큐와 같은 역할을 하는 것 같다.</em></strong> ]</li>
+<li>The <a href="https://docs.scrapy.org/en/latest/topics/architecture.html#component-scheduler" target="_blank" rel="external nofollow noopener noreferrer">Scheduler</a> returns the next Requests to the <a href="https://docs.scrapy.org/en/latest/topics/architecture.html#component-engine" target="_blank" rel="external nofollow noopener noreferrer">Engine</a>.<br>[<strong><em>Scheduler가 다시 request를 Engine에게 전달한다.</em></strong>]</li>
+<li>The <a href="https://docs.scrapy.org/en/latest/topics/architecture.html#component-engine" target="_blank" rel="external nofollow noopener noreferrer">Engine</a> sends the Requests to the <a href="https://docs.scrapy.org/en/latest/topics/architecture.html#component-downloader" target="_blank" rel="external nofollow noopener noreferrer">Downloader</a>, passing through the <a href="https://docs.scrapy.org/en/latest/topics/architecture.html#component-downloader-middleware" target="_blank" rel="external nofollow noopener noreferrer">Downloader Middlewares</a> (see <strong><code>[process_request()](https://docs.scrapy.org/en/latest/topics/downloader-middleware.html#scrapy.downloadermiddlewares.DownloaderMiddleware.process_request)</code></strong>).<br>[<strong><em>Engine이 Request를 Downloader Middlewares를 거쳐, Downloader에게 전달한다.</em></strong> ]</li>
+<li>Once the page finishes downloading the <a href="https://docs.scrapy.org/en/latest/topics/architecture.html#component-downloader" target="_blank" rel="external nofollow noopener noreferrer">Downloader</a> generates a Response (with that page) and sends it to the Engine, passing through the <a href="https://docs.scrapy.org/en/latest/topics/architecture.html#component-downloader-middleware" target="_blank" rel="external nofollow noopener noreferrer">Downloader Middlewares</a> (see <strong><code>[process_response()](https://docs.scrapy.org/en/latest/topics/downloader-middleware.html#scrapy.downloadermiddlewares.DownloaderMiddleware.process_response)</code></strong>).<br>[<strong><em>Downloader는 크롤링할 웹 페이지를 가져와서 그것을 Response을 생성한다. 그리고 이걸 다시 Downloader Middleware를 거쳐 Engine에게 전달한다.</em></strong>]</li>
+<li>The <a href="https://docs.scrapy.org/en/latest/topics/architecture.html#component-engine" target="_blank" rel="external nofollow noopener noreferrer">Engine</a> receives the Response from the <a href="https://docs.scrapy.org/en/latest/topics/architecture.html#component-downloader" target="_blank" rel="external nofollow noopener noreferrer">Downloader</a> and sends it to the <a href="https://docs.scrapy.org/en/latest/topics/architecture.html#component-spiders" target="_blank" rel="external nofollow noopener noreferrer">Spider</a> for processing, passing through the <a href="https://docs.scrapy.org/en/latest/topics/architecture.html#component-spider-middleware" target="_blank" rel="external nofollow noopener noreferrer">Spider Middleware</a> (see <strong><code>[process_spider_input()](https://docs.scrapy.org/en/latest/topics/spider-middleware.html#scrapy.spidermiddlewares.SpiderMiddleware.process_spider_input)</code></strong>).<br>[<strong><em>Engine이 Downloader로 부터 크롤링의 결과물을 담은 Response를 받는다. 그리고 이걸 다시 Spider Middleware를 거쳐서, Spider에게 보낸다.</em></strong>]</li>
+<li>The <a href="https://docs.scrapy.org/en/latest/topics/architecture.html#component-spiders" target="_blank" rel="external nofollow noopener noreferrer">Spider</a> processes the Response and returns scraped items and new Requests (to follow) to the <a href="https://docs.scrapy.org/en/latest/topics/architecture.html#component-engine" target="_blank" rel="external nofollow noopener noreferrer">Engine</a>, passing through the <a href="https://docs.scrapy.org/en/latest/topics/architecture.html#component-spider-middleware" target="_blank" rel="external nofollow noopener noreferrer">Spider Middleware</a> (see <strong><code>[process_spider_output()](https://docs.scrapy.org/en/latest/topics/spider-middleware.html#scrapy.spidermiddlewares.SpiderMiddleware.process_spider_output)</code></strong>).<br>[<strong><em>Spider는 engine으로 부터 받은 크롤링 결과물 Response를 처리하고, Engine에게 보낼 새로운 Request(새로운 크롤링을 위한)와 추출된 item(크롤링 결과물을 의미있는 데이터 단위로 추출)</em></strong>]</li>
+<li>The <a href="https://docs.scrapy.org/en/latest/topics/architecture.html#component-engine" target="_blank" rel="external nofollow noopener noreferrer">Engine</a> sends processed items to <a href="https://docs.scrapy.org/en/latest/topics/architecture.html#component-pipelines" target="_blank" rel="external nofollow noopener noreferrer">Item Pipelines</a>, then send processed Requests to the <a href="https://docs.scrapy.org/en/latest/topics/architecture.html#component-scheduler" target="_blank" rel="external nofollow noopener noreferrer">Scheduler</a> and asks for possible next Requests to crawl.<br>[<strong><em>Engine은 추출된 아이템(크롤링에서 추출한 데이터)를 item PipeLine에게 보낸다. Pipeline은 크롤링된 데이터를 후반 처리하는 녀석이다. 여기서 일단 크롤링 한번이 완료된 것이다.<br>Engine은 spider에게 받은 Request를 다시 scheduler에제 전달하고 또 다른 크롤링의 절차가 시작된다.</em></strong>]</li>
+<li>The process repeats (from step 1) until there are no more requests from the <a href="https://docs.scrapy.org/en/latest/topics/architecture.html#component-scheduler" target="_blank" rel="external nofollow noopener noreferrer">Scheduler</a>.</li>
+</ol>
+<p>위 scrapy의 크롤링 동작 과정 중 SpiderMiddleware와 DownloadMiddleware가 언급 되었다.</p>
+<p>scrapy에 selenium을 연동하기 위해서는 크롤링할 웹 페이지에서 크롤링 결과를 받아올 때, 크롤링 방법에 개입을 해야 한다. 그 부분이 <strong>Download Middleware</strong> 이다.</p>
+<p>아래 DownloadMiddleware에 selenium 을 적용해보자.</p>
+<p><img src="/images/2020/Scrapy%20Selenium%20921481638b2f47b8addcc35b00f25926/Untitled%2011.png" alt="Scrapy%20Selenium%20921481638b2f47b8addcc35b00f25926/Untitled%2011.png"></p>
+<p>middlewares.py</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> scrapy <span class="keyword">import</span> signals</span><br><span class="line"><span class="keyword">from</span> scrapy.http <span class="keyword">import</span> HtmlResponse</span><br><span class="line"><span class="keyword">from</span> scrapy.utils.python <span class="keyword">import</span> to_bytes</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> selenium <span class="keyword">import</span> webdriver</span><br><span class="line"><span class="keyword">from</span> selenium.webdriver.chrome.options <span class="keyword">import</span> Options</span><br><span class="line"><span class="keyword">from</span> time <span class="keyword">import</span> sleep</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ScrapyWithSeleniumSpiderMiddleware</span><span class="params">(object)</span>:</span></span><br><span class="line"></span><br><span class="line"><span class="meta">    @classmethod</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">from_crawler</span><span class="params">(cls, crawler)</span>:</span></span><br><span class="line">        print(<span class="string">"this is ScrapyWithSeleniumSpiderMiddleware from_crawler ==================="</span>)</span><br><span class="line">        s = cls()</span><br><span class="line">        crawler.signals.connect(s.spider_opened, signal=signals.spider_opened)</span><br><span class="line">        <span class="keyword">return</span> s</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">process_spider_input</span><span class="params">(self, response, spider)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">process_spider_output</span><span class="params">(self, response, result, spider)</span>:</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> result:</span><br><span class="line">            <span class="keyword">yield</span> i</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">process_spider_exception</span><span class="params">(self, response, exception, spider)</span>:</span></span><br><span class="line">        <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">process_start_requests</span><span class="params">(self, start_requests, spider)</span>:</span></span><br><span class="line">        <span class="keyword">for</span> r <span class="keyword">in</span> start_requests:</span><br><span class="line">            <span class="keyword">yield</span> r</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">spider_opened</span><span class="params">(self, spider)</span>:</span></span><br><span class="line">        spider.logger.info(<span class="string">'Spider opened: %s'</span> % spider.name)</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ScrapyWithSeleniumDownloaderMiddleware</span><span class="params">(object)</span>:</span></span><br><span class="line"></span><br><span class="line"><span class="meta">    @classmethod</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">from_crawler</span><span class="params">(cls, crawler)</span>:</span></span><br><span class="line">        print(<span class="string">"this is ScrapyWithSeleniumSpiderMiddleware from_crawler +++++++++++++++++++++++"</span>)</span><br><span class="line">        middleware = cls()</span><br><span class="line">        crawler.signals.connect(middleware.spider_opened, signals.spider_opened)</span><br><span class="line">        crawler.signals.connect(middleware.spider_closed, signals.spider_closed)</span><br><span class="line">        <span class="keyword">return</span> middleware</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">spider_opened</span><span class="params">(self, spider)</span>:</span></span><br><span class="line">        CHROMEDRIVER_PATH = <span class="string">'C:\dev_python\Webdriver\chromedriver.exe'</span></span><br><span class="line">        WINDOW_SIZE = <span class="string">"1920,1080"</span></span><br><span class="line"></span><br><span class="line">        chrome_options = Options()</span><br><span class="line">        <span class="comment"># chrome_options.add_argument("--headless")</span></span><br><span class="line">        chrome_options.add_argument(<span class="string">"--no-sandbox"</span>)</span><br><span class="line">        chrome_options.add_argument(<span class="string">"--disable-gpu"</span>)</span><br><span class="line">        chrome_options.add_argument(<span class="string">f"--window-size=<span class="subst">&#123;WINDOW_SIZE&#125;</span>"</span>)</span><br><span class="line"></span><br><span class="line">        driver = webdriver.Chrome(executable_path=CHROMEDRIVER_PATH, chrome_options=chrome_options)</span><br><span class="line">        self.driver = driver</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">spider_closed</span><span class="params">(self, spider)</span>:</span></span><br><span class="line">        self.driver.close()</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">process_request</span><span class="params">(self, request, spider)</span>:</span></span><br><span class="line">        self.driver.get(request.url)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># scrapy에서 셀레니움을 연동해서 사용할경우. 셀레니움의 동적인 크롤링 코드는 여기 미들웨어에서 작성해야 할것 같다.</span></span><br><span class="line">        <span class="comment"># headless 옵션을 끄고 아래 결과가 동작하는지 보자. 동작을 확인했다.</span></span><br><span class="line">        bikeCompanyAllBtn = self.driver.find_element_by_css_selector(</span><br><span class="line">            <span class="string">"#container &gt; div.spot_main &gt; div.spot_aside &gt; div.tit &gt; a"</span>)</span><br><span class="line">        bikeCompanyAllBtn.click()</span><br><span class="line"></span><br><span class="line">        body = to_bytes(text=self.driver.page_source)</span><br><span class="line">        sleep(<span class="number">5</span>)</span><br><span class="line">        <span class="keyword">return</span> HtmlResponse(url=request.url, body=body, encoding=<span class="string">'utf-8'</span>, request=request)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">process_response</span><span class="params">(self, request, response, spider)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> response</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">process_exception</span><span class="params">(self, request, exception, spider)</span>:</span></span><br><span class="line">        <span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
+
+<p>위 코드에서 ScrapyWithSeleniumDownloaderMiddleware 클래스에 Selenium을 적용하는 코드들이 추가 되었다. ScrapyWithSeleniumSpiderMiddleware는 최초 생성된 상태로 수정하지 않았으니 신경쓰지 않아도 된다.</p>
+<p>ScrapyWithSeleniumDownloaderMiddleware 에서 중점적으로 볼 부분은, <strong>spider_opened</strong>와 <strong>process_request</strong> 메소드이다.</p>
+<ul>
+<li><strong>spider_opened : Selenium의 기초 설정을 한다.</strong></li>
+</ul>
+<p><img src="/images/2020/Scrapy%20Selenium%20921481638b2f47b8addcc35b00f25926/Untitled%2012.png" alt="Scrapy%20Selenium%20921481638b2f47b8addcc35b00f25926/Untitled%2012.png"></p>
+<ul>
+<li><strong>process_request</strong>: Downloader로 받은 크롤링의 결과물을 Selenuim으로 구체적인 크롤링 처리를 한다. 위 예제에서 특정 앵커 태그를 찾아서 click 이벤트를 발생 시켰다.</li>
+</ul>
+<p><img src="/images/2020/Scrapy%20Selenium%20921481638b2f47b8addcc35b00f25926/Untitled%2013.png" alt="Scrapy%20Selenium%20921481638b2f47b8addcc35b00f25926/Untitled%2013.png"></p>
+<p>그리고 아래 부분은 selenium에서 크롤링한 결과물을 바이트로 변환해서 return 하게 된다. 이 결과물은 결과적으로 spider로 보내지게 된다.</p>
+<p><img src="/images/2020/Scrapy%20Selenium%20921481638b2f47b8addcc35b00f25926/Untitled%2014.png" alt="Scrapy%20Selenium%20921481638b2f47b8addcc35b00f25926/Untitled%2014.png"></p>
+<p>spider 코드에서 해당 위의 download middleware를 사용하겠다고 설정을 해주자.</p>
+<p>naverbike.py (spider)</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> scrapy</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">NaverbikeSpider</span><span class="params">(scrapy.Spider)</span>:</span></span><br><span class="line">    name = <span class="string">'naverbike'</span></span><br><span class="line">    allowed_domains = [<span class="string">'auto.naver.com/bike/mainList.nhn'</span>]</span><br><span class="line">    start_urls = [<span class="string">'http://auto.naver.com/bike/mainList.nhn'</span>]</span><br><span class="line">    custom_settings = &#123;</span><br><span class="line">        <span class="string">'DOWNLOADER_MIDDLEWARES'</span>: &#123;</span><br><span class="line">            <span class="string">'scrapy_with_selenium.middlewares.ScrapyWithSeleniumDownloaderMiddleware'</span>: <span class="number">100</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">parse</span><span class="params">(self, response)</span>:</span></span><br><span class="line">        print(response.text)</span><br></pre></td></tr></table></figure>
+
+<p>custom_settings 부분이 DOWNLOADER_MIDDLEWARES를 어떤 것을 사용할지 지정하는 부분이다.</p>
+<p>parse 부분에서는 간단하게 전달받은 respose의 내용물을 출력한다.</p>
+<p><img src="/images/2020/Scrapy%20Selenium%20921481638b2f47b8addcc35b00f25926/Untitled%2015.png" alt="Scrapy%20Selenium%20921481638b2f47b8addcc35b00f25926/Untitled%2015.png"></p>
+<p>scrapy에 selenium을 연동하는 셋팅은 모두 끝이 났다.</p>
+<p>이제 naverbike.py spider로 크롤링을 해보자.</p>
+<p>위 download middleware에 selenium의 동작은 아래와 같다.</p>
+<p>아래 페이지를 일단 크롤링 하고 전체 제조사 엘리멘트를 찾아서 클릭한다.</p>
+<p><img src="/images/2020/Scrapy%20Selenium%20921481638b2f47b8addcc35b00f25926/Untitled%2016.png" alt="Scrapy%20Selenium%20921481638b2f47b8addcc35b00f25926/Untitled%2016.png"></p>
+<p>클릭한 다음에 나오는 페이지가 결론적으로 크롤링 되는 것이다.(아래화면)</p>
+<p><img src="/images/2020/Scrapy%20Selenium%20921481638b2f47b8addcc35b00f25926/Untitled%2017.png" alt="Scrapy%20Selenium%20921481638b2f47b8addcc35b00f25926/Untitled%2017.png"></p>
+<p>scrapy프로젝트에서 터미널에서 아래 명령어를 실행하자.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">scrapy crawl naverbike</span><br></pre></td></tr></table></figure>
+
+<p>아래처럼 selenium이 동작하면서, chrome web driver가 동작하고 크롤링이 진행되는 것을 확인 할 수 있다.(일부로 제대로 동작하는지 확인을 위해 selenium headless 옵션을 제거했다.)</p>
+<p><img src="/images/2020/Scrapy%20Selenium%20921481638b2f47b8addcc35b00f25926/Untitled%2018.png" alt="Scrapy%20Selenium%20921481638b2f47b8addcc35b00f25926/Untitled%2018.png"></p>
+<p>재밌는 점은 크롤링이 종료 되면 자동으로 chrome web dirver창이 종료된다.(selenium에서는 별도의 quit 명령어를 호출하지만, scrapy에서는 그럴 필요가 없었다.)</p>
+<p>끝!!!</p>
+<h1 id="마무리"><a href="#마무리" class="headerlink" title="마무리"></a>마무리</h1><p>scrapy를 정확히 모르는 입장에서, 단순히 scrapy에 selenium을 끼얹어 크롤링을 하는 예제를 만들어 보았다.</p>
+<p>인터넷을 찾아보니 애시당초 scrapy와 selenium을 합쳐서 만든 프로젝트도 있는걸 보니, 그런것들을 활용해보는 것도 좋아 보인다.</p>
+<h1 id="위-예제-소스-github-주소"><a href="#위-예제-소스-github-주소" class="headerlink" title="위 예제 소스 github 주소"></a>위 예제 소스 github 주소</h1><p><a href="https://github.com/blog-examples/scrapy-with-selenium" target="_blank" rel="external nofollow noopener noreferrer">https://github.com/blog-examples/scrapy-with-selenium</a></p>
+<h1 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h1><p><strong>위 예제의 근간</strong></p>
+<p><a href="https://heodolf.tistory.com/13" target="_blank" rel="external nofollow noopener noreferrer">https://heodolf.tistory.com/13</a></p>
+<p><strong>middelware 와 download middelware 의 차이점</strong></p>
+<p><a href="https://stackoverflow.com/questions/17872753/what-is-the-difference-between-scrapys-spider-middleware-and-downloader-middlew" target="_blank" rel="external nofollow noopener noreferrer">https://stackoverflow.com/questions/17872753/what-is-the-difference-between-scrapys-spider-middleware-and-downloader-middlew</a></p>
+<p><strong>scrapy 와 selenium을 연동한 프로젝트가 존재한다.</strong></p>
+<p><a href="https://github.com/clemfromspace/scrapy-selenium" target="_blank" rel="external nofollow noopener noreferrer">https://github.com/clemfromspace/scrapy-selenium</a></p>
+<p><strong>scrapy 아키텍쳐 번역</strong></p>
+<p><a href="http://sooyoung32.github.io/dev/2016/02/06/scrapy-architecture.html" target="_blank" rel="external nofollow noopener noreferrer">http://sooyoung32.github.io/dev/2016/02/06/scrapy-architecture.html</a></p>
+<p><strong>scrapy structure</strong></p>
+<p><a href="https://docs.scrapy.org/en/latest/topics/architecture.html" target="_blank" rel="external nofollow noopener noreferrer">https://docs.scrapy.org/en/latest/topics/architecture.html</a></p>
+
+      
+      
+          
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+      
+
+
+  
+  
+  
+  
+
+        
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2020/07/07/python-20200707-python-scrapy-example/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Hanumoka">
+      <meta itemprop="description" content="아마추어 개발자의 블로그">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hanumoka, IT Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/07/07/python-20200707-python-scrapy-example/" class="post-title-link" itemprop="url">scrapy 크롤링 실습</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">작성일</span>
+
+              <time title="Post created: 2020-07-07 21:31:15" itemprop="dateCreated datePublished" datetime="2020-07-07T21:31:15+09:00">2020-07-07</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Updated at: 2020-07-09 21:37:40" itemprop="dateModified" datetime="2020-07-09T21:37:40+09:00">2020-07-09</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 20200427hexo_post_head -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h1><p>저번에 anaconda에 scrapy를 설치 했었다. (windows와 호환성에 문제가 있는지 좀 고생을 했지만…</p>
+<p>이번엔 scrapy로 간단한 프로젝트를 만들고 크롤링 실습을 해볼까 한다.</p>
+<p>scrapy는 단순한 라이브러리가 아니라, 프레임 워크이다.</p>
+<p>scrapy를 사용하기 위해서는 scrapy 기반 프로젝트를 생성해야 한다.</p>
+<p>프레임워크 답게 cli 명령어로 프로젝트 생성, spider 생성, 크롤링 등을 지원한다.</p>
+<h1 id="실습"><a href="#실습" class="headerlink" title="실습"></a>실습</h1><p>이 실습에서는 scrapy 프로젝트를 생성하고 간단한 spider를 생성해서 크롤링을 진행 하겠다.</p>
+<h2 id="실습환경"><a href="#실습환경" class="headerlink" title="실습환경"></a>실습환경</h2><ul>
+<li>windows10(64)</li>
+<li>anaconda(32)</li>
+<li>conda 버전 4.8.3</li>
+<li>scrapy 버전 1.6.0</li>
+</ul>
+<h2 id="scrapy로-프로젝트를-생성하자"><a href="#scrapy로-프로젝트를-생성하자" class="headerlink" title="scrapy로 프로젝트를 생성하자."></a>scrapy로 프로젝트를 생성하자.</h2><p>일단 conda 프롬프트를 열어서 아래 명령어로 scrapy 프로젝트를 생성한다.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">scrapy startproject scrapy_example</span><br><span class="line">문법: scrapy startproject 프로젝트명</span><br></pre></td></tr></table></figure>
+
+<p>주의 할점은 프로젝트 명으로 하이픈을 사용할 수 없다. (언더바는 사용이 가능)</p>
+<p><img src="/images/2020/scrapy%20952e11b67d354d7689155512461fde77/Untitled.png" alt="scrapy%20952e11b67d354d7689155512461fde77/Untitled.png"></p>
+<p>위처럼 간단하게 scrapy 프로젝트를 생성 할 수 있다.</p>
+<p>프로젝트가 생성되면 파이참으로 해당 프로젝트를 열어보자.</p>
+<p>나는 개발도구로 파이참을 사용하겠다.</p>
+<p>아래처럼 자동으로 프로젝트 폴더구조가 생성된 것을 확인 할 수 있다.</p>
+<p><img src="/images/2020/scrapy%20952e11b67d354d7689155512461fde77/Untitled%201.png" alt="scrapy%20952e11b67d354d7689155512461fde77/Untitled%201.png"></p>
+<p>여기서 잠깐 파이참의 장점을 말하자면, 일반 cmd, gitbash에서는 conda 명령어가 path로 지정되지 않으면 conda 명령어를 사용 할 수 없지만, 파이참에서 인터프리터로 conda를 지정할 경우 파이참의 터미널에서 별도의 path 설정없이 conda 명령을 사용 할 수 있다.</p>
+<p><img src="/images/2020/scrapy%20952e11b67d354d7689155512461fde77/Untitled%202.png" alt="scrapy%20952e11b67d354d7689155512461fde77/Untitled%202.png"></p>
+<p>다시 돌아와서, scrapy로 생성된 프로젝트의 폴더를 살펴보자.</p>
+<p><img src="/images/2020/scrapy%20952e11b67d354d7689155512461fde77/Untitled%203.png" alt="scrapy%20952e11b67d354d7689155512461fde77/Untitled%203.png"></p>
+<p>특의한 점은 프로젝트 루트 경로 아래, 프로젝트명과 동일한 폴더가 하나 더 추가로 생성되고, 그 아래 아래 디렉토리에 scrapy 프레임워크 디렉토리가 자동으로 생성된다.</p>
+<ul>
+<li>spiders 폴더 : spider란 scrapy프레임워크에서 주체적으로 크롤링을 하는 일종의 봇과 같은 ㄴ녀석이다. 예를 들어서 내가 구글을 크롤링하고 싶으면 구글 스파이더를 생성해서 크롤링을 시키고, 또 네이버를 크롤링 하고 싶다면 네이버 스파이더를 생성해서 크롤링을 시키는 구조가 된다.</li>
+<li><strong>init</strong>.py : 엔트리 포인트</li>
+<li>items.py : 크롤링한 데이터 어떻게 정형화 하고 저장할지에 대한 코드.</li>
+<li>middelwares.py : node express 미들웨어처럼 크롤링 과정에서, 다양한 부가기능을 미들웨어라는 형태로 사용한다.</li>
+<li>pipelines.py : 크롤링 이후 검색된 데이터를 어떻게 처리할지 코드.</li>
+<li>settings.py : 프로젝트 설정 파일</li>
+</ul>
+<h2 id="Spider-를-만들자"><a href="#Spider-를-만들자" class="headerlink" title="Spider 를 만들자."></a>Spider 를 만들자.</h2><p>scrapy 에서 크롤링을 하는 실제 크롤러는 이 spider이다.</p>
+<p>테스트로 <a href="https://auto.naver.com/bike/mainList.nhn" target="_blank" rel="external nofollow noopener noreferrer">https://auto.naver.com/bike/mainList.nhn</a> 네이버 바이크 페이지를 크롤링 해도록 하겠다.</p>
+<p><img src="/images/2020/scrapy%20952e11b67d354d7689155512461fde77/Untitled%204.png" alt="scrapy%20952e11b67d354d7689155512461fde77/Untitled%204.png"></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">scrapy genspider naverbike auto.naver.com/bike/mainList.nhn</span><br><span class="line">문법: scrapy genspider 스파이더이름 크롤링할url(http, https 프로토콜은 생략하자)</span><br></pre></td></tr></table></figure>
+
+<p>터미널에서 위 명령어롤 사용해서 naverbike라는 스파이더를 생성하자.</p>
+<p>아래처럼 spiders 폴더에 <a href="http://naverbike.py" target="_blank" rel="external nofollow noopener noreferrer">naverbike.py</a> 라는 파일이 자동으로 생겼다.</p>
+<p><img src="/images/2020/scrapy%20952e11b67d354d7689155512461fde77/Untitled%205.png" alt="scrapy%20952e11b67d354d7689155512461fde77/Untitled%205.png"></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="keyword">import</span> scrapy</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">NaverbikeSpider</span><span class="params">(scrapy.Spider)</span>:</span></span><br><span class="line">    name = <span class="string">'naverbike'</span></span><br><span class="line">    allowed_domains = [<span class="string">'auto.naver.com/bike/mainList.nhn'</span>]</span><br><span class="line">    start_urls = [<span class="string">'http://auto.naver.com/bike/mainList.nhn/'</span>]</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">parse</span><span class="params">(self, response)</span>:</span></span><br><span class="line">        print(response.text)</span><br><span class="line">        <span class="comment"># pass</span></span><br></pre></td></tr></table></figure>
+
+<p>스파이더 소스를 보면 생성할때 입력된 url이 크롤링 대상으로 셋팅이 되어 있다.</p>
+<p>parse 메소드가 실제 해당 스파이더가 동작하면서, 크롤링한 결과를 파싱해주는 메소드이다</p>
+<p>위처럼 기존의 pass를 주석처리하고 print문으로 response.text를 출력하게 코드를 수정하자.</p>
+<p>그리고 다음 명령어로 해당 스파이더를 동작 시키자.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">scrapy crawl naverbike</span><br><span class="line">문법: scrapy crawl 스파이이더명</span><br></pre></td></tr></table></figure>
+
+<p>내가 예상하기로는 해당 웹 페이지의 html 태그들이 주르륵 나와야 되는데 이상한, 로그 정보만 찍힌다.</p>
+<p>내용을 보니 naver의 robot.txt에 의해서 응답을 못 받은것 같다.</p>
+<p><img src="/images/2020/scrapy%20952e11b67d354d7689155512461fde77/Untitled%206.png" alt="scrapy%20952e11b67d354d7689155512461fde77/Untitled%206.png"></p>
+<p><strong>scrapy crawl 명령어 리턴 결과</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line">2020-06-17 21:14:41 [scrapy.utils.log] INFO: Scrapy 1.6.0 started (bot: freerider_crawler)</span><br><span class="line">2020-06-17 21:14:41 [scrapy.utils.log] INFO: Versions: lxml 4.5.0.0, libxml2 2.9.9, cssselect 1.1.0, parsel 1.5.2, w3lib 1.21.0, Twisted 20.3.0, Python 3.7.6 (default, Jan  8 2020, 16:</span><br><span class="line">21:45) [MSC v.1916 32 bit (Intel)], pyOpenSSL 19.1.0 (OpenSSL 1.1.1d  10 Sep 2019), cryptography 2.8, Platform Windows-10-10.0.18362-SP0</span><br><span class="line">2020-06-17 21:14:41 [scrapy.crawler] INFO: Overridden settings: &#123;<span class="string">'BOT_NAME'</span>: <span class="string">'freerider_crawler'</span>, <span class="string">'NEWSPIDER_MODULE'</span>: <span class="string">'freerider_crawler.spiders'</span>, <span class="string">'ROBOTSTXT_OBEY'</span>: True, <span class="string">'SPIDER_MODUL</span></span><br><span class="line"><span class="string">ES'</span>: [<span class="string">'freerider_crawler.spiders'</span>]&#125;</span><br><span class="line">2020-06-17 21:14:41 [scrapy.extensions.telnet] INFO: Telnet Password: 683edf7aaadefaed</span><br><span class="line">2020-06-17 21:14:41 [scrapy.middleware] INFO: Enabled extensions:</span><br><span class="line">[<span class="string">'scrapy.extensions.corestats.CoreStats'</span>,</span><br><span class="line"> <span class="string">'scrapy.extensions.telnet.TelnetConsole'</span>,</span><br><span class="line"> <span class="string">'scrapy.extensions.logstats.LogStats'</span>]</span><br><span class="line">2020-06-17 21:14:41 [scrapy.middleware] INFO: Enabled downloader middlewares:</span><br><span class="line">[<span class="string">'scrapy.downloadermiddlewares.robotstxt.RobotsTxtMiddleware'</span>,</span><br><span class="line"> <span class="string">'scrapy.downloadermiddlewares.httpauth.HttpAuthMiddleware'</span>,</span><br><span class="line"> <span class="string">'scrapy.downloadermiddlewares.downloadtimeout.DownloadTimeoutMiddleware'</span>,</span><br><span class="line"> <span class="string">'scrapy.downloadermiddlewares.defaultheaders.DefaultHeadersMiddleware'</span>,</span><br><span class="line"> <span class="string">'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware'</span>,</span><br><span class="line"> <span class="string">'scrapy.downloadermiddlewares.retry.RetryMiddleware'</span>,</span><br><span class="line"> <span class="string">'scrapy.downloadermiddlewares.redirect.MetaRefreshMiddleware'</span>,</span><br><span class="line"> <span class="string">'scrapy.downloadermiddlewares.httpcompression.HttpCompressionMiddleware'</span>,</span><br><span class="line"> <span class="string">'scrapy.downloadermiddlewares.redirect.RedirectMiddleware'</span>,</span><br><span class="line"> <span class="string">'scrapy.downloadermiddlewares.cookies.CookiesMiddleware'</span>,</span><br><span class="line"> <span class="string">'scrapy.downloadermiddlewares.httpproxy.HttpProxyMiddleware'</span>,</span><br><span class="line"> <span class="string">'scrapy.downloadermiddlewares.stats.DownloaderStats'</span>]</span><br><span class="line">2020-06-17 21:14:41 [scrapy.middleware] INFO: Enabled spider middlewares:</span><br><span class="line">[<span class="string">'scrapy.spidermiddlewares.httperror.HttpErrorMiddleware'</span>,</span><br><span class="line"> <span class="string">'scrapy.spidermiddlewares.offsite.OffsiteMiddleware'</span>,</span><br><span class="line"> <span class="string">'scrapy.spidermiddlewares.referer.RefererMiddleware'</span>,</span><br><span class="line"> <span class="string">'scrapy.spidermiddlewares.urllength.UrlLengthMiddleware'</span>,</span><br><span class="line"> <span class="string">'scrapy.spidermiddlewares.depth.DepthMiddleware'</span>]</span><br><span class="line">2020-06-17 21:14:41 [scrapy.middleware] INFO: Enabled item pipelines:</span><br><span class="line">[]</span><br><span class="line">2020-06-17 21:14:41 [scrapy.core.engine] INFO: Spider opened</span><br><span class="line">2020-06-17 21:14:41 [scrapy.extensions.logstats] INFO: Crawled 0 pages (at 0 pages/min), scraped 0 items (at 0 items/min)</span><br><span class="line">2020-06-17 21:14:41 [scrapy.extensions.telnet] INFO: Telnet console listening on 127.0.0.1:6023</span><br><span class="line">2020-06-17 21:14:42 [scrapy.downloadermiddlewares.redirect] DEBUG: Redirecting (301) to &lt;GET https://auto.naver.com/robots.txt&gt; from &lt;GET http://auto.naver.com/robots.txt&gt;</span><br><span class="line">2020-06-17 21:14:42 [scrapy.core.engine] DEBUG: Crawled (200) &lt;GET https://auto.naver.com/robots.txt&gt; (referer: None)</span><br><span class="line">2020-06-17 21:14:42 [scrapy.downloadermiddlewares.robotstxt] DEBUG: Forbidden by robots.txt: &lt;GET http://auto.naver.com/bike/mainList.nhn/&gt;</span><br><span class="line">2020-06-17 21:14:42 [scrapy.core.engine] INFO: Closing spider (finished)</span><br><span class="line">2020-06-17 21:14:42 [scrapy.statscollectors] INFO: Dumping Scrapy stats:</span><br><span class="line">&#123;<span class="string">'downloader/exception_count'</span>: 1,</span><br><span class="line"> <span class="string">'downloader/exception_type_count/scrapy.exceptions.IgnoreRequest'</span>: 1,</span><br><span class="line"> <span class="string">'downloader/request_bytes'</span>: 446,</span><br><span class="line"> <span class="string">'downloader/request_count'</span>: 2,</span><br><span class="line"> <span class="string">'downloader/request_method_count/GET'</span>: 2,</span><br><span class="line"> <span class="string">'downloader/response_bytes'</span>: 500,</span><br><span class="line"> <span class="string">'downloader/response_count'</span>: 2,</span><br><span class="line"> <span class="string">'downloader/response_status_count/200'</span>: 1,</span><br><span class="line"> <span class="string">'downloader/response_status_count/301'</span>: 1,</span><br><span class="line"> <span class="string">'finish_reason'</span>: <span class="string">'finished'</span>,</span><br><span class="line"> <span class="string">'finish_time'</span>: datetime.datetime(2020, 6, 17, 12, 14, 42, 285564),</span><br><span class="line"> <span class="string">'log_count/DEBUG'</span>: 3,</span><br><span class="line"> <span class="string">'log_count/INFO'</span>: 9,</span><br><span class="line"> <span class="string">'response_received_count'</span>: 1,</span><br><span class="line"> <span class="string">'robotstxt/forbidden'</span>: 1,</span><br><span class="line"> <span class="string">'robotstxt/request_count'</span>: 1,</span><br><span class="line"> <span class="string">'robotstxt/response_count'</span>: 1,</span><br><span class="line"> <span class="string">'robotstxt/response_status_count/200'</span>: 1,</span><br><span class="line"> <span class="string">'scheduler/dequeued'</span>: 1,</span><br><span class="line"> <span class="string">'scheduler/dequeued/memory'</span>: 1,</span><br><span class="line"> <span class="string">'scheduler/enqueued'</span>: 1,</span><br><span class="line"> <span class="string">'scheduler/enqueued/memory'</span>: 1,</span><br><span class="line"> <span class="string">'start_time'</span>: datetime.datetime(2020, 6, 17, 12, 14, 41, 909219)&#125;</span><br><span class="line">2020-06-17 21:14:42 [scrapy.core.engine] INFO: Spider closed (finished)</span><br></pre></td></tr></table></figure>
+
+<p>추축하건데, 아마도 네이버에서 scrapy라는 크롤러의 크롤요청을 파악하고 거부 한듯 하다.</p>
+<p>크롤링 하려는 아래 페이지의 robot.txt 를 확인해보자.</p>
+<p>auto.naver.com/bike/mainList.nhn</p>
+<p>역시 모든 경로가 Disallow 이다.</p>
+<p><img src="/images/2020/scrapy%20952e11b67d354d7689155512461fde77/Untitled%207.png" alt="scrapy%20952e11b67d354d7689155512461fde77/Untitled%207.png"></p>
+<p>어떻게 이것을 무시하고 크롤링 할 수 있을까?</p>
+<h2 id="scrapy로-robot-txt를-무시하고-크롤링-하는-방법"><a href="#scrapy로-robot-txt를-무시하고-크롤링-하는-방법" class="headerlink" title="scrapy로 robot.txt를 무시하고 크롤링 하는 방법"></a>scrapy로 robot.txt를 무시하고 크롤링 하는 방법</h2><p>방법1, 방법2 가 있다 원하는 방법을 골라서 설정 하면된다.</p>
+<p><strong>방법1.</strong> <strong>scrapy crawl 명령시 옵션 추가</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">scrapy crawl --<span class="built_in">set</span>=ROBOTSTXT_OBEY=<span class="string">'False'</span> naverbike</span><br></pre></td></tr></table></figure>
+
+<p><strong>방법2. settings.py 에서 ROBOTSTXT_OBEY 설정을 False로 변경</strong></p>
+<p><img src="/images/2020/scrapy%20952e11b67d354d7689155512461fde77/Untitled%208.png" alt="scrapy%20952e11b67d354d7689155512461fde77/Untitled%208.png"></p>
+<p>방법1을 사용하며 크롤링 할때마다 옵션을 넣어 주어야 하지만, 방법2를 사용하면 프로젝트 전체 설정으로 적용 되기 때문에 <strong>scrapy crawl naverbike</strong> 명령을 사용하면 된다.</p>
+<p>나는 방법 1을 사용해서 다시 크롤링 해 보았다.</p>
+<p>하지만 이상하게 역시 크롤링이 재대로 되지 않았다.</p>
+<p><img src="/images/2020/scrapy%20952e11b67d354d7689155512461fde77/Untitled%209.png" alt="scrapy%20952e11b67d354d7689155512461fde77/Untitled%209.png"></p>
+<p>이 문제 때문에 한참 해맸었는데, 문제는 아래와 같다</p>
+<p>start_urls 맨 뒤에 슬래시가 있는데, 저 슬래시가 문제였다. 슬래시를 지우고 다시 크롤링 해보자.</p>
+<p><img src="/images/2020/scrapy%20952e11b67d354d7689155512461fde77/Untitled%2010.png" alt="scrapy%20952e11b67d354d7689155512461fde77/Untitled%2010.png"></p>
+<p>아래처럼 spider가 정상적으로 크롤링을 하는 것을 확인 할 수 있다.</p>
+<p><img src="/images/2020/scrapy%20952e11b67d354d7689155512461fde77/Untitled%2011.png" alt="scrapy%20952e11b67d354d7689155512461fde77/Untitled%2011.png"></p>
+<p>위처럼 html이 크롤링 되는 것을 터미널에서 확인 할 수 있다.</p>
+<p>음 스파이더가 자동으로 생성해준 코드라서, 설마 start_url의 마지막 슬래시가 크롤링이 안되는 원인이 될 것이라고는 생각조차 하지 못해 한참을 헤맸다.</p>
+<h3 id="scrapy-shell을-이용해서-프롬프트에서-scrapy-크롤링을-할-수도-있다"><a href="#scrapy-shell을-이용해서-프롬프트에서-scrapy-크롤링을-할-수도-있다" class="headerlink" title="scrapy shell을 이용해서 프롬프트에서 scrapy 크롤링을 할 수도 있다."></a>scrapy shell을 이용해서 프롬프트에서 scrapy 크롤링을 할 수도 있다.</h3><p>직접 코딩을 하기전에 테스트용도로 활용하면 좋을 방법이다.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">scrapy shell <span class="string">'https://auto.naver.com/bike/mainList.nhn'</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/2020/scrapy%20952e11b67d354d7689155512461fde77/Untitled%2012.png" alt="scrapy%20952e11b67d354d7689155512461fde77/Untitled%2012.png"></p>
+<p>위처럼 크롤링이 진행되다가 아래처럼 프롬프트가 멈춘다. 해당 부분에서 크롤링한 response를 가지고 shell에서 주피터노트북 처럼 테스트 코드를 작성해서 돌려 볼 수 있다.</p>
+<p>그리고 빨간부분을 보면 해당 scrapy shell에서 호출 가능한 명령어 들을 보여준다.</p>
+<p><img src="/images/2020/scrapy%20952e11b67d354d7689155512461fde77/Untitled%2013.png" alt="scrapy%20952e11b67d354d7689155512461fde77/Untitled%2013.png"></p>
+<p>response 객체를 이용해서 크롤링 된 데이터에 접근 할 수 있다.</p>
+<h3 id="response-객체-사용법"><a href="#response-객체-사용법" class="headerlink" title="response 객체 사용법"></a>response 객체 사용법</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">response.css(css 셀렉터 양식).get()</span><br><span class="line">response.css(<span class="string">'head &gt; title'</span>).get()     <span class="comment"># 하나만 가져오기</span></span><br><span class="line">response.css(<span class="string">'head &gt; title'</span>).getall()  <span class="comment"># 일치하는 거 다 가져오기</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/2020/scrapy%20952e11b67d354d7689155512461fde77/Untitled%2014.png" alt="scrapy%20952e11b67d354d7689155512461fde77/Untitled%2014.png"></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">response.css(<span class="string">'head &gt; title::text'</span>).get()     <span class="comment"># 하나만 가져오기, 태그는 제외</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/2020/scrapy%20952e11b67d354d7689155512461fde77/Untitled%2015.png" alt="scrapy%20952e11b67d354d7689155512461fde77/Untitled%2015.png"></p>
+<p>scrapy shell에서 위처럼 크롤링의 결과물인 response 객체를 이용해서 다양한 방법으로 크롤링 결과물을 간추리는 작업을 테스트 해 볼 수 있다.</p>
+<p>네이버 자동차 바이크 페이지에서 전체 바이크 제조사 정보를 가져오고 싶은데, 마우스 클릭이 필요하다.</p>
+<p>scrapy 만으로는 크롤링한 페이지에 마우스 클릭할 수 없다.</p>
+<p>하지만 scrapy 크롤링 결과물에 셀레니움을 연동해서 처리가 가능해보인다.</p>
+<p><a href="https://stackoverflow.com/questions/36874494/simulating-a-javascript-button-click-with-scrapy" target="_blank" rel="external nofollow noopener noreferrer">https://stackoverflow.com/questions/36874494/simulating-a-javascript-button-click-with-scrapy</a></p>
+<p>끝!!!</p>
+<h1 id="github-예제소스경로"><a href="#github-예제소스경로" class="headerlink" title="github 예제소스경로"></a>github 예제소스경로</h1><p><a href="https://github.com/blog-examples/python-scrapy-startproject/tree/master" target="_blank" rel="external nofollow noopener noreferrer">https://github.com/blog-examples/python-scrapy-startproject/tree/master</a></p>
+
+      
+      
+          
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+      
+
+
+  
+  
+  
+  
+
+        
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
     <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2020/07/06/python-20200706-python-selenium-headless/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1543,387 +1954,11 @@ gtag('config', 'UA-100596920-1');
   
   
 
-        
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
-    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2020/05/21/springBoot-20200521-springboot-thymeleaf-layout-dialect/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Hanumoka">
-      <meta itemprop="description" content="아마추어 개발자의 블로그">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hanumoka, IT Blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/05/21/springBoot-20200521-springboot-thymeleaf-layout-dialect/" class="post-title-link" itemprop="url">Springboot에 thymeleaf-layout-dialect적용하기</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">작성일</span>
-              
-
-              <time title="Post created: 2020-05-21 23:19:44 / Updated at: 23:29:12" itemprop="dateCreated datePublished" datetime="2020-05-21T23:19:44+09:00">2020-05-21</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/springBoot/" itemprop="url" rel="index">
-                    <span itemprop="name">springBoot</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-      <!-- 20200427hexo_post_head -->
-      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
-      <script>
-          (adsbygoogle = window.adsbygoogle || []).push({});
-      </script>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h1><p>springboot 프로젝트에 thymeleaf-layout-dialectt이라는 라이브러리를 사용해서 thymeleaf 템플릿 엔진에 레이아웃을 적용해 보겠다.</p>
-<p>보통 웹 페이지를 만들면 화면을 header, contents, footer 등으로 나누고 header와 footer는 고정한 뒤 contents 영역만 바꿔가면서 렌더링을 해야 한다.</p>
-<p>thymeleaf-layout-dialect 라이브러리가 thymeleaf에서 이런 레이아웃을 가능하게 도와준다.</p>
-<h2 id="주의"><a href="#주의" class="headerlink" title="주의"></a>주의</h2><p><strong>실습 마지막 부분에, 오래된 문법 교체작업이 있다.</strong></p>
-<h2 id="실습환경"><a href="#실습환경" class="headerlink" title="실습환경"></a>실습환경</h2><ul>
-<li>windows10</li>
-<li>intellij comunity</li>
-<li>jdk1.8 <strong>(2020-05-21 기준으로 jdk 1.8을 추천한다.)</strong></li>
-<li>thymeleaf-layout-dialect 2.4.1</li>
-<li>springboot 2.3.0</li>
-<li>gradle</li>
-</ul>
-<h2 id="목표"><a href="#목표" class="headerlink" title="목표"></a>목표</h2><p>아래처럼 header, footer는 고정하고, page url에 따라서 contents 영역만 바뀌게 하는 것이 목표이다.</p>
-<p><img src="/images/2020/Springboot%20thymeleaf%20layout%20dialect%20f1913625c1b946eca3591005c7e07316/Untitled.png" alt="Springboot%20thymeleaf%20layout%20dialect%20f1913625c1b946eca3591005c7e07316/Untitled.png"></p>
-<h1 id="실습"><a href="#실습" class="headerlink" title="실습"></a>실습</h1><h2 id="springboot-프로젝트-만들기"><a href="#springboot-프로젝트-만들기" class="headerlink" title="springboot 프로젝트 만들기"></a>springboot 프로젝트 만들기</h2><p>아래 spring initializr 페이지로 이동해서 springboot 프로젝트를 만들어보자.</p>
-<p><a href="https://start.spring.io/index.html" target="_blank" rel="external nofollow noopener noreferrer">https://start.spring.io/index.html</a></p>
-<p>디펜던시에 Spring Web, Thymeleaf 두개를 추가해주자.</p>
-<p><img src="/images/2020/Springboot%20thymeleaf%20layout%20dialect%20f1913625c1b946eca3591005c7e07316/Untitled%201.png" alt="Springboot%20thymeleaf%20layout%20dialect%20f1913625c1b946eca3591005c7e07316/Untitled%201.png"></p>
-<p>일단 thymeleaf 가 잘 동작하는지 확인해 보기 위해서, HomeContoller를 추가하자.</p>
-<p><strong>HomeController.java</strong></p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> hanumoka.example.springbootthymeleaflayout;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.springframework.stereotype.Controller;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.RequestMapping;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Controller</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HomeController</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@RequestMapping</span>(<span class="string">"/"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">home</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"index"</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><img src="/images/2020/Springboot%20thymeleaf%20layout%20dialect%20f1913625c1b946eca3591005c7e07316/Untitled%202.png" alt="Springboot%20thymeleaf%20layout%20dialect%20f1913625c1b946eca3591005c7e07316/Untitled%202.png"></p>
-<p>앞서 프로젝트 생성시 thymeleaf를 추가했기때문에, 컨트롤러가 리턴하는 String은 프로젝트의 resources/templates 폴더 내부의 html파일과 바인딩이 된다.</p>
-<p>resources/templates 폴더에 index.html 파일을 만들오 내용을 아래처럼 채우자.</p>
-<p><strong>index.html</strong></p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">"en"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"UTF-8"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>springboot thymeleaf layout example<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    index 페이지</span><br><span class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p><img src="/images/2020/Springboot%20thymeleaf%20layout%20dialect%20f1913625c1b946eca3591005c7e07316/Untitled%203.png" alt="Springboot%20thymeleaf%20layout%20dialect%20f1913625c1b946eca3591005c7e07316/Untitled%203.png"></p>
-<p>이제 프로젝트를 기동시켜서 thymeleaf가 잘 동작하는지 확인해보자.</p>
-<p>프로젝트를 기동하고, 브라우저에서 루트 경로로 접속하면 앞서 생성한 index.html 페이지가 렌더링 되는 것을 확인 할 수 있다.</p>
-<p><img src="/images/2020/Springboot%20thymeleaf%20layout%20dialect%20f1913625c1b946eca3591005c7e07316/Untitled%204.png" alt="Springboot%20thymeleaf%20layout%20dialect%20f1913625c1b946eca3591005c7e07316/Untitled%204.png"></p>
-<h2 id="Springboot에-thymeleaf-dialect-layout-라이브러리를-적용해서-thymeleaf-레이아웃을-구성해보자"><a href="#Springboot에-thymeleaf-dialect-layout-라이브러리를-적용해서-thymeleaf-레이아웃을-구성해보자" class="headerlink" title="Springboot에 thymeleaf dialect layout 라이브러리를 적용해서 thymeleaf 레이아웃을 구성해보자."></a>Springboot에 thymeleaf dialect layout 라이브러리를 적용해서 thymeleaf 레이아웃을 구성해보자.</h2><p>메이븐 리파지토리에서 thymeleaf 를 검색해보자.</p>
-<p><a href="https://mvnrepository.com/" target="_blank" rel="external nofollow noopener noreferrer">https://mvnrepository.com/</a></p>
-<p>다섯번째 정도에 Thymeleaf Layout dialect가 보인다.</p>
-<p><img src="/images/2020/Springboot%20thymeleaf%20layout%20dialect%20f1913625c1b946eca3591005c7e07316/Untitled%205.png" alt="Springboot%20thymeleaf%20layout%20dialect%20f1913625c1b946eca3591005c7e07316/Untitled%205.png"></p>
-<p>들어가서 2020-05-21 기준 최신버전인 2.4.1의 gradle 방식의 의존성 스크립트를 복사한다.</p>
-<p><img src="/images/2020/Springboot%20thymeleaf%20layout%20dialect%20f1913625c1b946eca3591005c7e07316/Untitled%206.png" alt="Springboot%20thymeleaf%20layout%20dialect%20f1913625c1b946eca3591005c7e07316/Untitled%206.png"></p>
-<p>프로젝트의 build.gradle에 해당 내용을 추가해준다.</p>
-<p><strong>build.gradle</strong></p>
-<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">plugins &#123;</span><br><span class="line">	id <span class="string">'org.springframework.boot'</span> version <span class="string">'2.3.0.RELEASE'</span></span><br><span class="line">	id <span class="string">'io.spring.dependency-management'</span> version <span class="string">'1.0.9.RELEASE'</span></span><br><span class="line">	id <span class="string">'java'</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">group = <span class="string">'hanumoka.example'</span></span><br><span class="line">version = <span class="string">'0.0.1-SNAPSHOT'</span></span><br><span class="line">sourceCompatibility = <span class="string">'1.8'</span></span><br><span class="line"></span><br><span class="line">repositories &#123;</span><br><span class="line">	mavenCentral()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">dependencies &#123;</span><br><span class="line">	implementation <span class="string">'org.springframework.boot:spring-boot-starter-thymeleaf'</span></span><br><span class="line">	implementation <span class="string">group:</span> <span class="string">'nz.net.ultraq.thymeleaf'</span>, <span class="string">name:</span> <span class="string">'thymeleaf-layout-dialect'</span>, <span class="string">version:</span> <span class="string">'2.4.1'</span></span><br><span class="line">	implementation <span class="string">'org.springframework.boot:spring-boot-starter-web'</span></span><br><span class="line">	testImplementation(<span class="string">'org.springframework.boot:spring-boot-starter-test'</span>) &#123;</span><br><span class="line">		exclude <span class="string">group:</span> <span class="string">'org.junit.vintage'</span>, <span class="string">module:</span> <span class="string">'junit-vintage-engine'</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">test &#123;</span><br><span class="line">	useJUnitPlatform()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><img src="/images/2020/Springboot%20thymeleaf%20layout%20dialect%20f1913625c1b946eca3591005c7e07316/Untitled%207.png" alt="Springboot%20thymeleaf%20layout%20dialect%20f1913625c1b946eca3591005c7e07316/Untitled%207.png"></p>
-<p>gradle에 관해서 잘 모르지만, compile방식은 구식이라 implementation구문으로 변경 했다.</p>
-<blockquote>
-<p>주의, jdk가 1.8보다 높은 경우 thymeleaf-layout-dialect에서 groovy관련 문제가 발생할 수 있다. jdk1.8을 추천한다.</p>
-</blockquote>
-<p><strong>jdk11 + thymeleaf-layout-dialect 2.4.1 적용시 오류 내용</strong></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">WARNING: An inllegal reflective access operation has occurred</span><br><span class="line">WARNING: Illegal reflective access by org.codehaus.groovy.reflection.CachedClass ~</span><br><span class="line">WARNING: Please consider reporting this to the maintainers of org.codehaus.grovy.refleaction.CachedClass</span><br><span class="line">WARNING: Use --illegal-access=warn to <span class="built_in">enable</span> warnings of fucther inllegal reflective access operations</span><br><span class="line">WARNING: All illegal access operations will be denied <span class="keyword">in</span> a future release</span><br><span class="line">WARNING: An inllegal reflective access operation has occurred</span><br></pre></td></tr></table></figure>
-
-<p><img src="/images/2020/Springboot%20thymeleaf%20layout%20dialect%20f1913625c1b946eca3591005c7e07316/Untitled%208.png" alt="Springboot%20thymeleaf%20layout%20dialect%20f1913625c1b946eca3591005c7e07316/Untitled%208.png"></p>
-<p>jdk11에서 위처럼 경고가 나면서, 서버가 동작 될때도 있었고 아닐때도 있었다.</p>
-<p>jdk1.8로 변경 후 문제가 해결되었다.</p>
-<h2 id="thymeleaf-layout-dialect로-thymeleaf-레이아웃-셋팅하기"><a href="#thymeleaf-layout-dialect로-thymeleaf-레이아웃-셋팅하기" class="headerlink" title="thymeleaf-layout-dialect로 thymeleaf 레이아웃 셋팅하기"></a>thymeleaf-layout-dialect<strong>로 thymeleaf 레이아웃 셋팅하기</strong></h2><p>아래처럼 templates폴더 내부에 <strong>fragments</strong>, <strong>layouts</strong>폴더와 html파일들을 만들어주자.</p>
-<p><img src="/images/2020/Springboot%20thymeleaf%20layout%20dialect%20f1913625c1b946eca3591005c7e07316/Untitled%209.png" alt="Springboot%20thymeleaf%20layout%20dialect%20f1913625c1b946eca3591005c7e07316/Untitled%209.png"></p>
-<p><strong>layouts</strong>폴더 내부의 html파일은 말그대로 레이아웃으로 사용할 html 파일이다.</p>
-<p><strong>fragments</strong>폴더 내부의 파일들은 layout파일에서 공통적이며 반복적으로 사용 할 레이아웃 구성요소 html파일들이다.</p>
-<p><strong>templates/layouts/layout.html</strong></p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span></span></span><br><span class="line"><span class="tag">  <span class="attr">lagn</span>=<span class="string">"ko"</span></span></span><br><span class="line"><span class="tag">  <span class="attr">xmlns:th</span>=<span class="string">"http://www.thymeleaf.org"</span></span></span><br><span class="line"><span class="tag">  <span class="attr">xmlns:layout</span>=<span class="string">"http://www.ultraq.net.nz/thymeleaf/layout"</span></span></span><br><span class="line"><span class="tag">&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">head</span> <span class="attr">th:replace</span>=<span class="string">"fragments/config :: configFragment"</span>&gt;</span><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="tag">&lt;<span class="name">header</span> <span class="attr">th:replace</span>=<span class="string">"fragments/header :: headerFragment"</span>&gt;</span><span class="tag">&lt;/<span class="name">header</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">layout:fragment</span>=<span class="string">"content"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="tag">&lt;<span class="name">footer</span> <span class="attr">th:replace</span>=<span class="string">"fragments/footer :: footerFragment"</span>&gt;</span><span class="tag">&lt;/<span class="name">footer</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p>레이아웃 html 페이지에서는 fragments폴더 내부의 html 들을 부속으로 호출한다.</p>
-<p>config, header, footer 들은 레이아웃으 공통 구성 요소이고,</p>
-<p>아래 부분이 실제 page url에 따라 바뀔 부분이다.</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">layout:fragment</span>=<span class="string">"content"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p><strong>templates/fragments/config.html</strong></p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span></span></span><br><span class="line"><span class="tag">  <span class="attr">xmlns:th</span>=<span class="string">"http://www.thymeleaf.org"</span></span></span><br><span class="line"><span class="tag">  <span class="attr">xmlns:layout</span>=<span class="string">"http://www.ultraq.net.nz/thymeleaf/layout"</span></span></span><br><span class="line"><span class="tag">&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">head</span> <span class="attr">th:fragment</span>=<span class="string">"configFragment"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"UTF-8"</span> /&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 공통으로 쓰이는 css파일을넣는다.--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">link</span></span></span><br><span class="line"><span class="tag">      <span class="attr">rel</span>=<span class="string">"stylesheet"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">href</span>=<span class="string">"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"</span></span></span><br><span class="line"><span class="tag">    /&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 컨텐츠페이지의 CSS 영역이 들어감 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">th:block</span> <span class="attr">layout:fragment</span>=<span class="string">"css"</span>&gt;</span><span class="tag">&lt;/<span class="name">th:block</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!-- 공통으로 쓰이는 css파일을넣는다.--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"https://code.jquery.com/jquery-2.2.4.min.js"</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 컨텐츠페이지의 스크립트 영역이 들어감 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">th:block</span> <span class="attr">layout:fragment</span>=<span class="string">"script"</span>&gt;</span><span class="tag">&lt;/<span class="name">th:block</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p>config.html은 렌더링 되는 페이지에서 공통으로 사용할 css, script등을 설정한다.</p>
-<p><strong>아래부분에서 라우팅 될 contents 페이지에 설정된 css, script등을 역으로 받아온다.</strong></p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 컨텐츠페이지의 CSS 영역이 들어감 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">th:block</span> <span class="attr">layout:fragment</span>=<span class="string">"css"</span>&gt;</span><span class="tag">&lt;/<span class="name">th:block</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- 컨텐츠페이지의 스크립트 영역이 들어감 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">th:block</span> <span class="attr">layout:fragment</span>=<span class="string">"script"</span>&gt;</span><span class="tag">&lt;/<span class="name">th:block</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p>위 부분은 나중에 페이지가 동작하는 것을 보고 더 설명 하겠다.</p>
-<p><strong>templates/fragments/header.html</strong></p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">xmlns:th</span>=<span class="string">"http://www.thymeleaf.org"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">header</span> <span class="attr">th:fragment</span>=<span class="string">"headerFragment"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">style</span>=<span class="string">"border: 1px solid green"</span>&gt;</span></span><br><span class="line">      header.html 입니다.</span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">header</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p><strong>templates/fragments/footer.html</strong></p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">xmlns:th</span>=<span class="string">"http://www.thymeleaf.org"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">footer</span> <span class="attr">th:fragment</span>=<span class="string">"footerFragment"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">style</span>=<span class="string">"border: 1px solid gold"</span>&gt;</span></span><br><span class="line">      Footer영역입니다.</span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">footer</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p><strong>templates/index.html(컨텐츠 페이지)</strong></p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span></span></span><br><span class="line"><span class="tag">  <span class="attr">xmlns:th</span>=<span class="string">"http://www.thymeleaf.org"</span></span></span><br><span class="line"><span class="tag">  <span class="attr">xmlns:layout</span>=<span class="string">"http://www.ultraq.net.nz/thymeleaf/layout"</span></span></span><br><span class="line"><span class="tag">  <span class="attr">layout:decorator</span>=<span class="string">"layouts/layout"</span></span></span><br><span class="line"><span class="tag">&gt;</span></span><br><span class="line">  <span class="comment">&lt;!-- index.html 고유 CSS 추가 --&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">th:block</span> <span class="attr">layout:fragment</span>=<span class="string">"css"</span>&gt;</span> <span class="tag">&lt;/<span class="name">th:block</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">&lt;!-- index.html 고유 스크립트 추가 --&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">th:block</span> <span class="attr">layout:fragment</span>=<span class="string">"script"</span>&gt;</span> <span class="tag">&lt;/<span class="name">th:block</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">layout:fragment</span>=<span class="string">"content"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">style</span>=<span class="string">"border: 1px solid red"</span>&gt;</span></span><br><span class="line">      index.html 입니다. 즉 컨텐츠 영역</span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p><strong>templates/hello.html(컨텐츠 페이지)</strong></p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span></span></span><br><span class="line"><span class="tag">  <span class="attr">xmlns:th</span>=<span class="string">"http://www.thymeleaf.org"</span></span></span><br><span class="line"><span class="tag">  <span class="attr">xmlns:layout</span>=<span class="string">"http://www.ultraq.net.nz/thymeleaf/layout"</span></span></span><br><span class="line"><span class="tag">  <span class="attr">layout:decorator</span>=<span class="string">"layouts/layout"</span></span></span><br><span class="line"><span class="tag">&gt;</span></span><br><span class="line">  <span class="comment">&lt;!-- hello.html 고유 CSS 추가 --&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">th:block</span> <span class="attr">layout:fragment</span>=<span class="string">"css"</span>&gt;</span> <span class="tag">&lt;/<span class="name">th:block</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">&lt;!-- hello.html 고유 스크립트 추가 --&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">th:block</span> <span class="attr">layout:fragment</span>=<span class="string">"script"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="actionscript">      alert(<span class="string">"hello.html"</span>);</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">th:block</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">layout:fragment</span>=<span class="string">"content"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">style</span>=<span class="string">"border: 1px solid red"</span>&gt;</span></span><br><span class="line">      hello.html 입니다. 즉 컨텐츠 영역</span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p>index.html, hello.html 은 컨텐츠 페이지다. 대충 코드를 보면 감이 올것이다.</p>
-<p>아래처럼 index.html의 layout:fragment=”content” 영역이 layout.html의 layout:fragment=”content”에 치환되는 방식이다.</p>
-<p><img src="/images/2020/Springboot%20thymeleaf%20layout%20dialect%20f1913625c1b946eca3591005c7e07316/Untitled%2010.png" alt="Springboot%20thymeleaf%20layout%20dialect%20f1913625c1b946eca3591005c7e07316/Untitled%2010.png"></p>
-<p>위에서 fragments/config 부분을 설명하다 말았는데, 여기서 보자</p>
-<p>아래 이미지를 보면 이해가 될 것이다. hello.html 이 렌더링 되면 아래처럼 조립이 된다.</p>
-<p>즉 config.html 파일을 통해서, contents 페이지 고유의 css, script등을 고립 시킬 수 가 있다.</p>
-<p><img src="/images/2020/Springboot%20thymeleaf%20layout%20dialect%20f1913625c1b946eca3591005c7e07316/Untitled%2011.png" alt="Springboot%20thymeleaf%20layout%20dialect%20f1913625c1b946eca3591005c7e07316/Untitled%2011.png"></p>
-<p>hello.html을 리다이렉트 할 메소드도 추가해주자.</p>
-<p><strong>HomeController.java</strong></p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> hanumoka.example.springbootthymeleaflayout;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.springframework.stereotype.Controller;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.RequestMapping;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Controller</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HomeController</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@RequestMapping</span>(<span class="string">"/"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">home</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"index"</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@RequestMapping</span>(<span class="string">"/hello"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">hello</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"hello"</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>java코드는 레이아웃을 적용한다고 해도 딱히 문법적으로 바뀌는 부분이 없다.</p>
-<p>이제 프로젝트를 기동시키고 <a href="http://localhost:8080/" target="_blank" rel="external nofollow noopener noreferrer">http://localhost:8080/</a>, <a href="http://localhost:8080/hello" target="_blank" rel="external nofollow noopener noreferrer">http://localhost:8080/hello</a> 페이지 url 접근해서 제대로 동작하는 지 확인 해보자.</p>
-<p><img src="/images/2020/Springboot%20thymeleaf%20layout%20dialect%20f1913625c1b946eca3591005c7e07316/Untitled%2012.png" alt="Springboot%20thymeleaf%20layout%20dialect%20f1913625c1b946eca3591005c7e07316/Untitled%2012.png"></p>
-<p>hello에서는 javascript 코드인 alert 창이 동작한다.(window.onload 코드를 생략해서 alert이 먼저 동작 했다.)</p>
-<p><img src="/images/2020/Springboot%20thymeleaf%20layout%20dialect%20f1913625c1b946eca3591005c7e07316/Untitled%2013.png" alt="Springboot%20thymeleaf%20layout%20dialect%20f1913625c1b946eca3591005c7e07316/Untitled%2013.png"></p>
-<h2 id="추가"><a href="#추가" class="headerlink" title="추가"></a>추가</h2><p>위 예제로 정상 동작 하지만, 일부 문법이 deprecated 될거라는 WARN이 발생한다.</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">2020</span>-<span class="number">05</span>-<span class="number">21</span> <span class="number">22</span>:<span class="number">28</span>:<span class="number">23.122</span>  WARN <span class="number">15980</span> --- [nio-<span class="number">8080</span>-exec-<span class="number">1</span>] n.n.u.t.decorators.DecoratorProcessor    : The layout:decorator/data-layout-decorator processor has been deprecated and will be removed in the next major version of the layout dialect.  Please use layout:decorate/data-layout-decorate instead to future-proof your code.  See https:<span class="comment">//github.com/ultraq/thymeleaf-layout-dialect/issues/95 for more information.</span></span><br><span class="line"><span class="number">2020</span>-<span class="number">05</span>-<span class="number">21</span> <span class="number">22</span>:<span class="number">28</span>:<span class="number">23.207</span>  WARN <span class="number">15980</span> --- [nio-<span class="number">8080</span>-exec-<span class="number">1</span>] n.n.u.t.expressions.ExpressionProcessor  : Fragment expression <span class="string">"layouts/layout"</span> is being wrapped as a Thymeleaf <span class="number">3</span> <span class="function">fragment <span class="title">expression</span> <span class="params">(~&#123;...&#125;)</span> <span class="keyword">for</span> backwards compatibility purposes.  This wrapping will be dropped in the next major version of the expression processor, so please rewrite as a Thymeleaf 3 fragment expression to future-proof your code.  See https:<span class="comment">//github.com/thymeleaf/thymeleaf/issues/451 for more information.</span></span></span><br><span class="line"><span class="function">2020-05-21 22:28:23.373  WARN 15980 --- [nio-8080-exec-1] n.n.u.t.fragments.FragmentProcessor      : You don't need to put the layout:fragment/data-layout-fragment attribute into the &lt;head&gt; section - the decoration process will automatically copy the &lt;head&gt; section of your content templates into your layout page.</span></span><br></pre></td></tr></table></figure>
-
-<p><img src="/images/2020/Springboot%20thymeleaf%20layout%20dialect%20f1913625c1b946eca3591005c7e07316/Untitled%2014.png" alt="Springboot%20thymeleaf%20layout%20dialect%20f1913625c1b946eca3591005c7e07316/Untitled%2014.png"></p>
-<p>음… 위 예제는 몇 년전에 내가 만든 기준으로 해서 문법 변경이 조금 있었나 보다.</p>
-<p>빠르게 수정해보자.</p>
-<p>일단 기존에 사용하던 config.html 파일을 이제 사용할 필요가 없다.</p>
-<p><strong>layout.html</strong></p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span></span></span><br><span class="line"><span class="tag">  <span class="attr">lagn</span>=<span class="string">"ko"</span></span></span><br><span class="line"><span class="tag">  <span class="attr">xmlns:th</span>=<span class="string">"http://www.thymeleaf.org"</span></span></span><br><span class="line"><span class="tag">  <span class="attr">xmlns:layout</span>=<span class="string">"http://www.ultraq.net.nz/thymeleaf/layout"</span></span></span><br><span class="line"><span class="tag">&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"UTF-8"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">link</span></span></span><br><span class="line"><span class="tag">      <span class="attr">rel</span>=<span class="string">"stylesheet"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">href</span>=<span class="string">"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"</span></span></span><br><span class="line"><span class="tag">    /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"https://code.jquery.com/jquery-2.2.4.min.js"</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="tag">&lt;<span class="name">header</span> <span class="attr">th:replace</span>=<span class="string">"fragments/header :: headerFragment"</span>&gt;</span><span class="tag">&lt;/<span class="name">header</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">layout:fragment</span>=<span class="string">"content"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="tag">&lt;<span class="name">footer</span> <span class="attr">th:replace</span>=<span class="string">"fragments/footer :: footerFragment"</span>&gt;</span><span class="tag">&lt;/<span class="name">footer</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p>fragments/config 부분을 지워주고, config.html에 있던 공통 css, script 등을 layout.html head태그로 옮긴다.</p>
-<p>아래 이미지 처럼 contents.html의 head태그가 렌더링 될 때, 자동으로 layout.html head 태그에 추가 된다.(치환이 아니라 추가 된다.)</p>
-<p><img src="/images/2020/Springboot%20thymeleaf%20layout%20dialect%20f1913625c1b946eca3591005c7e07316/Untitled%2015.png" alt="Springboot%20thymeleaf%20layout%20dialect%20f1913625c1b946eca3591005c7e07316/Untitled%2015.png"></p>
-<p><strong>index.html</strong></p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span></span></span><br><span class="line"><span class="tag">  <span class="attr">xmlns:th</span>=<span class="string">"http://www.thymeleaf.org"</span></span></span><br><span class="line"><span class="tag">  <span class="attr">xmlns:layout</span>=<span class="string">"http://www.ultraq.net.nz/thymeleaf/layout"</span></span></span><br><span class="line"><span class="tag">  <span class="attr">layout:decorate</span>=<span class="string">"~&#123;layouts/layout&#125;"</span></span></span><br><span class="line"><span class="tag">&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--    thymeleaf layout dialect가 contents페이지의 head태그를 layout의 head태그에 자동으로 추가해준다. --&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--    필요힌 css, script 추가영역 --&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">layout:fragment</span>=<span class="string">"content"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">style</span>=<span class="string">"border: 1px solid red"</span>&gt;</span></span><br><span class="line">      index.html 입니다. 즉 컨텐츠 영역</span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p>contents html 페이지에서는 <strong>layout:decorator=”layouts/layout” 설정도 layout:decorate=”~{layouts/layout}” 이렇게 변경 되었다.</strong></p>
-<p>수정하고 확인해보면, 정상동작 아래처럼 잘 동작 한다.</p>
-<p><img src="/images/2020/Springboot%20thymeleaf%20layout%20dialect%20f1913625c1b946eca3591005c7e07316/Untitled%2016.png" alt="Springboot%20thymeleaf%20layout%20dialect%20f1913625c1b946eca3591005c7e07316/Untitled%2016.png"></p>
-<p><strong>끝</strong></p>
-<h1 id="github-소스"><a href="#github-소스" class="headerlink" title="github 소스"></a>github 소스</h1><p><a href="https://github.com/blog-examples/20200520-springboot-tymeleaf-dialect" target="_blank" rel="external nofollow noopener noreferrer">https://github.com/blog-examples/20200520-springboot-tymeleaf-dialect</a></p>
-<h1 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h1><p><a href="https://ultraq.github.io/thymeleaf-layout-dialect/Examples.html#passing-data-to-layouts" target="_blank" rel="external nofollow noopener noreferrer">https://ultraq.github.io/thymeleaf-layout-dialect/Examples.html#passing-data-to-layouts</a></p>
-
-      
-      
-          
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-
-  
-      
-
-
-  
-  
-  
-  
-
-        
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
-    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2020/05/19/security-20200519-make-ssl-crt-for-test-https/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Hanumoka">
-      <meta itemprop="description" content="아마추어 개발자의 블로그">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hanumoka, IT Blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/05/19/security-20200519-make-ssl-crt-for-test-https/" class="post-title-link" itemprop="url">개발시 HTTPS 테스트를 위한 SSL인증서(OpenSSL) 생성하기</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">작성일</span>
-              
-
-              <time title="Post created: 2020-05-19 23:22:25 / Updated at: 23:31:49" itemprop="dateCreated datePublished" datetime="2020-05-19T23:22:25+09:00">2020-05-19</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/security/" itemprop="url" rel="index">
-                    <span itemprop="name">security</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-      <!-- 20200427hexo_post_head -->
-      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
-      <script>
-          (adsbygoogle = window.adsbygoogle || []).push({});
-      </script>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h1><p>이 예제는 Nginx등과 같은 웹서버에 HTTPS를 적용하기 위한 테스트용 SSL 인증서를 생성하는 예제이다.</p>
-<h2 id="실습환경"><a href="#실습환경" class="headerlink" title="실습환경"></a>실습환경</h2><ul>
-<li>Windows10</li>
-<li>OpenSSL</li>
-<li>cmd</li>
-</ul>
-<h1 id="테스트용-HTTPS-인증서-생성하기"><a href="#테스트용-HTTPS-인증서-생성하기" class="headerlink" title="테스트용 HTTPS 인증서 생성하기"></a>테스트용 HTTPS 인증서 생성하기</h1><p>웹서버에 HTTPS를 적용하려면, CA에서 발급하는 SSL인증서가 필요하다.<br>보통 사설업체에 Domain을 기준으로 돈을 주고 인증서를 신청하는데, 지금은 테스트 용이므로 로컬에서 가짜 인증서를 만들어 보자.</p>
-<h2 id="Windows10에-OpenSSL-설치하기"><a href="#Windows10에-OpenSSL-설치하기" class="headerlink" title="Windows10에 OpenSSL 설치하기"></a>Windows10에 OpenSSL 설치하기</h2><p>인증서를 생성하기 위해서는 OpenSSL이라는 툴이 필요하다. 아래 링크해서 해당 툴을 다운 받자.</p>
-<p><a href="https://sourceforge.net/projects/openssl/files/latest/download?source=typ_redirect" target="_blank" rel="external nofollow noopener noreferrer">https://sourceforge.net/projects/openssl/files/latest/download?source=typ_redirect</a></p>
-<p><img src="/images/2020/HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled.png" alt="HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled.png"></p>
-<p>광고를 좀 봐주면서 시간이 지나면, OpenSSL zip파일이 다운로드가 된다.</p>
-<p>아래처럼 zip파일 압축을 풀어주자.</p>
-<p><img src="/images/2020/HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled%201.png" alt="HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled%201.png"></p>
-<p>압축이 풀린 폴더 내부에 bin폴더 내부로 들어가 보면 아래처럼 openssl.exe 파일이 있다.<br>해당 파일을 관리자 권한으로 실행한 cmd로 실행해보자.</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">openssl-1.0.2j-fips-x86_64\OpenSSL\bin\openssl.exe</span><br></pre></td></tr></table></figure>
-
-<p>내 경우 문제가 발생했는데, openssl.exe 실행시 openssl.cnf 파일을 읽어오시 못한다는 경고가 나온다. </p>
-<p><img src="/images/2020/HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled%202.png" alt="HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled%202.png"></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">WARNING: can<span class="string">'t open config file: C:/OpenSSL/openssl.cnf</span></span><br></pre></td></tr></table></figure>
-
-<p>경고 메세지를 보면 OepnSSL 폴더가 C 드라이브 바로 아래에서 읽어 오고 있다.</p>
-<p>따라서 OpenSSL 폴더를 C 드라이브 경로로 옮겨서 다시 실행해보자.</p>
-<p><img src="/images/2020/HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled%203.png" alt="HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled%203.png"></p>
-<p>OpenSSL 폴더를 C 드라이브로 옮겼다.</p>
-<p><img src="/images/2020/HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled%204.png" alt="HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled%204.png"></p>
-<p>C:\OpenSSL\bin\openssl.cnf 파일을 복해서 C:\OpenSSL로 옮겨주자.</p>
-<p><img src="/images/2020/HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled%205.png" alt="HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled%205.png"></p>
-<p>다시 C:\OpenSSL\bin\openssl.exe 파일을 관리자 권한 cmd로 실행해보자.</p>
-<p><img src="/images/2020/HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled%206.png" alt="HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled%206.png"></p>
-<p>아래처럼 정상적으로 openSSL이 실행된다.</p>
-<p><img src="/images/2020/HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled%207.png" alt="HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled%207.png"></p>
-<h2 id="RSA-개인키를-생성하자"><a href="#RSA-개인키를-생성하자" class="headerlink" title="RSA 개인키를 생성하자."></a>RSA 개인키를 생성하자.</h2><p>OpenSSL 커멘드에 아래 명령어를 입력해서 개인키를 생성하자.</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">genrsa -out private.key 2048</span><br></pre></td></tr></table></figure>
-
-<p><img src="/images/2020/HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled%208.png" alt="HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled%208.png"></p>
-<p>아래처럼 openSSL.exe 실행경로에 private.key 파일이 생성된 것을 확인 할 수 있다.</p>
-<p><img src="/images/2020/HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled%209.png" alt="HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled%209.png"></p>
-<p>파일을 열어보면 아래처럼 개인키가 보인다.</p>
-<p>테스트 용도라서 이렇게 노출하지만, 실제 절대 외부로 노출되서는 안되는 개인키 이다.</p>
-<p><img src="/images/2020/HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled%2010.png" alt="HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled%2010.png"></p>
-<h2 id="RSA-개인키를-이용해서-RSA-공개키를-생성하자"><a href="#RSA-개인키를-이용해서-RSA-공개키를-생성하자" class="headerlink" title="RSA 개인키를 이용해서 RSA 공개키를 생성하자."></a>RSA 개인키를 이용해서 RSA 공개키를 생성하자.</h2><p>개인키가 있는 경로에서 아래 명령어를 입력해서 공개키를 생성하자.</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rsa -<span class="keyword">in</span> private.key -pubout -out public.key</span><br></pre></td></tr></table></figure>
-
-<p>아래처럼 public.key 가 생성된다. (이미지에서는 명령어 입력시 오타를 쳐서 파일명이 이상하다.)</p>
-<p><img src="/images/2020/HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled%2011.png" alt="HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled%2011.png"></p>
-<p>공개키 파일을 열어보면 아래와 같다.</p>
-<p><img src="/images/2020/HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled%2012.png" alt="HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled%2012.png"></p>
-<h1 id="CSR-인증요청서-생성하기"><a href="#CSR-인증요청서-생성하기" class="headerlink" title="CSR(인증요청서) 생성하기"></a>CSR(인증요청서) 생성하기</h1><p>CA 인증기관에게 인증서를 받기위한 인증요청서를 생성해야 한다.<br>신청할 때에는 국가코드, 도시, 회사명, 부서명, 이메일, 도메인주소등 다양한 정보를 입력 받게된다.</p>
-<p>이 CSR은 앞서 생성한 RSA 개인키를 이용해서 생성 할 수 있다.</p>
-<p>openSSL커맨드로 아래 명령어를 입력하자.</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">req -new -key private.key -out private.csr</span><br></pre></td></tr></table></figure>
-
-<p><img src="/images/2020/HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled%2013.png" alt="HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled%2013.png"></p>
-<p>아래처럼 국가 코드를 입력하라고 나온다. kr 이라고 입력하고 넘어가면</p>
-<p>아래처럼 추가정보를 입력하라고 주르륵 나온다. 테스트 용이니 대충 입력하고 넘기자.</p>
-<p><img src="/images/2020/HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled%2014.png" alt="HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled%2014.png"></p>
-<p>아래처럼 private.csr 인증 요청서가 생성 되었다.</p>
-<p><img src="/images/2020/HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled%2015.png" alt="HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled%2015.png"></p>
-<h1 id="CRT-인증서-만들기"><a href="#CRT-인증서-만들기" class="headerlink" title="CRT(인증서)만들기"></a>CRT(인증서)만들기</h1><p>이제 인증요청서로 테스트 용도의 가짜 CRT를 만들어보자.</p>
-<h2 id="CA-역할을-할-CA-대칭키-생성"><a href="#CA-역할을-할-CA-대칭키-생성" class="headerlink" title="CA 역할을 할 CA 대칭키 생성"></a>CA 역할을 할 CA 대칭키 생성</h2><p>아래 명령어로 CA역할을 할 CA 대칭키(aes256)를 생성하자.</p>
-<p>(사실 왜 대칭키를 생성하는지 모르겠다.)</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">genrsa -aes256 -out rootCA.key 2048</span><br></pre></td></tr></table></figure>
-
-<p><img src="/images/2020/HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled%2016.png" alt="HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled%2016.png"></p>
-<p>아래처럼 rootCA.key 가 생성 되었다.</p>
-<p><img src="/images/2020/HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled%2017.png" alt="HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled%2017.png"></p>
-<h2 id="rootCA-key를-이용해서-rootCA-pem-생성"><a href="#rootCA-key를-이용해서-rootCA-pem-생성" class="headerlink" title="rootCA.key를 이용해서 rootCA.pem 생성"></a>rootCA.key를 이용해서 rootCA.pem 생성</h2><p>(사실 이녀석도 뭔지 잘 모르겠다.)</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">req -X509 -new -nodes -key rootCA.key -days 2650 -out rootCA.pem</span><br></pre></td></tr></table></figure>
-
-<p><img src="/images/2020/HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled%2018.png" alt="HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled%2018.png"></p>
-<p>비밀번호등 국가코드, 도시 기타 등등 정보를 입력해야 한다.(테스트니 대충 넣자)</p>
-<p>아래처럼 rootCA.pem 파일이 생성된다.</p>
-<p><img src="/images/2020/HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled%2019.png" alt="HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled%2019.png"></p>
-<h2 id="웹서버에-HTTPS적용을-위해-필요한-CRT-인증서를-생성"><a href="#웹서버에-HTTPS적용을-위해-필요한-CRT-인증서를-생성" class="headerlink" title="웹서버에 HTTPS적용을 위해 필요한 CRT 인증서를 생성"></a>웹서버에 HTTPS적용을 위해 필요한 CRT 인증서를 생성</h2><p>이제 마지막으로 CRT를 즉 웹서버에 HTTPS를 적용하기 위한 인증서를 생성해보자.</p>
-<p>아래 명령어를 이용해서 앞서 생성한, 인증 요청서(private.csr) , rootCA.pem, rootCA.key 를 이용해서 웹서버에 등록할 CA 인증서 private.crt 를 생성하자.</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">x509 -req -<span class="keyword">in</span> private.csr -CA rootCA.pem -CAkey rootCA.key -CAcreateserial -out private.crt -days 3650</span><br></pre></td></tr></table></figure>
-
-<p><img src="/images/2020/HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled%2020.png" alt="HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled%2020.png"></p>
-<p>아래처럼 private.crt 파일이 생성되었다. 모양세도 지금까지 생성한 파일과는 좀 다르다.</p>
-<p><img src="/images/2020/HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled%2021.png" alt="HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled%2021.png"></p>
-<p>파일을 열어보면 아래처럼 나온다.</p>
-<p><img src="/images/2020/HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled%2022.png" alt="HTTPS%20SSL%20OpenSSL%2080f6b0d2700149518b84d5d8a5a4509e/Untitled%2022.png"></p>
-<p>실습 끝!!!</p>
-<h1 id="ps"><a href="#ps" class="headerlink" title="ps"></a>ps</h1><p>사실 이런 인증서 부분에 대해 정확히 알지 못해, 실습을 하면서도 다 이해하지 못했다.<br>특히 CA 인증서 생성부분… 시간이 좀 나면 해당 내용을 공부해서 보충 해야 겠다.</p>
-<h1 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h1><p><a href="https://namjackson.tistory.com/24" target="_blank" rel="external nofollow noopener noreferrer">https://namjackson.tistory.com/24</a><br><a href="https://opentutorials.org/course/228/4894" target="_blank" rel="external nofollow noopener noreferrer">https://opentutorials.org/course/228/4894</a></p>
-
-      
-      
-          
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-
-  
-      
-
-
-  
-  
-  
-  
-
   </div>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left" aria-label="이전 페이지"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/22/">22</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right" aria-label="다음 페이지"></i></a>
+    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left" aria-label="이전 페이지"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/23/">23</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right" aria-label="다음 페이지"></i></a>
   </nav>
 
 
@@ -1989,20 +2024,20 @@ gtag('config', 'UA-100596920-1');
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">219</span>
+          <span class="site-state-item-count">221</span>
           <span class="site-state-item-name">포스트</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">38</span>
+        <span class="site-state-item-count">40</span>
         <span class="site-state-item-name">카테고리</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">592</span>
+        <span class="site-state-item-count">596</span>
         <span class="site-state-item-name">태그</span></a>
       </div>
   </nav>

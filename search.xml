@@ -4,6 +4,70 @@
   
     
     <entry>
+      <title>MotorLatte-화면개발용 Next.js 프로젝트 생성</title>
+      <link href="/2021/05/05/toyproject-motorlatte-20210505-2/"/>
+      <url>/2021/05/05/toyproject-motorlatte-20210505-2/</url>
+      
+        <content type="html"><![CDATA[<p>작성일: 2020-05-05(수)</p><p>기타: 휴일, 날씨 맑음</p><p>MotorLatte 화면 단 개발을 위한 Next.js 프로젝트를 생성하자.</p><p>그냥 react cra로 만들어도 될거 같지만, 인프런에서 Next.js 공부하는 김에 Next.js 로 개발해 보기로 했다.</p><p>화면을 담당할 프로젝트 명은 bonneville 이다.</p><p>사용할 도구들은 아마 아래와 같을 것이다.</p><ul><li>WebStorm</li><li>git</li><li>github</li><li>windows terminal</li><li>node</li><li>npm</li></ul><p>일단 프로젝트 폴더를 아래처럼 만들었다.</p><p>motorlatte\ml-bonneville\front</p><p>그리고 해당 위치에 windows terminal로 진입해서 npm init 을 하였다.</p><p><img src="/images/2021/20210505-2/20210505-2-1.png" alt="20210505-2-1.png"></p><p>생성한 폴더를 webstorm으로 열고 필요한 라이브러리를 설치한다.</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm i react react-dom next@9 prop-types</span><br></pre></td></tr></table></figure><p>2021-05-05 현재 Next.js는 10 버전이지만, 보고 있는 인프런 강좌가 9버전이라 9버전으로 진행하였다. </p><p><img src="/images/2021/20210505-2/20210505-2-2.png" alt="20210505-2-2.png"></p><p>의존성 설치가 완료가 되면, front 폴더 내부에 pages 폴더를 생성하고 그 아래 index.js 파일을 생성한다.</p><p>next.js에서 pages 폴더는 중요하다. 절대 다른 이름으로 만들면 안된다.</p><p>next.js에서 pages 폴더를 인식하고 그 내부의 react 컴포넌트 파일들은 인식해서, 라우팅의 대상으로 관리하기 때문이다.</p><p>index.js 파일은 아래의 내용으로 채운다.</p><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">import React from 'react';</span><br><span class="line"></span><br><span class="line">const Home = () =&gt;&#123;</span><br><span class="line">    return (</span><br><span class="line">        &lt;div&gt;</span><br><span class="line">            MotorLatte 개발중</span><br><span class="line">        &lt;/div&gt;</span><br><span class="line">    )</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">export default Home;</span><br></pre></td></tr></table></figure><p><img src="/images/2021/20210505-2/20210505-2-3.png" alt="20210505-2-3.png"></p><p>그리고 package.json 을 조금 수정하자. scripts 부분을 아래로 수정하자.</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"scripts"</span>: &#123;</span><br><span class="line">    <span class="string">"dev"</span> : <span class="string">"next"</span>,</span><br><span class="line">    <span class="string">"build"</span>: <span class="string">"next build"</span></span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure><p><img src="/images/2021/20210505-2/20210505-2-4.png" alt="20210505-2-4.png"></p><p>terminal에서 npm run dev 명령으로 next.js가 동작하는지 확인해보자.</p><p>아 물론 front 폴더 내부에서 실행 해야 한다.</p><p>아래처럼 동작 하는 것을 확인 할 수 있다.</p><p><img src="/images/2021/20210505-2/20210505-2-5.png" alt="20210505-2-5.png"></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> ToyProject </category>
+          
+          <category> MotorLatte </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 토이프로젝트 </tag>
+            
+            <tag> motorlatte </tag>
+            
+            <tag> 개발일지 </tag>
+            
+            <tag> next.js </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>MotorLatte-토이프로젝트 개발일지 시작</title>
+      <link href="/2021/05/05/toyproject-motorlatte-20210505-1/"/>
+      <url>/2021/05/05/toyproject-motorlatte-20210505-1/</url>
+      
+        <content type="html"><![CDATA[<p>작성일: 2020-05-05(수)</p><p>기타: 휴일, 날씨 맑음</p><p>이 글은 토이프로젝트를 개발하면서 작성하는 일지이다.</p><p>가능한한 모든 과정을 기록할 생각이다.</p><p>하지만 일지, 일종의 로그이다 보니 잘못된 지식, 정리되지 않은 내용이라 읽기 어려울 것이다.</p><p>중간중간 따로 중요한 개발방법, 지식, 팁, 오류사항등은 따로 글로 작성할 예정이다.</p><p>원래 작년 10월 부터 생각하던, 토이프로젝트를 5월이 되서야 하는 나란 놈이란…</p><p>아 만들어볼 MotorLatte 토이 프로젝트는 오토바이 검색 포털 사이트이다.</p><p>완성은 할수 있으련지.</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> ToyProject </category>
+          
+          <category> MotorLatte </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 토이프로젝트 </tag>
+            
+            <tag> motorlatte </tag>
+            
+            <tag> 개발일지 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>nextjs + typescript + storybook 프로젝트생성</title>
       <link href="/2021/04/24/react-20210424-nextjs-typescript-storybook/"/>
       <url>/2021/04/24/react-20210424-nextjs-typescript-storybook/</url>

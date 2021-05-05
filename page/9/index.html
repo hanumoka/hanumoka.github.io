@@ -245,6 +245,235 @@ gtag('config', 'UA-100596920-1');
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2018/12/03/java-20181203-java8-interface-public-default-static/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Hanumoka">
+      <meta itemprop="description" content="아마추어 개발자의 블로그">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hanumoka, IT Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2018/12/03/java-20181203-java8-interface-public-default-static/" class="post-title-link" itemprop="url">java8 interface의 public default, public static 메소드(default메소드와 접근제어자 혼동)</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">작성일</span>
+
+              <time title="Post created: 2018-12-03 03:20:47" itemprop="dateCreated datePublished" datetime="2018-12-03T03:20:47+09:00">2018-12-03</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Updated at: 2020-04-16 01:50:11" itemprop="dateModified" datetime="2020-04-16T01:50:11+09:00">2020-04-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/java/" itemprop="url" rel="index">
+                    <span itemprop="name">java</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 20200427hexo_post_head -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h1><p>아! 자과감 들고 괴로워…<br>이 글은 java8의 interface의 public default 메소드를 보며 햇갈렸던 내용을 정리한다.</p>
+<h1 id="Java8의-public-default와-public-static-메소드"><a href="#Java8의-public-default와-public-static-메소드" class="headerlink" title="Java8의 public default와 public static 메소드"></a>Java8의 public default와 public static 메소드</h1><p>Java8에서 확장성을 위해 Interface에 default, static 메소드라는 것을 추가했다.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">testInterface</span></span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="comment">//상수</span></span><br><span class="line">  타입 상수명 = 값;</span><br><span class="line">  <span class="comment">//추상메소드 </span></span><br><span class="line">  타입 메소드명(매개변수,...);</span><br><span class="line">  </span><br><span class="line">  <span class="comment">//디폴트 메소드</span></span><br><span class="line">  <span class="keyword">default</span> 타입 메소드명(매개변수,...)&#123;</span><br><span class="line">    ...</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">//정적 메소드</span></span><br><span class="line">  <span class="keyword">static</span> 타입 메소드명(매개변수,...)&#123;</span><br><span class="line">    ....</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>디폴트 메소드는 인터페이스를 구현한 객체에서 호출할수 있으며, 정적메소드는 인터페이스명으로 접근하여 호출할수 있다.<br>직관 적이며 간단하다.</p>
+<p>그런데 자바 책을 복습겸 책을 뒤적이다보니, 이런 설명을 보았다.</p>
+<ul>
+<li>인터페이스의 디폴트 메소드는 public 특성을 갖기 때문에 public을 생략하더라도 자동적으로 컴파일 과정에서 붙게 된다.</li>
+<li>인터페이스의 정적 메소드는 public 특성을 갖기 때문에 public을 생략하더라도 자동적으로 컴파일 과정에서 붙게 된다.</li>
+</ul>
+<p>즉 컴파일 될때 아래처럼 public 접근제어자가 추가된다는 것이다.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">testInterface</span></span>&#123;</span><br><span class="line"></span><br><span class="line">  ...</span><br><span class="line">  </span><br><span class="line">  <span class="comment">//디폴트 메소드</span></span><br><span class="line">  [<span class="keyword">public</span>] <span class="keyword">default</span> 타입 메소드명(매개변수,...)&#123;</span><br><span class="line">    ...</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">//정적 메소드</span></span><br><span class="line">  [<span class="keyword">public</span>] <span class="keyword">static</span> 타입 메소드명(매개변수,...)&#123;</span><br><span class="line">    ....</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>원래 java의 interface의 메소드는 기본적으로 public 접근 제한을 갖고, 인터페이스를 구현하는 클래스는 public 보다 낮은 접근 제한으로 작성할수 없다.</strong><br>따라서 당연한 소리일 것이다.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">TestIn</span> </span>&#123;</span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">default</span> String <span class="title">fn1</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="string">"디폴트 메소드"</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">fn2</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="string">"정적 메소드"</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">public</span> String <span class="title">fn3</span><span class="params">()</span></span>;</span><br><span class="line">		</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>위처럼 직접 타이핑으로 public default 메소드를 인터페이스에 선언할 수도 있다.</p>
+<p><strong>여기가 내가 햇갈린 부분인데, java의 접근제어자 default와 java8의 interface내부에 선언된 default 메소드이다.</strong><br>나는 위 코드를 보고, fn1메소드는 public 접근제어자와 default 접근제어자를 중복으로 갖는것인가? 라고 착각했다.</p>
+<p>아이고 copy &amp; paste만 하다보니, 확실히 감이 떨어졌다.</p>
+<h1 id="결론"><a href="#결론" class="headerlink" title="결론"></a>결론</h1><ul>
+<li><p>interface에 선언된 default라는 키워드는 접근제어자가 아니고, default method를 선언하기 위한 키워드이다.</p>
+</li>
+<li><p>그리고 default 접근제어자는 사실 default 키워드로 명시하지 않으며, 또한 어떠한 접근제어자 키워드도 사용하지 않는다.</p>
+</li>
+</ul>
+<p><strong>default 접근제어 클래스</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test2</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> String <span class="title">fn1</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="string">"메소드"</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//디폴트 클래스</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Test3</span></span>&#123;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>클래스의 default 필드</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">//디폴트 클래스</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Test3</span></span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="comment">//디폴트 접근제어 멤버변수</span></span><br><span class="line">  String name;</span><br><span class="line"></span><br><span class="line">  <span class="comment">//디폴트 접근제어 메소드</span></span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">doSomething</span><span class="params">()</span></span>&#123;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="마무리"><a href="#마무리" class="headerlink" title="마무리"></a>마무리</h1><p>아이고, 아는것보다 모르는게 점점 많아지는 것은 기분탓이겠지.</p>
+
+      
+      
+          
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+      
+
+
+  
+  
+  
+  
+
+        
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2018/12/02/jquery-20181202-jquery-noConflict/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Hanumoka">
+      <meta itemprop="description" content="아마추어 개발자의 블로그">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hanumoka, IT Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2018/12/02/jquery-20181202-jquery-noConflict/" class="post-title-link" itemprop="url">jquery noConflict</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">작성일</span>
+
+              <time title="Post created: 2018-12-02 12:19:08" itemprop="dateCreated datePublished" datetime="2018-12-02T12:19:08+09:00">2018-12-02</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Updated at: 2020-04-16 01:50:12" itemprop="dateModified" datetime="2020-04-16T01:50:12+09:00">2020-04-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/jquery/" itemprop="url" rel="index">
+                    <span itemprop="name">jquery</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 20200427hexo_post_head -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h1><p>인터넷에서 MIT 라이센스의 bootstrap 테마를 조물락 거리는 중.</p>
+<p>Jquery의 $ 별칭이 동작을 안하는 경우가 있었다.</p>
+<p>찾아보니 Jquery의 noConflict라는 기능이었다.</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">$.noConflict();</span><br><span class="line"></span><br><span class="line">jQuery(<span class="built_in">document</span>).ready(<span class="function"><span class="keyword">function</span>(<span class="params">$</span>) </span>&#123;</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>bootstrap 테마의 main.js를 보니 위처럼 전역에 $.noConflict 라는 것이 호출되어 있었고, jquery를 사용할 때 별칭 대신 JQuery키워드로 되어 있었다.</p>
+<h1 id="Jquery의-noConflcit"><a href="#Jquery의-noConflcit" class="headerlink" title="Jquery의 noConflcit"></a>Jquery의 noConflcit</h1><p>Jquery 라이브러리를 포함해서 다른 자바스크립트 라이브러리에서도 $라는 특수문자를 함수 또는 변수명으로 사용한다.<br>Jquery에서 $ 특수문자는 JQuery의 별칭으로, 별다른 기능이 없다.<br>따라서 Jquery와 다른 기타 javascript 라이브러리를 사용할 경우, $ 특수문자의 충돌을 대비해서 Jquery에서 $ 특수문자 사용권한을 다른 라이브러리에 위힘하는 것이<br>$.noConflcit 이다.</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"other_lib.js"</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"jquery.js"</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="javascript">$.noConflict();</span></span><br><span class="line"><span class="javascript">jQuery( <span class="built_in">document</span> ).ready(<span class="function"><span class="keyword">function</span>(<span class="params"> $ </span>) </span>&#123;</span></span><br><span class="line"><span class="actionscript">  <span class="comment">// Code that uses jQuery's $ can follow here.</span></span></span><br><span class="line">&#125;);</span><br><span class="line"><span class="actionscript"><span class="comment">// Code that uses other library's $ can follow here.</span></span></span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>위 처럼 Jquery와 다른 javascript를 동시에 사용할 경우, 만약 other_lib.js가 $ 특수문자를 내부적으로 사용할 경우, Jquery에서 $사용 권한을 포기할 필요가 있다.<br>위 처럼 전역 스코프에서 $.noConflict 메소드를 호출하여 권한을 포기하면 other_lib.js에서 $ 특수문자를 사용할 수 있다.<br>다만 위처럼 Jquery.ready 내부에서 $를 사용할수 있기는 하지만, 이 경우 $ 특수문자가 어디 라이브러리에 속해있는지 햇갈릴수 있어서 별로인 방법같다.</p>
+<h1 id="Jquery-두가지-버전을-같이-사용할-경우-noConflict"><a href="#Jquery-두가지-버전을-같이-사용할-경우-noConflict" class="headerlink" title="Jquery 두가지 버전을 같이 사용할 경우 noConflict"></a>Jquery 두가지 버전을 같이 사용할 경우 noConflict</h1><p>이런 상황이 있는지는 모르겠으나, 두가지 버전의 Jquery를 동시에 사용해야 할 경우 noConflict를 통해 Jquery 버전을 구별해서 코딩 할 수 있다.</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!doctype <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">"en"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"utf-8"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">title</span>&gt;</span>jQuery.noConflict demo<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"https://code.jquery.com/jquery-1.10.2.js"</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line"> </span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"log"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">h3</span>&gt;</span>Before $.noConflict(true)<span class="tag">&lt;/<span class="name">h3</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"https://code.jquery.com/jquery-1.6.2.js"</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"> </span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="javascript"><span class="keyword">var</span> $log = $( <span class="string">"#log"</span> );</span></span><br><span class="line"> </span><br><span class="line"><span class="javascript">$log.append( <span class="string">"2nd loaded jQuery version ($): "</span> + $.fn.jquery + <span class="string">"&lt;br&gt;"</span> );</span></span><br><span class="line"> </span><br><span class="line"><span class="actionscript"><span class="comment">// Restore globally scoped jQuery variables to the first version loaded</span></span></span><br><span class="line"><span class="actionscript"><span class="comment">// (the newer version)</span></span></span><br><span class="line"> </span><br><span class="line"><span class="actionscript">jq162 = jQuery.noConflict( <span class="literal">true</span> );</span></span><br><span class="line"> </span><br><span class="line"><span class="handlebars"><span class="xml">$log.append( "<span class="tag">&lt;<span class="name">h3</span>&gt;</span>After $.noConflict(true)<span class="tag">&lt;/<span class="name">h3</span>&gt;</span>" );</span></span></span><br><span class="line"><span class="javascript">$log.append( <span class="string">"1st loaded jQuery version ($): "</span> + $.fn.jquery + <span class="string">"&lt;br&gt;"</span> );</span></span><br><span class="line"><span class="actionscript">$log.append( <span class="string">"2nd loaded jQuery version (jq162): "</span> + jq162.fn.jquery + <span class="string">"&lt;br&gt;"</span> );</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"> </span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>위 소스를 보면 두개의 Jquery 라이브러리를 동시에 load해서 사용하고 있다.<br>마지막으로 load된 1.6.2 버전의 Jquery가 뒤에 로드가 되었기 때문에 Jquery에 대한 </p>
+<h1 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h1><p><a href="https://www.codingfactory.net/10795" target="_blank" rel="external nofollow noopener noreferrer">https://www.codingfactory.net/10795</a><br><a href="https://api.jquery.com/jquery.noconflict/" target="_blank" rel="external nofollow noopener noreferrer">https://api.jquery.com/jquery.noconflict/</a></p>
+<p>많은 자바스크립트 라이브러리들은 사용한다 $ 를 함수 또는 변수명으로, Jquery 에서 하는 것 처럼.<br>Jquery 경우에는, $ 는 Jquery의 별칭일 뿐이다.<br>따라서 모든 기능은 $ 별칭 없이 유효하다.<br>만약 당신이 또다른 자바스크립트 라이브러리 를 사용하길 원한다면 Jquery와 같이,<br>$ 키워드의 사용권한을 다른 라이브러리로 되돌려라. $.noConfilct() 를 호출함으로써<br>Jquery가 초기화 하는 동안 $의 old refereces 들은 저장된다.<br>noconfilct()는 간단히 그것들을 원복 시킨다.</p>
+<p>만약 몇가지 이유 때문에 Jquery  두 버전을 로드했을 경우, 두번째 제이쿼리 버전에서 $.noConflict(true)를 호출하는 것은 return 할 것이다.<br>the globally scoped jQuery variables 를 첫번째 제이쿼리의 버전에게</p>
+
+      
+      
+          
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+      
+
+
+  
+  
+  
+  
+
+        
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
     <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2018/12/02/java-20181202-java-int-add-overflow/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1595,237 +1824,11 @@ gtag('config', 'UA-100596920-1');
   
   
 
-        
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
-    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2018/11/16/docker-20181116-docker-docker-basic/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Hanumoka">
-      <meta itemprop="description" content="아마추어 개발자의 블로그">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hanumoka, IT Blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2018/11/16/docker-20181116-docker-docker-basic/" class="post-title-link" itemprop="url">Docker 개념정리</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">작성일</span>
-
-              <time title="Post created: 2018-11-16 11:18:21" itemprop="dateCreated datePublished" datetime="2018-11-16T11:18:21+09:00">2018-11-16</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Updated at: 2020-04-16 01:50:11" itemprop="dateModified" datetime="2020-04-16T01:50:11+09:00">2020-04-16</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/docker/" itemprop="url" rel="index">
-                    <span itemprop="name">docker</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-      <!-- 20200427hexo_post_head -->
-      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
-      <script>
-          (adsbygoogle = window.adsbygoogle || []).push({});
-      </script>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h1><p>서버관리나 엔지니어일을 해보지 않았지만, 웹 개발자 입장에서도 이 Docker라는건 상당히 흥미로워 보인다.</p>
-<p>서버 운용에서의 Docker를 제외하더라도, 프로그래밍 개발할때 공용 개발환경과 같은 환경을 구성하기에 아주 요긴하게 사용될수 있을것 같다.</p>
-<p>공부중이라 잘은 모르지만, 조금이라도 공부한 것들을 쉽게 잊지 않기위해 글을 남긴다.</p>
-<h1 id="Docker란"><a href="#Docker란" class="headerlink" title="Docker란"></a>Docker란</h1><p><strong>Docker란 어플리케이션 프로세스를 독립적으로 실행시킬 수 있는 리눅스 컨테이너 환경이다.</strong></p>
-<p><img src="/images/util/docker-logo.jpg" alt="도커로고"></p>
-<p>위 Docker로고에서 저 고래가 Docker = Docker 엔진이고, 고래 등의 컨테이너 하나하나가 하나의 리눅스 컨테이너이다.</p>
-<p>Docker가 무엇인지 대략적인 감을 잡으려면 기존의 가상머신 환경과 도커환경을 비교해 보는것이 가장 빠르다.</p>
-<p><img src="/images/20181116-docker-docker-basic_1.png" alt="가상머신과 도커의 구조비교"></p>
-<p>Docker Engine이 Hypervisor와 Guest OS를 대신한다. 음 아니다. 대신한다고 말하면 안되고 <strong>Hypervisor와 Guest OS가 필요 없게 만들어준다.</strong></p>
-<p>기존의 가상화 환경을 예로들어 호스트 OS로 CentOS, 그 위에 GuestOS로 CentOS, 그리고 이 GuestOS에 Tomcat서버를 설치해서 서비스를 한다고 가정해보자.</p>
-<p>저 중간의 GuestOS가 있음으로 인해서 장점은 GusetOS이미지로 서비스를 관리 하기때문에 HostOS와 독립적으로 이미지를 관리하여, 운영 및 유지보수에 용이하다는 점이다.</p>
-<p>서버의 HostOS를 변경하면 GuestOS이미지를 떠서 백업하고 복구하면 그만인 것이다.</p>
-<p>단점은,Guest OS전체를 가상화 해야 하기때문에 HostOS의 리소스를 GuestOS 가상화 구현에 많이 소모한다는 것이다. 그리고 이미지를 이식하기 위해서는 GuestOS가 포함되어 거대해진 용량의 이미지를 사용하게 된다.</p>
-<p>Docker는 자바의 JVM과 비슷한 역할을 담당한다.</p>
-<p>Docker는 Tomcat(리눅그 컨테이너)이 실행할수 있는 환경을 GuestOS대신 제공한다. 거기다 HostOS와 완벽히 분리된!</p>
-<p>Tomcat이 실행하기 위한 커널 리소스 자원(CPU,메모리,디스크 등등)은 Docker가 대신 HostOS의 커널을 공유하여 제공한다.</p>
-<p>이런 Docker의 아이디어는 새로운 아이디어가 아니다.<br>LXC(리눅스 컨테이너)라고 해서 이미 기존에 있던 기술이었고, Docker는 이것의 발전된 형태라고 보인다.</p>
-<h1 id="Docker의-특징"><a href="#Docker의-특징" class="headerlink" title="Docker의 특징"></a>Docker의 특징</h1><ul>
-<li><p>기존의 가상머신과 달리 도커 컨테이너는 성능의 손실이 거의 없어서, 차세대 클라우드 인프라 솔루션으로 주목받고 있다.</p>
-</li>
-<li><p>Go 언어로 만들어진 오픈소스 프로젝트이다. 기업용 유료 EE버전과 CE 무료버전이 존재한다.</p>
-</li>
-<li><p>도커의 핵심 프로젝트인 도커 엔진과 더불어 도커 컴포즈(Docker Compose), 레지스트리(Private Registry), 도커머신(Docker Machine), Kitematic등 다양한 부가 프로젝트가 존재한다.</p>
-</li>
-<li><p>이미지 공용 리파지토리인 Docker hub를 통해 Image를 다운받거나 공유할수 있다.</p>
-</li>
-<li><p>리눅스 컨테이너 환경이라 리눅스에 최적화 되어있지만, 2018요즘 Windows와 Mac에서도 Docker를 지원한다.</p>
-</li>
-</ul>
-<h1 id="Docker-이미지와-컨테이너"><a href="#Docker-이미지와-컨테이너" class="headerlink" title="Docker 이미지와 컨테이너"></a>Docker 이미지와 컨테이너</h1><p>Docker에서는 서비스를 이미지로 관리한다.</p>
-<p>이 이미지란 일종의 설치파일과 같다. Docker에 Ubuntu를 실행하고 싶다면 Ubuntu 이미지를 docker 허브에서 다운 받아오면 된다.</p>
-<p>이 이미지에는 실행해야할 서비스관련 파일과 그 서비스가 동작하기 위해서 필요한 라이브리러를 포함하고 있다.</p>
-<p>그리고 이 이미지로 컨테이너라는 것을 생성 할수 있다.</p>
-<p>이 컨테이너는 이미지로 설치된 실제 동작이 가능한 서비스라고 보면 된다.</p>
-<p>이미지로 컨테이너를 생성하면 해당 이미지의 목적에 맞는 파일이 들어 있는 파일시스템과 격리된 시스템 자원 및 네트워크를 사용할 수 있는 독립된 공간이 생성되고, 이것이 바로 도커 컨테이너이다.</p>
-<p>컨테이너는 이미지를 읽기 전용으로 사용하되 이미지에서 변경된 사항만 컨테이너 계층에 저장한다.</p>
-<p>따라서 컨테이너의 작업은 원본 이미지에게 영향을 주지 않으며, 생성된 각 컨테이너는 각기 독립된 파일시스템을 도커엔진으로부터 제공받아 완벽하게 호스트OS와 분리되게 된다.</p>
-<p>도커엔진에 의해 효과적으로 HostOS의 자원을 사용하고, HostOs와 완벽히 격리된 환경에서 컨테이너 단위로 서비스를 실행할수 있기 때문에 서비스의 관리, 확장, 공유, 유지보수등이 용이하다.</p>
-<h1 id="마무리"><a href="#마무리" class="headerlink" title="마무리"></a>마무리</h1><p>Docker는 개념과 명령어만 알면 아주 쉽고 간편하게 원하는 서비스를 가상화로 돌릴수 있다.<br>그것도 아주 가볍게!<br>정확하지는 않지만 유튜브에서 듣기로는 Host서비스의 거이 98프로 정도의 성능을 낸다고 한다.<br>사실인지는 모르겠지만, 내가 직접 써보니 확실히 체감이 된다.</p>
-
-      
-      
-          
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-
-  
-      
-
-
-  
-  
-  
-  
-
-        
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
-    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2018/11/16/java-20181116-java-for-each/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Hanumoka">
-      <meta itemprop="description" content="아마추어 개발자의 블로그">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hanumoka, IT Blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2018/11/16/java-20181116-java-for-each/" class="post-title-link" itemprop="url">java-향상된 for 문(for each)</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">작성일</span>
-
-              <time title="Post created: 2018-11-16 07:39:35" itemprop="dateCreated datePublished" datetime="2018-11-16T07:39:35+09:00">2018-11-16</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Updated at: 2020-04-16 01:50:11" itemprop="dateModified" datetime="2020-04-16T01:50:11+09:00">2020-04-16</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/java/" itemprop="url" rel="index">
-                    <span itemprop="name">java</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-      <!-- 20200427hexo_post_head -->
-      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
-      <script>
-          (adsbygoogle = window.adsbygoogle || []).push({});
-      </script>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h1><p>for each 문은 java5 부터 배열 및 컬랙션 등을 쉽게 처리하기 위해 추가된 문법이다.</p>
-<p>음 난 왜 생소하지… javascript에서만 보던 건데… 여튼</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">String[] numbers = &#123;<span class="string">"one"</span>, <span class="string">"two"</span>, <span class="string">"three"</span>&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span>(String number : numbers)&#123;</span><br><span class="line">  System.out.println(<span class="string">"number:"</span> + number);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>아주 간단하다. 기존의 for문의 <strong>초기값; 조건; 증가감식</strong> 등의 statment 대신 <strong>타입명 인덱스별명 : 배열이나 컬랙션</strong> 형태의 statement를 사용한다.</p>
-<p>음 numbers의 타입으로 타입을 컴파일러가 유추할수 있을텐데, 굳이 타입명을 명시하게 하는 것은 조금 의아하다.</p>
-<p>여튼 단순히 배열, 컬랙션 등을 순차적으로 돌리고 싶을때 간편하게 사용할 수 있다.</p>
-
-      
-      
-          
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-
-  
-      
-
-
-  
-  
-  
-  
-
   </div>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/8/"><i class="fa fa-angle-left" aria-label="이전 페이지"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><span class="page-number current">9</span><a class="page-number" href="/page/10/">10</a><span class="space">&hellip;</span><a class="page-number" href="/page/22/">22</a><a class="extend next" rel="next" href="/page/10/"><i class="fa fa-angle-right" aria-label="다음 페이지"></i></a>
+    <a class="extend prev" rel="prev" href="/page/8/"><i class="fa fa-angle-left" aria-label="이전 페이지"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><span class="page-number current">9</span><a class="page-number" href="/page/10/">10</a><span class="space">&hellip;</span><a class="page-number" href="/page/23/">23</a><a class="extend next" rel="next" href="/page/10/"><i class="fa fa-angle-right" aria-label="다음 페이지"></i></a>
   </nav>
 
 
@@ -1891,20 +1894,20 @@ gtag('config', 'UA-100596920-1');
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">219</span>
+          <span class="site-state-item-count">221</span>
           <span class="site-state-item-name">포스트</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">38</span>
+        <span class="site-state-item-count">40</span>
         <span class="site-state-item-name">카테고리</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">592</span>
+        <span class="site-state-item-count">596</span>
         <span class="site-state-item-name">태그</span></a>
       </div>
   </nav>

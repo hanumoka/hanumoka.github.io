@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.hanumoka.net/"/>
-  <updated>2021-04-28T10:35:42.644Z</updated>
+  <updated>2021-05-05T11:49:55.953Z</updated>
   <id>https://www.hanumoka.net/</id>
   
   <author>
@@ -15,6 +15,81 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>MotorLatte-화면개발용 Next.js 프로젝트 생성</title>
+    <link href="https://www.hanumoka.net/2021/05/05/toyproject-motorlatte-20210505-2/"/>
+    <id>https://www.hanumoka.net/2021/05/05/toyproject-motorlatte-20210505-2/</id>
+    <published>2021-05-05T11:40:43.000Z</published>
+    <updated>2021-05-05T11:49:55.953Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;p&gt;작성일: 2020-05-05(수)&lt;/p&gt;
+&lt;p&gt;기타: 휴일, 날씨 맑음&lt;/p&gt;
+&lt;p&gt;MotorLatte 화면 단 개발을 위한 Next.js 프로젝트를 생성하자.&lt;/p&gt;
+&lt;p&gt;그냥 react cra로 만들어도 될거 같지만, 인프런에서
+        
+      
+    
+    </summary>
+    
+    
+      <category term="ToyProject" scheme="https://www.hanumoka.net/categories/ToyProject/"/>
+    
+      <category term="MotorLatte" scheme="https://www.hanumoka.net/categories/ToyProject/MotorLatte/"/>
+    
+    
+      <category term="토이프로젝트" scheme="https://www.hanumoka.net/tags/%ED%86%A0%EC%9D%B4%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8/"/>
+    
+      <category term="motorlatte" scheme="https://www.hanumoka.net/tags/motorlatte/"/>
+    
+      <category term="개발일지" scheme="https://www.hanumoka.net/tags/%EA%B0%9C%EB%B0%9C%EC%9D%BC%EC%A7%80/"/>
+    
+      <category term="next.js" scheme="https://www.hanumoka.net/tags/next-js/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>MotorLatte-토이프로젝트 개발일지 시작</title>
+    <link href="https://www.hanumoka.net/2021/05/05/toyproject-motorlatte-20210505-1/"/>
+    <id>https://www.hanumoka.net/2021/05/05/toyproject-motorlatte-20210505-1/</id>
+    <published>2021-05-05T11:05:10.000Z</published>
+    <updated>2021-05-05T11:40:33.039Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;p&gt;작성일: 2020-05-05(수)&lt;/p&gt;
+&lt;p&gt;기타: 휴일, 날씨 맑음&lt;/p&gt;
+&lt;p&gt;이 글은 토이프로젝트를 개발하면서 작성하는 일지이다.&lt;/p&gt;
+&lt;p&gt;가능한한 모든 과정을 기록할 생각이다.&lt;/p&gt;
+&lt;p&gt;하지만 일지, 일종의 로그이다 보니 잘못된
+        
+      
+    
+    </summary>
+    
+    
+      <category term="ToyProject" scheme="https://www.hanumoka.net/categories/ToyProject/"/>
+    
+      <category term="MotorLatte" scheme="https://www.hanumoka.net/categories/ToyProject/MotorLatte/"/>
+    
+    
+      <category term="토이프로젝트" scheme="https://www.hanumoka.net/tags/%ED%86%A0%EC%9D%B4%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8/"/>
+    
+      <category term="motorlatte" scheme="https://www.hanumoka.net/tags/motorlatte/"/>
+    
+      <category term="개발일지" scheme="https://www.hanumoka.net/tags/%EA%B0%9C%EB%B0%9C%EC%9D%BC%EC%A7%80/"/>
+    
+  </entry>
   
   <entry>
     <title>nextjs + typescript + storybook 프로젝트생성</title>
@@ -639,80 +714,6 @@
       <category term="install" scheme="https://www.hanumoka.net/tags/install/"/>
     
       <category term="virtualbox" scheme="https://www.hanumoka.net/tags/virtualbox/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Springboot에 thymeleaf-layout-dialect적용하기</title>
-    <link href="https://www.hanumoka.net/2020/05/21/springBoot-20200521-springboot-thymeleaf-layout-dialect/"/>
-    <id>https://www.hanumoka.net/2020/05/21/springBoot-20200521-springboot-thymeleaf-layout-dialect/</id>
-    <published>2020-05-21T14:19:44.000Z</published>
-    <updated>2020-05-21T14:29:12.187Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        
-        
-          &lt;h1 id=&quot;들어가기&quot;&gt;&lt;a href=&quot;#들어가기&quot; class=&quot;headerlink&quot; title=&quot;들어가기&quot;&gt;&lt;/a&gt;들어가기&lt;/h1&gt;&lt;p&gt;springboot 프로젝트에 thymeleaf-layout-dialectt이라는 라이브러리를 사용해서
-        
-      
-    
-    </summary>
-    
-    
-      <category term="springBoot" scheme="https://www.hanumoka.net/categories/springBoot/"/>
-    
-    
-      <category term="layout" scheme="https://www.hanumoka.net/tags/layout/"/>
-    
-      <category term="springboot" scheme="https://www.hanumoka.net/tags/springboot/"/>
-    
-      <category term="thymeleaf-layout-dialect" scheme="https://www.hanumoka.net/tags/thymeleaf-layout-dialect/"/>
-    
-      <category term="thymeleaf" scheme="https://www.hanumoka.net/tags/thymeleaf/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>개발시 HTTPS 테스트를 위한 SSL인증서(OpenSSL) 생성하기</title>
-    <link href="https://www.hanumoka.net/2020/05/19/security-20200519-make-ssl-crt-for-test-https/"/>
-    <id>https://www.hanumoka.net/2020/05/19/security-20200519-make-ssl-crt-for-test-https/</id>
-    <published>2020-05-19T14:22:25.000Z</published>
-    <updated>2020-05-19T14:31:49.415Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        
-        
-          &lt;h1 id=&quot;들어가기&quot;&gt;&lt;a href=&quot;#들어가기&quot; class=&quot;headerlink&quot; title=&quot;들어가기&quot;&gt;&lt;/a&gt;들어가기&lt;/h1&gt;&lt;p&gt;이 예제는 Nginx등과 같은 웹서버에 HTTPS를 적용하기 위한 테스트용 SSL 인증서를 생성하는
-        
-      
-    
-    </summary>
-    
-    
-      <category term="security" scheme="https://www.hanumoka.net/categories/security/"/>
-    
-    
-      <category term="https" scheme="https://www.hanumoka.net/tags/https/"/>
-    
-      <category term="ssl" scheme="https://www.hanumoka.net/tags/ssl/"/>
-    
-      <category term="openssl" scheme="https://www.hanumoka.net/tags/openssl/"/>
-    
-      <category term="crt" scheme="https://www.hanumoka.net/tags/crt/"/>
-    
-      <category term="pem" scheme="https://www.hanumoka.net/tags/pem/"/>
-    
-      <category term="인증서" scheme="https://www.hanumoka.net/tags/%EC%9D%B8%EC%A6%9D%EC%84%9C/"/>
-    
-      <category term="test" scheme="https://www.hanumoka.net/tags/test/"/>
-    
-      <category term="테스트" scheme="https://www.hanumoka.net/tags/%ED%85%8C%EC%8A%A4%ED%8A%B8/"/>
     
   </entry>
   

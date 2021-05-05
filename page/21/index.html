@@ -245,6 +245,234 @@ gtag('config', 'UA-100596920-1');
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2017/09/18/java-20170918-java-nested-class/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Hanumoka">
+      <meta itemprop="description" content="아마추어 개발자의 블로그">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hanumoka, IT Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2017/09/18/java-20170918-java-nested-class/" class="post-title-link" itemprop="url">java nested class(중첩클래스)</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">작성일</span>
+
+              <time title="Post created: 2017-09-18 00:15:55" itemprop="dateCreated datePublished" datetime="2017-09-18T00:15:55+09:00">2017-09-18</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Updated at: 2020-04-16 01:50:11" itemprop="dateModified" datetime="2020-04-16T01:50:11+09:00">2020-04-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/java/" itemprop="url" rel="index">
+                    <span itemprop="name">java</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 20200427hexo_post_head -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><img src="/images/inner_classes_java.jpg" alt></p>
+<h4 id="중첩클래스란-Nested-Class"><a href="#중첩클래스란-Nested-Class" class="headerlink" title="중첩클래스란(Nested Class)?"></a>중첩클래스란(Nested Class)?</h4><p>클래스 내부에 선언한 클래스를 말한다. 인터넷을 찾아보니, 중첩클래스(Nested Class)와 내부클래스(Inner Class) 이름을 혼용해서 사용 하는듯 하다. 본 글에서는 중첩클래스(Nested Class)로 표기한다.<br>중첩클래스는 크게 중첩클래스와 중첩인터페이스 크게 두개로 나뉜다. 이번글은 중접클래스만 다루도록 하겠다.<br>중첩클래스(Nested Class)를 사용하면 두 클래스의 멤버들을 서로 쉽게 접근할 수 있다는 장점과 외부에서 불필요한 관계 클래스를 감춤으로써 코드의 복잡성을 줄일 수 있다.</p>
+<h4 id="중첩클래스-Nested-Class-의-활용에-대한-개인적-고민"><a href="#중첩클래스-Nested-Class-의-활용에-대한-개인적-고민" class="headerlink" title="중첩클래스(Nested Class)의 활용에 대한 개인적 고민"></a>중첩클래스(Nested Class)의 활용에 대한 개인적 고민</h4><p>처음 중첩클래스(Nested Class)를 접했을 때, 대체 이것을 어디에 써먹을 수 있을까 고민을 했었다.<br>당시 고민을 하다가 애라 모르겠다 하고 그냥 책의 페이지를 넘긴 기억이 난다. 그 고민을 지금 다시 정리해 본다. (개인적인 생각 정리라 참고만 하길…)</p>
+<p>자바라는 언어는 객체지향 언어이고 클래스 단위로 프로그래밍을 해야 한다. 내가 만약 어떤 프로그래밍 소스가 필요하다면 그것을 클래스로 만들고 그걸 구현해야 한다. </p>
+<p>로직 -&gt; 클래스 선언(클래스 파일생성) -&gt; 클래스를 객체화</p>
+<p>자바에서는 소스코드의 단위를 클래스 단위로 강제하고 있다. 이로 인해 클래스의 다양한 장점을 이용해서 코딩을 할 수있다. 다들 들어본 재사용성, 다형성, 캡슐화등이 그 대표적인 것들이다.<br>하지만 <strong>만약 재사용이 필요하지 않고 일회성 소스코드를 만들어 사용할 경우에 그 것들을 클래스 파일로 만들어서 사용해야 할까? 재사용이 필요하지 않는 클래스파일의 생성은 소스코드관리의 관점에서 좋지 못한 선택이다.</strong>  </p>
+<p>중첩클래스(Nested Class)는 이런 문제를 해소하기 위해 사용되는 것이라고 생각된다.<br>물론 익명클래스도(anonymouse class) 같은 고민을 해결해 준다. 중첩클래스(Nested Class)와 익명클래스는 둘 다 일회성 코드를 만드는 방법이지만 재사용성 노출범위에서, 그 정도에 차이가 있어보인다.<br>중첩클래스는 클래스를 파일 단위로 만들지는 않지만, 협소하게 재사용이 가능하게 클래스 선언을 한다. 따라서 그만큼 더 클래스의 장점을 사용 할 수 있다. 그에 반해 익명클래스는 클래스를 선언조차 하지 않는다.</p>
+<p>중첩클래스와 익명클래스는 코딩시에 상황과 필요에 따라 선택되어 사용될 뿐이다.</p>
+<p>참고로 디폴트클래스(defualt class)도 하나의 방법이 되겠지만, 디폴트클래스(defualt class)는 프로그래밍의 구조를 너무 느슨하게 만드는 단점을 가지기 때문에 <strong>개인적</strong>으로 지양한다. 따라서 굳이 언급하지 않았다.</p>
+<h4 id="중첩클래스의-종류"><a href="#중첩클래스의-종류" class="headerlink" title="중첩클래스의 종류"></a>중첩클래스의 종류</h4><p><strong>인스턴스 멤버클래스</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span></span>&#123;</span><br><span class="line">  <span class="class"><span class="keyword">class</span> <span class="title">B</span></span>&#123; ... &#125; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>특징 : 외부 클래스 A의 인스턴스 영역에 선언된 중첩클래스를 인스턴스 멤버클래스 라고 부른다. 인스턴스 멤버클래스(B)에서는 정적필드, 정적메소드를 선언할수 없으며, 외부 A클래스의 객체를 통해 내부 중첩클래스B에 접근하여 B의 구현객체를 생성할 수 있다. B로 구현된 객체는 외부객체의 인스턴스 필드와 외부객체의 클래스의 static영역에 접근 할 수 있다.</p>
+<p><strong>정적 멤버클래스</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span></span>&#123;</span><br><span class="line">  <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">B</span></span>&#123; ... &#125; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>특징 : 인스턴스 멤버클래스와 다르게 static(정적)으로 선언된 정적 멤버클래스는 모든 종류의 필드, 메소드를 선언 할 수 있으며, 바깥 A클래스를 통해 내부클래스 B에 접근하여 객체를 생성 할 수 있다.<br>당연히 내부클래스의 객체는 외부클래스로 구현된 객체의 인스턴스 영역에는 접근 할수 없으며 외부 클래스 A의 static(정적)영역에만 접근 할 수있다.</p>
+<p><strong>로컬클래스</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span></span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">method1</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">B</span></span>&#123; ... &#125; </span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>특징 :  method1가 실행할 때만 B중첩클래스 사용가능 하다. 외부 클래스의 모든 영역에 접근 가능하다. 심지어 method1의 메개변수와 로컬변수에도 접근이 가능한데, method1함수가 종료된 이후에도 로컬클래스의 객체는 힙 메모리에 존재해서 계속 사용 될 수 있다. </p>
+<p>본래 매개변수나 로컬변수는 메소드실행이 종료되면 메모리에서 제거되어야 할 대상이다. 하지만 그 매개변수와 로컬변수를 로컬클래스로 생성된 객체가 참조한 경우가 문제가 될 수 있다.<br>자바는 이런 겅우를 위해 컴파일 시 로컬클래스에서 사용하는 매개변수나 로컬변수의 기억장소를 로컬클래스 내부에 복사해 두고 사용한다. <em>(자바스크립트의 클로저를 연상시킨다.)</em><br>중요한 점은 참조만 가능하다는 것이다, <strong>로컬클래스에서 자신을 감싸고 있는 함수의 매개변수와 로컬변수를 접근해서 수정을 할 수 없다. 아니 없어야 한다.</strong> <em>(자바스크립트와는 다르다.)</em><br>따라서 컴파일러는 로컬클레스애서 자신을 감싸고 있는 외부함수의 로컬변수, 매개변수를 수정할 수 없게 강제한다.<br>java7 버전에서는 로컬클래스에서 참조하는 함수의 매개변수와 로컬변수는 반드시 명시적으로 final 선언 했어야 했다.<br>java8에서는 자동으로 final키워드를 내부적으로 붙여준다.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Outter</span> </span>&#123;</span><br><span class="line">  <span class="comment">//자바7 이전</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">methodJava7</span><span class="params">(<span class="keyword">final</span> <span class="keyword">int</span> arg)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> <span class="keyword">int</span> localVariable = <span class="number">1</span>;</span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Inner</span> </span>&#123;</span><br><span class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">method</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> result = arg + localVariable;</span><br><span class="line">        System.out.println(<span class="string">"java7 로컬클래스:"</span> + result);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;<span class="comment">// Inner</span></span><br><span class="line">    </span><br><span class="line">    Inner java7Inner = <span class="keyword">new</span> Inner();</span><br><span class="line">    java7Inner.method();</span><br><span class="line">    </span><br><span class="line">  &#125;<span class="comment">//methodJava7</span></span><br><span class="line">  </span><br><span class="line">  <span class="comment">//자바8 이후</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">methodJava8</span><span class="params">(<span class="keyword">int</span> arg)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> localVariable = <span class="number">2</span>;</span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Inner</span> </span>&#123;</span><br><span class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">method</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> result = arg + localVariable;</span><br><span class="line">        System.out.println(<span class="string">"java8 로컬클래스:"</span> + result);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;<span class="comment">// Inner</span></span><br><span class="line">    </span><br><span class="line">    Inner java8Inner = <span class="keyword">new</span> Inner();</span><br><span class="line">    java8Inner.method();</span><br><span class="line">  &#125;<span class="comment">//methodJava8</span></span><br><span class="line">  </span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String [] args)</span> </span>&#123;</span><br><span class="line">    Outter o1 = <span class="keyword">new</span> Outter();</span><br><span class="line">    o1.methodJava7(<span class="number">7</span>);</span><br><span class="line">    o1.methodJava8(<span class="number">8</span>);</span><br><span class="line">    System.out.println(<span class="string">"----"</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>결과</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">java7 로컬클래스:8</span><br><span class="line">java8 로컬클래스:10</span><br><span class="line">----</span><br></pre></td></tr></table></figure>
+<p>이 중첩클래스라는 것을 잘 쓸지 안쓸지는 모르겠으나, 문법적 구조는 눈에 익혀둘 필요가 있어보여 정리해본다.</p>
+<h3 id="Related-Posts"><a href="#Related-Posts" class="headerlink" title="Related Posts"></a>Related Posts</h3><p><a href="/2017/09/15/java-Anonymouse-class/">익명클래스</a><br><a href="/2017/09/23/java-nested-interface/">중첩인터페이스</a></p>
+
+      
+      
+          
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+      
+
+
+  
+  
+  
+  
+
+        
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2017/09/16/java-20170916-java8-interface/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Hanumoka">
+      <meta itemprop="description" content="아마추어 개발자의 블로그">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hanumoka, IT Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2017/09/16/java-20170916-java8-interface/" class="post-title-link" itemprop="url">java8 interface의 변화(default method, static method)</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">작성일</span>
+
+              <time title="Post created: 2017-09-16 14:47:20" itemprop="dateCreated datePublished" datetime="2017-09-16T14:47:20+09:00">2017-09-16</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Updated at: 2020-04-16 01:50:11" itemprop="dateModified" datetime="2020-04-16T01:50:11+09:00">2020-04-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/java/" itemprop="url" rel="index">
+                    <span itemprop="name">java</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 20200427hexo_post_head -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>java8에서 interface의 문법이 약간 변경되어 그 내용을 정리하고자 한다.<br>java7 까지는 인터페이스에 상수, 실행블록이 없는 추상 메소드 선언만 가능했다. 하지만 <strong>java8부터 인터페이스에 디폴트메소드와 정적메소드도 추가로 선언이 가능하다. 이로인해 java의 인터페이스는 더욱 유연해진 코딩을 할 수 있다.</strong></p>
+<h4 id="java8의-인터페이스-형태"><a href="#java8의-인터페이스-형태" class="headerlink" title="java8의 인터페이스 형태"></a>java8의 인터페이스 형태</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">interface</span> 인터페이스명</span>&#123;</span><br><span class="line">  <span class="comment">//상수</span></span><br><span class="line">  타입 상수명 = 값;</span><br><span class="line">  <span class="comment">//추상 메소드</span></span><br><span class="line">  타입 메소드명(매개변수, ...);</span><br><span class="line">  <span class="comment">//디폴트 메소드</span></span><br><span class="line">  <span class="keyword">default</span> 타입 메소드명(매개변수, ...)&#123; ... &#125;</span><br><span class="line">  <span class="comment">//정적 메소드</span></span><br><span class="line">  <span class="keyword">static</span> 타입 메소드명(매개변수)&#123; ...&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>자바8에서 인터페이스의 디폴트메소드와 추상메소드가 추가된 이유가 있다.</strong><br>어떤 프로그램에서 인터페이스 A가 있고 이 인터페이스를 구현한 A1, A2, A3…, A10 총 10개의 구현 클래스가 있다고 가정하자. 5년정도 사융하다가 인터페이스 A에 추가기능이 필요해서 추상메소드를 한개 추가하고 새로이 B1이라는 클래스로 인터페이스 A를 구현하게 된다. 문제는 기존에 사용하던 A1 ~ A10의 구현객체에서 B1클래스를 위해 추가된 추상메소드를 추가로 구현해야 한다는 점이다.<br>java8에서는 인터페이스의 디폴트 메소드와, 정적메소드를 추가하여 프로그래밍의 유연성을 높여주고 있다.</p>
+<hr>
+<h4 id="인터페이스의-디폴트메소드-default-method"><a href="#인터페이스의-디폴트메소드-default-method" class="headerlink" title="인터페이스의 디폴트메소드(default method)"></a>인터페이스의 디폴트메소드(default method)</h4><p>디폴트 메소드는 인터페이스에 선언되지만 사실은 객체(구현객체)가 가지고 있는 인스턴스 메소드라고 생각해야 된다. 따라서 <strong>인터페이스를 구현한 객체를 통해서 호출 해야만 한다.</strong> 자바8에서 디폴트 메소드를 허용한 이유는 기존 인터페이스를 확장해서 새로운 기능을 추가하기 위해서이다. 만약 구현객체에서 인터페이스의 디폴트메소드가 적절하지 못하다면, 오버라이딩 하여 수정해서 사용하면 된다.</p>
+<p><strong>형태 : [public] default 리턴타입 메소드명(매개변수, …){ … }</strong></p>
+<h4 id="인터페이스의-정적메소드-static-method"><a href="#인터페이스의-정적메소드-static-method" class="headerlink" title="인터페이스의 정적메소드(static method)"></a>인터페이스의 정적메소드(static method)</h4><p>정적 메소드도 역시 자바8 부터 작성할 수 있는데, 디폴트 메소드와는 달리 객체가 없어도 인터페이스만으로 호출이 가능하다.</p>
+<p><strong>형태 : [public] static 리턴타입 메소드명(매개변수, …){ … }</strong></p>
+<h4 id="java8의-인터페이스의-디폴트메소드-추상메소드-예제"><a href="#java8의-인터페이스의-디폴트메소드-추상메소드-예제" class="headerlink" title="java8의 인터페이스의 디폴트메소드, 추상메소드 예제"></a>java8의 인터페이스의 디폴트메소드, 추상메소드 예제</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">Java8InterfaceTest</span></span>&#123;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">int</span> talkCnt = <span class="number">0</span>;</span><br><span class="line">  </span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">run</span><span class="params">()</span></span>;</span><br><span class="line">  <span class="comment">//디폴트 메소드</span></span><br><span class="line">  <span class="function"><span class="keyword">default</span> <span class="keyword">void</span> <span class="title">talk</span><span class="params">(String msg)</span></span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span>(msg != <span class="keyword">null</span> &amp;&amp; msg.equals(<span class="string">""</span>))&#123;</span><br><span class="line">      System.out.println(msg);</span><br><span class="line">    &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">      System.out.println(<span class="string">"난 디폴트 메소드다!"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">  &#125;<span class="comment">// talk</span></span><br><span class="line">  <span class="comment">//정적 메소드</span></span><br><span class="line">  <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">talk2</span><span class="params">(String msg)</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(msg != <span class="keyword">null</span> &amp;&amp; msg.equals(<span class="string">""</span>))&#123;</span><br><span class="line">      System.out.println(msg);</span><br><span class="line">    &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">      System.out.println(<span class="string">"난 정적 메소드다!"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">  &#125;<span class="comment">// talk2</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">InterfaceTest1</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    Java8InterfaceTest.talk2(<span class="keyword">null</span>); <span class="comment">// 정적메소드 호출</span></span><br><span class="line">    </span><br><span class="line">    Java8InterfaceTest test1 = <span class="keyword">new</span> Java8InterfaceTest()&#123;</span><br><span class="line"></span><br><span class="line">      <span class="meta">@Override</span></span><br><span class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"달려라!"</span>);</span><br><span class="line">      &#125;</span><br><span class="line">      </span><br><span class="line">    &#125;;</span><br><span class="line">    </span><br><span class="line">    test1.run();</span><br><span class="line">    test1.talk(<span class="keyword">null</span>); <span class="comment">// 디폴트 메소드 호출</span></span><br><span class="line">    </span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="실행결과"><a href="#실행결과" class="headerlink" title="실행결과"></a>실행결과</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">난 정적 메소드다!</span><br><span class="line">달려라!</span><br><span class="line">난 디폴트 메소드다!</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="인터페이스의-상속에서-디폴트메소드의-변화"><a href="#인터페이스의-상속에서-디폴트메소드의-변화" class="headerlink" title="인터페이스의 상속에서 디폴트메소드의 변화"></a>인터페이스의 상속에서 디폴트메소드의 변화</h4><p>인터페이스는 인터페이스를 상속 할 수 있다. 자식 인터페이스에서 부모의 인터페이스를 상속할 때, 부모의 디폴트 메소드를 어떻게 할지 선택 할 수있다.</p>
+<ol>
+<li><p>부모 인터페이스의 디폴트 메소드를 그냥 상속한다.</p>
+</li>
+<li><p>부모 인터페이스의 디폴트 메소드를 재정의(Override)한다.</p>
+</li>
+<li><p><strong>부모 인터페이스의 디폴트 메소드를 추상메소드로 재 선언한다.</strong></p>
+</li>
+</ol>
+<p>인터페이스의 디폴트메소드는 인터페이스의 강제성을 조금 유연하게 해주는 기능이다. 하지만 좋게 말하면 유연이고 나쁘게 말한다면 느슨한 것이다. <strong>만약 이 느슨한것을 다시 엄격하게 수정할 필요가 있다면 인터페이스를 상속하여 다시 추상메소드로 재 선언 하는것도 방법이다.</strong><br><em>개인적으로 java8의 인터페이스의 변화는 개발자의 자유도를 높여주는 기능처럼 보이며, 상당히 마음에 든다.</em></p>
+<hr>
+<h4 id="인터페이스-상수-선언-public-static-final-할-때-주의할점"><a href="#인터페이스-상수-선언-public-static-final-할-때-주의할점" class="headerlink" title="인터페이스 상수 선언(public static final)할 때 주의할점"></a>인터페이스 상수 선언(public static final)할 때 주의할점</h4><p>java8의 특징은 아니지만, 자주 햇갈리는 부분이라 추가로 기록한다.<br>일반적인 클래스에서 상수(static final)의 초기화는 선언과 동시 그리고 정적영역(static block) 두 곳 모두에서 가능하다. 하지만 <strong>인터페이스의 상수는 정적영역(static block)에서 초기화 할수 없기 때문에 반드시 선언과 동시에 초기화 해야 한다.</strong> </p>
+
+      
+      
+          
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+      
+
+
+  
+  
+  
+  
+
+        
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
     <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2017/09/15/java-20170915-java-Anonymouse-class/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1045,275 +1273,11 @@ gtag('config', 'UA-100596920-1');
   
   
 
-        
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
-    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2017/09/07/web-20170907-markdown1/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Hanumoka">
-      <meta itemprop="description" content="아마추어 개발자의 블로그">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hanumoka, IT Blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2017/09/07/web-20170907-markdown1/" class="post-title-link" itemprop="url">마크다운(markdown)</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">작성일</span>
-
-              <time title="Post created: 2017-09-07 07:12:18" itemprop="dateCreated datePublished" datetime="2017-09-07T07:12:18+09:00">2017-09-07</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Updated at: 2020-04-16 01:50:12" itemprop="dateModified" datetime="2020-04-16T01:50:12+09:00">2020-04-16</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/web/" itemprop="url" rel="index">
-                    <span itemprop="name">web</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-      <!-- 20200427hexo_post_head -->
-      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
-      <script>
-          (adsbygoogle = window.adsbygoogle || []).push({});
-      </script>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="마크다운이란"><a href="#마크다운이란" class="headerlink" title="마크다운이란"></a>마크다운이란</h3><p>간단히 말해서 웹 문서 전용 글쓰기 마크업 언어이다. 웹에서 보여질 심플한 문서(대표적으로 HTML)를 간편하고 쉽게 작성하기 위해 만들어진 마크업 언어이다. 일반적으로 웹 페이지를 만들기 위해서는 HTML언어를 사용해야 한다.</p>
-<p>코딩 할 때 개인적으로 순수 HTML의 명료성을 좋아하지만, 단순한 글을 쓰기위한 목적으로 쓰기에는 너무 많은 수고가 발생한다.</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span><span class="tag">&lt;<span class="name">title</span>&gt;</span>간단한 문서<span class="tag">&lt;/<span class="name">title</span>&gt;</span><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">H1</span>&gt;</span>간단한 문서를 써보자<span class="tag">&lt;/<span class="name">H1</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">br</span>&gt;</span></span><br><span class="line">아이고 몇줄 쓰는데 온 갖 태그를 타이핑 해야 된다. 힘들당<span class="tag">&lt;<span class="name">br</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">font</span> <span class="attr">size</span>=<span class="string">"3"</span>&gt;</span>WYSIWYG에디터라도 있었으면...<span class="tag">&lt;/<span class="name">font</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p>마크다운은 몇 개의 특수문자를 이용한 간단한 문법을 이용하여, html로 변환할 수 있는 문서를 작성할 수 있다. 물론 html도 간단한 문법을 가지고 있지만, 마크다운에 비할바는 아니다. 마크다운을 한번 써보면 누구나 느낄 것이다. 사람 손으로 키보드에서 타이핑 하기가 정말 편하다. 물론 간단한 문법이기 때문에 HTML의 일부분 기능만 사용 할 수 있다. 하지만 내가 원하는 간단한 글쓰기 용으로는 부족해 보이지 않는다.</p>
-<p><strong>마크다운 문서 -&gt; 마크다운 변환기 -&gt; HTML 문서</strong></p>
-<p>내가 이 마크다운을 접하게 된 계기는 Jekyll, hexo등의 정적 블로그 프레임워크를 만들면서였다. 블로그에서 간단한 문서를 작성하는 방법으로 jekyll, hexo, ghost 등의 블로그 프레임워크에서 마크다운을 지원하고 있다.</p>
-<p>네이버블로그, 티스토리등에서 지원하는 WYSIWYG에디터는 웹에서 간편하게 글을 쓸수 있지만, 그 것으로 작성되어 변환된 HTML은 지옥의 죄수들을 갈아놓은 스프와 같아보였다. 거기다 WYSIWYG에디터에서 소스코드등을 삽입하기 위해서는 플러그인또는 js를 건드려야 한다.</p>
-<p>반면 마크다운으로 작성된 문서의 HTML은 상대적으로 심플하며, 자체적으로 제공하는 심플한 문법으로 소스코드 삽입이 아주 편하다. Typora라는 마크다운 에디터를 사용하면, 마크다운의 문법의 러닝커브도 상당히 줄어든다.</p>
-<hr>
-<h3 id="마크다운-에디터-Typora"><a href="#마크다운-에디터-Typora" class="headerlink" title="마크다운 에디터(Typora)"></a>마크다운 에디터(Typora)</h3><p>마크다운문서도 문서의 종류일 뿐이다. 메모장으로 작성해도 되지만, 요즘 세상에 편리한 툴을 두고 고생을 하는 것는 인생을 낭비하기에 딱 좋은 방법일 뿐 이다.</p>
-<p>마크다운문서는 html로 변환되어야 할 기초 문서이다. 따라서 현재 내가 적성하고 있는 마크다운 문서를 html로 변환하고 또는 실시간으로 그 변화된 모습을 보여주는 기능이 있는 에디터가 필요했다.</p>
-<p><img src="/images/20170907-markdown1.png" alt="아톰에디터 마크다운 작성화면"></p>
-<p>위 화면은 아톰에디터에서 마크다운 플러그인을 설치하여 마크다운을 작성하는 화면이다. 아톰도 나름 쓸만했지만, 낮은 신뢰도와 너무 무거웠다. 그리고 한 화면에 마크업문서와 변환문서가 같이 보이므로 화면이 너무 좁아져서 불편한 감이 있었다.</p>
-<p>그러다 찾게 된 마크다운 에디터는 Typora였다. Typora의 가장 큰 장점은 마크다운 문서를 작성하는 동시에 HTML로 변환된다는 것이다. <strong>한 화면에서!</strong> 거기다 간한단 단축키, 단축메뉴에서 마크다운 문법을 UI에서 지원하므로 나처럼 마크다운 문법이 생소한 경우 손쉽게 문서를 작성할 수 있다.</p>
-<p>개인적으로 <strong>Typora = markdown계의 WYSIWYG에디터</strong> 이런 느낌이다. Windows, Mac, Linux모두 지원하므로 만약 마크다운을 입문하는 사람들에게는 Typora에디터를 추천한다.<br><a href="https://typora.io/" target="_blank" rel="external nofollow noopener noreferrer" title="Typora">Typora홈페이지</a></p>
-<hr>
-<h3 id="마크다운-기본문법"><a href="#마크다운-기본문법" class="headerlink" title="마크다운 기본문법"></a>마크다운 기본문법</h3><p><a href="https://ko.wikipedia.org/wiki/%EB%A7%88%ED%81%AC%EB%8B%A4%EC%9A%B4" target="_blank" rel="external nofollow noopener noreferrer" title="마크다운 위키">마크다운 위키</a></p>
-
-      
-      
-          
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-
-  
-      
-
-
-  
-  
-  
-  
-
-        
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
-    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2017/08/31/apache-20170831-apache-install-windows/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Hanumoka">
-      <meta itemprop="description" content="아마추어 개발자의 블로그">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hanumoka, IT Blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2017/08/31/apache-20170831-apache-install-windows/" class="post-title-link" itemprop="url">apache웹서버 윈도우에 설치하기</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">작성일</span>
-
-              <time title="Post created: 2017-08-31 03:09:49" itemprop="dateCreated datePublished" datetime="2017-08-31T03:09:49+09:00">2017-08-31</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Updated at: 2020-04-16 01:50:11" itemprop="dateModified" datetime="2020-04-16T01:50:11+09:00">2020-04-16</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/apache/" itemprop="url" rel="index">
-                    <span itemprop="name">apache</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-      <!-- 20200427hexo_post_head -->
-      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
-      <script>
-          (adsbygoogle = window.adsbygoogle || []).push({});
-      </script>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="아파치-Apache-웹서버-윈도우10-환경에-설치"><a href="#아파치-Apache-웹서버-윈도우10-환경에-설치" class="headerlink" title="아파치(Apache) 웹서버 윈도우10 환경에  설치"></a>아파치(Apache) 웹서버 윈도우10 환경에  설치</h3><p>windows10 64bit 운영체제에 아파치 웹서버를 설치하는 방법을 설명하겠다.</p>
-<br>
-1. 웹 브라우저를 통해 https://www.apachelounge.com/download/ 로 이동
->![](/images/2017-06-11-apache설치_1.png)
-원하는 아파치 웹서버 버전을 선택후 64bit zip 파일을 클릭하여 다운받는다.
->![](/images/2017-06-11-apache설치_2.png)
-
-
-<ol start="2">
-<li>해당 파일을 C:\ 경로로 이동후 압축을 푼다.<blockquote>
-<p><img src="/images/2017-06-11-apache%EC%84%A4%EC%B9%98_3.png" alt><br>폴더 내부로 이동하여 Apache24 폴더를 잘라내기 한 후 다시 C:\ 경로로 이동하여 붙여넣기 한다.</p>
-</blockquote>
-</li>
-</ol>
-<p>최종적으로 아래와 같이 폴더 구성이 되면 된다.</p>
-<blockquote>
-<p><img src="/images/2017-06-11-apache%EC%84%A4%EC%B9%98_4.png" alt></p>
-</blockquote>
-<ol start="3">
-<li>아파치 웹서버 설치전 환경 설정<blockquote>
-<p><img src="/images/2017-06-11-apache%EC%84%A4%EC%B9%98_5.png" alt></p>
-</blockquote>
-</li>
-</ol>
-<p>C:\Apache24\conf 경로로 이동하여 httpd.conf 파일을 수정해야 한다.<br>파일을 메모장으로 연뒤 원하는 항목을 수정하면 되는데 여러 항목중에 다음 항목들이 중요하다.</p>
-<blockquote>
-<p>기본셋팅<br>ServerRoot “c:/Apache24”<br>Listen 80<br>DocumentRoot “c:/Apache24/htdocs”</p>
-</blockquote>
-<p>ServerRoot 항목은 기본적으로 “c:/Apache24” (경로 구분을 역슬래시로 해야 한다.) 되어 있다. 이 디폴트 셋팅을 그대로 사용하기 위해서 2번처럼 폴더 경로를 지정한 것이다. 만약 위 설명과 다른 폴더경로에 웹서버 폴더를 셋팅 했다면 ServerRoot 항목의 셋팅을 알맞게 수정해 주면 된다.</p>
-<p>Listen 항목은 웹서버의 포트(port)설정이다. 웹서버는 기본적으로 80포트이다.(디폴트라 생략이 가능하다. <a href="http://www.naver.com" target="_blank" rel="external nofollow noopener noreferrer">www.naver.com</a> 와 <a href="http://www.naver.com:80" target="_blank" rel="external nofollow noopener noreferrer">www.naver.com:80</a> 은 같다)<br>원하는 포트가 있다면 역시 수정하라. (필자는 8080으로 수정하였다. )</p>
-<p>DocumentRoot 항목은 웹서버에서 실행할 웹사이트 root 폴더를 지정해야 한다. ServerRoot처럼 디폴트로 “c:/Apache24/htdocs”로 셋팅 되어 있다.<br>원하는 경로가 있다면 수정하라.<br>부연설명으로 웹서버 기본 url(현재는 <a href="http://localhost:80" target="_blank" rel="external nofollow noopener noreferrer">http://localhost:80</a>) 접근시 웹서버는 DocumentRoot 에 설정된 폴더 내부의 index.html 를 디폴트로 리다이렉트 한다.</p>
-<ol start="4">
-<li>설치<br>관리자 모드로 cmd(명령 프롬프트) 창을 연다.<br>키보드의 윈도우 버튼을 누른뒤 cmd라고 검색하면 나온다.<br>명령 프롬프트 항목에 마우스 우클릭 한 뒤 “관리자 권한으로 실행”을 선택한다.<blockquote>
-<p><img src="/images/2017-06-11-apache%EC%84%A4%EC%B9%98_6.png" alt></p>
-</blockquote>
-</li>
-</ol>
-<p>cmd 창이 열리면 cd C:\Apache243\bin 을 입력하여 경로를 이동한다.</p>
-<p>이동한뒤 아래 명령어를 입력하여 아파치 서버를 설치한다.<br>httpd.exe -k install</p>
-<p>뭔가 error라고 나오긴 하는데 무시해도 지장 없다.(도메인 관련 error 인것 같다)</p>
-<p>만약 설치한 아파치 서버를 삭제 하고 싶다면 아래 명령어를 입력하면 된다.<br>httpd.exe -k uninstall</p>
-<ol start="5">
-<li>httpd.exe -k install  명령어 입력 후<blockquote>
-<p><img src="/images/2017-06-11-apache%EC%84%A4%EC%B9%98_7.png" alt></p>
-</blockquote>
-</li>
-</ol>
-<p>윈도우 탐색기에서 C:\Apache24\bin 경로로 이동후 AapcheMonitor 응용 프로그램을 실행한다.</p>
-<p>윈도우의 오른쪽 하단 작업 표시줄을 보면 ApacheMonitor가 실핼된 것을 확인 할수 있다.</p>
-<blockquote>
-<p><img src="/images/2017-06-11-apache%EC%84%A4%EC%B9%98_8.png" alt></p>
-</blockquote>
-<p>해당 아이콘을 우클릭후 Apache2.4 &gt; Start 를 클릭하면 웹서버가 동작한다.<br>반대로 웹서버를 종료하고 싶다면 Stop 을 클릭하면 된다.</p>
-<ol start="6">
-<li>웹서버 동작 확인</li>
-</ol>
-<p>웹서버를 start 한뒤에 인터넷 브라우저 창을 열고 주소창에</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http:&#x2F;&#x2F;localhost:설정한포트번호</span><br></pre></td></tr></table></figure>
-<p>또는 </p>
-<pre><code>http://127.0.0.1:설정한포트번호 </code></pre><p>를 입력한다.</p>
-<p>필자는 http.conf 파일에서 포트를 8080 으로 수정하였으므로</p>
-<p><a href="http://localhost:8080" target="_blank" rel="external nofollow noopener noreferrer">http://localhost:8080</a> 을 입력하겠다.</p>
-<blockquote>
-<p><img src="/images/2017-06-11-apache%EC%84%A4%EC%B9%98_9.png" alt></p>
-</blockquote>
-<p>위처럼 DocumentRoot 경로의 index.html 브라우저창에 열리는 것을 확인할 수 있다.<br>윈도우 관리도구등 기타 설명은 상단의 유투브 영상을 참고하길 바란다.</p>
-<h3 id="Related-Posts"><a href="#Related-Posts" class="headerlink" title="Related Posts"></a>Related Posts</h3>
-      
-      
-          
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-
-  
-      
-
-
-  
-  
-  
-  
-
   </div>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/20/"><i class="fa fa-angle-left" aria-label="이전 페이지"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/20/">20</a><span class="page-number current">21</span><a class="page-number" href="/page/22/">22</a><a class="extend next" rel="next" href="/page/22/"><i class="fa fa-angle-right" aria-label="다음 페이지"></i></a>
+    <a class="extend prev" rel="prev" href="/page/20/"><i class="fa fa-angle-left" aria-label="이전 페이지"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/20/">20</a><span class="page-number current">21</span><a class="page-number" href="/page/22/">22</a><a class="page-number" href="/page/23/">23</a><a class="extend next" rel="next" href="/page/22/"><i class="fa fa-angle-right" aria-label="다음 페이지"></i></a>
   </nav>
 
 
@@ -1379,20 +1343,20 @@ gtag('config', 'UA-100596920-1');
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">219</span>
+          <span class="site-state-item-count">221</span>
           <span class="site-state-item-name">포스트</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">38</span>
+        <span class="site-state-item-count">40</span>
         <span class="site-state-item-name">카테고리</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">592</span>
+        <span class="site-state-item-count">596</span>
         <span class="site-state-item-name">태그</span></a>
       </div>
   </nav>
