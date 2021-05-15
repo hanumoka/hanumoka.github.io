@@ -245,6 +245,163 @@ gtag('config', 'UA-100596920-1');
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2019/08/17/ubuntu-20190817-ubuntu-virtualbox-unity-tweak-tool/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Hanumoka">
+      <meta itemprop="description" content="아마추어 개발자의 블로그">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hanumoka, IT Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/08/17/ubuntu-20190817-ubuntu-virtualbox-unity-tweak-tool/" class="post-title-link" itemprop="url">Ubuntu1804 Unity tweak tool 설치 및 테마변경</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">작성일</span>
+
+              <time title="Post created: 2019-08-17 19:04:36" itemprop="dateCreated datePublished" datetime="2019-08-17T19:04:36+09:00">2019-08-17</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Updated at: 2020-04-16 01:50:12" itemprop="dateModified" datetime="2020-04-16T01:50:12+09:00">2020-04-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ubuntu/" itemprop="url" rel="index">
+                    <span itemprop="name">ubuntu</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 20200427hexo_post_head -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h3><p>우분투 데스크탑을 설치한 김에 나도 테마같은걸 바꿔보고 싶었다.</p>
+<p>이번에는 Unity twak tool 과 기타 익스텐션을 이용해서 우분투 테마등을 변경해 보겠다.</p>
+<h3 id="Unity-tweak-tool-란"><a href="#Unity-tweak-tool-란" class="headerlink" title="Unity tweak tool 란?"></a>Unity tweak tool 란?</h3><p>유니티 트윅은 윈도우로 치자면 제어판과 유사한 역할을 하는 프로그램이다.</p>
+<p>특히 우분투 데스크탑의 테바변경에서 핵심적으로 사용된다.</p>
+<p>테마를 설정할 수 있고, 폰트변경, 아이콘 변경, 프로그램 메뉴의 크기조정, 바로가기 및 전처 설정 등을 할 수 있다.</p>
+<p>우분투에 기본적으로 설정이 있지만 그것에 강화판 제어판 정도로 생각이된다.</p>
+<h3 id="Unity-tweak-tool-설치"><a href="#Unity-tweak-tool-설치" class="headerlink" title="Unity tweak tool 설치"></a>Unity tweak tool 설치</h3><p>우선 터미널을 열고 아래 명령어를 입력해서 Unity tweak tool을 설치하자.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install gnome-tweak-tool</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/2019/2/Untitled-a899ecea-645a-4b1d-b063-9f02cbf3f58c.png" alt></p>
+<p>설치가 완료되면 아래처럼 기능개선 이라는 프로그램을 확인 할 수 있다.</p>
+<p><img src="/images/2019/2/Untitled-23ea743c-dcfe-4ee3-9357-985188c3eb26.png" alt></p>
+<p><img src="/images/2019/2/Untitled-bd05a3f7-3128-488d-9604-9264fab6c0dc.png" alt></p>
+<p>기능개선은 위와 같은 부가적인 환경설정 기능등을 제공한다.</p>
+<h3 id="Adapta-테마-설치하기"><a href="#Adapta-테마-설치하기" class="headerlink" title="Adapta 테마 설치하기"></a>Adapta 테마 설치하기</h3><p>터미널에서 아래명령어3줄을 차례로 입력하자</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get-repository ppa:tista&#x2F;adapta</span><br><span class="line">sudo apt-get update</span><br><span class="line">sudo apt-get inatall adapta-gtk-theme</span><br></pre></td></tr></table></figure>
+
+<p>아까 설치한 기능개선 프로그램을 종료하고 다시 킨다.</p>
+<p>모양새 → 테마→ 프로그램 에서 방금 설치한 Adapta 테마를 선택할수 있다. </p>
+<p><img src="/images/2019/2/Untitled-b8f0d0f1-db58-493b-bc5d-f364e482eb4f.png" alt></p>
+<p>위처럼 프로그램 창이 어두운 형태로 변한것을 확인 할 수 있다. </p>
+<p>여러 색상이 있으니 원하는 것을 선택하면 된다.</p>
+<h3 id="Gnome-shell-Extention-설치로-상단-봐-테마-변경"><a href="#Gnome-shell-Extention-설치로-상단-봐-테마-변경" class="headerlink" title="Gnome shell Extention 설치로 상단 봐 테마 변경"></a>Gnome shell Extention 설치로 상단 봐 테마 변경</h3><p>우분투 상단바 테마는 Gnome 쉘에 포함되어 있다고 한다.</p>
+<p>위 상단바 테마를 수정하려면 Gnome shell Extention 을 설치해야 한다.</p>
+<p>터미널에서 아래명령어를 입력하자.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install chrome-gnome-shell</span><br></pre></td></tr></table></figure>
+
+<p>패키지명이 왜 크롬인지는 잘 모르겠다.</p>
+<p>그리고 우분투에서 파이어폭스 브라우저를 열고 아래 링크에 접속하자.</p>
+<p><a href="https://extensions.gnome.org/extension/19/user-themes" target="_blank" rel="external nofollow noopener noreferrer">https://extensions.gnome.org/extension/19/user-themes</a></p>
+<p><img src="/images/2019/2/Untitled-20e83fc3-36f5-48d7-b339-7fafbb519c82.png" alt></p>
+<p>Click here install borwer extension을 클릭해서 브라우저 익스텐션을 설치하자.</p>
+<p><img src="/images/2019/2/Untitled-750d8935-e401-4617-ad4e-475ee481f662.png" alt></p>
+<p><img src="/images/2019/2/Untitled-b80becd2-2c58-48fa-b367-22e15b32c64c.png" alt></p>
+<p><a href="https://addons.mozilla.org/ko/firefox/addon/gnome-shell-integration/" target="_blank" rel="external nofollow noopener noreferrer">https://addons.mozilla.org/ko/firefox/addon/gnome-shell-integration/</a></p>
+<p>반드시 파이어폭스 브라우저를 사용해야 한다.</p>
+<p>설치가 끝난뒤 파이어폭스 브라우저에서 아래 처럼 User Themes로 접근한다.</p>
+<p><img src="/images/2019/2/Untitled-ac641281-1c0c-4946-b0b2-8043aa6e6610.png" alt></p>
+<p><img src="/images/2019/2/Untitled-73afb19e-70c5-4153-884c-cbca7048afe7.png" alt></p>
+<p>Off로 되어있던 설정을 On으로 변경해준다.</p>
+<p><img src="/images/2019/2/Untitled-90b3072f-38d3-46fb-a112-0274c3147090.png" alt></p>
+<p>설치하자.</p>
+<p>설치가 완료된 다음, 다시 기능개선 프로그램을 종료하고 다시 열자.</p>
+<p><img src="/images/2019/2/Untitled-add8aac2-9e1e-40f7-b75e-e57c1fcc1ae2.png" alt></p>
+<p>모양세에 다시 들어가보면 쉘 항목이 활성화 되어있다. </p>
+<p>여기서 이것저것 바꿔보면 우분투의 상단바의 테마가 변경하는 것을 알 수 있다.</p>
+<h3 id="Flat-remix-아이콘-테마-적용하기"><a href="#Flat-remix-아이콘-테마-적용하기" class="headerlink" title="Flat remix 아이콘 테마 적용하기"></a>Flat remix 아이콘 테마 적용하기</h3><p>Flat remix라는 패키지를 설치해서 우분투의 아이콘 테마도 변경 할 수 있다.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo add-apt-repository ppa:daniruiz&#x2F;flat-remix</span><br><span class="line">sudo apt-get update</span><br><span class="line">sudo apt-get install flat-remix</span><br></pre></td></tr></table></figure>
+
+<p>위 명령을 순차적으로 입력해서 flat remix를 설치하자.</p>
+<p>설치가 완료된되 기능개선을 재시작하면 아래처럼 아이콘 테마를 설정 할 수 있다.</p>
+<p><img src="/images/2019/2/Untitled-5ac33c1d-fa00-46e9-8457-b9fe5423319f.png" alt></p>
+<h3 id="Dash-to-Dock-설치고-Dock-테마-변경하기"><a href="#Dash-to-Dock-설치고-Dock-테마-변경하기" class="headerlink" title="Dash to Dock 설치고 Dock 테마 변경하기"></a>Dash to Dock 설치고 Dock 테마 변경하기</h3><p>아래 링크애 파이어폭스로 접근하자.</p>
+<p><a href="https://extensions.gnome.org/extension/307/dash-to-dock" target="_blank" rel="external nofollow noopener noreferrer">https://extensions.gnome.org/extension/307/dash-to-dock</a></p>
+<p><img src="/images/2019/2/Untitled-28ffa173-de0c-463a-a7fb-57be01b43d3c.png" alt></p>
+<p>상태를 on으로 변경하고 설치하자.</p>
+<p><img src="/images/2019/2/Untitled-714f30f2-0983-41df-a10a-72ddd9fa85f7.png" alt></p>
+<p>설치가 되면 벌써 왼쪽의 독의모양이 변경된 것을 확인 할 수있다.</p>
+<p>다시 기능개선에 들어가서 확장 → Dash to dock에 환경설정에 들어가자.</p>
+<p><img src="/images/2019/2/Untitled-e7b91086-2866-4fce-871a-1c95fd406c8e.png" alt></p>
+<p>위처럼 독의 위치를 왼쪽이 아니라 아래로 옮길수 있다.</p>
+<p>최종적으로 아래와 같은 화면을 만들었다. 바탕화면이 마음에 안들지만 그건 나중에 바꿔야 겠다.</p>
+<p><img src="/images/2019/2/Untitled-b94bd3e9-0691-48f4-9f3c-51e55b7fd426.png" alt></p>
+<p>끝!!!</p>
+<h3 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h3><p><a href="https://smartaedi.tistory.com/137" target="_blank" rel="external nofollow noopener noreferrer">https://smartaedi.tistory.com/137</a></p>
+<p><a href="https://programmingsummaries.tistory.com/389" target="_blank" rel="external nofollow noopener noreferrer">https://programmingsummaries.tistory.com/389</a></p>
+<p><a href="https://codevkr.tistory.com/89" target="_blank" rel="external nofollow noopener noreferrer">https://codevkr.tistory.com/89</a></p>
+
+      
+      
+          
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+      
+
+
+  
+  
+  
+  
+
+        
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
     <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2019/08/17/ubuntu-20190817-ubuntu-virtualbox-language-change-key/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1452,116 +1609,6 @@ sudo apt-get upgrade</code></pre><p><img src="/images/2019/Untitled-8e694a7f-b2b
   
   
 
-        
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
-    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2019/04/11/node-20190411-node-update-dependencies/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Hanumoka">
-      <meta itemprop="description" content="아마추어 개발자의 블로그">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hanumoka, IT Blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/04/11/node-20190411-node-update-dependencies/" class="post-title-link" itemprop="url">Node 프로젝트 dependencies 일괄 버전 업데이트</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">작성일</span>
-
-              <time title="Post created: 2019-04-11 20:35:50" itemprop="dateCreated datePublished" datetime="2019-04-11T20:35:50+09:00">2019-04-11</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Updated at: 2020-04-16 01:50:12" itemprop="dateModified" datetime="2020-04-16T01:50:12+09:00">2020-04-16</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/node/" itemprop="url" rel="index">
-                    <span itemprop="name">node</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-      <!-- 20200427hexo_post_head -->
-      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
-      <script>
-          (adsbygoogle = window.adsbygoogle || []).push({});
-      </script>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h1><p>node 프로젝트의 package.json 에는 node 프로젝트가 사용하는 여러개의 의존 라이브러리가 버전과 함께 명시되어있다.</p>
-<p>시간이 지남에 따라 이 라이브러리들의 버전을 자연히 올라가게 된다.</p>
-<p>이 글에서는 node 프로젝트에서 만료된 dependencies 를 확인하고 일괄적으로 최신 버전으로 업데이트 하는 방법을 기록하겠다.</p>
-<h1 id="Node-프로젝트에서-만료된-dependency-확인하기"><a href="#Node-프로젝트에서-만료된-dependency-확인하기" class="headerlink" title="Node 프로젝트에서 만료된 dependency 확인하기"></a>Node 프로젝트에서 만료된 dependency 확인하기</h1><p>노드 프로젝트에서 다음 명령어로 만료된 의존 라이브러리들을 확인하자.</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm outdated</span><br></pre></td></tr></table></figure>
-
-<p>내 헥소 블로그에서 실행해 보니 다음과 같이 말료된 라이브러리들이 보인다.</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">amagr@DESKTOP-RTCBUCP MINGW64 ~/projects/hexo_blog (master)</span><br><span class="line">$ npm outdated</span><br><span class="line">Package                              Current  Wanted  Latest  Location</span><br><span class="line">hexo-deployer-git                      0.3.1   0.3.1   1.0.0  hexo-site</span><br><span class="line">hexo-generator-json-content            3.0.1   3.0.1   4.1.3  hexo-site</span><br><span class="line">hexo-generator-seo-friendly-sitemap   0.0.22  0.0.22  0.0.25  hexo-site</span><br><span class="line">hexo-server</span><br></pre></td></tr></table></figure>
-
-
-
-<h1 id="Node-프로젝트에서-라이브러리-일괄-버전-업데이트-하기"><a href="#Node-프로젝트에서-라이브러리-일괄-버전-업데이트-하기" class="headerlink" title="Node 프로젝트에서 라이브러리 일괄 버전 업데이트 하기"></a>Node 프로젝트에서 라이브러리 일괄 버전 업데이트 하기</h1><p>다음 명령어 3줄을 순서대로 때려주자.</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">npm i -g npm-check-updates</span><br><span class="line">ncu -u</span><br><span class="line">npm install</span><br></pre></td></tr></table></figure>
-
-<p>결과</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">amagr@DESKTOP-RTCBUCP MINGW64 ~/projects/hexo_blog (master)</span><br><span class="line">$ npm i -g npm-check-updates</span><br><span class="line">C:\Users\amagr\AppData\Roaming\npm\ncu -&gt; C:\Users\amagr\AppData\Roaming\npm\node_modules\npm-check-updates\bin\ncu</span><br><span class="line">C:\Users\amagr\AppData\Roaming\npm\npm-check-updates -&gt; C:\Users\amagr\AppData\Roaming\npm\node_modules\npm-check-updates\bin\npm-check-updates</span><br><span class="line">+ npm-check-updates@3.1.7</span><br><span class="line">added 154 packages from 80 contributors <span class="keyword">in</span> 9.7s</span><br><span class="line"></span><br><span class="line">amagr@DESKTOP-RTCBUCP MINGW64 ~/projects/hexo_blog (master)</span><br><span class="line">$ ncu -u</span><br><span class="line">Upgrading C:\Users\amagr\projects\hexo_blog\package.json</span><br><span class="line">[====================] 19/19 100%</span><br><span class="line"></span><br><span class="line"> hexo-deployer-git                    ^0.3.1  →  ^1.0.0</span><br><span class="line"> hexo-generator-archive               ^0.1.4  →  ^0.1.5</span><br><span class="line"> hexo-generator-index                 ^0.2.0  →  ^0.2.1</span><br><span class="line"> hexo-generator-json-content          ^3.0.1  →  ^4.1.3</span><br><span class="line"> hexo-generator-seo-friendly-sitemap  0.0.22  →  0.0.25</span><br><span class="line"> hexo-renderer-ejs                    ^0.3.0  →  ^0.3.1</span><br><span class="line"> hexo-renderer-stylus                 ^0.3.1  →  ^0.3.3</span><br><span class="line"> hexo-server                          ^0.2.0  →  ^0.3.3</span><br><span class="line"></span><br><span class="line">Run npm install to install new versions.</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">amagr@DESKTOP-RTCBUCP MINGW64 ~/projects/hexo_blog (master)</span><br><span class="line">$ npm install</span><br><span class="line">npm WARN babel-eslint@10.0.1 requires a peer of eslint@&gt;= 4.12.1 but none is installed. You must install peer dependencies yourself.</span><br><span class="line">npm WARN optional SKIPPING OPTIONAL DEPENDENCY: fsevents@1.2.4 (node_modules\fsevents):</span><br><span class="line">npm WARN notsup SKIPPING OPTIONAL DEPENDENCY: Unsupported platform <span class="keyword">for</span> fsevents@1.2.4: wanted &#123;<span class="string">"os"</span>:<span class="string">"darwin"</span>,<span class="string">"arch"</span>:<span class="string">"any"</span>&#125; (current: &#123;<span class="string">"os"</span>:<span class="string">"win32"</span>,<span class="string">"arch"</span>:<span class="string">"x64"</span>&#125;)</span><br><span class="line">npm WARN optional SKIPPING OPTIONAL DEPENDENCY: fsevents@1.2.7 (node_modules\hexo-deployer-git\node_modules\fsevents):</span><br><span class="line">npm WARN notsup SKIPPING OPTIONAL DEPENDENCY: Unsupported platform <span class="keyword">for</span> fsevents@1.2.7: wanted &#123;<span class="string">"os"</span>:<span class="string">"darwin"</span>,<span class="string">"arch"</span>:<span class="string">"any"</span>&#125; (current: &#123;<span class="string">"os"</span>:<span class="string">"win32"</span>,<span class="string">"arch"</span>:<span class="string">"x64"</span>&#125;)</span><br><span class="line"></span><br><span class="line">added 158 packages from 69 contributors, removed 28 packages, updated 30 packages and audited 3798 packages <span class="keyword">in</span> 12.346s</span><br><span class="line">found 11 vulnerabilities (6 low, 5 moderate)</span><br><span class="line">  run `npm audit fix` to fix them, or `npm audit` <span class="keyword">for</span> details</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h2><p> <a href="https://stackoverflow.com/questions/16073603/how-do-i-update-each-dependency-in-package-json-to-the-latest-version" target="_blank" rel="external nofollow noopener noreferrer">https://stackoverflow.com/questions/16073603/how-do-i-update-each-dependency-in-package-json-to-the-latest-version</a></p>
-
-      
-      
-          
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-
-  
-      
-
-
-  
-  
-  
-  
-
   </div>
 
   
@@ -1632,7 +1679,7 @@ sudo apt-get upgrade</code></pre><p><img src="/images/2019/Untitled-8e694a7f-b2b
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">221</span>
+          <span class="site-state-item-count">222</span>
           <span class="site-state-item-name">포스트</span>
         </a>
       </div>

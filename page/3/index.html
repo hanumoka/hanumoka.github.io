@@ -245,6 +245,225 @@ gtag('config', 'UA-100596920-1');
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2020/06/06/centOs-20200606-oracle-virtualbox-centos7-7/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Hanumoka">
+      <meta itemprop="description" content="아마추어 개발자의 블로그">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hanumoka, IT Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/06/06/centOs-20200606-oracle-virtualbox-centos7-7/" class="post-title-link" itemprop="url">virtual box에 centos7.7 설치하기</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">작성일</span>
+
+              <time title="Post created: 2020-06-06 21:02:40" itemprop="dateCreated datePublished" datetime="2020-06-06T21:02:40+09:00">2020-06-06</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Updated at: 2020-06-23 20:27:21" itemprop="dateModified" datetime="2020-06-23T20:27:21+09:00">2020-06-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/centOs/" itemprop="url" rel="index">
+                    <span itemprop="name">centOs</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 20200427hexo_post_head -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="가상머신을-생성하고-기초적인-설정하기"><a href="#가상머신을-생성하고-기초적인-설정하기" class="headerlink" title="가상머신을 생성하고 기초적인 설정하기"></a>가상머신을 생성하고 기초적인 설정하기</h3><p>우선 oracle vm virtualBox를 열고 새로운 가상머신을 추가하자.</p>
+<p><img src="/images/2020/virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled.png" alt="virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled.png"></p>
+<p>원하는 가상머신 이름과 머신을 저장할 폴더를 지정하자.</p>
+<p>그리고 종류는 <strong>Linux</strong>, 버전은 <strong>RedHat(64-bit)</strong>로 설정한 다음에 다음을 눌러주자.(이름이 centos인 경우 종류와 버전은 oracle vm virtualbox에서 자동으로 지정해준다.)</p>
+<p>다음은 가상머신의 메모리를 지정하는 부분이다. 난 <strong>2048</strong>로 지정했다.</p>
+<p><img src="/images/2020/virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%201.png" alt="virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%201.png"></p>
+<p>다음은 가상머신의 하드디스크 설정인데, 기본을 설정된 <strong>지금 새 가상 하드 디스클 만들기</strong>로 두고 넘어가자.</p>
+<p><img src="/images/2020/virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%202.png" alt="virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%202.png"></p>
+<p>다음도 기본으로 설정된 <strong>VDI</strong>를 설정한 뒤 넘어가자.</p>
+<p><img src="/images/2020/virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%203.png" alt="virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%203.png"></p>
+<p>다음화면에서는 동적할당을 <strong>고정크기로</strong> 변경 했다. 가상머신은 워낙 느리기 때문에 디스크 용량이 넉넉하다면 고정크기가 좋은듯하다.</p>
+<p><img src="/images/2020/virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%204.png" alt="virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%204.png"></p>
+<p>디스크 용량을 <strong>20GB</strong>로 지정했다. 난 <strong>centos 그놈 데스크탑 버전</strong>으로 설치할 거라서 좀 넉넉하게 잡았다.</p>
+<p><img src="/images/2020/virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%205.png" alt="virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%205.png"></p>
+<p>만들기 버튼을 누르면, oracle vm virtualbox가 앞서 설정한대로 가상머신을 만든다.</p>
+<p>시간이 좀 걸리니 커피나 한잔 때리고 오면 된다. SSD는 좀 빠를 줄 알았는데, 시간이 꽤나 걸린다.</p>
+<p><img src="/images/2020/virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%206.png" alt="virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%206.png"></p>
+<p>아래처럼 가상머신이 생성되면, 가상머신을 마우스 우클릭한 뒤 설정에 들어간다.</p>
+<p><img src="/images/2020/virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%207.png" alt="virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%207.png"></p>
+<p>가상머신 설정 - 일반 - 고급에서 클립보드 공유와 드래그 앤 드롭을 양방향으로 만들어준다.</p>
+<p>사실 터미널만 사용하면 별 쓸일이 없긴하지만, 데스크탑 버전 리눅스에서 혹시나 쓸수도 있다.</p>
+<p><img src="/images/2020/virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%208.png" alt="virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%208.png"></p>
+<p>가상머신 설정 - 시스템 - 마더보드에서 부팅순서에 플로피 디스크에 체크박스를 해제한다.</p>
+<p><img src="/images/2020/virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%209.png" alt="virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%209.png"></p>
+<p>가상머신 설정 - 시스템 - 프로세서에서 프로세서 개수를 2개로 늘려주었다.</p>
+<p><img src="/images/2020/virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%2010.png" alt="virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%2010.png"></p>
+<p>가상머신 설정 - 디스플레이 - 화면에서 비디오메모리를 최대치로 설정하자.</p>
+<p><img src="/images/2020/virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%2011.png" alt="virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%2011.png"></p>
+<p>가상머신 설정 - 오디오에서 오디오 사용하기 체크박스를 해제한다.</p>
+<p><img src="/images/2020/virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%2012.png" alt="virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%2012.png"></p>
+<p>가상머신 설정 - 네트워크에 - 어뎁터 1 탭에서 다음에 연결됨 이라는 항목을 어뎁터에 브리지로 지정한다.</p>
+<p>이렇게 지정하면 해당 가상머신은 현재 호스트 PC인 windows10의 공유기에서 자동으로 IP를 할당 받게 된다. 즉 호스트 PC와 동일한 네트워크를 사용하게 된다.</p>
+<p><img src="/images/2020/virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%2013.png" alt="virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%2013.png"></p>
+<p>확인을 눌러서 설정을 저장하자.</p>
+<p>이제 centos7.7 ISO파일을 이용해서 해당 가상머신에 centos를 설치해보자ㅏ.</p>
+<h3 id="가상머신에-centOS-설치하기"><a href="#가상머신에-centOS-설치하기" class="headerlink" title="가상머신에 centOS 설치하기"></a>가상머신에 centOS 설치하기</h3><p><a href="https://mirrors.oit.uci.edu/centos/" target="_blank" rel="external nofollow noopener noreferrer">https://mirrors.oit.uci.edu/centos/</a></p>
+<p>centos ISO 파일은 위 사이트에서 구할 수 있다. 원하는 버전을 다운 받으면 된다.</p>
+<p>나는 centos7.7 Everything.iso 파일을 다운 받았다. 참고로 토렌트가 속도가 조금더 빠른 느낌이다.</p>
+<p>앞서 생성한 가상머신을 선택하고 시작 버튼을 눌러주자.</p>
+<p><img src="/images/2020/virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%2014.png" alt="virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%2014.png"></p>
+<p>가상머신 실행시 OS 설치되지 않은 상태에서 OS 설치파일이 가상머신에 등록되지 않은 경우 아래처럼 창이 뜬다.</p>
+<p><img src="/images/2020/virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%2015.png" alt="virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%2015.png"></p>
+<p>파일 탐색기를 열어서, 다운받은 centos ISO 파일을 선택하자.</p>
+<p><img src="/images/2020/virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%2016.png" alt="virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%2016.png"></p>
+<p>그리고 시작 버튼을 누르면 해당 설치파일이 동작하게 된다.</p>
+<p><img src="/images/2020/virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%2017.png" alt="virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%2017.png"></p>
+<p>아래처럼 뜨면 Install Centos7을 선택하자. 가상머신창을 마우스로 클릭하고 키보드로 제어하면 된다.</p>
+<p><img src="/images/2020/virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%2018.png" alt="virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%2018.png"></p>
+<p>뭔가 한참 진행이 되다가 아래처럼 언어 선택창이 나온다. 한국어를 선택하고 넘어가자.</p>
+<p><img src="/images/2020/virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%2019.png" alt="virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%2019.png"></p>
+<p>다음 화면에서는 centos 설치전 설정이 나오는데, 자세히 보면 언어지원의 경우 진한 검정색이지만, 다른 설정들은 옅은 회색인 것을 확인 할 수 있다.</p>
+<p>옅은 회색인 경우 설정이 안됨을 표시한다. 먼저 날짜&amp;시간을 선택하자.</p>
+<p><img src="/images/2020/virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%2020.png" alt="virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%2020.png"></p>
+<p>다음과 같이 나오는데, 보통 디폴트로 서울이 선택 되어 있다. 완료버트을 눌러주자.</p>
+<p><img src="/images/2020/virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%2021.png" alt="virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%2021.png"></p>
+<p>아래처럼 날짜&amp;시간이 검정색으로 변한것을 확인 할 수 있다.</p>
+<p>다음은 키보드를 선택하자.</p>
+<p><img src="/images/2020/virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%2022.png" alt="virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%2022.png"></p>
+<p>키보드 역시 기본으로 한국어로 설정 되어 있다. 완료 버튼을 눌러주자.</p>
+<p><img src="/images/2020/virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%2023.png" alt="virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%2023.png"></p>
+<p>그 다음에 설치 대상을 클릭하자.</p>
+<p><img src="/images/2020/virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%2024.png" alt="virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%2024.png"></p>
+<p>앞서 가상머신을 생성할때 지정하나 고정 드라이브 20GB가 나온다. 해당 디스크에 체크를 확인하고 완료 버튼을 눌러주자(체크 표시가 없다면, 마우스로 클릭해서 체크해주자.)</p>
+<p><img src="/images/2020/virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%2025.png" alt="virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%2025.png"></p>
+<p>아래처럼 노란색 느낌표가 사라진다.</p>
+<p><img src="/images/2020/virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%2026.png" alt="virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%2026.png"></p>
+<p>그 다음에 소프트웨어선택에 들어가서 최소설치로 되어 있던 설정을 GNOME 데스크탑으로 변경한다.</p>
+<p><img src="/images/2020/virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%2027.png" alt="virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%2027.png"></p>
+<p>그 다음에 네트워크 &amp; 호스트 이름에 들어가서 이더넷을 켬으로 바꿔주자.</p>
+<p>아래처럼 공유기로부터 자동으로 이더넷설정을 받아온다.</p>
+<p><img src="/images/2020/virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%2028.png" alt="virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%2028.png"></p>
+<p>이제 설치시작을 눌러주자.</p>
+<p><img src="/images/2020/virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%2029.png" alt="virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%2029.png"></p>
+<p>다음 화면처럼 설치가 진행다.</p>
+<p>Root암호 설정과, 사용자 생성 메세지가 나온다.</p>
+<p>ROOT암호를 눌러서 root 계정의 암호를 설정하자.</p>
+<p>사용자 생성은 지금 안하고, 나중에 centos 설치가 완료되고 할 것이다.</p>
+<p><img src="/images/2020/virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%2030.png" alt="virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%2030.png"></p>
+<p>Root암호를 누르면 아래처럼 창이 나오고 root암호를 입력하면 된다.</p>
+<p><img src="/images/2020/virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%2031.png" alt="virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%2031.png"></p>
+<p>아래처럼 root계정의 암호를 설정했다. centos 다 설치되고 리부트가 될때까지 기다려 주자.</p>
+<p><img src="/images/2020/virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%2032.png" alt="virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%2032.png"></p>
+<p>설치가 완료되면 다음처럼 완료되었다고 나온다. 재부팅을 눌러주자.</p>
+<p><img src="/images/2020/virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%2033.png" alt="virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%2033.png"></p>
+<p>가상머신이 리부팅되면서 다음처럼 화면이 나온다. CentOs Linux를 선택하면, 설치한 Centos 가 실행된다.</p>
+<p><img src="/images/2020/virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%2034.png" alt="virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%2034.png"></p>
+<p>아래처럼 화면이 나오는데, 뭔가 라이센스 동의를 원하는것 같다. 클릭한 뒤 동의해주자.</p>
+<p><img src="/images/2020/virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%2035.png" alt="virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%2035.png"></p>
+<p><img src="/images/2020/virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%2036.png" alt="virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%2036.png"></p>
+<p>설정 완료를 눌러주자.</p>
+<p><img src="/images/2020/virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%2037.png" alt="virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%2037.png"></p>
+<p>다음과 같이 환영창이 나오면서 다시 한번 언어를 물어본다. 한국어를 그대로 두고 다음으로 넘어가자.</p>
+<p><img src="/images/2020/virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%2038.png" alt="virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%2038.png"></p>
+<p>다시 한번 키보드입력 방식을 물어보는데 기본으로 두고 다음으로 넘어가자.</p>
+<p><img src="/images/2020/virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%2039.png" alt="virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%2039.png"></p>
+<p>위치 정보를 쓰겠다고 하는데, 그냥 쓰라고 하고 다음</p>
+<p><img src="/images/2020/virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%2040.png" alt="virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%2040.png"></p>
+<p>시간대 역시 또 물어본다. 다음</p>
+<p><img src="/images/2020/virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%2041.png" alt="virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%2041.png"></p>
+<p>온라인 계정 연결을 물어보는데, 테스트 용도니 필요없다 건너뛰기</p>
+<p><img src="/images/2020/virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%2042.png" alt="virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%2042.png"></p>
+<p>이제 로그인하여 사용할 사용자 계정을 입력하라고 한다.(아까 초기에 설치시 생성하지 않아서 지금 생성하라고 나온것 같다. 사실 난 사용자 계정은 필수 생성할 필요가 없을줄 알았는데 centos7에서 기본적으로 로그인 사용자생성을 강요하는것 같다.)</p>
+<p>전체이름에 원하는 사용자 id를 입력하자</p>
+<p><img src="/images/2020/virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%2043.png" alt="virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%2043.png"></p>
+<p>전체이름을 입력하면, 자동으로 사용자 이름이 따라 생성된다. 다음으로 넘어가자.</p>
+<p><img src="/images/2020/virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%2044.png" alt="virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%2044.png"></p>
+<p>생성한 사용자의 암호를 입력하고 다음으로 넘어가자.</p>
+<p><img src="/images/2020/virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%2045.png" alt="virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%2045.png"></p>
+<p>휴 모든 설정이 끝났다. centos linux시작을 눌러주면 된다.</p>
+<p><img src="/images/2020/virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%2046.png" alt="virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%2046.png"></p>
+<p>마지막으로 이렇게 centos 그놈 데스크탑이 열린다.</p>
+<p><img src="/images/2020/virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%2047.png" alt="virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%2047.png"></p>
+<p>끝!</p>
+<h2 id="버추얼-박스-팁"><a href="#버추얼-박스-팁" class="headerlink" title="버추얼 박스 팁"></a>버추얼 박스 팁</h2><h3 id="단축키로-버추얼-박스의-마우스점유를-호스트-PC로-가져오기"><a href="#단축키로-버추얼-박스의-마우스점유를-호스트-PC로-가져오기" class="headerlink" title="단축키로 버추얼 박스의 마우스점유를 호스트 PC로 가져오기"></a><strong>단축키로 버추얼 박스의 마우스점유를 호스트 PC로 가져오기</strong></h3><p>호스트 PC에서 버추얼 박스내부를 제어하기 위해서는 마우스의 점유를 버추얼박스 내부의 가상머신에게 위임하게 되다. 버추얼박스를 사용하다가 다시 호스트 PC를 제어하기 위해서는 가상머신 내부에 같혀 있는 마우스의 점유권한을 호스트PC로 이동 시켜야 하는데 이때 ctrl + alt + delete로 빠져나가는 방법이 있다. 하지만 이 방법보다는 아래처럼 버추얼박스에서 입력 - 키보드 - 키보드 설정 메뉴에서 단축키를 지정해서 사용하는 것이 편하다.</p>
+<p><img src="/images/2020/virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%2048.png" alt="virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%2048.png"></p>
+<p>아래처럼 가상머신 탭에서 호스크티 조합의 단축키를 Shift + Ctrl로 변경 하면, 편하게 가상머신의 마우스 점유를 호스트PC로 가져올 수 있다.</p>
+<p><img src="/images/2020/virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%2049.png" alt="virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%2049.png"></p>
+<h3 id="게스트-확장-CD-이미지-삽입"><a href="#게스트-확장-CD-이미지-삽입" class="headerlink" title="게스트 확장 CD 이미지 삽입"></a>게스트 확장 CD 이미지 삽입</h3><p>게스트 확장이란 가상머신에 설치된 OS에 가상머신사용시 편리한 부가기능등을 설치하는 것이다.<br>클립보드, 폴더공유, 자동 해상도 맞춤 등 자잘하게 편리한 기능등이 있다.</p>
+<p>centos를 설치한 뒤, 가상머신에서 장치 - 게스트 확장 CD 이미지 삽입을 누른다.</p>
+<p><img src="/images/2020/virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%2050.png" alt="virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%2050.png"></p>
+<p>아래처럼 실행을 눌러주자.</p>
+<p><img src="/images/2020/virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%2051.png" alt="virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%2051.png"></p>
+<p>앞서 생성산 사용자 로그인 정보를 입력해서 인증하라고 나오는데, 비밀번호를 입력하고 인증하자.</p>
+<p><img src="/images/2020/virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%2052.png" alt="virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%2052.png"></p>
+<p>다음처럼 설치가 된다. ubuntu 데스크탑 경우 게스트학장 기능을 설치하면 버추얼 박스에서 자동으로 해상도를 잡아주는데 centos7에서는 그런 기능은 없는 듯하다.</p>
+<p><img src="/images/2020/virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%2053.png" alt="virtual%20box%20centos7%207%207b6baf1bf9194edc8144beaf32dd7405/Untitled%2053.png"></p>
+<p>끝!!!</p>
+<h3 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h3><p><a href="https://extrememanual.net/8513" target="_blank" rel="external nofollow noopener noreferrer">https://extrememanual.net/8513</a></p>
+<p><a href="https://wnw1005.tistory.com/21" target="_blank" rel="external nofollow noopener noreferrer">https://wnw1005.tistory.com/21</a></p>
+
+      
+      
+          
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+      
+
+
+  
+  
+  
+  
+
+        
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
     <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2020/05/21/springBoot-20200521-springboot-thymeleaf-layout-dialect/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1733,118 +1952,6 @@ ls -al</code></pre><p><img src="/images/2020/Github%20push%20pull%20ssh%20window
   
   
 
-        
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
-    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2019/12/28/ubuntu-20191228-ubuntu-open-port/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Hanumoka">
-      <meta itemprop="description" content="아마추어 개발자의 블로그">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hanumoka, IT Blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/12/28/ubuntu-20191228-ubuntu-open-port/" class="post-title-link" itemprop="url">ubuntu18.04 포트 확인 및 열기</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">작성일</span>
-
-              <time title="Post created: 2019-12-28 22:48:56" itemprop="dateCreated datePublished" datetime="2019-12-28T22:48:56+09:00">2019-12-28</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Updated at: 2020-04-16 01:50:12" itemprop="dateModified" datetime="2020-04-16T01:50:12+09:00">2020-04-16</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/ubuntu/" itemprop="url" rel="index">
-                    <span itemprop="name">ubuntu</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-      <!-- 20200427hexo_post_head -->
-      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
-      <script>
-          (adsbygoogle = window.adsbygoogle || []).push({});
-      </script>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="개요"><a href="#개요" class="headerlink" title="개요"></a>개요</h1><p>ubuntu 에서 열려 있는 포트를 확인하고, 원하는 포트를 열어보자.</p>
-<h1 id="포트열기"><a href="#포트열기" class="headerlink" title="포트열기"></a>포트열기</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">netstat -nap</span><br></pre></td></tr></table></figure>
-<p>위 명령어를 입력하면,  열려 있는 모든 포트를 확인 한다.</p>
-<p><img src="/images/2019/20191228ubuntu1804openport/Untitled.png" alt="ubuntu18%2004/Untitled.png"></p>
-<p>상당히 많은 정보를 보여준다. </p>
-<p>뭔가 시스템에서 내부적으로 점유하고 있는 포트가 많은것 같다.</p>
-<p>리스트 최 상단 부분에 현재 22포트가 열려 있는 것을 확인 할 수 있다.</p>
-<p>아래 명령어로 현재 LISTEN 중인 포트만 추려서 볼 수 있다.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">netstat -nap | grep LISTEN</span><br></pre></td></tr></table></figure>
-<p><img src="/images/2019/20191228ubuntu1804openport/Untitled%201.png" alt="ubuntu18%2004/Untitled%201.png"></p>
-<p>인터넷을 찾아보면 아래처럼 특정 포트의 상태를 확인하라고 나오는데, 사실 불필요한 정보가 너무 많이 보이기는 한다.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">netstat -nap | grep 22</span><br></pre></td></tr></table></figure>
-<p><img src="/images/2019/20191228ubuntu1804openport/Untitled%202.png" alt="ubuntu18%2004/Untitled%202.png"></p>
-<p>이번에는 원하는 포트를 방화벽에서 열어보자.</p>
-<p>3000, 4000 번 포트를 다음과 같이 열었다.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo iptables -I INPUT 1 -p tcp --dport 3000 -j ACCEPT</span><br><span class="line">sudo iptables -I INPUT 1 -p tcp --dport 4000 -j ACCEPT</span><br></pre></td></tr></table></figure>
-<p><img src="/images/2019/20191228ubuntu1804openport/Untitled%203.png" alt="ubuntu18%2004/Untitled%203.png"></p>
-<p>포트가 재대로 열렸는지 확인을 위해, 3000포트를 사용하는 react 프로젝트를 돌렸다.</p>
-<p>아래처럼 정상적으로 포트가 열려서, 외부에서 접근이 가능한 것을 확인 할 수 있다. (로컬 버추얼박스 우분투를 사용한 것이라 브라우저에서 localhost로 접근했지만, 외부에서 접근한 것이다.)</p>
-<p><img src="/images/2019/20191228ubuntu1804openport/Untitled%204.png" alt="ubuntu18%2004/Untitled%204.png"></p>
-<p>끝!!!</p>
-<h3 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h3><p><a href="https://server-engineer.tistory.com/418" target="_blank" rel="external nofollow noopener noreferrer">https://server-engineer.tistory.com/418</a></p>
-
-      
-      
-          
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-
-  
-      
-
-
-  
-  
-  
-  
-
   </div>
 
   
@@ -1915,7 +2022,7 @@ ls -al</code></pre><p><img src="/images/2020/Github%20push%20pull%20ssh%20window
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">221</span>
+          <span class="site-state-item-count">222</span>
           <span class="site-state-item-name">포스트</span>
         </a>
       </div>

@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.hanumoka.net/"/>
-  <updated>2021-05-05T11:49:55.953Z</updated>
+  <updated>2021-05-15T11:59:14.698Z</updated>
   <id>https://www.hanumoka.net/</id>
   
   <author>
@@ -15,6 +15,47 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>next.js + typescript + antd</title>
+    <link href="https://www.hanumoka.net/2021/05/15/toyproject-motorlatte-20210515-1/"/>
+    <id>https://www.hanumoka.net/2021/05/15/toyproject-motorlatte-20210515-1/</id>
+    <published>2021-05-15T11:51:14.000Z</published>
+    <updated>2021-05-15T11:59:14.698Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;p&gt;저번에 만든 next.js 프로젝트를 버리고 다시 셋팅을 한다.&lt;/p&gt;
+&lt;p&gt;이번에는 next.js + typescript + antd 를 적용해보려 한다.&lt;/p&gt;
+&lt;p&gt;이 3개중 뭐 하나도 재대로 아는게 아니라 프로젝트 설정 자체가 힘들었다.
+        
+      
+    
+    </summary>
+    
+    
+      <category term="ToyProject" scheme="https://www.hanumoka.net/categories/ToyProject/"/>
+    
+      <category term="MotorLatte" scheme="https://www.hanumoka.net/categories/ToyProject/MotorLatte/"/>
+    
+    
+      <category term="typescript" scheme="https://www.hanumoka.net/tags/typescript/"/>
+    
+      <category term="antd" scheme="https://www.hanumoka.net/tags/antd/"/>
+    
+      <category term="토이프로젝트" scheme="https://www.hanumoka.net/tags/%ED%86%A0%EC%9D%B4%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8/"/>
+    
+      <category term="motorlatte" scheme="https://www.hanumoka.net/tags/motorlatte/"/>
+    
+      <category term="개발일지" scheme="https://www.hanumoka.net/tags/%EA%B0%9C%EB%B0%9C%EC%9D%BC%EC%A7%80/"/>
+    
+      <category term="next.js" scheme="https://www.hanumoka.net/tags/next-js/"/>
+    
+  </entry>
   
   <entry>
     <title>MotorLatte-화면개발용 Next.js 프로젝트 생성</title>
@@ -681,39 +722,6 @@
       <category term="python" scheme="https://www.hanumoka.net/tags/python/"/>
     
       <category term="conda" scheme="https://www.hanumoka.net/tags/conda/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>virtual box에 centos7.7 설치하기</title>
-    <link href="https://www.hanumoka.net/2020/06/06/centOs-20200606-oracle-virtualbox-centos7-7/"/>
-    <id>https://www.hanumoka.net/2020/06/06/centOs-20200606-oracle-virtualbox-centos7-7/</id>
-    <published>2020-06-06T12:02:40.000Z</published>
-    <updated>2020-06-23T11:27:21.894Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        
-        
-          &lt;h3 id=&quot;가상머신을-생성하고-기초적인-설정하기&quot;&gt;&lt;a href=&quot;#가상머신을-생성하고-기초적인-설정하기&quot; class=&quot;headerlink&quot; title=&quot;가상머신을 생성하고 기초적인 설정하기&quot;&gt;&lt;/a&gt;가상머신을 생성하고 기초적인
-        
-      
-    
-    </summary>
-    
-    
-      <category term="centOs" scheme="https://www.hanumoka.net/categories/centOs/"/>
-    
-    
-      <category term="centos" scheme="https://www.hanumoka.net/tags/centos/"/>
-    
-      <category term="centos7" scheme="https://www.hanumoka.net/tags/centos7/"/>
-    
-      <category term="install" scheme="https://www.hanumoka.net/tags/install/"/>
-    
-      <category term="virtualbox" scheme="https://www.hanumoka.net/tags/virtualbox/"/>
     
   </entry>
   

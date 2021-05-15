@@ -245,6 +245,116 @@ gtag('config', 'UA-100596920-1');
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2018/11/08/node-20181108-node-path-join-vs-resolve/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Hanumoka">
+      <meta itemprop="description" content="아마추어 개발자의 블로그">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hanumoka, IT Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2018/11/08/node-20181108-node-path-join-vs-resolve/" class="post-title-link" itemprop="url">Node path.join() vs path.resolve()</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">작성일</span>
+
+              <time title="Post created: 2018-11-08 00:23:48" itemprop="dateCreated datePublished" datetime="2018-11-08T00:23:48+09:00">2018-11-08</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Updated at: 2020-04-16 01:50:12" itemprop="dateModified" datetime="2020-04-16T01:50:12+09:00">2020-04-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/node/" itemprop="url" rel="index">
+                    <span itemprop="name">node</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 20200427hexo_post_head -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h1><p>Vue나 Webpack등을 보면 Node의 Path모듈을 자주 사용하는 것을 볼수 있다.</p>
+<p>이 Path 모듈은 Node의 내장모듈로서 javascript에서 폴더나 파일의 경로를 쉽게 문자열로 만들어주는 유틸리티 모듈이다.</p>
+<p>특히 Windows 타입과 POSIX(Linux, macOS)타입으로 경로구분자가 다른수 있는데, 이 Path 모듈을 사용하면 여기에 대한 고민을 할 필요가 없어진다.</p>
+<p>Path 모듈에는 다양한 메소드가 있으나, 보통 인자로 path를 받고 메소드별로 적절하게 문자열 형태의 path를 리턴하는 형태이다.</p>
+<p>이 글에서는 Node의 path패키지 메서드중  여러개의 경로를 인자로 받아 하나의 경로로 합쳐주는 join과 resolve에 대해 정리해 보겠다.</p>
+<h1 id="Path-join"><a href="#Path-join" class="headerlink" title="Path.join()"></a>Path.join()</h1><p>메소드명처럼 인자로 받은 경로들을 하나로 합쳐서 문자열 형태로 path를 리턴한다.</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">path.join(<span class="string">'/foo'</span>, <span class="string">'bar'</span>, <span class="string">'baz/asdf'</span>, <span class="string">'quux'</span>, <span class="string">'..'</span>);</span><br><span class="line"><span class="comment">// Returns: '/foo/bar/baz/asdf'</span></span><br><span class="line"></span><br><span class="line">path.join(<span class="string">'foo'</span>, &#123;&#125;, <span class="string">'bar'</span>);</span><br><span class="line"><span class="comment">// throws 'TypeError: Path must be a string. Received &#123;&#125;'</span></span><br></pre></td></tr></table></figure>
+
+<p>재미있는 점은 첫 번째 예제의 맨 마지막 인자이다. </p>
+<p><strong>..</strong> 은 현재경로에서 한단계 위의 상위경로를 의미한다.</p>
+<p>따라서 <strong>/foo/bar/baz/asdf/quux</strong> 이 상태의 경로에서 마지막에 합쳐진 <strong>..</strong> 로 인해 quux의 한 단계 위 경로로 이동하게 되어 quux가 결과값에 제외된 것이다.</p>
+<p>즉, <strong>..</strong> 의 왼쪽에 있는 한 개의 경로인자는 제외된다.</p>
+<h1 id="Path-resolve"><a href="#Path-resolve" class="headerlink" title="Path.resolve()"></a>Path.resolve()</h1><p>resolve도 join과 마찬가지로 인자로 받은 경로들을 하나로 합쳐러 문자열 헝태로 리턴한다.</p>
+<p>하지만 다른점은 전달받은 경로인자들의 <strong>맨 오른쪽 부터 왼쪽으로 경로인자들을 합쳐</strong>나간다는 것이다.</p>
+<p>그리고 경로인자들을 합쳐나가는중 <strong>/</strong> 를 만나면 절대경로로 인식해서 나머지 경로 인자들을 무시한다.</p>
+<p>만약 <strong>/</strong> 를 끝까지 만나지 못하면 <strong>/현재경로/생성된경로</strong> 형태로 결과를 리턴한다.</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">path.resolve(<span class="string">'/foo/bar'</span>, <span class="string">'./baz'</span>);</span><br><span class="line"><span class="comment">// Returns: '/foo/bar/baz'</span></span><br><span class="line"></span><br><span class="line">path.resolve(<span class="string">'/foo/bar'</span>, <span class="string">'/tmp/file/'</span>);</span><br><span class="line"><span class="comment">// Returns: '/tmp/file'</span></span><br><span class="line"></span><br><span class="line">path.resolve(<span class="string">'wwwroot'</span>, <span class="string">'static_files/png/'</span>, <span class="string">'../gif/image.gif'</span>);</span><br><span class="line"><span class="comment">// if the current working directory is /home/myself/node,</span></span><br><span class="line"><span class="comment">// this returns '/home/myself/node/wwwroot/static_files/gif/image.gif'</span></span><br></pre></td></tr></table></figure>
+
+<p>여기서도 <strong>..</strong> 의 왼쪽에 있는 한 개의 경로인자는 제외된다.<br>이 특성은 Path 모듈의 메소드 전반에 적용되는 룰인것 같다.</p>
+<h1 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h1><p><a href="https://nodejs.org/api/path.html" target="_blank" rel="external nofollow noopener noreferrer">https://nodejs.org/api/path.html</a></p>
+
+      
+      
+          
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+      
+
+
+  
+  
+  
+  
+
+        
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
     <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2018/11/07/webpack-20181107-webpack-error-Cannot-find-module-webapck/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1294,170 +1404,6 @@ gtag('config', 'UA-100596920-1');
   
   
 
-        
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
-    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2018/10/06/javascript-20181006-javascript-callback/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Hanumoka">
-      <meta itemprop="description" content="아마추어 개발자의 블로그">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hanumoka, IT Blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2018/10/06/javascript-20181006-javascript-callback/" class="post-title-link" itemprop="url">Javascript - 동기(synchronous), 비동기(asynchronous) 프로그래밍</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">작성일</span>
-
-              <time title="Post created: 2018-10-06 09:31:47" itemprop="dateCreated datePublished" datetime="2018-10-06T09:31:47+09:00">2018-10-06</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Updated at: 2020-04-16 01:50:11" itemprop="dateModified" datetime="2020-04-16T01:50:11+09:00">2020-04-16</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/javascript/" itemprop="url" rel="index">
-                    <span itemprop="name">javascript</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-      <!-- 20200427hexo_post_head -->
-      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
-      <script>
-          (adsbygoogle = window.adsbygoogle || []).push({});
-      </script>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h1><p>이 글은 자바스크립트의 동기(asynchronous) + 블록킹, 비동기 + 논블록킹 구조에 대한 설명이다.</p>
-<h2 id="동기-synchronous-와-블록킹-Bloking-이란"><a href="#동기-synchronous-와-블록킹-Bloking-이란" class="headerlink" title="동기 synchronous 와 블록킹 Bloking 이란"></a>동기 synchronous 와 블록킹 Bloking 이란</h2><p>일단 동기적인 동작의 예를 식당과 주방장을 통해 들어보겠다.</p>
-<blockquote>
-<p>일단 중국집이 하나 있고 이 중국집에는 한명의 주방장이 요리를 한다고 가정하자.<br>군만두 한 접시를 만들어 달라는 주문서가 도착했다.<br>이 군만두는 냉동재료라서 전자레인지를 사용해야 한다.<br>하지만 전자레인지의 타이머가 고장이 난 상태이다.<br>주방장은 전자레인지에 만두를 넣고 전자레인지를 동작시킨뒤, 자신의 손목시계를 보며 3분을 기다린다.<br>그때 홀에서 짜장면 3그릇 추가라는 주문이 추가로 도착했다.<br>하지만 주방장은 고장난 전자레인지 때문에 한눈을 팔수가 없다.<br>3분동안 주방에서는 어떤 다른 음식이 만들어지기는 커녕 계속 주문이 쌓이게 된다.<br>이걸 보는 중국집 사장님은 속이 타들어 간다.<br>내일 저 망할 전자레인지를 어떻게든 해야 겠다고 다짐한다.</p>
-</blockquote>
-<p>본론으로 돌아와서, 동기적인 소스코드의 예를 보면…</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(<span class="string">'동기적 소스코드 시작...'</span>);</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">run1</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'run1 동작...'</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">run1();</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'동기적 소스코드 종료...'</span>);</span><br></pre></td></tr></table></figure>
-
-<p>위 코드를 실행하면 호출된 순서대로 실행되는 것을 확인 할 수 있다.(함수선언문을 호출과 착각하지 말자.)</p>
-<p>이것이 코드의 동기적인 동작이다.</p>
-<p><img src="/images/20181006-javascript-callback_1.png" alt="동기적 코드의 실행결과"></p>
-<p>쓰레드를 이용하여 위 코드를 표현하면 다음과 같을 것이다.</p>
-<p><img src="/images/20181006-javascript-callback_2.png" alt="동기적 코드의 쓰레드의 흐름"></p>
-<p>동기적 코드의 동작은 시간의 흐름대로 순서를 지키며 진행되기 때문에 익숙하고, 이해하기 쉽다.</p>
-<p>하지만 javascript 코드의 실행환경이 싱글쓰레드 기반이기 때문에, <strong>싱글 쓰레드 실행환경에서 이런 동기적인 코드</strong>를 사용할 때 쓰레드의 <strong>블록킹(blocking) 현상</strong>이 발생한다.<br>다음 코드를 보면…</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(<span class="string">'동기적 소스코드 시작...'</span>);</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">run1</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'run1 동작...'</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//실행이 종료 될때까지 오랜시간이 걸리는 함수</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">run2</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'run2 동작...'</span>);</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'서버로 부터 50mb 정도의 파일을 다운로드 합니다.'</span>);</span><br><span class="line">  <span class="comment">/*</span></span><br><span class="line"><span class="comment">    파일을 다운로드 하는 로직 대략 1분이 소요됨.</span></span><br><span class="line"><span class="comment">  */</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">run1();</span><br><span class="line">run2();</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'동기적 소스코드 종료...'</span>);</span><br></pre></td></tr></table></figure>
-
-<p>run2 메소드는 파일을 서버로 부터 다운받는 함수라고 하자, 그리고 파일을 다운로드 받는데 대략 1분의 시간이 걸린다고 가정하자.</p>
-<p>위 코드를 실행하게 되면</p>
-<p><img src="/images/20181006-javascript-callback_3.png" alt></p>
-<p>위처럼 동작하고 1분정도를 기다리면 나머지 코드가 아래처럼 실행 될 것이다.</p>
-<p><img src="/images/20181006-javascript-callback_4.png" alt></p>
-<p>위 동작을 쓰레드로 표현해 보자면 다음과 같다.</p>
-<p><img src="/images/20181006-javascript-callback_5.png" alt="run2함수는 쓰레드의 흐름을 막아(blocking)버린다."></p>
-<p>즉, <strong>싱글쓰레드</strong> + <strong>동기적 코드의 흐름</strong> + <strong>동작시간이 오래걸리는 함수의 호출</strong>은 쓰레드의 블록킹(blocking)을 발생 시킨다.</p>
-<p>위 코드가 시간의 흐름에 따라, Call stack이 어떻게 변하는지 확인해 보자.</p>
-<p>위 동작을 javascript 호출 스택으로 살펴보면 다음과 같다.</p>
-<p><img src="/images/20181006-javascript-callback_a_1.png" alt="a_1"><br><img src="/images/20181006-javascript-callback_a_2.png" alt="a_2"><br><img src="/images/20181006-javascript-callback_a_3.png" alt="a_3"><br><img src="/images/20181006-javascript-callback_a_4.png" alt="a_4"><br><img src="/images/20181006-javascript-callback_a_5.png" alt="a_5"><br><img src="/images/20181006-javascript-callback_a_6.png" alt="a_6"><br><img src="/images/20181006-javascript-callback_a_7.png" alt="a_7"><br><img src="/images/20181006-javascript-callback_a_8.png" alt="a_8"><br><img src="/images/20181006-javascript-callback_a_9.png" alt="a_9"><br><img src="/images/20181006-javascript-callback_a_10.png" alt="a_10"><br><img src="/images/20181006-javascript-callback_a_11.png" alt="a_11"><br><img src="/images/20181006-javascript-callback_a_12.png" alt="a_12"><br><img src="/images/20181006-javascript-callback_a_13.png" alt="a_13"></p>
-<p>이 쓰레드의 블록킹은 프로그램의 흐름의 멈춤을 의미하며, 사용자는 프로그램이 먹통이 되어버렸다고 느낄 것이다.</p>
-<p>설명의 편의를 위해 callstack의 일을 처리하는 tread를 mainthread라고 부르겠다.</p>
-<p>ajax 통신이나, IO 프로그래밍 같이 시간이 오래걸리는 작업들이 발생할 때마다 프로그램이 멈춰버리는 것은 큰 문제가 될 것이다.</p>
-<p><strong>위와 같은 문제를 해결하기 위해서 javascript는 멀티스레드 프로그래밍을 지원하는 것이 아니라, 싱글쓰레드에서 비동기적 프로그래밍을 javascript 실행환경의 API로 지원 한다.</strong></p>
-<p>멀티 쓰레드 프로그래밍은 굉장히 어렵고, 복잡한 작업이다. 거기에 프로그램의 동작을 100퍼센트 예측하기는 불가능에 가깝다.<br>javascript는 이런 어려운 프로그래밍을 피하기 위해서 일부로 개발자가 제어할 수 있는 쓰레드(main thread)를 1개로 제한하고 비동기적 프로그래밍을 지원 함으로써 멀티쓰레드 프로그래밍과 비슷한 효과를 발생시킨다.</p>
-<p>여기서 잠깐 다른 이야기를 하자면, javascript는 싱글 쓰레드로 동작 한다고들 말해서 진짜 쓰레드가 1개 뿐일거라 착각 할수 있다.<br>하지만 javascript의 실행환경은 멀티스레드이며 개발자가 javascript 코드로 제어할 수 있는 쓰레드(main tread)를 하나로 제한 하였기 때문에 javascript는 싱글 쓰레드 프로그래밍 이라고 부른다.<br>다시 본론으로 돌아가서…</p>
-<p>이런 싱글 쓰레드환경의 동기적 코드흐름에서 발생하는 쓰레드의 blocking을 해결하기 위해 run2함수를 비동기적으로 실행시킬 필요가 생긴다.</p>
-<h2 id="비동기-asynchronous적-동작과-논블록킹-Non-Blocking"><a href="#비동기-asynchronous적-동작과-논블록킹-Non-Blocking" class="headerlink" title="비동기 asynchronous적 동작과 논블록킹 Non Blocking"></a>비동기 asynchronous적 동작과 논블록킹 Non Blocking</h2><p>이번에는 비동기적으로 일하는 주방장의 예를 한번 들어보겠다.</p>
-<blockquote>
-<p>일단 중국집이 하나 있고 이 중국집에는 한명의 주방장이 요리를 한다고 가정하자.<br>중요한 것은 이 주방장이 비동기적으로 일한다는 것이다.<br>군만두 1접시 라는 주문서가 도착했다.<br>이 군만두는 냉동재료이다.<br>비동기 주방장은 군만두를 전자레인지에 넣고 타이머를 3분 맞춘뒤, 전자레인지를 돌린다.<br>그리고 다음 할일을 위해 재 자리에 돌아온다.<br>그때 홀에서 짜장면 1그릇 추가라는 주문이 추가로 도착했다.<br>주방장은 짜장면을 만든다.<br>짜장면 1그릇을 만들었을 때, 아까 돌린 전자레인지의 동작 종료를 알리는 알람이 들린다.<br>이 비동기 주방장은 만들던 짜장면 1그릇 까지만 완성하고 홀에 전달한 뒤, 전자레인지에서 만두를 꺼내서 홀에 전달한다.<br>중국집 사장님은 쉬지 않고 열심히 일하는 주방장을 보며 다음달 주방장 월급 인상을 고려하게 된다.</p>
-</blockquote>
-<p>위 비동기적으로 일하는 주방장을 보면 오래걸리는 특정 작업(만두 해동)들을 누군가(전자레인지)에게 미루고 자신은 계속 일을 진행한다.<br>결과적으로 1번째로 주문된 군만두 보다 2번째로 주문된 짜장면이 더 빨리 홀에 전달 되었다.<br>이렇게 호출에 순서(음식 주문 순서)와 다르게 실행(주문된 음식이 홀에 나오는것)되는 프로그래밍을 비동기적 프로그래밍이라고 한다.</p>
-<p>이 비동기적 프로그래밍의 가장큰 장점은, 주방장이 노는 시간(mainthread이 blocking)이 없어지므로 음식주문은 밀리지 않고(프로그램은 멈추지 않고) 효율적으로 음식이 생산되게 된다.</p>
-<p>여기서 잠깐 비동기적으로 처리해야할 작업들을 구별해보자.</p>
-<ol>
-<li>파일을 읽거나, 쓰기 처럼 오래걸리는 작업</li>
-<li>ajax 통신작업</li>
-<li>Dom의 이벤트 처리작업</li>
-<li>일정 시간 뒤에 동작을 해야 하는 작업</li>
-</ol>
-<p>위 작업들을 callstack작업 처리를 담당하는 mainthread 하게 된다면, 스레드 블록킹이 발생하고 프로그램은 멈추게 된다.<br>따라서 위 작업들을 mainthread 대신 처리하는 녀석들(전자레인지 같은)이 필요하다.</p>
-<p>javascrpit는 이런 전자레인지들을 API를 통해서 제공한다.</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(<span class="string">'동기적 소스코드 시작...'</span>);</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">run1</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'run1 동작...'</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">run2</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'run2 동작...'</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">run1();</span><br><span class="line">setTimeout(run2, <span class="number">1000</span> * <span class="number">3</span>); <span class="comment">// 3초 이후에 run2 함수를 실행 </span></span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'동기적 소스코드 종료...'</span>);</span><br></pre></td></tr></table></figure>
-
-<p>일단 위 코드의 결과를 보자.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">동기적 소스코드 시작...</span><br><span class="line">run1 동작...</span><br><span class="line">동기적 소스코드 종료...</span><br><span class="line">run2 동작...</span><br></pre></td></tr></table></figure>
-
-<p>동기적 소스코드 종료… 라는 문구가 run2 동작이라는 문구보다 더 빨리 출력되었다.<br>코드의 결과를 보면 자바스크립트의 쓰레드는 run2라는 함수를 setTimeout이라는 전자레인지에 넣고 3초 라는 타이머를 돌린 뒤, 자신의 일을 계속 진행한 것으로 보여진다.</p>
-<p>위의 setTimeout은 특정 시간 뒤에, callback 함수를 호출가능하게 만들어주는 전자레인지이다.<br>즉 mainthread 대신 시간을 세어주는 javascript 비동기 API이다.</p>
-<p>위 코드의 동작도 함수의 호출스택으로 보면 다음과 같다.<br>setTimeout 호출직전은 동기적인 동작과 같으니 생략하고, setTimeout 호출부터 본다면…</p>
-<p><img src="/images/20181006-javascript-callback_b_0.png" alt="setTimeout을 만난 스레드는 이것을 Web API로 넘긴다. 이 행위는 Web API라는 전자레인지에 run2를 넣고 동작시키는 행위라고 생각하면 된다."></p>
-<p><img src="/images/20181006-javascript-callback_b_1.png" alt="Web API에서는 이런 쓰레드의 블록킹을 현상을 발생시키는, 지연작업등을 비동기적으로 실행할 수 있게 여러가지 전자레인지를 구비해 놓고 있다. "></p>
-<p><img src="/images/20181006-javascript-callback_c_1.png" alt="setTimout은 전자레인지 중 하나이며, ajax, Dom 등도 존재한다."></p>
-<p><img src="/images/20181006-javascript-callback_b_2.png" alt="쓰레드는 전자레인지는 신경쓰지 않고 자신의 callstack에 돌아와 계속 남은일을 처리해 나간다. 이 시점에도 동시에 setTimeout은 자신이 해야하는 일, 즉 3초의 시간을 재고 있다."></p>
-<p><img src="/images/20181006-javascript-callback_b_3.png" alt="쓰레드는 callstack의 작업을 모두 끝내고, 전자레인지 setTimeout은 여전히 시간을 재고 있다."></p>
-<p><img src="/images/20181006-javascript-callback_b_4.png" alt="드디어 setTimeout은 3초를 다 세고, run2라는 callback함수를 task Queue에 집어 넣는다."></p>
-<p><img src="/images/20181006-javascript-callback_b_5.png" alt="Event Loop는 callstack이 비어있는지 확인하고 비어있다면 task queue에 가장 먼저 들어온 run2함수를 callstack에 전달한다."></p>
-<p><img src="/images/20181006-javascript-callback_b_6.png" alt="쓰레드는 CallStack 에 있는 run2작업을 처리하기 시작한다."></p>
-<p>여기서 Web API의 역할은 callstack의 일들을 처리하는 MainThread 대신 비동기적으로 처리해야 할 일을 대신 처리하는 것이다.<br>숫자를 센다던지, 서버의 요청을 기다린다 던지, DOM에서 발생할 수 있는 이벤트를 기다리는 등의 일들을 처리한다.</p>
-<p>개발자가 해야할 일은 이런 머리아픈 비동기적 작업을 API에게 맡기고, 비동기적 작업 결과에 따라 처리해야 할일을 callback에 담아주기만 하면 되는것이다.</p>
-<p>싱글쓰레드이지만 동시성작업이 필요한 작업들을 javascript API를 통해 대신처리하므로, MainThread는 Non blocking(막히지 않고) 동작하게 된다.</p>
-<hr>
-<h1 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h1><p><a href="https://joshua1988.github.io/web-development/javascript/javascript-asynchronous-operation/" target="_blank" rel="external nofollow noopener noreferrer">https://joshua1988.github.io/web-development/javascript/javascript-asynchronous-operation/</a></p>
-<p><a href="https://engineering.huiseoul.com/%EC%9E%90%EB%B0%94%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8%EB%8A%94-%EC%96%B4%EB%96%BB%EA%B2%8C-%EC%9E%91%EB%8F%99%ED%95%98%EB%8A%94%EA%B0%80-%EC%9D%B4%EB%B2%A4%ED%8A%B8-%EB%A3%A8%ED%94%84%EC%99%80-%EB%B9%84%EB%8F%99%EA%B8%B0-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D%EC%9D%98-%EB%B6%80%EC%83%81-async-await%EC%9D%84-%EC%9D%B4%EC%9A%A9%ED%95%9C-%EC%BD%94%EB%94%A9-%ED%8C%81-%EB%8B%A4%EC%84%AF-%EA%B0%80%EC%A7%80-df65ffb4e7e" target="_blank" rel="external nofollow noopener noreferrer">https://engineering.huiseoul.com/%EC%9E%90%EB%B0%94%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8%EB%8A%94-%EC%96%B4%EB%96%BB%EA%B2%8C-%EC%9E%91%EB%8F%99%ED%95%98%EB%8A%94%EA%B0%80-%EC%9D%B4%EB%B2%A4%ED%8A%B8-%EB%A3%A8%ED%94%84%EC%99%80-%EB%B9%84%EB%8F%99%EA%B8%B0-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D%EC%9D%98-%EB%B6%80%EC%83%81-async-await%EC%9D%84-%EC%9D%B4%EC%9A%A9%ED%95%9C-%EC%BD%94%EB%94%A9-%ED%8C%81-%EB%8B%A4%EC%84%AF-%EA%B0%80%EC%A7%80-df65ffb4e7e</a></p>
-<p><a href="https://hudi.kr/%EB%B9%84%EB%8F%99%EA%B8%B0%EC%A0%81-javascript-%EC%8B%B1%EA%B8%80%EC%8A%A4%EB%A0%88%EB%93%9C-%EA%B8%B0%EB%B0%98-js%EC%9D%98-%EB%B9%84%EB%8F%99%EA%B8%B0-%EC%B2%98%EB%A6%AC-%EB%B0%A9%EB%B2%95/" target="_blank" rel="external nofollow noopener noreferrer">https://hudi.kr/%EB%B9%84%EB%8F%99%EA%B8%B0%EC%A0%81-javascript-%EC%8B%B1%EA%B8%80%EC%8A%A4%EB%A0%88%EB%93%9C-%EA%B8%B0%EB%B0%98-js%EC%9D%98-%EB%B9%84%EB%8F%99%EA%B8%B0-%EC%B2%98%EB%A6%AC-%EB%B0%A9%EB%B2%95/</a></p>
-<p><a href="https://developer.mozilla.org/ko/docs/Web/JavaScript/EventLoop" target="_blank" rel="external nofollow noopener noreferrer">https://developer.mozilla.org/ko/docs/Web/JavaScript/EventLoop</a></p>
-
-      
-      
-          
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-
-  
-      
-
-
-  
-  
-  
-  
-
   </div>
 
   
@@ -1528,7 +1474,7 @@ gtag('config', 'UA-100596920-1');
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">221</span>
+          <span class="site-state-item-count">222</span>
           <span class="site-state-item-name">포스트</span>
         </a>
       </div>

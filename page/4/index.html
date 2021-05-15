@@ -245,6 +245,118 @@ gtag('config', 'UA-100596920-1');
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2019/12/28/ubuntu-20191228-ubuntu-open-port/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Hanumoka">
+      <meta itemprop="description" content="아마추어 개발자의 블로그">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hanumoka, IT Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/12/28/ubuntu-20191228-ubuntu-open-port/" class="post-title-link" itemprop="url">ubuntu18.04 포트 확인 및 열기</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">작성일</span>
+
+              <time title="Post created: 2019-12-28 22:48:56" itemprop="dateCreated datePublished" datetime="2019-12-28T22:48:56+09:00">2019-12-28</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Updated at: 2020-04-16 01:50:12" itemprop="dateModified" datetime="2020-04-16T01:50:12+09:00">2020-04-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ubuntu/" itemprop="url" rel="index">
+                    <span itemprop="name">ubuntu</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 20200427hexo_post_head -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="개요"><a href="#개요" class="headerlink" title="개요"></a>개요</h1><p>ubuntu 에서 열려 있는 포트를 확인하고, 원하는 포트를 열어보자.</p>
+<h1 id="포트열기"><a href="#포트열기" class="headerlink" title="포트열기"></a>포트열기</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">netstat -nap</span><br></pre></td></tr></table></figure>
+<p>위 명령어를 입력하면,  열려 있는 모든 포트를 확인 한다.</p>
+<p><img src="/images/2019/20191228ubuntu1804openport/Untitled.png" alt="ubuntu18%2004/Untitled.png"></p>
+<p>상당히 많은 정보를 보여준다. </p>
+<p>뭔가 시스템에서 내부적으로 점유하고 있는 포트가 많은것 같다.</p>
+<p>리스트 최 상단 부분에 현재 22포트가 열려 있는 것을 확인 할 수 있다.</p>
+<p>아래 명령어로 현재 LISTEN 중인 포트만 추려서 볼 수 있다.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">netstat -nap | grep LISTEN</span><br></pre></td></tr></table></figure>
+<p><img src="/images/2019/20191228ubuntu1804openport/Untitled%201.png" alt="ubuntu18%2004/Untitled%201.png"></p>
+<p>인터넷을 찾아보면 아래처럼 특정 포트의 상태를 확인하라고 나오는데, 사실 불필요한 정보가 너무 많이 보이기는 한다.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">netstat -nap | grep 22</span><br></pre></td></tr></table></figure>
+<p><img src="/images/2019/20191228ubuntu1804openport/Untitled%202.png" alt="ubuntu18%2004/Untitled%202.png"></p>
+<p>이번에는 원하는 포트를 방화벽에서 열어보자.</p>
+<p>3000, 4000 번 포트를 다음과 같이 열었다.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo iptables -I INPUT 1 -p tcp --dport 3000 -j ACCEPT</span><br><span class="line">sudo iptables -I INPUT 1 -p tcp --dport 4000 -j ACCEPT</span><br></pre></td></tr></table></figure>
+<p><img src="/images/2019/20191228ubuntu1804openport/Untitled%203.png" alt="ubuntu18%2004/Untitled%203.png"></p>
+<p>포트가 재대로 열렸는지 확인을 위해, 3000포트를 사용하는 react 프로젝트를 돌렸다.</p>
+<p>아래처럼 정상적으로 포트가 열려서, 외부에서 접근이 가능한 것을 확인 할 수 있다. (로컬 버추얼박스 우분투를 사용한 것이라 브라우저에서 localhost로 접근했지만, 외부에서 접근한 것이다.)</p>
+<p><img src="/images/2019/20191228ubuntu1804openport/Untitled%204.png" alt="ubuntu18%2004/Untitled%204.png"></p>
+<p>끝!!!</p>
+<h3 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h3><p><a href="https://server-engineer.tistory.com/418" target="_blank" rel="external nofollow noopener noreferrer">https://server-engineer.tistory.com/418</a></p>
+
+      
+      
+          
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+      
+
+
+  
+  
+  
+  
+
+        
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
     <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2019/12/28/ubuntu-20191228-ubuntu-create-react-app/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1555,134 +1667,6 @@ hexo server                #hexo 블로그 기동</code></pre><p>아래 hexo ini
   
   
 
-        
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
-    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2019/10/13/docker-20191013-docker-compose-gitlab/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Hanumoka">
-      <meta itemprop="description" content="아마추어 개발자의 블로그">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hanumoka, IT Blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/10/13/docker-20191013-docker-compose-gitlab/" class="post-title-link" itemprop="url">ubuntu18.04에 docker compose로 gitlab 설치하기</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">작성일</span>
-
-              <time title="Post created: 2019-10-13 00:41:08" itemprop="dateCreated datePublished" datetime="2019-10-13T00:41:08+09:00">2019-10-13</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Updated at: 2020-04-16 01:50:11" itemprop="dateModified" datetime="2020-04-16T01:50:11+09:00">2020-04-16</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/docker/" itemprop="url" rel="index">
-                    <span itemprop="name">docker</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-      <!-- 20200427hexo_post_head -->
-      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
-      <script>
-          (adsbygoogle = window.adsbygoogle || []).push({});
-      </script>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="ubuntu에-docker-compose로-gitlab-설치하기"><a href="#ubuntu에-docker-compose로-gitlab-설치하기" class="headerlink" title="ubuntu에 docker compose로 gitlab 설치하기"></a>ubuntu에 docker compose로 gitlab 설치하기</h1><h1 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h1><p>가상머신의 ubuntu18.04에 docker compose를 통해서 gitlab 서버를 설치해 보겠다.</p>
-<p>ubuntu에 미리 docker, docker-compose 가 설치되어 있어야 한다.</p>
-<h1 id="1-docker-관리-폴더-만들기"><a href="#1-docker-관리-폴더-만들기" class="headerlink" title="1.docker 관리 폴더 만들기"></a>1.docker 관리 폴더 만들기</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">docker</span><br><span class="line">|-- gitlab</span><br><span class="line">  |-- gitlab-data</span><br><span class="line">  |    | -- backups</span><br><span class="line">  |    | -- config</span><br><span class="line">  |    | -- data</span><br><span class="line">  |    | -- logs </span><br><span class="line">  |-- docker-compose.yml</span><br></pre></td></tr></table></figure>
-
-<p>docker-compose.yml 파일과 컨테이너와 연결할 호스트 볼륨을 저장할 gitlab-data 폴더를 생성했다.</p>
-<h1 id="2-docker-compose-yml"><a href="#2-docker-compose-yml" class="headerlink" title="2. docker-compose.yml"></a>2. docker-compose.yml</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">web:</span><br><span class="line">  image: &#39;gitlab&#x2F;gitlab-ce:latest&#39;</span><br><span class="line">  restart: always</span><br><span class="line">  container_name: &#39;gitlab&#39;</span><br><span class="line">  hostname: &#39;127.0.0.1&#39;</span><br><span class="line">  environment:</span><br><span class="line">    GITLAB_OMNIBUS_CONFIG: |</span><br><span class="line">      external_url &#39;http:&#x2F;&#x2F;127.0.0.1:8929&#39;</span><br><span class="line">      gitlab_rails[&#39;gitlab_shell_ssh_port&#39;] &#x3D; 2224</span><br><span class="line">  ports:</span><br><span class="line">    - &#39;8929:8929&#39;</span><br><span class="line">    - &#39;2224:22&#39;</span><br><span class="line">  volumes:</span><br><span class="line">    - &#39;.&#x2F;gitlab-data&#x2F;config:&#x2F;etc&#x2F;gitlab&#39;</span><br><span class="line">    - &#39;.&#x2F;gitlab-data&#x2F;logs:&#x2F;var&#x2F;log&#x2F;gitlab&#39;</span><br><span class="line">    - &#39;.&#x2F;gitlab-data&#x2F;data:&#x2F;var&#x2F;opt&#x2F;gitlab&#39;</span><br><span class="line">    - &#39;.&#x2F;gitlab-data&#x2F;backups:&#x2F;var&#x2F;opt&#x2F;gitlab&#x2F;backups&#39;</span><br></pre></td></tr></table></figure>
-
-<p>gitlab 공식 사이트에 가면 gitlab을 위한 docker-compose 파일을 제공한다.</p>
-<p>그걸 받아서 볼륨과 포트정도만 수정했다.</p>
-<p>위 127.0.0.1로 설정된 부분은 필요한데로 고정아이피를 넣어주면 된다. </p>
-<p>지금은 실습을 위해 그냥 로컬호스트아이피로 박았다.</p>
-<p>참고로 external_url에 설정된 ULR은 나중에 gitlab서버에서 생성된 리파지토리의 clone할 URL로 제공된다.</p>
-<h1 id="3-혹시나-해서-gitlab-data-권한부여"><a href="#3-혹시나-해서-gitlab-data-권한부여" class="headerlink" title="3.혹시나 해서 gitlab-data 권한부여"></a>3.혹시나 해서 gitlab-data 권한부여</h1><p>이건 내가 공부가 적어 잘 모르겠다.</p>
-<p>혹시 컨테이너 실행시 볼륨에 파일을 쓰면서 권한 오류가 발생할까 싶어, gitlab-data 폴더에 777권한을 부여 할 것이다.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chmod -R 777 gitlab-data</span><br></pre></td></tr></table></figure>
-<p>-R 옵션은 gitlab-data폴더와 하위 폴더 모두에 한꺼번에 권한을 주는 옵션이다.</p>
-<p><img src="/images/2019/Untitled-4acbcbd0-73e5-4710-891b-7166d109aa71.png" alt></p>
-<h1 id="4-gitlab-도커-컨테이너-올리기"><a href="#4-gitlab-도커-컨테이너-올리기" class="headerlink" title="4. gitlab 도커 컨테이너 올리기"></a>4. gitlab 도커 컨테이너 올리기</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo docker-compose up -d</span><br></pre></td></tr></table></figure>
-<p>위 명령어로 gitlab 도커 컨테이너를 올리자.</p>
-<p><img src="/images/2019/Untitled-3f064605-782c-4f8d-a9ed-a1009c37ff20.png" alt></p>
-<p>위처럼 빨리 done이라 나오지만 gitlab은 컨테이너가 부트가 되는 시간이 좀 길다.</p>
-<p>로그를 확인해보자.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo docker-compose logs -f -t --tail&#x3D;&quot;all&quot;</span><br></pre></td></tr></table></figure>
-<p><img src="/images/2019/Untitled-4f6a3199-467a-4f8f-9bd0-7225d5b950ee.png" alt></p>
-<p>한참 로그가 나오다가 위처럼 http에 관한 로그가 나오기 시작하면 접속이 가능한 상태가 된다.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo docker-compose ps</span><br></pre></td></tr></table></figure>
-<p>위 명령어로 컨테이너 상태를 확인해보자.</p>
-<p><img src="/images/2019/Untitled-fc936bcf-cc1c-4e7c-952b-bbbfc824ccc7.png" alt></p>
-<p>status가 up으로 되어있으면 정상인 것이다. </p>
-<p>문제가 있는경우 계속 starting 인 경우가 있으니, 그땐 로그를 보고 해결책을 찾아야 한다.</p>
-<h1 id="5-gitlab에-접속해서-컨테이너-동작-확인하기"><a href="#5-gitlab에-접속해서-컨테이너-동작-확인하기" class="headerlink" title="5. gitlab에 접속해서 컨테이너 동작 확인하기."></a>5. gitlab에 접속해서 컨테이너 동작 확인하기.</h1><p>브라우저에 <a href="http://127.0.0.1:8928" target="_blank" rel="external nofollow noopener noreferrer">http://127.0.0.1:8928</a> 로 접속해보자.</p>
-<p><img src="/images/2019/Untitled-e27e4082-3782-4052-a6a8-7acde856c114.png" alt></p>
-<p>root 계정의 비밀번호를 입력해주자.</p>
-<p><img src="/images/2019/Untitled-9e112f2d-52f2-433a-8fa7-87c814b80b8d.png" alt></p>
-<p>그 다음 root/방금생성한 비멀번호 를 입력해서 로그인하자.</p>
-<p>그러면 Administrator 로 로그인 하게 된다.</p>
-<p>아래는 테스트 프로젝트를 push 해서 동작을 확인한 화면이다.</p>
-<p><img src="/images/2019/Untitled-717368c4-f393-471a-b9f7-60e1f3b7bb50.png" alt></p>
-
-      
-      
-          
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-
-  
-      
-
-
-  
-  
-  
-  
-
   </div>
 
   
@@ -1753,7 +1737,7 @@ hexo server                #hexo 블로그 기동</code></pre><p>아래 hexo ini
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">221</span>
+          <span class="site-state-item-count">222</span>
           <span class="site-state-item-name">포스트</span>
         </a>
       </div>

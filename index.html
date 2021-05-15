@@ -245,6 +245,189 @@ gtag('config', 'UA-100596920-1');
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2021/05/15/toyproject-motorlatte-20210515-1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Hanumoka">
+      <meta itemprop="description" content="아마추어 개발자의 블로그">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hanumoka, IT Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/05/15/toyproject-motorlatte-20210515-1/" class="post-title-link" itemprop="url">next.js + typescript + antd</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">작성일</span>
+              
+
+              <time title="Post created: 2021-05-15 20:51:14 / Updated at: 20:59:14" itemprop="dateCreated datePublished" datetime="2021-05-15T20:51:14+09:00">2021-05-15</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ToyProject/" itemprop="url" rel="index">
+                    <span itemprop="name">ToyProject</span>
+                  </a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ToyProject/MotorLatte/" itemprop="url" rel="index">
+                    <span itemprop="name">MotorLatte</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 20200427hexo_post_head -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>저번에 만든 next.js 프로젝트를 버리고 다시 셋팅을 한다.</p>
+<p>이번에는 next.js + typescript + antd 를 적용해보려 한다.</p>
+<p>이 3개중 뭐 하나도 재대로 아는게 아니라 프로젝트 설정 자체가 힘들었다. </p>
+<h2 id="실습"><a href="#실습" class="headerlink" title="실습"></a>실습</h2><h3 id="next-js-프로젝트-생성"><a href="#next-js-프로젝트-생성" class="headerlink" title="next.js 프로젝트 생성"></a>next.js 프로젝트 생성</h3><p>cra처럼 next.js도 보일러플레이트 프로젝트를 생성하는 명령어 create-next-app 이 있다.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npx create-next-app 프로젝트명</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/2021/20210515-1/Untitled.png" alt="1"></p>
+<h3 id="next-js에-typescript-적용"><a href="#next-js에-typescript-적용" class="headerlink" title="next.js에 typescript 적용"></a>next.js에 typescript 적용</h3><p>생성된 폴더를 webstorm으로 열고 root 경로에 <strong>tsconfog.json 파일을 생성한다.</strong></p>
+<p><img src="/images/2021/20210515-1/Untitled%201.png" alt="2"></p>
+<p>그리고 아래 명령어로 typescript관련 모듈을 설치한다.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install --save-dev typescript @types/react @types/node</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/2021/20210515-1/Untitled%202.png" alt="3"></p>
+<p>pages 폴더 내부에 _app.js 와 index.js 파일이 있을 것이다.</p>
+<p>해당 파일들의 확장자를 tsx로 변경해준다.</p>
+<p><img src="/images/2021/20210515-1/Untitled%203.png" alt="4"></p>
+<p>아래 명령어로 next.js를 개발모드로 실행한다.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm run dev</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/2021/20210515-1/Untitled%204.png" alt="5"></p>
+<p>next.js가 실행되면서 위 빨간줄 처럼 tsconfig.json 파일을 인식해서 디폴트 셋팅을 tsconfig.json에 해준다.</p>
+<p>브라우저로 접근하면 정상동작 하는 것을 볼 수 있다.</p>
+<p><img src="/images/2021/20210515-1/Untitled%205.png" alt="6"></p>
+<p><img src="/images/2021/20210515-1/Untitled%206.png" alt="7"></p>
+<p>tsconfig.json 파일을 열어보면, 자동으로 위처럼 내용이 채워진 것을 확인 할 수있다.</p>
+<p>나도 typescript는 잘 몰라서 어떤 설정인지 잘 모른다.</p>
+<p>typescript가 정상적으로 동작하는지 확인해보기 위해서, strict 설정을 잠시 true로 변경하고 pages폴더의 _app.tsx 폴더를 열어보자.</p>
+<p>아래처럼 MyApp의 Props에 빨간줄이 처지면서 webstorm에서 자동으로 typescript문법 검사를 하고 있는 것을 볼 수 있다. </p>
+<p>난 처음에 typescript가 동작하는지 않하는지 몰라서 webstorm에 별도의 설정을 해줘야 하는줄 알았다.  next.js에서 자동으로 생성해주는 tsconfig.json의 strick 값이 false여서 webstorm에 빡세개 검사를 하지 않았던 것이었다. </p>
+<p>Typescript가 다들 좋다고 하는데, 개인적인 생각으로는 이런 통일성없는 문법체크설정이 존재하는것 자체가 문제가 있다고 본다.  </p>
+<p><img src="/images/2021/20210515-1/Untitled%207.png" alt="8"></p>
+<p>자 여기까지 next.js 와 typescript 설정이 끝났다.</p>
+<h3 id="next-js-에-atnd-앤트디자인-적용"><a href="#next-js-에-atnd-앤트디자인-적용" class="headerlink" title="next.js 에 atnd(앤트디자인) 적용"></a>next.js 에 atnd(앤트디자인) 적용</h3><p>여기서 좀 많이 해맸다. 20210515기준 next.js 버전은 10버전이다. 뭔가 webpack 최신버전과 충돌이 있어서 삽질을 많이 했다. </p>
+<p>일단 antd를 설치한다.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yarn add antd</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/2021/20210515-1/Untitled%208.png" alt="9"></p>
+<p>그리고 styles폴더에 antd.less 파일을 생성하고 아래 내용을 채운다.</p>
+<p>주석이 살아 있는 것은 antd의 메인컬러설정으로 빨강으로 정했다.</p>
+<p>나머지는 다 주석으로 일부로 처리했다.(나중에 사용할수 있으므로 참고용으로 나둔다.)</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">@import</span> <span class="string">"~antd/dist/antd.less"</span>;</span><br><span class="line"></span><br><span class="line"><span class="variable">@primary-color:</span> <span class="number">#c02428</span>;  <span class="comment">// 매인 색 빨강</span></span><br><span class="line"><span class="comment">//@primary-color: #000; // primary color for all components</span></span><br><span class="line"><span class="comment">//@link-color: #1890ff; // link color</span></span><br><span class="line"><span class="comment">//@success-color: #52c41a; // success state color</span></span><br><span class="line"><span class="comment">//@warning-color: #faad14; // warning state color</span></span><br><span class="line"><span class="comment">//@error-color: #f5222d; // error state color</span></span><br><span class="line"><span class="comment">//@font-size-base: 14px; // major text font size</span></span><br><span class="line"><span class="comment">//@heading-color: rgba(0, 0, 0, 0.85); // heading text color</span></span><br><span class="line"><span class="comment">//@text-color: rgba(0, 0, 0, 0.65); // major text color</span></span><br><span class="line"><span class="comment">//@text-color-secondary: rgba(0, 0, 0, 0.45); // secondary text color</span></span><br><span class="line"><span class="comment">//@disabled-color: rgba(0, 0, 0, 0.25); // disable state color</span></span><br><span class="line"><span class="comment">//@border-radius-base: 4px; // major border radius</span></span><br><span class="line"><span class="comment">//@border-color-base: #d9d9d9; // major border color</span></span><br><span class="line"><span class="comment">//@box-shadow-base: 0 2px 8px rgba(0, 0, 0, 0.15); // major shadow for layers</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/2021/20210515-1/Untitled%209.png" alt="10"></p>
+<p>pages폴더의 _app.tsx 파일에 globall.css를 주석처리하고 방금 생성한 antd.less를 import 한다.</p>
+<p>_app.tsx는 next.js의 엔트리 포인트 파일로 공통적일 설정을 해당 파일에서 한다.</p>
+<p>antd.less 파일에 설정으로 antd의 전체적인 테마를 설정 할수 있게 된 것이다.</p>
+<p><img src="/images/2021/20210515-1/Untitled%2010.png" alt="11"></p>
+<p>아래 명령으로 next.js에서 css, less, sass 등 파일을 인식할 수 있게 도와주는 라이브러리를 추가하자.(webpack이나 babel을 잘 몰라서 정확한 것은 아니나 antd적용을 위해 필요한 라이브러리 인듯 하다.)</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install --save @zeit/next-css @zeit/next-less @zeit/next-sass babel-plugin-import less</span><br></pre></td></tr></table></figure>
+
+<p>pages폴더의 index.tsx 파일을 아래처럼 수정해주자.</p>
+<p>antd의 Button 컴포넌트를 사용해서 antd가 정상동작하고 앞서 설정한 메인색상(빨강)이 동작하는지 확인하기 위해서이다.</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123;Button&#125; <span class="keyword">from</span> <span class="string">"antd"</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="function"><span class="keyword">function</span> <span class="title">Home</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">   &lt;div&gt;</span><br><span class="line">     &lt;Button type=<span class="string">"primary"</span>&gt;Antd 버튼&lt;<span class="regexp">/Button&gt;</span></span><br><span class="line"><span class="regexp">   &lt;/</span>div&gt;</span><br><span class="line">  )</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/2021/20210515-1/Untitled%2011.png" alt="12"></p>
+<p>그리고 root 폴더 경루에 next.config.js 폴더를 생성한다.</p>
+<p>내용을 아래처럼 채워주자.</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> withSass = <span class="built_in">require</span>(<span class="string">"@zeit/next-sass"</span>);</span><br><span class="line"><span class="keyword">const</span> withLess = <span class="built_in">require</span>(<span class="string">"@zeit/next-less"</span>);</span><br><span class="line"><span class="keyword">const</span> withCSS = <span class="built_in">require</span>(<span class="string">"@zeit/next-css"</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> isProd = process.env.NODE_ENV === <span class="string">"production"</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// fix: prevents error when .less files are required by node</span></span><br><span class="line"><span class="keyword">if</span> (<span class="keyword">typeof</span> <span class="built_in">require</span> !== <span class="string">"undefined"</span>) &#123;</span><br><span class="line">    <span class="built_in">require</span>.extensions[<span class="string">".less"</span>] = <span class="function">(<span class="params">file</span>) =&gt;</span> &#123;&#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = withCSS(&#123;</span><br><span class="line">    cssModules: <span class="literal">true</span>,</span><br><span class="line">    cssLoaderOptions: &#123;</span><br><span class="line">        importLoaders: <span class="number">1</span>,</span><br><span class="line">        localIdentName: <span class="string">"[local]___[hash:base64:5]"</span>,</span><br><span class="line">    &#125;,</span><br><span class="line">    ...withLess(</span><br><span class="line">        withSass(&#123;</span><br><span class="line">            lessLoaderOptions: &#123;</span><br><span class="line">                javascriptEnabled: <span class="literal">true</span>,</span><br><span class="line">            &#125;,</span><br><span class="line">        &#125;)</span><br><span class="line">    ),</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/2021/20210515-1/Untitled%2012.png" alt="13"></p>
+<p>npm run dev 를 실행해서 다시 동작시키면 동작이 되어야 하는데…</p>
+<p>아래처럼 webpack의 모듈이 없다고 오류가 난다.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Error: Cannot find module <span class="string">'webpack/lib/node/NodeTempaltePlugin'</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/2021/20210515-1/Untitled%2013.png" alt="14"></p>
+<p>아무 생각없이 그냥 최신 webpack을 설치해 봤는데, 역시 다른 오류가 난다.</p>
+<p><a href="mailto:webpack@4.44.1" rel="external nofollow noopener noreferrer" target="_blank">webpack@4.44.1</a> 를 설치하자. next.js 10버전에서 webpack관련 이슈가 있어보인다.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm i webpack@4.44.1</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/2021/20210515-1/Untitled%2014.png" alt="15"></p>
+<p>다시 npm run dev를 하면….</p>
+<p>또 오류가 난다. @zeit/next-sass ??? 이건 앞서 설치한건데?</p>
+<p>다시 설치해주자.</p>
+<p><img src="/images/2021/20210515-1/Untitled%2015.png" alt="16"></p>
+<p>다시 npm run dev를 하면….</p>
+<p>@zeit/next-less??? 이것도 설치한건데???</p>
+<p><img src="/images/2021/20210515-1/Untitled%2016.png" alt="17"></p>
+<p>그냥 또다시 설치해준다.</p>
+<p><img src="/images/2021/20210515-1/Untitled%2017.png" alt="18"></p>
+<p>설치 중에 webstorm에서 디펜던시를 update하라고 한다. 해주자.</p>
+<p>예상으로는 webpack이 설치되면서 뭔가 모듈간의 의존성에 변경? 문제가 발생한거 같다.</p>
+<p><img src="/images/2021/20210515-1/Untitled%2018.png" alt="19"></p>
+<p>디펜던시가 완료된뒤 다시 npm run dev를 실행하면 아래처럼 antd가 정상동작하는 것을 확인 할 수 있다.</p>
+<p>하… 프로젝트 셋팅 개빡세</p>
+<p><img src="/images/2021/20210515-1/Untitled%2019.png" alt="20"></p>
+<p>끝</p>
+<p>혹시나 해서 package.json  파일을 남겨놓는다.</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"name"</span>: <span class="string">"ml-speedmaster-next"</span>,</span><br><span class="line">  <span class="attr">"version"</span>: <span class="string">"0.1.0"</span>,</span><br><span class="line">  <span class="attr">"private"</span>: <span class="literal">true</span>,</span><br><span class="line">  <span class="attr">"scripts"</span>: &#123;</span><br><span class="line">    <span class="attr">"dev"</span>: <span class="string">"next dev"</span>,</span><br><span class="line">    <span class="attr">"build"</span>: <span class="string">"next build"</span>,</span><br><span class="line">    <span class="attr">"start"</span>: <span class="string">"next start"</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">"dependencies"</span>: &#123;</span><br><span class="line">    <span class="attr">"@zeit/next-css"</span>: <span class="string">"^1.0.1"</span>,</span><br><span class="line">    <span class="attr">"@zeit/next-less"</span>: <span class="string">"^1.0.1"</span>,</span><br><span class="line">    <span class="attr">"@zeit/next-sass"</span>: <span class="string">"^1.0.1"</span>,</span><br><span class="line">    <span class="attr">"antd"</span>: <span class="string">"^4.15.5"</span>,</span><br><span class="line">    <span class="attr">"babel-plugin-import"</span>: <span class="string">"^1.13.3"</span>,</span><br><span class="line">    <span class="attr">"less"</span>: <span class="string">"^4.1.1"</span>,</span><br><span class="line">    <span class="attr">"next"</span>: <span class="string">"10.2.0"</span>,</span><br><span class="line">    <span class="attr">"react"</span>: <span class="string">"17.0.2"</span>,</span><br><span class="line">    <span class="attr">"react-dom"</span>: <span class="string">"17.0.2"</span>,</span><br><span class="line">    <span class="attr">"webpack"</span>: <span class="string">"^4.44.1"</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">"devDependencies"</span>: &#123;</span><br><span class="line">    <span class="attr">"@types/node"</span>: <span class="string">"^15.3.0"</span>,</span><br><span class="line">    <span class="attr">"@types/react"</span>: <span class="string">"^17.0.5"</span>,</span><br><span class="line">    <span class="attr">"typescript"</span>: <span class="string">"^4.2.4"</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h3><p><a href="https://nextjs.org/learn/excel/typescript/create-tsconfig" target="_blank" rel="external nofollow noopener noreferrer">https://nextjs.org/learn/excel/typescript/create-tsconfig</a></p>
+<p><a href="https://dev.to/burhanuday/using-ant-design-with-nextjs-custom-variables-for-ant-design-57m5" target="_blank" rel="external nofollow noopener noreferrer">https://dev.to/burhanuday/using-ant-design-with-nextjs-custom-variables-for-ant-design-57m5</a></p>
+<p><a href="https://velog.io/@jakeseo_me/%EB%8B%A4%EC%8B%9C-%ED%94%84%EB%A1%A0%ED%8A%B8-%ED%8B%80%EC%9E%A1%EA%B8%B0-2-next%EC%97%90-antd-%EC%84%A4%EC%B9%98%ED%95%98%EA%B8%B0" target="_blank" rel="external nofollow noopener noreferrer">https://velog.io/@jakeseo_me/다시-프론트-틀잡기-2-next에-antd-설치하기</a></p>
+<p><a href="https://github.com/vercel/next.js/issues/21721" target="_blank" rel="external nofollow noopener noreferrer">https://github.com/vercel/next.js/issues/21721</a></p>
+
+      
+      
+          
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+      
+
+
+  
+  
+  
+  
+
+        
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
     <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2021/05/05/toyproject-motorlatte-20210505-2/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1341,162 +1524,6 @@ gtag('config', 'UA-100596920-1');
   
   
 
-        
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
-    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2020/08/01/elasticsearch-20200801-elasticsearch7-ubuntu18/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Hanumoka">
-      <meta itemprop="description" content="아마추어 개발자의 블로그">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hanumoka, IT Blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/08/01/elasticsearch-20200801-elasticsearch7-ubuntu18/" class="post-title-link" itemprop="url">elasticsearch7을 ubuntu18에설치하기(virtualbox)</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">작성일</span>
-
-              <time title="Post created: 2020-08-01 11:11:29" itemprop="dateCreated datePublished" datetime="2020-08-01T11:11:29+09:00">2020-08-01</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Updated at: 2020-10-17 19:26:38" itemprop="dateModified" datetime="2020-10-17T19:26:38+09:00">2020-10-17</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Elasticsearch/" itemprop="url" rel="index">
-                    <span itemprop="name">Elasticsearch</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-      <!-- 20200427hexo_post_head -->
-      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
-      <script>
-          (adsbygoogle = window.adsbygoogle || []).push({});
-      </script>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h1><p>ubuntu 18.04가 설치된 virtual box에 elasticsearch7을 설치해보자.</p>
-<p>아직 공부가 부족해서, 자세한 내용을 모른체 연습용 elasticsearch를 설치하는 내용이다.</p>
-<p>클러스터, 샤드등 설정에 대한 내용은 포함하고 있지 않다.</p>
-<p><img src="/images/2020/Ubuntu%2018%2004%20elasticsearch7%20install%20a053c074d29c440f9377bdbc67dbd811/Untitled.png" alt="Ubuntu%2018%2004%20elasticsearch7%20install%20a053c074d29c440f9377bdbc67dbd811/Untitled.png"></p>
-<h1 id="실습"><a href="#실습" class="headerlink" title="실습"></a>실습</h1><h2 id="jdk-설치"><a href="#jdk-설치" class="headerlink" title="jdk 설치"></a>jdk 설치</h2><p>먼저 elasticsearch를 설치하기 위해서는 jdk 설치를 해야 한다.</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">javac -version</span><br></pre></td></tr></table></figure>
-
-<p><img src="/images/2020/Ubuntu%2018%2004%20elasticsearch7%20install%20a053c074d29c440f9377bdbc67dbd811/Untitled%201.png" alt="Ubuntu%2018%2004%20elasticsearch7%20install%20a053c074d29c440f9377bdbc67dbd811/Untitled%201.png"></p>
-<p>먼저 jdk가 설치 되어있는지 확인해보자. 난 위처럼 설치가 안되어 있다.</p>
-<p><img src="/images/2020/Ubuntu%2018%2004%20elasticsearch7%20install%20a053c074d29c440f9377bdbc67dbd811/Untitled%202.png" alt="Ubuntu%2018%2004%20elasticsearch7%20install%20a053c074d29c440f9377bdbc67dbd811/Untitled%202.png"></p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install openjdk<span class="number">-11</span>-jdk</span><br></pre></td></tr></table></figure>
-
-<p>난 위처럼 open jdk 11로 설치를 진행했다.</p>
-<p>아래처럼 jdk 가 설치 되었다.</p>
-<p><img src="/images/2020/Ubuntu%2018%2004%20elasticsearch7%20install%20a053c074d29c440f9377bdbc67dbd811/Untitled%203.png" alt="Ubuntu%2018%2004%20elasticsearch7%20install%20a053c074d29c440f9377bdbc67dbd811/Untitled%203.png"></p>
-<h2 id="Elasticsearch를-설치하자"><a href="#Elasticsearch를-설치하자" class="headerlink" title="Elasticsearch를 설치하자"></a>Elasticsearch를 설치하자</h2><p><a href="https://iruwl.github.io/catetan/install-elasticsearch-7.0.0-on-ubuntu-18.04/" target="_blank" rel="external nofollow noopener noreferrer">https://iruwl.github.io/catetan/install-elasticsearch-7.0.0-on-ubuntu-18.04/</a></p>
-<p>위 자료를 참고하여 실습을 진행했다.</p>
-<p>Elasticsearch리파지토리 GPG 공개키를 import 한다.</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -</span><br></pre></td></tr></table></figure>
-
-<p>아래처럼 OK 가 나온다면 정상적으로 키를 import 한 것이다.</p>
-<p><img src="/images/2020/Ubuntu%2018%2004%20elasticsearch7%20install%20a053c074d29c440f9377bdbc67dbd811/Untitled%204.png" alt="Ubuntu%2018%2004%20elasticsearch7%20install%20a053c074d29c440f9377bdbc67dbd811/Untitled%204.png"></p>
-<p>Elasticsearch 라파지토리를 등록한다. 아래처럼 현재 최신 버전인 7 버전 리파지토리를 등록했다.</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo sh -c <span class="string">'echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" &gt; /etc/apt/sources.list.d/elastic-7.x.list'</span></span><br></pre></td></tr></table></figure>
-
-<p><img src="/images/2020/Ubuntu%2018%2004%20elasticsearch7%20install%20a053c074d29c440f9377bdbc67dbd811/Untitled%205.png" alt="Ubuntu%2018%2004%20elasticsearch7%20install%20a053c074d29c440f9377bdbc67dbd811/Untitled%205.png"></p>
-<p>다음 명령어로 elasticsearch를 설치하자.</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt update</span><br><span class="line">sudo apt install elasticsearch</span><br></pre></td></tr></table></figure>
-
-<p><img src="/images/2020/Ubuntu%2018%2004%20elasticsearch7%20install%20a053c074d29c440f9377bdbc67dbd811/Untitled%206.png" alt="Ubuntu%2018%2004%20elasticsearch7%20install%20a053c074d29c440f9377bdbc67dbd811/Untitled%206.png"></p>
-<p><img src="/images/2020/Ubuntu%2018%2004%20elasticsearch7%20install%20a053c074d29c440f9377bdbc67dbd811/Untitled%207.png" alt="Ubuntu%2018%2004%20elasticsearch7%20install%20a053c074d29c440f9377bdbc67dbd811/Untitled%207.png"></p>
-<p><img src="/images/2020/Ubuntu%2018%2004%20elasticsearch7%20install%20a053c074d29c440f9377bdbc67dbd811/Untitled%208.png" alt="Ubuntu%2018%2004%20elasticsearch7%20install%20a053c074d29c440f9377bdbc67dbd811/Untitled%208.png"></p>
-<p>위 처럼 설치가 정상적으로 진행 되었다.</p>
-<p>엘라스틱서치를 동작시키기전에 간단한 설정파일을 집고 넘어가자.</p>
-<ul>
-<li><strong>/etc/elasticsearch/elasticsearch.yml</strong></li>
-<li><strong>/etc/elasticsearch/jvm.options</strong></li>
-</ul>
-<p><strong>elasticsearch.yml 파일에는 엘라스틱 서치의 전반적인 환경설정이 들어간다.</strong></p>
-<p>일단 아래처럼 클러스트명을 지정한다.</p>
-<p><img src="/images/2020/Ubuntu%2018%2004%20elasticsearch7%20install%20a053c074d29c440f9377bdbc67dbd811/Untitled%209.png" alt="Ubuntu%2018%2004%20elasticsearch7%20install%20a053c074d29c440f9377bdbc67dbd811/Untitled%209.png"></p>
-<p>그리고 network 영역에서 network.host에서 해당 host의 ip를 등록한다.</p>
-<p>network.host를 지정하지 않을경우, elasticsearch가 설치된 host pc에서 localhost로 접속이 가능하지만, 외부에서 elasticsearch에 접속 할 수 없다.</p>
-<p>아래처럼 network.host에 명시적으로 host pc의 ip를 지정할경우 해당 ip를 사용해서 외부에서 elasticsearch에 접속 할 수 있다.</p>
-<p>http.port 에서 포트를 지정한다.</p>
-<p>discovery.seed_hosts를 아래 이미지 처럼 지정한다.(클러스트 노드 관련 설정인거 같다.)</p>
-<p><img src="/images/2020/Ubuntu%2018%2004%20elasticsearch7%20install%20a053c074d29c440f9377bdbc67dbd811/Untitled%2010.png" alt="Ubuntu%2018%2004%20elasticsearch7%20install%20a053c074d29c440f9377bdbc67dbd811/Untitled%2010.png"></p>
-<p><strong>jvm.options 파일은 elasticsearch의 jvm heap 메모리 설정을 할 수 있다.</strong></p>
-<p>아래 이미지를 보면 기본으로 jvm heap이 1g 로 설정되어 있는 것을 확인 할 수 있다.</p>
-<p>자신의 환경에 맞게 설정해주자.(초기 heap과 max heap의 사이즈를 동일하게 설정하는 것이 좋다고 한다.)</p>
-<p><img src="/images/2020/Ubuntu%2018%2004%20elasticsearch7%20install%20a053c074d29c440f9377bdbc67dbd811/Untitled%2011.png" alt="Ubuntu%2018%2004%20elasticsearch7%20install%20a053c074d29c440f9377bdbc67dbd811/Untitled%2011.png"></p>
-<p>기초적인 elasticsearch설정이 끝났다면, 서비스를 등록하고 실행해보자.</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo systemctl <span class="built_in">enable</span> elasticsearch.service</span><br><span class="line">sudo systemctl start elasticsearch.service</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo systemctl status elasticsearch.service</span><br></pre></td></tr></table></figure>
-
-<p>아래처럼 서비스가 정상 동작하는 것을 확인 할 수 있다.</p>
-<p><img src="/images/2020/Ubuntu%2018%2004%20elasticsearch7%20install%20a053c074d29c440f9377bdbc67dbd811/Untitled%2012.png" alt="Ubuntu%2018%2004%20elasticsearch7%20install%20a053c074d29c440f9377bdbc67dbd811/Untitled%2012.png"></p>
-<p>ubuntu의 포트 여는 것은 생략한다.</p>
-<p>아래 명령어로 elasticsearch에 GET 요청을 날려보자.</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -X GET <span class="string">'10.0.2.15:9200'</span></span><br></pre></td></tr></table></figure>
-
-<p><img src="/images/2020/Ubuntu%2018%2004%20elasticsearch7%20install%20a053c074d29c440f9377bdbc67dbd811/Untitled%2013.png" alt="Ubuntu%2018%2004%20elasticsearch7%20install%20a053c074d29c440f9377bdbc67dbd811/Untitled%2013.png"></p>
-<p>정상적으로 elasticsearch가 응답하는 것을 확인 할 수 있다.</p>
-<h1 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h1><p><a href="https://iruwl.github.io/catetan/install-elasticsearch-7.0.0-on-ubuntu-18.04/" target="_blank" rel="external nofollow noopener noreferrer">https://iruwl.github.io/catetan/install-elasticsearch-7.0.0-on-ubuntu-18.04/</a></p>
-<p>[<a href="https://kifarunix.com/install-elasticsearch-7-x-on-ubuntu-18-04-debian-9-8/]" target="_blank" rel="external nofollow noopener noreferrer">https://kifarunix.com/install-elasticsearch-7-x-on-ubuntu-18-04-debian-9-8/]</a>(</p>
-
-      
-      
-          
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-
-  
-      
-
-
-  
-  
-  
-  
-
   </div>
 
   
@@ -1567,7 +1594,7 @@ gtag('config', 'UA-100596920-1');
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">221</span>
+          <span class="site-state-item-count">222</span>
           <span class="site-state-item-name">포스트</span>
         </a>
       </div>

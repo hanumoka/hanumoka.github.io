@@ -245,6 +245,170 @@ gtag('config', 'UA-100596920-1');
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2018/10/06/javascript-20181006-javascript-callback/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Hanumoka">
+      <meta itemprop="description" content="아마추어 개발자의 블로그">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hanumoka, IT Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2018/10/06/javascript-20181006-javascript-callback/" class="post-title-link" itemprop="url">Javascript - 동기(synchronous), 비동기(asynchronous) 프로그래밍</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">작성일</span>
+
+              <time title="Post created: 2018-10-06 09:31:47" itemprop="dateCreated datePublished" datetime="2018-10-06T09:31:47+09:00">2018-10-06</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Updated at: 2020-04-16 01:50:11" itemprop="dateModified" datetime="2020-04-16T01:50:11+09:00">2020-04-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/javascript/" itemprop="url" rel="index">
+                    <span itemprop="name">javascript</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 20200427hexo_post_head -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h1><p>이 글은 자바스크립트의 동기(asynchronous) + 블록킹, 비동기 + 논블록킹 구조에 대한 설명이다.</p>
+<h2 id="동기-synchronous-와-블록킹-Bloking-이란"><a href="#동기-synchronous-와-블록킹-Bloking-이란" class="headerlink" title="동기 synchronous 와 블록킹 Bloking 이란"></a>동기 synchronous 와 블록킹 Bloking 이란</h2><p>일단 동기적인 동작의 예를 식당과 주방장을 통해 들어보겠다.</p>
+<blockquote>
+<p>일단 중국집이 하나 있고 이 중국집에는 한명의 주방장이 요리를 한다고 가정하자.<br>군만두 한 접시를 만들어 달라는 주문서가 도착했다.<br>이 군만두는 냉동재료라서 전자레인지를 사용해야 한다.<br>하지만 전자레인지의 타이머가 고장이 난 상태이다.<br>주방장은 전자레인지에 만두를 넣고 전자레인지를 동작시킨뒤, 자신의 손목시계를 보며 3분을 기다린다.<br>그때 홀에서 짜장면 3그릇 추가라는 주문이 추가로 도착했다.<br>하지만 주방장은 고장난 전자레인지 때문에 한눈을 팔수가 없다.<br>3분동안 주방에서는 어떤 다른 음식이 만들어지기는 커녕 계속 주문이 쌓이게 된다.<br>이걸 보는 중국집 사장님은 속이 타들어 간다.<br>내일 저 망할 전자레인지를 어떻게든 해야 겠다고 다짐한다.</p>
+</blockquote>
+<p>본론으로 돌아와서, 동기적인 소스코드의 예를 보면…</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(<span class="string">'동기적 소스코드 시작...'</span>);</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">run1</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'run1 동작...'</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">run1();</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'동기적 소스코드 종료...'</span>);</span><br></pre></td></tr></table></figure>
+
+<p>위 코드를 실행하면 호출된 순서대로 실행되는 것을 확인 할 수 있다.(함수선언문을 호출과 착각하지 말자.)</p>
+<p>이것이 코드의 동기적인 동작이다.</p>
+<p><img src="/images/20181006-javascript-callback_1.png" alt="동기적 코드의 실행결과"></p>
+<p>쓰레드를 이용하여 위 코드를 표현하면 다음과 같을 것이다.</p>
+<p><img src="/images/20181006-javascript-callback_2.png" alt="동기적 코드의 쓰레드의 흐름"></p>
+<p>동기적 코드의 동작은 시간의 흐름대로 순서를 지키며 진행되기 때문에 익숙하고, 이해하기 쉽다.</p>
+<p>하지만 javascript 코드의 실행환경이 싱글쓰레드 기반이기 때문에, <strong>싱글 쓰레드 실행환경에서 이런 동기적인 코드</strong>를 사용할 때 쓰레드의 <strong>블록킹(blocking) 현상</strong>이 발생한다.<br>다음 코드를 보면…</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(<span class="string">'동기적 소스코드 시작...'</span>);</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">run1</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'run1 동작...'</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//실행이 종료 될때까지 오랜시간이 걸리는 함수</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">run2</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'run2 동작...'</span>);</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'서버로 부터 50mb 정도의 파일을 다운로드 합니다.'</span>);</span><br><span class="line">  <span class="comment">/*</span></span><br><span class="line"><span class="comment">    파일을 다운로드 하는 로직 대략 1분이 소요됨.</span></span><br><span class="line"><span class="comment">  */</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">run1();</span><br><span class="line">run2();</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'동기적 소스코드 종료...'</span>);</span><br></pre></td></tr></table></figure>
+
+<p>run2 메소드는 파일을 서버로 부터 다운받는 함수라고 하자, 그리고 파일을 다운로드 받는데 대략 1분의 시간이 걸린다고 가정하자.</p>
+<p>위 코드를 실행하게 되면</p>
+<p><img src="/images/20181006-javascript-callback_3.png" alt></p>
+<p>위처럼 동작하고 1분정도를 기다리면 나머지 코드가 아래처럼 실행 될 것이다.</p>
+<p><img src="/images/20181006-javascript-callback_4.png" alt></p>
+<p>위 동작을 쓰레드로 표현해 보자면 다음과 같다.</p>
+<p><img src="/images/20181006-javascript-callback_5.png" alt="run2함수는 쓰레드의 흐름을 막아(blocking)버린다."></p>
+<p>즉, <strong>싱글쓰레드</strong> + <strong>동기적 코드의 흐름</strong> + <strong>동작시간이 오래걸리는 함수의 호출</strong>은 쓰레드의 블록킹(blocking)을 발생 시킨다.</p>
+<p>위 코드가 시간의 흐름에 따라, Call stack이 어떻게 변하는지 확인해 보자.</p>
+<p>위 동작을 javascript 호출 스택으로 살펴보면 다음과 같다.</p>
+<p><img src="/images/20181006-javascript-callback_a_1.png" alt="a_1"><br><img src="/images/20181006-javascript-callback_a_2.png" alt="a_2"><br><img src="/images/20181006-javascript-callback_a_3.png" alt="a_3"><br><img src="/images/20181006-javascript-callback_a_4.png" alt="a_4"><br><img src="/images/20181006-javascript-callback_a_5.png" alt="a_5"><br><img src="/images/20181006-javascript-callback_a_6.png" alt="a_6"><br><img src="/images/20181006-javascript-callback_a_7.png" alt="a_7"><br><img src="/images/20181006-javascript-callback_a_8.png" alt="a_8"><br><img src="/images/20181006-javascript-callback_a_9.png" alt="a_9"><br><img src="/images/20181006-javascript-callback_a_10.png" alt="a_10"><br><img src="/images/20181006-javascript-callback_a_11.png" alt="a_11"><br><img src="/images/20181006-javascript-callback_a_12.png" alt="a_12"><br><img src="/images/20181006-javascript-callback_a_13.png" alt="a_13"></p>
+<p>이 쓰레드의 블록킹은 프로그램의 흐름의 멈춤을 의미하며, 사용자는 프로그램이 먹통이 되어버렸다고 느낄 것이다.</p>
+<p>설명의 편의를 위해 callstack의 일을 처리하는 tread를 mainthread라고 부르겠다.</p>
+<p>ajax 통신이나, IO 프로그래밍 같이 시간이 오래걸리는 작업들이 발생할 때마다 프로그램이 멈춰버리는 것은 큰 문제가 될 것이다.</p>
+<p><strong>위와 같은 문제를 해결하기 위해서 javascript는 멀티스레드 프로그래밍을 지원하는 것이 아니라, 싱글쓰레드에서 비동기적 프로그래밍을 javascript 실행환경의 API로 지원 한다.</strong></p>
+<p>멀티 쓰레드 프로그래밍은 굉장히 어렵고, 복잡한 작업이다. 거기에 프로그램의 동작을 100퍼센트 예측하기는 불가능에 가깝다.<br>javascript는 이런 어려운 프로그래밍을 피하기 위해서 일부로 개발자가 제어할 수 있는 쓰레드(main thread)를 1개로 제한하고 비동기적 프로그래밍을 지원 함으로써 멀티쓰레드 프로그래밍과 비슷한 효과를 발생시킨다.</p>
+<p>여기서 잠깐 다른 이야기를 하자면, javascript는 싱글 쓰레드로 동작 한다고들 말해서 진짜 쓰레드가 1개 뿐일거라 착각 할수 있다.<br>하지만 javascript의 실행환경은 멀티스레드이며 개발자가 javascript 코드로 제어할 수 있는 쓰레드(main tread)를 하나로 제한 하였기 때문에 javascript는 싱글 쓰레드 프로그래밍 이라고 부른다.<br>다시 본론으로 돌아가서…</p>
+<p>이런 싱글 쓰레드환경의 동기적 코드흐름에서 발생하는 쓰레드의 blocking을 해결하기 위해 run2함수를 비동기적으로 실행시킬 필요가 생긴다.</p>
+<h2 id="비동기-asynchronous적-동작과-논블록킹-Non-Blocking"><a href="#비동기-asynchronous적-동작과-논블록킹-Non-Blocking" class="headerlink" title="비동기 asynchronous적 동작과 논블록킹 Non Blocking"></a>비동기 asynchronous적 동작과 논블록킹 Non Blocking</h2><p>이번에는 비동기적으로 일하는 주방장의 예를 한번 들어보겠다.</p>
+<blockquote>
+<p>일단 중국집이 하나 있고 이 중국집에는 한명의 주방장이 요리를 한다고 가정하자.<br>중요한 것은 이 주방장이 비동기적으로 일한다는 것이다.<br>군만두 1접시 라는 주문서가 도착했다.<br>이 군만두는 냉동재료이다.<br>비동기 주방장은 군만두를 전자레인지에 넣고 타이머를 3분 맞춘뒤, 전자레인지를 돌린다.<br>그리고 다음 할일을 위해 재 자리에 돌아온다.<br>그때 홀에서 짜장면 1그릇 추가라는 주문이 추가로 도착했다.<br>주방장은 짜장면을 만든다.<br>짜장면 1그릇을 만들었을 때, 아까 돌린 전자레인지의 동작 종료를 알리는 알람이 들린다.<br>이 비동기 주방장은 만들던 짜장면 1그릇 까지만 완성하고 홀에 전달한 뒤, 전자레인지에서 만두를 꺼내서 홀에 전달한다.<br>중국집 사장님은 쉬지 않고 열심히 일하는 주방장을 보며 다음달 주방장 월급 인상을 고려하게 된다.</p>
+</blockquote>
+<p>위 비동기적으로 일하는 주방장을 보면 오래걸리는 특정 작업(만두 해동)들을 누군가(전자레인지)에게 미루고 자신은 계속 일을 진행한다.<br>결과적으로 1번째로 주문된 군만두 보다 2번째로 주문된 짜장면이 더 빨리 홀에 전달 되었다.<br>이렇게 호출에 순서(음식 주문 순서)와 다르게 실행(주문된 음식이 홀에 나오는것)되는 프로그래밍을 비동기적 프로그래밍이라고 한다.</p>
+<p>이 비동기적 프로그래밍의 가장큰 장점은, 주방장이 노는 시간(mainthread이 blocking)이 없어지므로 음식주문은 밀리지 않고(프로그램은 멈추지 않고) 효율적으로 음식이 생산되게 된다.</p>
+<p>여기서 잠깐 비동기적으로 처리해야할 작업들을 구별해보자.</p>
+<ol>
+<li>파일을 읽거나, 쓰기 처럼 오래걸리는 작업</li>
+<li>ajax 통신작업</li>
+<li>Dom의 이벤트 처리작업</li>
+<li>일정 시간 뒤에 동작을 해야 하는 작업</li>
+</ol>
+<p>위 작업들을 callstack작업 처리를 담당하는 mainthread 하게 된다면, 스레드 블록킹이 발생하고 프로그램은 멈추게 된다.<br>따라서 위 작업들을 mainthread 대신 처리하는 녀석들(전자레인지 같은)이 필요하다.</p>
+<p>javascrpit는 이런 전자레인지들을 API를 통해서 제공한다.</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(<span class="string">'동기적 소스코드 시작...'</span>);</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">run1</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'run1 동작...'</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">run2</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'run2 동작...'</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">run1();</span><br><span class="line">setTimeout(run2, <span class="number">1000</span> * <span class="number">3</span>); <span class="comment">// 3초 이후에 run2 함수를 실행 </span></span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'동기적 소스코드 종료...'</span>);</span><br></pre></td></tr></table></figure>
+
+<p>일단 위 코드의 결과를 보자.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">동기적 소스코드 시작...</span><br><span class="line">run1 동작...</span><br><span class="line">동기적 소스코드 종료...</span><br><span class="line">run2 동작...</span><br></pre></td></tr></table></figure>
+
+<p>동기적 소스코드 종료… 라는 문구가 run2 동작이라는 문구보다 더 빨리 출력되었다.<br>코드의 결과를 보면 자바스크립트의 쓰레드는 run2라는 함수를 setTimeout이라는 전자레인지에 넣고 3초 라는 타이머를 돌린 뒤, 자신의 일을 계속 진행한 것으로 보여진다.</p>
+<p>위의 setTimeout은 특정 시간 뒤에, callback 함수를 호출가능하게 만들어주는 전자레인지이다.<br>즉 mainthread 대신 시간을 세어주는 javascript 비동기 API이다.</p>
+<p>위 코드의 동작도 함수의 호출스택으로 보면 다음과 같다.<br>setTimeout 호출직전은 동기적인 동작과 같으니 생략하고, setTimeout 호출부터 본다면…</p>
+<p><img src="/images/20181006-javascript-callback_b_0.png" alt="setTimeout을 만난 스레드는 이것을 Web API로 넘긴다. 이 행위는 Web API라는 전자레인지에 run2를 넣고 동작시키는 행위라고 생각하면 된다."></p>
+<p><img src="/images/20181006-javascript-callback_b_1.png" alt="Web API에서는 이런 쓰레드의 블록킹을 현상을 발생시키는, 지연작업등을 비동기적으로 실행할 수 있게 여러가지 전자레인지를 구비해 놓고 있다. "></p>
+<p><img src="/images/20181006-javascript-callback_c_1.png" alt="setTimout은 전자레인지 중 하나이며, ajax, Dom 등도 존재한다."></p>
+<p><img src="/images/20181006-javascript-callback_b_2.png" alt="쓰레드는 전자레인지는 신경쓰지 않고 자신의 callstack에 돌아와 계속 남은일을 처리해 나간다. 이 시점에도 동시에 setTimeout은 자신이 해야하는 일, 즉 3초의 시간을 재고 있다."></p>
+<p><img src="/images/20181006-javascript-callback_b_3.png" alt="쓰레드는 callstack의 작업을 모두 끝내고, 전자레인지 setTimeout은 여전히 시간을 재고 있다."></p>
+<p><img src="/images/20181006-javascript-callback_b_4.png" alt="드디어 setTimeout은 3초를 다 세고, run2라는 callback함수를 task Queue에 집어 넣는다."></p>
+<p><img src="/images/20181006-javascript-callback_b_5.png" alt="Event Loop는 callstack이 비어있는지 확인하고 비어있다면 task queue에 가장 먼저 들어온 run2함수를 callstack에 전달한다."></p>
+<p><img src="/images/20181006-javascript-callback_b_6.png" alt="쓰레드는 CallStack 에 있는 run2작업을 처리하기 시작한다."></p>
+<p>여기서 Web API의 역할은 callstack의 일들을 처리하는 MainThread 대신 비동기적으로 처리해야 할 일을 대신 처리하는 것이다.<br>숫자를 센다던지, 서버의 요청을 기다린다 던지, DOM에서 발생할 수 있는 이벤트를 기다리는 등의 일들을 처리한다.</p>
+<p>개발자가 해야할 일은 이런 머리아픈 비동기적 작업을 API에게 맡기고, 비동기적 작업 결과에 따라 처리해야 할일을 callback에 담아주기만 하면 되는것이다.</p>
+<p>싱글쓰레드이지만 동시성작업이 필요한 작업들을 javascript API를 통해 대신처리하므로, MainThread는 Non blocking(막히지 않고) 동작하게 된다.</p>
+<hr>
+<h1 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h1><p><a href="https://joshua1988.github.io/web-development/javascript/javascript-asynchronous-operation/" target="_blank" rel="external nofollow noopener noreferrer">https://joshua1988.github.io/web-development/javascript/javascript-asynchronous-operation/</a></p>
+<p><a href="https://engineering.huiseoul.com/%EC%9E%90%EB%B0%94%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8%EB%8A%94-%EC%96%B4%EB%96%BB%EA%B2%8C-%EC%9E%91%EB%8F%99%ED%95%98%EB%8A%94%EA%B0%80-%EC%9D%B4%EB%B2%A4%ED%8A%B8-%EB%A3%A8%ED%94%84%EC%99%80-%EB%B9%84%EB%8F%99%EA%B8%B0-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D%EC%9D%98-%EB%B6%80%EC%83%81-async-await%EC%9D%84-%EC%9D%B4%EC%9A%A9%ED%95%9C-%EC%BD%94%EB%94%A9-%ED%8C%81-%EB%8B%A4%EC%84%AF-%EA%B0%80%EC%A7%80-df65ffb4e7e" target="_blank" rel="external nofollow noopener noreferrer">https://engineering.huiseoul.com/%EC%9E%90%EB%B0%94%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8%EB%8A%94-%EC%96%B4%EB%96%BB%EA%B2%8C-%EC%9E%91%EB%8F%99%ED%95%98%EB%8A%94%EA%B0%80-%EC%9D%B4%EB%B2%A4%ED%8A%B8-%EB%A3%A8%ED%94%84%EC%99%80-%EB%B9%84%EB%8F%99%EA%B8%B0-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D%EC%9D%98-%EB%B6%80%EC%83%81-async-await%EC%9D%84-%EC%9D%B4%EC%9A%A9%ED%95%9C-%EC%BD%94%EB%94%A9-%ED%8C%81-%EB%8B%A4%EC%84%AF-%EA%B0%80%EC%A7%80-df65ffb4e7e</a></p>
+<p><a href="https://hudi.kr/%EB%B9%84%EB%8F%99%EA%B8%B0%EC%A0%81-javascript-%EC%8B%B1%EA%B8%80%EC%8A%A4%EB%A0%88%EB%93%9C-%EA%B8%B0%EB%B0%98-js%EC%9D%98-%EB%B9%84%EB%8F%99%EA%B8%B0-%EC%B2%98%EB%A6%AC-%EB%B0%A9%EB%B2%95/" target="_blank" rel="external nofollow noopener noreferrer">https://hudi.kr/%EB%B9%84%EB%8F%99%EA%B8%B0%EC%A0%81-javascript-%EC%8B%B1%EA%B8%80%EC%8A%A4%EB%A0%88%EB%93%9C-%EA%B8%B0%EB%B0%98-js%EC%9D%98-%EB%B9%84%EB%8F%99%EA%B8%B0-%EC%B2%98%EB%A6%AC-%EB%B0%A9%EB%B2%95/</a></p>
+<p><a href="https://developer.mozilla.org/ko/docs/Web/JavaScript/EventLoop" target="_blank" rel="external nofollow noopener noreferrer">https://developer.mozilla.org/ko/docs/Web/JavaScript/EventLoop</a></p>
+
+      
+      
+          
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+      
+
+
+  
+  
+  
+  
+
+        
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
     <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2018/10/04/atom-20181004-atom-warning-The-package-spell-check-cannot-load-the-system-dictionary-for-en-US/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1393,194 +1557,6 @@ gtag('config', 'UA-100596920-1');
   
   
 
-        
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
-    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2018/08/26/vue-20180826-web-webpack/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Hanumoka">
-      <meta itemprop="description" content="아마추어 개발자의 블로그">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hanumoka, IT Blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2018/08/26/vue-20180826-web-webpack/" class="post-title-link" itemprop="url">Vue 프로젝트를 통해서 Webpack을 알아보자.(vue simple webpack project)</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">작성일</span>
-
-              <time title="Post created: 2018-08-26 14:05:58" itemprop="dateCreated datePublished" datetime="2018-08-26T14:05:58+09:00">2018-08-26</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Updated at: 2020-04-16 01:50:12" itemprop="dateModified" datetime="2020-04-16T01:50:12+09:00">2020-04-16</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/vue/" itemprop="url" rel="index">
-                    <span itemprop="name">vue</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-      <!-- 20200427hexo_post_head -->
-      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
-      <script>
-          (adsbygoogle = window.adsbygoogle || []).push({});
-      </script>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h3><p>이번에 Vue.js를 공부하게 되면서 Webpack이라는 것을 실제 접하게 되었다.<br>물론 인터넷에서 Webpack이라는 말은 자주 들어보았지만, 이것에 대해 전혀 감이 없었다.<br>이번 기회에 Webpack에 대한 아주 간단한 개념정리와, webpack 번들링을 한번 해보겠다.<br>Vue simple-webpack 프로젝트를 사용한다.</p>
-<p>참고로 본인은 Vue도 Webpack도 잘 모른다.<br>그냥 지금까지 공부한 것을 아주 후려처서 정리한 내용이다.</p>
-<hr>
-<h3 id="Webpack의-정의"><a href="#Webpack의-정의" class="headerlink" title="Webpack의 정의"></a>Webpack의 정의</h3><p><strong>웹팩은 모듈번들러다.</strong><br>난 처음 이말을 들었을때, 이게 대체 무슨소린가 했다.<br>프론트엔드 기술에 대한 막연한 두려움이 아마 이때 생겨 났던것 같다.</p>
-<p>일단 웹팩이 무엇인지 알기위해 가장 쉬운 방법은 실질적으로 개발자가 웹팩으로 무엇을 하는지 알면 된다.<br>일단 다음 이미지를 확인해 보자.</p>
-<p><img src="/images/20180826-web-webpack_1.png" alt="내 Spring 샘플 프로젝트의 html의 일부분이다."></p>
-<p>위 html파일을 보면 상당히 많은 js 파일을 추가적으로 가져오는 것을 알 수 있다.<br>요즘 웹 화면은 PC, 모바일의 앱처럼 다양한 기능과 유려한 화면구성을 갖는다.</p>
-<p>당연히 html 페이지는 수많은 js, css, image 등을 추가적으로 가져와야 한다.</p>
-<p>웹팩은 이 추가적으로 가져와야 할 이 수많은 것들을(js, css, image) 하나의 js파일로 만들어 버린다.</p>
-<p><img src="/images/20180826-web-webpack_2.png" alt="즉 html 파일은 이렇게 간단하게 변한다는 의미이다."></p>
-<p>수많은 외부 리소스등을 하나의 js파일로 묶어서 사용함으로써, 기존에 발생한 수많은 network request가 하나의 request로 만들어 브라우저의 로딩성능을 높일 수 있다.<br>(번들링 뿐만 아니라 더불어 난독화등 다양한 기능을 추가적으로 제공한다.)</p>
-<p>그리고 번들링(하나로 합칠때)할때 JS 모듈의 의존관계를 알아서 반영해준다.<br>내부적으로 대체 어떻게 돌아가는지는 몰라도 참으로 신박한 녀석이다.<br>Webpack과 비슷한 모듈번들러로 gulp, grunt라는 것도 있다고 한다.</p>
-<p>하지만 현재 기능, 성능면에서 Webpack이 가장 뛰어 나다고 한다.</p>
-<hr>
-<h3 id="Vue-프로젝트를-이용한-Webpack의-간단-실습-및-설명"><a href="#Vue-프로젝트를-이용한-Webpack의-간단-실습-및-설명" class="headerlink" title="Vue 프로젝트를 이용한 Webpack의 간단 실습 및 설명"></a>Vue 프로젝트를 이용한 Webpack의 간단 실습 및 설명</h3><p>실제 Vue의 웹팩 프로젝트를 통해 실습과 설명을 진행하겠다.<br>잘 모를땐 일단 키보드를 때려보는게 좋을거 같다.</p>
-<p><strong>전재조건 :Node와 Vue CLI가 설치되어 있어야 한다.</strong></p>
-<p><strong>1.특정 TestVueSample 이라는 폴더를 만들고 Vue webpack-simple 프로젝트를 만들자.</strong></p>
-<p>볼더를 만들고 그 경로에서 아래 명령어로 Vue webpack simple 프로젝트를 만들자.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vue init webpack-simple</span><br></pre></td></tr></table></figure>
-
-<p><img src="/images/20180826-web-webpack_3.png" alt="vue webpack simple 프로젝트를 생성하자."></p>
-<p>명령어로 생성된 파일과 폴더중 중요한 것들을 집어보자.</p>
-<hr>
-<p><strong>가.package.json</strong> </p>
-<p>위 파일은 npm 패키지 정보를 담고 있다.</p>
-<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"name"</span>: <span class="string">"testvuesample"</span>,</span><br><span class="line">  <span class="attr">"description"</span>: <span class="string">"webpack test"</span>,</span><br><span class="line">  <span class="attr">"version"</span>: <span class="string">"1.0.0"</span>,</span><br><span class="line">  <span class="attr">"author"</span>: <span class="string">"hanumoka"</span>,</span><br><span class="line">  <span class="attr">"license"</span>: <span class="string">"MIT"</span>,</span><br><span class="line">  <span class="attr">"private"</span>: <span class="literal">true</span>,</span><br><span class="line">  <span class="attr">"scripts"</span>: &#123;</span><br><span class="line">    <span class="attr">"dev"</span>: <span class="string">"cross-env NODE_ENV=development webpack-dev-server --open --hot"</span>,</span><br><span class="line">    <span class="attr">"build"</span>: <span class="string">"cross-env NODE_ENV=production webpack --progress --hide-modules"</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">"dependencies"</span>: &#123;</span><br><span class="line">    <span class="attr">"vue"</span>: <span class="string">"^2.5.11"</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">"browserslist"</span>: [</span><br><span class="line">    <span class="string">"&gt; 1%"</span>,</span><br><span class="line">    <span class="string">"last 2 versions"</span>,</span><br><span class="line">    <span class="string">"not ie &lt;= 8"</span></span><br><span class="line">  ],</span><br><span class="line">  <span class="attr">"devDependencies"</span>: &#123;</span><br><span class="line">    <span class="attr">"babel-core"</span>: <span class="string">"^6.26.0"</span>,</span><br><span class="line">    <span class="attr">"babel-loader"</span>: <span class="string">"^7.1.2"</span>,</span><br><span class="line">    <span class="attr">"babel-preset-env"</span>: <span class="string">"^1.6.0"</span>,</span><br><span class="line">    <span class="attr">"babel-preset-stage-3"</span>: <span class="string">"^6.24.1"</span>,</span><br><span class="line">    <span class="attr">"cross-env"</span>: <span class="string">"^5.0.5"</span>,</span><br><span class="line">    <span class="attr">"css-loader"</span>: <span class="string">"^0.28.7"</span>,</span><br><span class="line">    <span class="attr">"file-loader"</span>: <span class="string">"^1.1.4"</span>,</span><br><span class="line">    <span class="attr">"vue-loader"</span>: <span class="string">"^13.0.5"</span>,</span><br><span class="line">    <span class="attr">"vue-template-compiler"</span>: <span class="string">"^2.4.4"</span>,</span><br><span class="line">    <span class="attr">"webpack"</span>: <span class="string">"^3.6.0"</span>,</span><br><span class="line">    <span class="attr">"webpack-dev-server"</span>: <span class="string">"^2.9.1"</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>scripts 항목을 보면 dev, build가 있다.<br>npm run dev 명령어를 실행하면 cross-env NODE_ENV=development webpack-dev-server –open –hot 명령어가 실행된다.<br>마찬가지로 npm run build 명령어를 실행하면 cross-env NODE_ENV=production webpack –progress –hide-modules 가 실행된다.</p>
-<p>npm run build에 맵핑된 명렁어를 보면 webpack 명렁어가 들어있다.<br>즉 npm run bulid 명령어를 실행하면 방금 생성한 Vue simple webpack 프로젝트를 webpack으로 빌드하게 된다. </p>
-<hr>
-<p><strong>나.index.html</strong></p>
-<p>방금 생성한 뷰 프로젝트의 진입점 html이다.<br>/dist/build.js 를 참고 하고 있는데, 앞서 말했듯이 이것은 Webpack에 의해 번들링된 결과물이다.</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">"en"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"utf-8"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>testvuesample<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"app"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"/dist/build.js"</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<hr>
-<p><strong>다.webpack.config.js</strong></p>
-<p>위 파일은 webpack이 프로젝트를 빌드할때 참고하는 설정 파일이다.<br>webpack의 핵심파일이라고 생각하면 된다.<br>이 파일에는 <strong>webpack core인 entry, output, loaders, plugins</strong> 의 정보가 들어간다.</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">var</span> path = <span class="built_in">require</span>(<span class="string">'path'</span>)</span><br><span class="line"><span class="keyword">var</span> webpack = <span class="built_in">require</span>(<span class="string">'webpack'</span>)</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  entry: <span class="string">'./src/main.js'</span>,</span><br><span class="line">  output: &#123;</span><br><span class="line">    path: path.resolve(__dirname, <span class="string">'./dist'</span>),</span><br><span class="line">    publicPath: <span class="string">'/dist/'</span>,</span><br><span class="line">    filename: <span class="string">'build.js'</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="built_in">module</span>: &#123;</span><br><span class="line">    rules: [</span><br><span class="line">      &#123;</span><br><span class="line">        test: <span class="regexp">/\.css$/</span>,</span><br><span class="line">        use: [</span><br><span class="line">          <span class="string">'vue-style-loader'</span>,</span><br><span class="line">          <span class="string">'css-loader'</span></span><br><span class="line">        ],</span><br><span class="line">      &#125;,      &#123;</span><br><span class="line">        test: <span class="regexp">/\.vue$/</span>,</span><br><span class="line">        loader: <span class="string">'vue-loader'</span>,</span><br><span class="line">        options: &#123;</span><br><span class="line">          loaders: &#123;</span><br><span class="line">          &#125;</span><br><span class="line">          <span class="comment">// other vue-loader options go here</span></span><br><span class="line">        &#125;</span><br><span class="line">      &#125;,</span><br><span class="line">      &#123;</span><br><span class="line">        test: <span class="regexp">/\.js$/</span>,</span><br><span class="line">        loader: <span class="string">'babel-loader'</span>,</span><br><span class="line">        exclude: <span class="regexp">/node_modules/</span></span><br><span class="line">      &#125;,</span><br><span class="line">      &#123;</span><br><span class="line">        test: <span class="regexp">/\.(png|jpg|gif|svg)$/</span>,</span><br><span class="line">        loader: <span class="string">'file-loader'</span>,</span><br><span class="line">        options: &#123;</span><br><span class="line">          name: <span class="string">'[name].[ext]?[hash]'</span></span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    ]</span><br><span class="line">  &#125;,</span><br><span class="line">  resolve: &#123;</span><br><span class="line">    alias: &#123;</span><br><span class="line">      <span class="string">'vue$'</span>: <span class="string">'vue/dist/vue.esm.js'</span></span><br><span class="line">    &#125;,</span><br><span class="line">    extensions: [<span class="string">'*'</span>, <span class="string">'.js'</span>, <span class="string">'.vue'</span>, <span class="string">'.json'</span>]</span><br><span class="line">  &#125;,</span><br><span class="line">  devServer: &#123;</span><br><span class="line">    historyApiFallback: <span class="literal">true</span>,</span><br><span class="line">    noInfo: <span class="literal">true</span>,</span><br><span class="line">    overlay: <span class="literal">true</span></span><br><span class="line">  &#125;,</span><br><span class="line">  performance: &#123;</span><br><span class="line">    hints: <span class="literal">false</span></span><br><span class="line">  &#125;,</span><br><span class="line">  devtool: <span class="string">'#eval-source-map'</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//이 부분은 배포할때 동작하는 로직으로 souceMap을 생성한다.</span></span><br><span class="line"><span class="keyword">if</span> (process.env.NODE_ENV === <span class="string">'production'</span>) &#123;</span><br><span class="line">  <span class="built_in">module</span>.exports.devtool = <span class="string">'#source-map'</span></span><br><span class="line">  <span class="comment">// http://vue-loader.vuejs.org/en/workflow/production.html</span></span><br><span class="line">  <span class="built_in">module</span>.exports.plugins = (<span class="built_in">module</span>.exports.plugins || []).concat([</span><br><span class="line">    <span class="keyword">new</span> webpack.DefinePlugin(&#123;</span><br><span class="line">      <span class="string">'process.env'</span>: &#123;</span><br><span class="line">        NODE_ENV: <span class="string">'"production"'</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;),</span><br><span class="line">    <span class="keyword">new</span> webpack.optimize.UglifyJsPlugin(&#123;</span><br><span class="line">      sourceMap: <span class="literal">true</span>,</span><br><span class="line">      compress: &#123;</span><br><span class="line">        warnings: <span class="literal">false</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;),</span><br><span class="line">    <span class="keyword">new</span> webpack.LoaderOptionsPlugin(&#123;</span><br><span class="line">      minimize: <span class="literal">true</span></span><br><span class="line">    &#125;)</span><br><span class="line">  ])</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>아 길다… 어렵다… 모르겠다.</p>
-<p>중요한 것만 보자.</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">entry: <span class="string">'./src/main.js'</span>,</span><br><span class="line"> output: &#123;</span><br><span class="line">   path: path.resolve(__dirname, <span class="string">'./dist'</span>), <span class="comment">//프로넥트 내부의 dist 폴더 경로에 빌드 결과물 생성</span></span><br><span class="line">   publicPath: <span class="string">'/dist/'</span>, <span class="comment">//index.html 파일기준 참조 폴더(말이 좀 이상한데,뒤에 설명...)</span></span><br><span class="line">   filename: <span class="string">'build.js'</span>  <span class="comment">//Webpack에 의해서 만들어진 최종 파일</span></span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
-
-<p><strong>entry와 output이다.</strong><br>entry는 말 그대로 Webpack이 번들링할때 사용하는 진입점 js 파일이다.<br>output은 Webpack이 번들링한 그 결과물에 대한 설정 정보이다.</p>
-<p>그리고 module 영역도 살펴보자.</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">module</span>: &#123;</span><br><span class="line">    rules: [</span><br><span class="line">      &#123;</span><br><span class="line">        test: <span class="regexp">/\.css$/</span>,</span><br><span class="line">        use: [</span><br><span class="line">          <span class="string">'vue-style-loader'</span>,</span><br><span class="line">          <span class="string">'css-loader'</span></span><br><span class="line">        ],</span><br><span class="line">      &#125;,      &#123;</span><br><span class="line">        test: <span class="regexp">/\.vue$/</span>,</span><br><span class="line">        loader: <span class="string">'vue-loader'</span>,</span><br><span class="line">        options: &#123;</span><br><span class="line">          loaders: &#123;</span><br><span class="line">          &#125;</span><br><span class="line">          <span class="comment">// other vue-loader options go here</span></span><br><span class="line">        &#125;</span><br><span class="line">      &#125;,</span><br><span class="line">      &#123;</span><br><span class="line">        test: <span class="regexp">/\.js$/</span>,</span><br><span class="line">        loader: <span class="string">'babel-loader'</span>,</span><br><span class="line">        exclude: <span class="regexp">/node_modules/</span></span><br><span class="line">      &#125;,</span><br><span class="line">      &#123;</span><br><span class="line">        test: <span class="regexp">/\.(png|jpg|gif|svg)$/</span>,</span><br><span class="line">        loader: <span class="string">'file-loader'</span>,</span><br><span class="line">        options: &#123;</span><br><span class="line">          name: <span class="string">'[name].[ext]?[hash]'</span></span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    ]</span><br><span class="line">  &#125;,</span><br></pre></td></tr></table></figure>
-
-<p>모듈 내부에 있는 것들은 <strong>loader</strong> 이다.<br>WebPack은 css, js, image 등을 하나로 뭉쳐서 하나의 파일로 번들링(build.js) 한다고 했다.<br>loader는 이름 그대로 WebPack이라는 압축기에 Css 등을 수집하여 적재해주는 트럭 같은 녀석이다.</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">        test: <span class="regexp">/\.css$/</span>,</span><br><span class="line">        use: [</span><br><span class="line">          <span class="string">'vue-style-loader'</span>,</span><br><span class="line">          <span class="string">'css-loader'</span></span><br><span class="line">        ],</span><br><span class="line">      &#125;</span><br></pre></td></tr></table></figure>
-
-<p>위 녀셕을 보면 프로젝트의 모든 css 확장자 파일들을 vue-style-loader와 css-loader라는 로더를 사용해서 WebPack에게 적재 시키겠다는 의미이다.</p>
-<p>여기에서 Vue를 위한 Vue loader도 있다.</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">        test: <span class="regexp">/\.vue$/</span>,</span><br><span class="line">        loader: <span class="string">'vue-loader'</span>,</span><br><span class="line">        options: &#123;</span><br><span class="line">          loaders: &#123;</span><br><span class="line">          &#125;</span><br><span class="line">          <span class="comment">// other vue-loader options go here</span></span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br></pre></td></tr></table></figure>
-
-<p>마찬가지로 vue 확장자를 갖는 파일들을 vue-loader로 적재한다.<br>이 부분을 조금더 설명하자면, 브라우저는 vue확장자 파일을 인식을 하지 못한다.<br>개발할때 만들어진 Vue 파일들은 WebPack에 적재하고, WebPack은 이 Vue파일들을 html파일로 변환하여, 브라우저가 인식 할수 있게 컨버팅 해준다.</p>
-<p>위 설정에는 없지만 webpack에는 <strong>plugins</strong> 이라는 것도 있다.<br>사실 이부분은 잘 모른다.<br>대충 찾아보니 webpack에 의해 번들된 결과물에 여러가지 후처리를 할수 있는 유틸리티 정도의 역할을 하는 것 같다.</p>
-<p>예를 들어 번들링된 js 소스를 난독화, css를 sass로 변환 등 다양한 기능이 있는 것 같다.</p>
-<p><strong>2.일단 Vue Webpack simple 프로젝트를 동작 시켜보자.</strong></p>
-<p>방금 예제에서 프로젝트 생성까지만 했다.<br>최초 생성시 npm install 명령어로 모듈들을 다운 받아야 한다.</p>
-<p>아래 명령어를 이용해서 라이브러리를 설치하자.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install</span><br></pre></td></tr></table></figure>
-
-<p><img src="/images/20180826-web-webpack_4.png" alt="npm install 명령어으로 라이브러리 다운로드"></p>
-<p>그리고 <strong>npm run dev</strong> 명령어를 입력해보자.</p>
-<p>앞서 설정에서 봤듯이 <strong>cross-env NODE_ENV=development webpack-dev-server –open –hot</strong> 명령어를 직접 입력해도 된다.</p>
-<p><img src="/images/20180826-web-webpack_5.png" alt="자동으로 웹 브라우저창이 뜨며 Vue 프로젝트가 실행된다."></p>
-<p>이 것은 webpack-dev-server가 동작하면서 메모리에 실시간으로 프로젝트를 웹펙으로 빌드하고 있는 상황이다.<br>따라서 프로그램을 수정하면 실시간으로 브라우저에 반영된다.</p>
-<p><strong>3.Vue webpack-simple 프로젝트를 webpack으로 빌드해보자.</strong></p>
-<p>이번에는 <strong>npm run build</strong> 명령어를 실행해 보자.</p>
-<p><img src="/images/20180826-web-webpack_6.png" alt="dist폴더와 그 내부에 webpack의 빌드 결과물이 생성된다."></p>
-<p>그렇다면 webpack-dev-server없이 index.html 파일을 브라우저에 열면 vue 프로젝트가 동작 할까?</p>
-<p>이상하게 동작이 되지 않는다.</p>
-<p><img src="/images/20180826-web-webpack_7.png" alt="ㅋㅋㅋ 안된다."></p>
-<p>이유는 지금 webpack.config.js 의 output 설정이 좀 이상하기 때문이다.</p>
-<p>생성된 dist 폴더를 C 드라이브로 옮겨보자.</p>
-<p><img src="/images/20180826-web-webpack_8.png" alt="dist 폴더를 복사해서 C드라이브에 옮겨보면 잘 동작한다."></p>
-<p>음 그렇다면 설정을 변경해서, index.html 파일의 현재경로의 dist 폴더를 사용하게 수정해보자.</p>
-<p>index.html 파일에 build.js 경로앞에 점을 찍어주자.</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">"en"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"utf-8"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>testvuesample<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"app"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"./dist/build.js"</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span> <span class="comment">&lt;!-- 맨앞에 점을 찍자. --&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p>webpack.config.js 파일에 output 영역도 수정해주자.<br>publicPath에도 맨 앞에 점을 찍어주자.</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">output: &#123;</span><br><span class="line">  path: path.resolve(__dirname, <span class="string">'./dist'</span>),</span><br><span class="line">  publicPath: <span class="string">'./dist/'</span>,  <span class="comment">// 여기도 경로 맨앞에 점을 찍자</span></span><br><span class="line">  filename: <span class="string">'build.js'</span></span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
-
-<p>다시 npm run build 를 실행하고, index.html 파일을 브라우저에서 실행해 보자.</p>
-<p><img src="/images/20180826-web-webpack_9.png" alt="정상동작을 확인 할 수 있다."></p>
-<p>이것으로 Vue webpack-simple 프로젝트를 webpack으로 빌드해 보았다.</p>
-<p>잠깐 빌드 결과물을 살펴보자.</p>
-<p><img src="/images/20180826-web-webpack_10.png" alt="dist 폴더 내부"></p>
-<p>build.js, build.js.map, logo.png 3개의 파일이 있다.</p>
-<p>wepback이라는 모듈 번들러가 Vue simple-project를 build.js라는 파일 하나로 꽉꽉 뭉쳐하나의 파일로 만들었다.<br>덕분에 index.html에 복잡한 js, css, image 등 리소스를 가져오는 소스가 사라졌다.</p>
-<p>build.js.map 는 사실 정확히 모르겠지만, source map이라고 해서 webpack이 프로젝트를 빌드할때 그 과정에 대한 설명서 같은 것으로 보여진다.<br>이 파일은 디버깅할때 사용된다고 한다.</p>
-<p>그리고 logo.png는 왜….. 이것도 build.js 내부로 들어가는게 아닌가????<br>아 잘 모르겠다.</p>
-<hr>
-<h3 id="마무리"><a href="#마무리" class="headerlink" title="마무리"></a>마무리</h3><p>사실 Vue, Webpack 둘다 모르는 상황에서 이것저것 공부해보려니 막히는 부분이 많다.<br>차근차근 공부해 나가야 겠다.</p>
-<hr>
-<h3 id="Related-Posts"><a href="#Related-Posts" class="headerlink" title="Related Posts"></a>Related Posts</h3><p><a href="http://blog.jeonghwan.net/js/2017/05/15/webpack.html" target="_blank" rel="external nofollow noopener noreferrer">http://blog.jeonghwan.net/js/2017/05/15/webpack.html</a></p>
-<p><a href="http://jusungpark.tistory.com/52" target="_blank" rel="external nofollow noopener noreferrer">http://jusungpark.tistory.com/52</a></p>
-<p><a href="https://webpack.js.org/concepts/#entry" target="_blank" rel="external nofollow noopener noreferrer">https://webpack.js.org/concepts/#entry</a></p>
-
-      
-      
-          
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-
-  
-      
-
-
-  
-  
-  
-  
-
   </div>
 
   
@@ -1651,7 +1627,7 @@ gtag('config', 'UA-100596920-1');
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">221</span>
+          <span class="site-state-item-count">222</span>
           <span class="site-state-item-name">포스트</span>
         </a>
       </div>

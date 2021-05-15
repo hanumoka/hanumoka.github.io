@@ -245,6 +245,154 @@ gtag('config', 'UA-100596920-1');
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2018/11/16/java-20181116-java-lambda/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Hanumoka">
+      <meta itemprop="description" content="아마추어 개발자의 블로그">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hanumoka, IT Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2018/11/16/java-20181116-java-lambda/" class="post-title-link" itemprop="url">java8 - 람다식(Lamdba Expressions) 개념정리</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">작성일</span>
+
+              <time title="Post created: 2018-11-16 13:11:49" itemprop="dateCreated datePublished" datetime="2018-11-16T13:11:49+09:00">2018-11-16</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Updated at: 2020-04-16 01:50:11" itemprop="dateModified" datetime="2020-04-16T01:50:11+09:00">2020-04-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/java/" itemprop="url" rel="index">
+                    <span itemprop="name">java</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 20200427hexo_post_head -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="람다식이란"><a href="#람다식이란" class="headerlink" title="람다식이란"></a>람다식이란</h1><p>이 람다식은 수학자 알론조(Alonzo Church)가 발표한 람다 계산법에서 사용된 식으로, 이를 제자 존 매카시(John Macarthy)가 프로그래밍 언어에 도입했다.</p>
+<p>Java8 버전부터 이 림다식(Lamdba Expressions)을 지원하게 되었다.</p>
+<p>람다식은 익명함수(anonymouse function)을 생성하기 위한 식으로 객체 지향 언어보다는 함수 지향 언어에 가깝다.</p>
+<p>람다식의 형태는 매개변수를 가진 코드 블록이지만, 런타임 시에는 익명 구현 객체(추상메소드를 한개 포함한)를 생성한다.</p>
+<p><strong>람다식 -&gt; 매개 변수를 가진 코드 블록 -&gt; 익명 구현 객체</strong></p>
+<p>위 설명처럼 람다식이란 일종의 함수형 프로그래밍에 적합한 문법적 표현방식이다. 그리고 이 람다 문법은 자바 뿐만아니라 스칼라와 같은 다른 언어에서도 지원하고 있다.</p>
+<p>함수형 프로그래밍은 병렬처리와 이벤트 지향 프로그래밍에 적합하며, 딥러닝이나 빅데이터와 더불어 일종의 문법적 트렌드처럼 관심을 받고 있다.</p>
+<p>Java에서도 이런 트렌드를 따라갈 필요를 느낀것 같으며, 람다식은 그 문법적 간결성으로 기존의 자바 문법보다 쉽게 함수를 표현할수 있다.</p>
+<p>그러나 람다 문법은 기존 java 문법과 확연히 다른 형태를 띠고 있기때문에, 기존 java 개발자는 많은 생소함을 느낄 수도 있다.</p>
+<p><strong>람다식은 결국 로컬 익명 구현객체를 생성하게 되지만, 이 람다식의 사용 목적은 인터페이스가 가지고 있는 메소드를 간편하게 즉흥적으로 구현해서 사용하는 것이 목적이다.</strong></p>
+<p>만약 한개의 추상메소드를 갖는 인터페이스가 있을때, 이 추상메소드를 구현해서 사용하기 위해서는 다음과 같은 방법이 있을 것이다.</p>
+<p><strong>1.인터페이스를 직접 클래스로 구현해서 메소드를 호출</strong></p>
+<p><img src="/images/20181116-java-lambda_1.png" alt="인터페이스를 클래스로 구현해서 객체를 생성하여 메소드를 호출"></p>
+<p>인터페이스를 구현한 클래스를 재사용할 수 있는 장점이 있지만, 재사용이 필요하지 않는 메소드를 만들어 사용해야 할때도 있을 것이다.<br>그런 것들을 클래스로 구현하게 된다면 불필요한 class 파일이 늘어만 가게 될 것이다.</p>
+<p><strong>2.인터페이스를 익명구현객체로 구현해서 메소드를 호출</strong></p>
+<p><img src="/images/20181116-java-lambda_2.png" alt="익명구현객체를 이용한 인터페이스 구현"></p>
+<p>위 처럼 익명 구현객체를 사용하게 된다면, 불필요한 클래스파일이 생기는 것도 막을 수 있고 프로그래밍 과정도 1번보다는 간결해진다.</p>
+<p><strong>3.람다식을 이용해 더 간결하게 인터페이스 구현하기</strong></p>
+<p><img src="/images/20181116-java-lambda_3.png" alt="람다식을 이용한 인터페이스 구현"></p>
+<p>2번보다 훨씬더 간결하게 인터페이스를 구현할 수 있다.</p>
+<hr>
+<h1 id="함수적-인터페이스와-람다식-기본-문법"><a href="#함수적-인터페이스와-람다식-기본-문법" class="headerlink" title="함수적 인터페이스와 람다식 기본 문법"></a>함수적 인터페이스와 람다식 기본 문법</h1><p>람다식을 사용하기 위해서는 일단 람다식으로 구현할 인터페이스가 필요하다.</p>
+<p>이 인터페이스에는 조건이 하나있는데 한개의 추상메소드만 가지고 있어야 한다는 것이다.</p>
+<p><img src="/images/20181116-java-lambda_4.png" alt="이렇게 에러가 난다."></p>
+<p>위 예제를 봐서 알겠지만 람다표현식은 인터페이스의 한개의 메소드밖에 구현 할 수 없다.</p>
+<p><strong>그리고 이런 람다식으로 구현할 인터페이스르 미리 함수적 인터페이스(@functionalInterface)라고 부른다.</strong></p>
+<p>즉 함수구현 전용 인터페이스라고 부르는 것이다.</p>
+<p>그리고 @FunctionalInterface 어노테이션으로 이런 함수적 인터페이스를 명시 할수 있다.</p>
+<p>@FunctionalInterface인터페이스가 적용된 인터페이스는 한개의 추상메소드만 선언 할수 있게 된다.</p>
+<p><img src="/images/20181116-java-lambda_5.png" alt="@FunctionalInterface가 선언된 인터페이스에 추상메소드가 1개가 아니면 에러가 발생한다."></p>
+<p>람다식의 기본구조는 다음과 같다. </p>
+<p>소괄호에는 구현한 함수의 인자를 그리고 화살표 다음에 중괄호에는 구현 할 함수 몸체를 넣으주면 된다.</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(타입 매개변수, ...) -&gt; &#123; 실행문; ... &#125;;</span><br></pre></td></tr></table></figure>
+
+<p>하지만 함수를 간편하고 쉽게 표현하기 위해서 람다는 많은 생략 기법을 사용한다.</p>
+<ul>
+<li><p>람다식 매개인자의 자료형은 생략가능 하다.</p>
+</li>
+<li><p>람다식의 매개인자가 한개인 경우 매개인자를 감싸는 소괄호를 생락 할 수 있다.</p>
+</li>
+<li><p>람다식의 함수몸체에 실행문이 한개인 경우 함수의 몸체를 감싸는 중괄호를 생략 할 수 있다.</p>
+</li>
+<li><p>람다식의 함수몸체에 실행문이 한개이고, 그 실행문이 return문일 경우 함수의 몸체를 감싸는 중괄호와 return을 생략 할 수 있다.</p>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">InterfaceA1 a1 = (<span class="keyword">int</span> a) -&gt; &#123; System.out.println(<span class="string">"a:"</span> + a); &#125;;</span><br><span class="line">InterfaceA1 a2 = (a) -&gt; &#123; System.out.println(<span class="string">"a:"</span> + a); &#125;;    <span class="comment">// 매개인자 자료형 생략</span></span><br><span class="line"></span><br><span class="line">InteafeceB1 b1 = (<span class="keyword">int</span> a, <span class="keyword">int</span> b) -&gt; &#123; System.out.println(<span class="string">"a+b:"</span> + (a + b) ); &#125;;</span><br><span class="line">InteafeceB1 b2 = (a, b) -&gt; &#123; System.out.println(<span class="string">"a+b:"</span> + (a + b) ); &#125;;   <span class="comment">// 매개인자 자료형 생략</span></span><br><span class="line"></span><br><span class="line">InterfaceA1 a3 = a -&gt; &#123; System.out.println(<span class="string">"a:"</span> + a); &#125;;    <span class="comment">//매개인자가 하나뿐이라 소괄호 생략</span></span><br><span class="line">InterfaceA1 a4 = a -&gt; System.out.println(<span class="string">"a:"</span> + a);    <span class="comment">//함수의 실행문이 한개라 중괄호를 생략</span></span><br><span class="line"></span><br><span class="line">TestInterface t3 = a -&gt; &#123; <span class="keyword">return</span> <span class="string">"a:"</span> + String.valueOf(a); &#125;;</span><br><span class="line">TestInterface t4 = a -&gt; <span class="string">"a:"</span> + String.valueOf(a);      <span class="comment">// 함수의 실행문이 한개이며, 리턴문만 있을경우 중괄호와 더불어 return문도 생략이 가능하다.</span></span><br><span class="line"></span><br><span class="line">InterfaceA1 a2 = () -&gt; &#123; System.out.println(<span class="string">"인자가 없는 함수 구현"</span>); &#125;;    <span class="comment">// 매개인자 없는 경우에는 빈 소괄호를 사용해야 한다.</span></span><br></pre></td></tr></table></figure>
+
+<p>이부분에 대해서는 개인적인 약간의 불만이 있다.<br>소괄호, 중갈호, return 문생략 까지는 납득이 되지만 람다식 함수인자의 자료형 생략은 과연 옳은 문법인가 라는 것이다.<br>물론 java의 오버로딩에서 처럼 함수는 함수의 인자의 타입과 그 인자들의 개수로 충분이 구분이 가능하다.</p>
+<p>하지만 그건 컴파일러가 구분하는 것이고, 사람은 쉽게 구분을 할수 있는가?</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">TestInterface t4 = (a, b, c) -&gt; a * b - c;</span><br></pre></td></tr></table></figure>
+
+<p>위 람다식으로 구현된 함수를 보고 인자 a,b,c가 어떤 타입인지, 그리고 그 리턴 값이 어떤 타입인 <strong>예측</strong> 할 수 있는가?</p>
+<p>코드의 작성자가 아니라면, 저 인터페이스이 몸체를 찾아가서 확인해야 한다.</p>
+<p>만약 문법적으로 인자의 자료형 생략을 하지 않았다면 이런 수고는 없었을 것이다.</p>
+<p>Javascript The Good Parts의 저자 더글라스 클락포드는 개발자의 실수를 야기시키는 문법은 좋은 문법이 아니라고 했다.</p>
+<p>그의 엄격한 jsLint는 너무하다 싶지만, 그의 이런 생각 자체에는 동의한다.</p>
+<h1 id="마무리"><a href="#마무리" class="headerlink" title="마무리"></a>마무리</h1><p>이번 글에서는 간단히 Java8의 람다의 개념과 기초 사용법을 정리했다.</p>
+<p>람다를 아주 후려치자면, Java에서 추상메소드가 하나인 인터페이스(애시당초 기능적으로 단일 함수로 사용할)를 쉽게 구현해서 사용하는 문법 정도라고 봐도 될것 같다.</p>
+
+      
+      
+          
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+      
+
+
+  
+  
+  
+  
+
+        
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
     <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2018/11/16/docker-20181116-docker-docker-basic/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1393,116 +1541,6 @@ gtag('config', 'UA-100596920-1');
   
   
 
-        
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
-    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2018/11/08/node-20181108-node-path-join-vs-resolve/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Hanumoka">
-      <meta itemprop="description" content="아마추어 개발자의 블로그">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hanumoka, IT Blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2018/11/08/node-20181108-node-path-join-vs-resolve/" class="post-title-link" itemprop="url">Node path.join() vs path.resolve()</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">작성일</span>
-
-              <time title="Post created: 2018-11-08 00:23:48" itemprop="dateCreated datePublished" datetime="2018-11-08T00:23:48+09:00">2018-11-08</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Updated at: 2020-04-16 01:50:12" itemprop="dateModified" datetime="2020-04-16T01:50:12+09:00">2020-04-16</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/node/" itemprop="url" rel="index">
-                    <span itemprop="name">node</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-      <!-- 20200427hexo_post_head -->
-      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
-      <script>
-          (adsbygoogle = window.adsbygoogle || []).push({});
-      </script>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h1><p>Vue나 Webpack등을 보면 Node의 Path모듈을 자주 사용하는 것을 볼수 있다.</p>
-<p>이 Path 모듈은 Node의 내장모듈로서 javascript에서 폴더나 파일의 경로를 쉽게 문자열로 만들어주는 유틸리티 모듈이다.</p>
-<p>특히 Windows 타입과 POSIX(Linux, macOS)타입으로 경로구분자가 다른수 있는데, 이 Path 모듈을 사용하면 여기에 대한 고민을 할 필요가 없어진다.</p>
-<p>Path 모듈에는 다양한 메소드가 있으나, 보통 인자로 path를 받고 메소드별로 적절하게 문자열 형태의 path를 리턴하는 형태이다.</p>
-<p>이 글에서는 Node의 path패키지 메서드중  여러개의 경로를 인자로 받아 하나의 경로로 합쳐주는 join과 resolve에 대해 정리해 보겠다.</p>
-<h1 id="Path-join"><a href="#Path-join" class="headerlink" title="Path.join()"></a>Path.join()</h1><p>메소드명처럼 인자로 받은 경로들을 하나로 합쳐서 문자열 형태로 path를 리턴한다.</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">path.join(<span class="string">'/foo'</span>, <span class="string">'bar'</span>, <span class="string">'baz/asdf'</span>, <span class="string">'quux'</span>, <span class="string">'..'</span>);</span><br><span class="line"><span class="comment">// Returns: '/foo/bar/baz/asdf'</span></span><br><span class="line"></span><br><span class="line">path.join(<span class="string">'foo'</span>, &#123;&#125;, <span class="string">'bar'</span>);</span><br><span class="line"><span class="comment">// throws 'TypeError: Path must be a string. Received &#123;&#125;'</span></span><br></pre></td></tr></table></figure>
-
-<p>재미있는 점은 첫 번째 예제의 맨 마지막 인자이다. </p>
-<p><strong>..</strong> 은 현재경로에서 한단계 위의 상위경로를 의미한다.</p>
-<p>따라서 <strong>/foo/bar/baz/asdf/quux</strong> 이 상태의 경로에서 마지막에 합쳐진 <strong>..</strong> 로 인해 quux의 한 단계 위 경로로 이동하게 되어 quux가 결과값에 제외된 것이다.</p>
-<p>즉, <strong>..</strong> 의 왼쪽에 있는 한 개의 경로인자는 제외된다.</p>
-<h1 id="Path-resolve"><a href="#Path-resolve" class="headerlink" title="Path.resolve()"></a>Path.resolve()</h1><p>resolve도 join과 마찬가지로 인자로 받은 경로들을 하나로 합쳐러 문자열 헝태로 리턴한다.</p>
-<p>하지만 다른점은 전달받은 경로인자들의 <strong>맨 오른쪽 부터 왼쪽으로 경로인자들을 합쳐</strong>나간다는 것이다.</p>
-<p>그리고 경로인자들을 합쳐나가는중 <strong>/</strong> 를 만나면 절대경로로 인식해서 나머지 경로 인자들을 무시한다.</p>
-<p>만약 <strong>/</strong> 를 끝까지 만나지 못하면 <strong>/현재경로/생성된경로</strong> 형태로 결과를 리턴한다.</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">path.resolve(<span class="string">'/foo/bar'</span>, <span class="string">'./baz'</span>);</span><br><span class="line"><span class="comment">// Returns: '/foo/bar/baz'</span></span><br><span class="line"></span><br><span class="line">path.resolve(<span class="string">'/foo/bar'</span>, <span class="string">'/tmp/file/'</span>);</span><br><span class="line"><span class="comment">// Returns: '/tmp/file'</span></span><br><span class="line"></span><br><span class="line">path.resolve(<span class="string">'wwwroot'</span>, <span class="string">'static_files/png/'</span>, <span class="string">'../gif/image.gif'</span>);</span><br><span class="line"><span class="comment">// if the current working directory is /home/myself/node,</span></span><br><span class="line"><span class="comment">// this returns '/home/myself/node/wwwroot/static_files/gif/image.gif'</span></span><br></pre></td></tr></table></figure>
-
-<p>여기서도 <strong>..</strong> 의 왼쪽에 있는 한 개의 경로인자는 제외된다.<br>이 특성은 Path 모듈의 메소드 전반에 적용되는 룰인것 같다.</p>
-<h1 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h1><p><a href="https://nodejs.org/api/path.html" target="_blank" rel="external nofollow noopener noreferrer">https://nodejs.org/api/path.html</a></p>
-
-      
-      
-          
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-
-  
-      
-
-
-  
-  
-  
-  
-
   </div>
 
   
@@ -1573,7 +1611,7 @@ gtag('config', 'UA-100596920-1');
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">221</span>
+          <span class="site-state-item-count">222</span>
           <span class="site-state-item-name">포스트</span>
         </a>
       </div>

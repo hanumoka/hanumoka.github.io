@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('https://www.hanumoka.net').hostname,
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.6.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":true,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":true},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    comments: {"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
+
+<!-- 구글 애드센스 코드  -->
+<script data-ad-client="ca-pub-6388187282606796" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-100596920-1"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'UA-100596920-1');
+</script>
+ 
+<!-- 네이버 웹 마스터-->
+<meta name="naver-site-verification" content="74bc91ee61c53c02f7d87ab3a442f99823f4f5f9">
+  <meta name="description" content="저번에 만든 next.js 프로젝트를 버리고 다시 셋팅을 한다. 이번에는 next.js + typescript + antd 를 적용해보려 한다. 이 3개중 뭐 하나도 재대로 아는게 아니라 프로젝트 설정 자체가 힘들었다.  실습next.js 프로젝트 생성cra처럼 next.js도 보일러플레이트 프로젝트를 생성하는 명령어 create-next-app 이 있다.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="next.js + typescript + antd">
+<meta property="og:url" content="https://www.hanumoka.net/2021/05/15/toyproject-motorlatte-20210515-1/index.html">
+<meta property="og:site_name" content="Hanumoka, IT Blog">
+<meta property="og:description" content="저번에 만든 next.js 프로젝트를 버리고 다시 셋팅을 한다. 이번에는 next.js + typescript + antd 를 적용해보려 한다. 이 3개중 뭐 하나도 재대로 아는게 아니라 프로젝트 설정 자체가 힘들었다.  실습next.js 프로젝트 생성cra처럼 next.js도 보일러플레이트 프로젝트를 생성하는 명령어 create-next-app 이 있다.">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:image" content="https://www.hanumoka.net/images/2021/20210515-1/Untitled.png">
+<meta property="og:image" content="https://www.hanumoka.net/images/2021/20210515-1/Untitled%201.png">
+<meta property="og:image" content="https://www.hanumoka.net/images/2021/20210515-1/Untitled%202.png">
+<meta property="og:image" content="https://www.hanumoka.net/images/2021/20210515-1/Untitled%203.png">
+<meta property="og:image" content="https://www.hanumoka.net/images/2021/20210515-1/Untitled%204.png">
+<meta property="og:image" content="https://www.hanumoka.net/images/2021/20210515-1/Untitled%205.png">
+<meta property="og:image" content="https://www.hanumoka.net/images/2021/20210515-1/Untitled%206.png">
+<meta property="og:image" content="https://www.hanumoka.net/images/2021/20210515-1/Untitled%207.png">
+<meta property="og:image" content="https://www.hanumoka.net/images/2021/20210515-1/Untitled%208.png">
+<meta property="og:image" content="https://www.hanumoka.net/images/2021/20210515-1/Untitled%209.png">
+<meta property="og:image" content="https://www.hanumoka.net/images/2021/20210515-1/Untitled%2010.png">
+<meta property="og:image" content="https://www.hanumoka.net/images/2021/20210515-1/Untitled%2011.png">
+<meta property="og:image" content="https://www.hanumoka.net/images/2021/20210515-1/Untitled%2012.png">
+<meta property="og:image" content="https://www.hanumoka.net/images/2021/20210515-1/Untitled%2013.png">
+<meta property="og:image" content="https://www.hanumoka.net/images/2021/20210515-1/Untitled%2014.png">
+<meta property="og:image" content="https://www.hanumoka.net/images/2021/20210515-1/Untitled%2015.png">
+<meta property="og:image" content="https://www.hanumoka.net/images/2021/20210515-1/Untitled%2016.png">
+<meta property="og:image" content="https://www.hanumoka.net/images/2021/20210515-1/Untitled%2017.png">
+<meta property="og:image" content="https://www.hanumoka.net/images/2021/20210515-1/Untitled%2018.png">
+<meta property="og:image" content="https://www.hanumoka.net/images/2021/20210515-1/Untitled%2019.png">
+<meta property="article:published_time" content="2021-05-15T11:51:14.000Z">
+<meta property="article:modified_time" content="2021-05-15T11:59:14.698Z">
+<meta property="article:author" content="Hanumoka">
+<meta property="article:tag" content="typescript">
+<meta property="article:tag" content="antd">
+<meta property="article:tag" content="토이프로젝트">
+<meta property="article:tag" content="motorlatte">
+<meta property="article:tag" content="개발일지">
+<meta property="article:tag" content="next.js">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.hanumoka.net/images/2021/20210515-1/Untitled.png">
+
+<link rel="canonical" href="https://www.hanumoka.net/2021/05/15/toyproject-motorlatte-20210515-1/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>next.js + typescript + antd | Hanumoka, IT Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Hanumoka, IT Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hanumoka, IT Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">그래봐야 코딩, 그래도 코딩</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>홈</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>태그</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>카테고리</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>아카이브</a>
+
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="fa fa-fw fa-calendar"></i>Schedule</a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-fw fa-sitemap"></i>Sitemap</a>
+
+  </li>
+        <li class="menu-item menu-item-rss">
+
+    <a href="/atom.xml" rel="section"><i class="fa fa-fw fa-rss"></i>rss</a>
+
+  </li>
+        <li class="menu-item menu-item-commonweal">
+
+    <a href="/404/" rel="section"><i class="fa fa-fw fa-heartbeat"></i>Commonweal 404</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>검색
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none" placeholder="Searching..." spellcheck="false" type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/hanumoka" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="external nofollow noopener noreferrer" target="_blank"><svg width="80" height="80" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2021/05/15/toyproject-motorlatte-20210515-1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Hanumoka">
+      <meta itemprop="description" content="아마추어 개발자의 블로그">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hanumoka, IT Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          next.js + typescript + antd
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">작성일</span>
+              
+
+              <time title="Post created: 2021-05-15 20:51:14 / Updated at: 20:59:14" itemprop="dateCreated datePublished" datetime="2021-05-15T20:51:14+09:00">2021-05-15</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ToyProject/" itemprop="url" rel="index">
+                    <span itemprop="name">ToyProject</span>
+                  </a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ToyProject/MotorLatte/" itemprop="url" rel="index">
+                    <span itemprop="name">MotorLatte</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 20200427hexo_post_head -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>저번에 만든 next.js 프로젝트를 버리고 다시 셋팅을 한다.</p>
+<p>이번에는 next.js + typescript + antd 를 적용해보려 한다.</p>
+<p>이 3개중 뭐 하나도 재대로 아는게 아니라 프로젝트 설정 자체가 힘들었다. </p>
+<h2 id="실습"><a href="#실습" class="headerlink" title="실습"></a>실습</h2><h3 id="next-js-프로젝트-생성"><a href="#next-js-프로젝트-생성" class="headerlink" title="next.js 프로젝트 생성"></a>next.js 프로젝트 생성</h3><p>cra처럼 next.js도 보일러플레이트 프로젝트를 생성하는 명령어 create-next-app 이 있다.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npx create-next-app 프로젝트명</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/2021/20210515-1/Untitled.png" alt="1"></p>
+<h3 id="next-js에-typescript-적용"><a href="#next-js에-typescript-적용" class="headerlink" title="next.js에 typescript 적용"></a>next.js에 typescript 적용</h3><p>생성된 폴더를 webstorm으로 열고 root 경로에 <strong>tsconfog.json 파일을 생성한다.</strong></p>
+<p><img src="/images/2021/20210515-1/Untitled%201.png" alt="2"></p>
+<p>그리고 아래 명령어로 typescript관련 모듈을 설치한다.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install --save-dev typescript @types/react @types/node</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/2021/20210515-1/Untitled%202.png" alt="3"></p>
+<p>pages 폴더 내부에 _app.js 와 index.js 파일이 있을 것이다.</p>
+<p>해당 파일들의 확장자를 tsx로 변경해준다.</p>
+<p><img src="/images/2021/20210515-1/Untitled%203.png" alt="4"></p>
+<p>아래 명령어로 next.js를 개발모드로 실행한다.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm run dev</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/2021/20210515-1/Untitled%204.png" alt="5"></p>
+<p>next.js가 실행되면서 위 빨간줄 처럼 tsconfig.json 파일을 인식해서 디폴트 셋팅을 tsconfig.json에 해준다.</p>
+<p>브라우저로 접근하면 정상동작 하는 것을 볼 수 있다.</p>
+<p><img src="/images/2021/20210515-1/Untitled%205.png" alt="6"></p>
+<p><img src="/images/2021/20210515-1/Untitled%206.png" alt="7"></p>
+<p>tsconfig.json 파일을 열어보면, 자동으로 위처럼 내용이 채워진 것을 확인 할 수있다.</p>
+<p>나도 typescript는 잘 몰라서 어떤 설정인지 잘 모른다.</p>
+<p>typescript가 정상적으로 동작하는지 확인해보기 위해서, strict 설정을 잠시 true로 변경하고 pages폴더의 _app.tsx 폴더를 열어보자.</p>
+<p>아래처럼 MyApp의 Props에 빨간줄이 처지면서 webstorm에서 자동으로 typescript문법 검사를 하고 있는 것을 볼 수 있다. </p>
+<p>난 처음에 typescript가 동작하는지 않하는지 몰라서 webstorm에 별도의 설정을 해줘야 하는줄 알았다.  next.js에서 자동으로 생성해주는 tsconfig.json의 strick 값이 false여서 webstorm에 빡세개 검사를 하지 않았던 것이었다. </p>
+<p>Typescript가 다들 좋다고 하는데, 개인적인 생각으로는 이런 통일성없는 문법체크설정이 존재하는것 자체가 문제가 있다고 본다.  </p>
+<p><img src="/images/2021/20210515-1/Untitled%207.png" alt="8"></p>
+<p>자 여기까지 next.js 와 typescript 설정이 끝났다.</p>
+<h3 id="next-js-에-atnd-앤트디자인-적용"><a href="#next-js-에-atnd-앤트디자인-적용" class="headerlink" title="next.js 에 atnd(앤트디자인) 적용"></a>next.js 에 atnd(앤트디자인) 적용</h3><p>여기서 좀 많이 해맸다. 20210515기준 next.js 버전은 10버전이다. 뭔가 webpack 최신버전과 충돌이 있어서 삽질을 많이 했다. </p>
+<p>일단 antd를 설치한다.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yarn add antd</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/2021/20210515-1/Untitled%208.png" alt="9"></p>
+<p>그리고 styles폴더에 antd.less 파일을 생성하고 아래 내용을 채운다.</p>
+<p>주석이 살아 있는 것은 antd의 메인컬러설정으로 빨강으로 정했다.</p>
+<p>나머지는 다 주석으로 일부로 처리했다.(나중에 사용할수 있으므로 참고용으로 나둔다.)</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">@import</span> <span class="string">"~antd/dist/antd.less"</span>;</span><br><span class="line"></span><br><span class="line"><span class="variable">@primary-color:</span> <span class="number">#c02428</span>;  <span class="comment">// 매인 색 빨강</span></span><br><span class="line"><span class="comment">//@primary-color: #000; // primary color for all components</span></span><br><span class="line"><span class="comment">//@link-color: #1890ff; // link color</span></span><br><span class="line"><span class="comment">//@success-color: #52c41a; // success state color</span></span><br><span class="line"><span class="comment">//@warning-color: #faad14; // warning state color</span></span><br><span class="line"><span class="comment">//@error-color: #f5222d; // error state color</span></span><br><span class="line"><span class="comment">//@font-size-base: 14px; // major text font size</span></span><br><span class="line"><span class="comment">//@heading-color: rgba(0, 0, 0, 0.85); // heading text color</span></span><br><span class="line"><span class="comment">//@text-color: rgba(0, 0, 0, 0.65); // major text color</span></span><br><span class="line"><span class="comment">//@text-color-secondary: rgba(0, 0, 0, 0.45); // secondary text color</span></span><br><span class="line"><span class="comment">//@disabled-color: rgba(0, 0, 0, 0.25); // disable state color</span></span><br><span class="line"><span class="comment">//@border-radius-base: 4px; // major border radius</span></span><br><span class="line"><span class="comment">//@border-color-base: #d9d9d9; // major border color</span></span><br><span class="line"><span class="comment">//@box-shadow-base: 0 2px 8px rgba(0, 0, 0, 0.15); // major shadow for layers</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/2021/20210515-1/Untitled%209.png" alt="10"></p>
+<p>pages폴더의 _app.tsx 파일에 globall.css를 주석처리하고 방금 생성한 antd.less를 import 한다.</p>
+<p>_app.tsx는 next.js의 엔트리 포인트 파일로 공통적일 설정을 해당 파일에서 한다.</p>
+<p>antd.less 파일에 설정으로 antd의 전체적인 테마를 설정 할수 있게 된 것이다.</p>
+<p><img src="/images/2021/20210515-1/Untitled%2010.png" alt="11"></p>
+<p>아래 명령으로 next.js에서 css, less, sass 등 파일을 인식할 수 있게 도와주는 라이브러리를 추가하자.(webpack이나 babel을 잘 몰라서 정확한 것은 아니나 antd적용을 위해 필요한 라이브러리 인듯 하다.)</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install --save @zeit/next-css @zeit/next-less @zeit/next-sass babel-plugin-import less</span><br></pre></td></tr></table></figure>
+
+<p>pages폴더의 index.tsx 파일을 아래처럼 수정해주자.</p>
+<p>antd의 Button 컴포넌트를 사용해서 antd가 정상동작하고 앞서 설정한 메인색상(빨강)이 동작하는지 확인하기 위해서이다.</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123;Button&#125; <span class="keyword">from</span> <span class="string">"antd"</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="function"><span class="keyword">function</span> <span class="title">Home</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">   &lt;div&gt;</span><br><span class="line">     &lt;Button type=<span class="string">"primary"</span>&gt;Antd 버튼&lt;<span class="regexp">/Button&gt;</span></span><br><span class="line"><span class="regexp">   &lt;/</span>div&gt;</span><br><span class="line">  )</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/2021/20210515-1/Untitled%2011.png" alt="12"></p>
+<p>그리고 root 폴더 경루에 next.config.js 폴더를 생성한다.</p>
+<p>내용을 아래처럼 채워주자.</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> withSass = <span class="built_in">require</span>(<span class="string">"@zeit/next-sass"</span>);</span><br><span class="line"><span class="keyword">const</span> withLess = <span class="built_in">require</span>(<span class="string">"@zeit/next-less"</span>);</span><br><span class="line"><span class="keyword">const</span> withCSS = <span class="built_in">require</span>(<span class="string">"@zeit/next-css"</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> isProd = process.env.NODE_ENV === <span class="string">"production"</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// fix: prevents error when .less files are required by node</span></span><br><span class="line"><span class="keyword">if</span> (<span class="keyword">typeof</span> <span class="built_in">require</span> !== <span class="string">"undefined"</span>) &#123;</span><br><span class="line">    <span class="built_in">require</span>.extensions[<span class="string">".less"</span>] = <span class="function">(<span class="params">file</span>) =&gt;</span> &#123;&#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = withCSS(&#123;</span><br><span class="line">    cssModules: <span class="literal">true</span>,</span><br><span class="line">    cssLoaderOptions: &#123;</span><br><span class="line">        importLoaders: <span class="number">1</span>,</span><br><span class="line">        localIdentName: <span class="string">"[local]___[hash:base64:5]"</span>,</span><br><span class="line">    &#125;,</span><br><span class="line">    ...withLess(</span><br><span class="line">        withSass(&#123;</span><br><span class="line">            lessLoaderOptions: &#123;</span><br><span class="line">                javascriptEnabled: <span class="literal">true</span>,</span><br><span class="line">            &#125;,</span><br><span class="line">        &#125;)</span><br><span class="line">    ),</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/2021/20210515-1/Untitled%2012.png" alt="13"></p>
+<p>npm run dev 를 실행해서 다시 동작시키면 동작이 되어야 하는데…</p>
+<p>아래처럼 webpack의 모듈이 없다고 오류가 난다.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Error: Cannot find module <span class="string">'webpack/lib/node/NodeTempaltePlugin'</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/2021/20210515-1/Untitled%2013.png" alt="14"></p>
+<p>아무 생각없이 그냥 최신 webpack을 설치해 봤는데, 역시 다른 오류가 난다.</p>
+<p><a href="mailto:webpack@4.44.1" rel="external nofollow noopener noreferrer" target="_blank">webpack@4.44.1</a> 를 설치하자. next.js 10버전에서 webpack관련 이슈가 있어보인다.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm i webpack@4.44.1</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/2021/20210515-1/Untitled%2014.png" alt="15"></p>
+<p>다시 npm run dev를 하면….</p>
+<p>또 오류가 난다. @zeit/next-sass ??? 이건 앞서 설치한건데?</p>
+<p>다시 설치해주자.</p>
+<p><img src="/images/2021/20210515-1/Untitled%2015.png" alt="16"></p>
+<p>다시 npm run dev를 하면….</p>
+<p>@zeit/next-less??? 이것도 설치한건데???</p>
+<p><img src="/images/2021/20210515-1/Untitled%2016.png" alt="17"></p>
+<p>그냥 또다시 설치해준다.</p>
+<p><img src="/images/2021/20210515-1/Untitled%2017.png" alt="18"></p>
+<p>설치 중에 webstorm에서 디펜던시를 update하라고 한다. 해주자.</p>
+<p>예상으로는 webpack이 설치되면서 뭔가 모듈간의 의존성에 변경? 문제가 발생한거 같다.</p>
+<p><img src="/images/2021/20210515-1/Untitled%2018.png" alt="19"></p>
+<p>디펜던시가 완료된뒤 다시 npm run dev를 실행하면 아래처럼 antd가 정상동작하는 것을 확인 할 수 있다.</p>
+<p>하… 프로젝트 셋팅 개빡세</p>
+<p><img src="/images/2021/20210515-1/Untitled%2019.png" alt="20"></p>
+<p>끝</p>
+<p>혹시나 해서 package.json  파일을 남겨놓는다.</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"name"</span>: <span class="string">"ml-speedmaster-next"</span>,</span><br><span class="line">  <span class="attr">"version"</span>: <span class="string">"0.1.0"</span>,</span><br><span class="line">  <span class="attr">"private"</span>: <span class="literal">true</span>,</span><br><span class="line">  <span class="attr">"scripts"</span>: &#123;</span><br><span class="line">    <span class="attr">"dev"</span>: <span class="string">"next dev"</span>,</span><br><span class="line">    <span class="attr">"build"</span>: <span class="string">"next build"</span>,</span><br><span class="line">    <span class="attr">"start"</span>: <span class="string">"next start"</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">"dependencies"</span>: &#123;</span><br><span class="line">    <span class="attr">"@zeit/next-css"</span>: <span class="string">"^1.0.1"</span>,</span><br><span class="line">    <span class="attr">"@zeit/next-less"</span>: <span class="string">"^1.0.1"</span>,</span><br><span class="line">    <span class="attr">"@zeit/next-sass"</span>: <span class="string">"^1.0.1"</span>,</span><br><span class="line">    <span class="attr">"antd"</span>: <span class="string">"^4.15.5"</span>,</span><br><span class="line">    <span class="attr">"babel-plugin-import"</span>: <span class="string">"^1.13.3"</span>,</span><br><span class="line">    <span class="attr">"less"</span>: <span class="string">"^4.1.1"</span>,</span><br><span class="line">    <span class="attr">"next"</span>: <span class="string">"10.2.0"</span>,</span><br><span class="line">    <span class="attr">"react"</span>: <span class="string">"17.0.2"</span>,</span><br><span class="line">    <span class="attr">"react-dom"</span>: <span class="string">"17.0.2"</span>,</span><br><span class="line">    <span class="attr">"webpack"</span>: <span class="string">"^4.44.1"</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">"devDependencies"</span>: &#123;</span><br><span class="line">    <span class="attr">"@types/node"</span>: <span class="string">"^15.3.0"</span>,</span><br><span class="line">    <span class="attr">"@types/react"</span>: <span class="string">"^17.0.5"</span>,</span><br><span class="line">    <span class="attr">"typescript"</span>: <span class="string">"^4.2.4"</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h3><p><a href="https://nextjs.org/learn/excel/typescript/create-tsconfig" target="_blank" rel="external nofollow noopener noreferrer">https://nextjs.org/learn/excel/typescript/create-tsconfig</a></p>
+<p><a href="https://dev.to/burhanuday/using-ant-design-with-nextjs-custom-variables-for-ant-design-57m5" target="_blank" rel="external nofollow noopener noreferrer">https://dev.to/burhanuday/using-ant-design-with-nextjs-custom-variables-for-ant-design-57m5</a></p>
+<p><a href="https://velog.io/@jakeseo_me/%EB%8B%A4%EC%8B%9C-%ED%94%84%EB%A1%A0%ED%8A%B8-%ED%8B%80%EC%9E%A1%EA%B8%B0-2-next%EC%97%90-antd-%EC%84%A4%EC%B9%98%ED%95%98%EA%B8%B0" target="_blank" rel="external nofollow noopener noreferrer">https://velog.io/@jakeseo_me/다시-프론트-틀잡기-2-next에-antd-설치하기</a></p>
+<p><a href="https://github.com/vercel/next.js/issues/21721" target="_blank" rel="external nofollow noopener noreferrer">https://github.com/vercel/next.js/issues/21721</a></p>
+
+      
+          
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 20200427_post_footer -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="7565540074" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      <!-- Utterances 댓글 -->
+      <script src="https://utteranc.es/client.js" repo="hanumoka/hanumoka.github.io" issue-term="pathname" theme="github-light" crossorigin="anonymous" async>
+      </script>
+      <div style="font-size: 1rem;
+                  font-weight: 400;
+                  line-height: 1.5;
+                  text-align: left;
+                  box-sizing: border-box;
+                  position: relative;
+                  padding: .75rem 1.25rem;
+                  margin-bottom: 1rem;
+                  border: 1px solid transparent;
+                  border-radius: .25rem;
+                  color: #721c24;
+                  background-color: #f8d7da;
+                  border-color: #f5c6cb;
+                  margin-top: 1rem;">
+        Notice: 댓글을 사용하시려면, github에 로그인을 해주세요.(Utterances 댓글을 사용중입니다.)
+      </div>
+    <div>
+          <div class="post-tags">
+              <a href="/tags/typescript/" rel="tag"># typescript</a>
+              <a href="/tags/antd/" rel="tag"># antd</a>
+              <a href="/tags/%ED%86%A0%EC%9D%B4%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8/" rel="tag"># 토이프로젝트</a>
+              <a href="/tags/motorlatte/" rel="tag"># motorlatte</a>
+              <a href="/tags/%EA%B0%9C%EB%B0%9C%EC%9D%BC%EC%A7%80/" rel="tag"># 개발일지</a>
+              <a href="/tags/next-js/" rel="tag"># next.js</a>
+          </div>
+        
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/05/05/toyproject-motorlatte-20210505-2/" rel="prev" title="MotorLatte-화면개발용 Next.js 프로젝트 생성">
+      <i class="fa fa-chevron-left"></i> MotorLatte-화면개발용 Next.js 프로젝트 생성
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </div></footer>
+    
+  </article>
+
+  
+      
+
+
+  
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          목차
+        </li>
+        <li class="sidebar-nav-overview">
+          흝어보기
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#실습"><span class="nav-number">1.</span> <span class="nav-text">실습</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#next-js-프로젝트-생성"><span class="nav-number">1.1.</span> <span class="nav-text">next.js 프로젝트 생성</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#next-js에-typescript-적용"><span class="nav-number">1.2.</span> <span class="nav-text">next.js에 typescript 적용</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#next-js-에-atnd-앤트디자인-적용"><span class="nav-number">1.3.</span> <span class="nav-text">next.js 에 atnd(앤트디자인) 적용</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#참고자료"><span class="nav-number">1.4.</span> <span class="nav-text">참고자료</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Hanumoka</p>
+  <div class="site-description" itemprop="description">아마추어 개발자의 블로그</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">222</span>
+          <span class="site-state-item-name">포스트</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">40</span>
+        <span class="site-state-item-name">카테고리</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">596</span>
+        <span class="site-state-item-name">태그</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/hanumoka" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;hanumoka" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:amagramer@gmail.com" title="E-Mail → mailto:amagramer@gmail.com" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    <div>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 왼쪽 사이드 광고 -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="9032012837" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+    </div>
+    </div>
+    
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Hanumoka</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="external nofollow noopener noreferrer" target="_blank">Hexo</a> v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://theme-next.org/" class="theme-link" rel="external nofollow noopener noreferrer" target="_blank">NexT.Gemini</a> v7.6.0
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

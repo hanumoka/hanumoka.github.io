@@ -245,6 +245,131 @@ gtag('config', 'UA-100596920-1');
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2018/04/30/centOs-20180430-centos-install-jdk/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Hanumoka">
+      <meta itemprop="description" content="아마추어 개발자의 블로그">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hanumoka, IT Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2018/04/30/centOs-20180430-centos-install-jdk/" class="post-title-link" itemprop="url">CentOs7에 jdk 설치 및 환경변수(JAVA_HOME)설정</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">작성일</span>
+
+              <time title="Post created: 2018-04-30 14:22:13" itemprop="dateCreated datePublished" datetime="2018-04-30T14:22:13+09:00">2018-04-30</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Updated at: 2020-04-16 01:50:11" itemprop="dateModified" datetime="2020-04-16T01:50:11+09:00">2020-04-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/centOs/" itemprop="url" rel="index">
+                    <span itemprop="name">centOs</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 20200427hexo_post_head -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="개발환경"><a href="#개발환경" class="headerlink" title="개발환경"></a>개발환경</h3><p>CentOs7(Nas 가상머신), putty, yum</p>
+<h3 id="CentOs7-jdk-설치하기"><a href="#CentOs7-jdk-설치하기" class="headerlink" title="CentOs7 jdk 설치하기"></a>CentOs7 jdk 설치하기</h3><p>centOs의 쉘에 아래 명령으로 현재 설치가능한 jdk 버전확인</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum list java*jdk-devel</span><br></pre></td></tr></table></figure>
+<p><strong>실행결과</strong></p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># yum list java*jdk-devel</span></span><br><span class="line">Loaded plugins: fastestmirror, langpacks</span><br><span class="line">Repodata is over 2 weeks old. Install yum-cron? Or run: yum makecache fast</span><br><span class="line">Determining fastest mirrors</span><br><span class="line"> * base: mirror.kakao.com</span><br><span class="line"> * extras: mirror.kakao.com</span><br><span class="line"> * updates: mirror.kakao.com</span><br><span class="line">Available Packages</span><br><span class="line">java-1.6.0-openjdk-devel.x86_64              1:1.6.0.41-1.13.13.1.el7_3               base</span><br><span class="line">java-1.7.0-openjdk-devel.x86_64              1:1.7.0.171-2.6.13.0.el7_4               updates</span><br><span class="line">java-1.8.0-openjdk-devel.i686                1:1.8.0.161-0.b14.el7_4                  updates</span><br><span class="line">java-1.8.0-openjdk-devel.x86_64              1:1.8.0.161-0.b14.el7_4                  updates</span><br><span class="line">[root@localhost ~]<span class="comment">#</span></span><br></pre></td></tr></table></figure>
+
+<p>조회된 결과중에 java-1.8.0-openjdk-devel.x86_64 버전을 설치해보자<br>쉘에 아래 명령어를 입력하자.</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install java-1.8.0-openjdk-devel.x86_64</span><br></pre></td></tr></table></figure>
+<p>뭔가 진행이되며 중간중간 뭔가를 물어보는데 y를 눌러주면서 진행하면 된다.<br>생각보다 시간이 좀 걸린다.</p>
+<p><strong>실행결과</strong></p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">  <span class="string">'생략...'</span></span><br><span class="line">  Verifying  : 1:java-1.8.0-openjdk-headless-1.8.0.65-3.b17.el7.x86_64                 22/25</span><br><span class="line">  Verifying  : nss-softokn-freebl-3.16.2.3-13.el7_1.x86_64                             23/25</span><br><span class="line">  Verifying  : nspr-4.10.8-2.el7_1.x86_64                                              24/25</span><br><span class="line">  Verifying  : nss-util-3.19.1-4.el7_1.x86_64                                          25/25</span><br><span class="line"></span><br><span class="line">Installed:</span><br><span class="line">  java-1.8.0-openjdk-devel.x86_64 1:1.8.0.161-0.b14.el7_4</span><br><span class="line"></span><br><span class="line">Dependency Installed:</span><br><span class="line">  copy-jdk-configs.noarch 0:2.2-5.el7_4             nss-pem.x86_64 0:1.0.3-4.el7</span><br><span class="line"></span><br><span class="line">Dependency Updated:</span><br><span class="line">  chkconfig.x86_64 0:1.7.4-1.el7</span><br><span class="line">  java-1.8.0-openjdk.x86_64 1:1.8.0.161-0.b14.el7_4</span><br><span class="line">  java-1.8.0-openjdk-headless.x86_64 1:1.8.0.161-0.b14.el7_4</span><br><span class="line">  nspr.x86_64 0:4.13.1-1.0.el7_3</span><br><span class="line">  nss.x86_64 0:3.28.4-15.el7_4</span><br><span class="line">  nss-softokn.x86_64 0:3.28.3-8.el7_4</span><br><span class="line">  nss-softokn-freebl.x86_64 0:3.28.3-8.el7_4</span><br><span class="line">  nss-sysinit.x86_64 0:3.28.4-15.el7_4</span><br><span class="line">  nss-tools.x86_64 0:3.28.4-15.el7_4</span><br><span class="line">  nss-util.x86_64 0:3.28.4-3.el7</span><br><span class="line">  ntsysv.x86_64 0:1.7.4-1.el7</span><br><span class="line"></span><br><span class="line">Complete!</span><br><span class="line">[root@localhost ~]<span class="comment">#</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="CentOs7-jdk-설치-결과-확인"><a href="#CentOs7-jdk-설치-결과-확인" class="headerlink" title="CentOs7 jdk 설치 결과 확인"></a>CentOs7 jdk 설치 결과 확인</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># javac -version</span></span><br><span class="line">javac 1.8.0_161</span><br><span class="line">[root@localhost ~]<span class="comment"># rpm -qa java*jdk-devel</span></span><br><span class="line">java-1.8.0-openjdk-devel-1.8.0.161-0.b14.el7_4.x86_64</span><br><span class="line">[root@localhost ~]<span class="comment">#</span></span><br></pre></td></tr></table></figure>
+
+<p>위 처럼 jdk 설치 완료를 확인 할 수 있다.</p>
+<hr>
+<h3 id="CentOs7-jdk-환경변수-설정"><a href="#CentOs7-jdk-환경변수-설정" class="headerlink" title="CentOs7 jdk 환경변수 설정"></a>CentOs7 jdk 환경변수 설정</h3><p>일단 현재 JAVA_HOME이 설정 되어 있는지 확인하자.</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># echo $JAVA_HOME</span></span><br><span class="line"></span><br><span class="line">[root@localhost ~]<span class="comment">#</span></span><br></pre></td></tr></table></figure>
+<p>JAVA_HOME이 설정이 안되어 있는 것을 확인했다.</p>
+<h3 id="javac-위치-확인"><a href="#javac-위치-확인" class="headerlink" title="javac 위치 확인"></a>javac 위치 확인</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># which javac</span></span><br><span class="line">/usr/bin/javac</span><br><span class="line">[root@localhost ~]<span class="comment"># readlink -f /usr/bin/javac</span></span><br><span class="line">/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.161-0.b14.el7_4.x86_64/bin/javac</span><br><span class="line">[root@localhost ~]<span class="comment">#</span></span><br></pre></td></tr></table></figure>
+<p>which javac라는 명령어는 javac라는 명령어의 위치를 알려달라는 말이다.<br>/usr/bin/javac 는 심볼릭 링크 이므로 원본 파일의 위치를 찾기 위해 readlink -f /usr/bin/javac 명령어를 사용하였다.<br>readlink -f는 심볼릭 링크에서 원본파일을 추출하는 명령어 이다.<br>즉 /usr/lib/jvm/java-1.8.0-openjdk-1.8.0.161-0.b14.el7_4.x86_64/bin/javac 가 쉘에서 동작하고 있는 javac명령어의 원본파일이다.<br><strong>/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.161-0.b14.el7_4.x86_64</strong> 가 JAVA_HOME이 될 경로가 된다.</p>
+<h3 id="JAVA-HOME-설정"><a href="#JAVA-HOME-설정" class="headerlink" title="$JAVA_HOME 설정"></a>$JAVA_HOME 설정</h3><p>실제 javac명령어의 경로를 찾았으니 그 경로를 이용하여 JAVA_HOME 환경변수로 등록하도록 하자.<br>환경변수를 설정할수 있는 profile 이라는 파일을 vi 편집기로 열자</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vi /etc/profile</span><br></pre></td></tr></table></figure>
+
+<p>해당 파일의 하단에 아래 내용을 추가한뒤 저장하자.</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.161-0.b14.el7_4.x86_64</span><br></pre></td></tr></table></figure>
+<p>파일을 저장한뒤 아래 명령어를 이용하여 수정한 파일을 적용하자.<br>ssh를 재접속 해도 되지만 아래 방법이 더 편하다.</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">source</span> /etc/profile</span><br></pre></td></tr></table></figure>
+
+<p>아래처럼 JAVA_HOME 재대로 적용되었는지 확인해 보자.\</p>
+<p><strong>실행결과</strong></p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># source /etc/profile</span></span><br><span class="line">[root@localhost ~]<span class="comment"># echo $JAVA_HOME</span></span><br><span class="line">/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.161-0.b14.el7_4.x86_64</span><br><span class="line">[root@localhost ~]<span class="comment"># $JAVA_HOME/bin/javac -version</span></span><br><span class="line">javac 1.8.0_161</span><br></pre></td></tr></table></figure>
+
+
+<p>끝!</p>
+
+      
+      
+          
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+      
+
+
+  
+  
+  
+  
+
+        
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
     <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2018/04/29/spring-20180429-spring-mvc-junit-test/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1278,133 +1403,6 @@ gtag('config', 'UA-100596920-1');
   
   
 
-        
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
-    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2018/04/08/spring-20180408-spring-start-spring-legacy-project/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Hanumoka">
-      <meta itemprop="description" content="아마추어 개발자의 블로그">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hanumoka, IT Blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2018/04/08/spring-20180408-spring-start-spring-legacy-project/" class="post-title-link" itemprop="url">Spring MVC 프로젝트를 생성하여 톰캣에서 실행하기</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">작성일</span>
-
-              <time title="Post created: 2018-04-08 00:22:18" itemprop="dateCreated datePublished" datetime="2018-04-08T00:22:18+09:00">2018-04-08</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Updated at: 2020-04-16 01:50:12" itemprop="dateModified" datetime="2020-04-16T01:50:12+09:00">2020-04-16</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/spring/" itemprop="url" rel="index">
-                    <span itemprop="name">spring</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-      <!-- 20200427hexo_post_head -->
-      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
-      <script>
-          (adsbygoogle = window.adsbygoogle || []).push({});
-      </script>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="실습환경"><a href="#실습환경" class="headerlink" title="실습환경"></a>실습환경</h3><p>Windows10(64bit), java 1.8, STS</p>
-<hr>
-<h3 id="Related-Posts"><a href="#Related-Posts" class="headerlink" title="Related Posts"></a>Related Posts</h3><p><a href="/2018/04/07/spring-install-sts/">1.STS로 Spring 프레임워크 개발환경셋팅</a><br><a href="/2018/04/08/spring-start-spring-legacy-project/">2.Spring MVC 프로젝트를 생성하여 톰캣에서 실행하기</a><br><a href="/2018/04/18/spring-set-korean/">3.spring mvc 프로젝트 한글설정(utf8)</a></p>
-<p><a href="/2018/04/28/windows10pro-install-docker/">4.Windows10pro docker 설치하기</a><br><a href="/2018/04/29/docker-install-mysql/">5.Docker에서 mysql설치하고 접속해보기</a></p>
-<p><a href="/2018/04/29/spring-mysql-junit-connection-test/">6.Spring 프로젝트 mysql접속 junit 테스트 하기</a><br><a href="/2018/04/29/spring-mybatis-mysql-setting/">7.SpringFramework MyBatis MySQL 연동하기</a></p>
-<hr>
-<h3 id="Spring-Lagacy-Prject로-웹프로젝트를-만드는-이유"><a href="#Spring-Lagacy-Prject로-웹프로젝트를-만드는-이유" class="headerlink" title="Spring Lagacy Prject로 웹프로젝트를 만드는 이유"></a>Spring Lagacy Prject로 웹프로젝트를 만드는 이유</h3><p>스프링 부트를 이용하여 간단하게 스프링 웹 프로젝트를 생성 할 수 있다.<br>하지만 지금은 공부단계이므로 세세한 설정을 본인이 직접 할 수 있는 Spring Lagacy Prject로 프로젝트를 생성하는 것을 추천한다.<br>개인적인 경험으로도 실무에서 Spring Lagacy Prject를 주로 사용했다.</p>
-<p>이번에는 STS로 Spring Lagacy Prject - Spring MVC projcet 프로젝트를 생성하고, tomcat 을 연동시켜 기본 페이지를 동작 시켜보겠다.</p>
-<p><strong>Spring Stater Project(Spring Boot)의 장점</strong><br>1.별도의 설정이 필요없다.<br>2.WAS없이 실행이 가능하다.<br>3.로딩 시간이 짧아서 테스트 하기 편하다.</p>
-<p><strong>Spring Stater Project(Spring Boot)의 단점</strong><br>1.기존의 설정과 다른 방식으로 사용한다.<br>2.JSP 설정 등은 별도로 해야 한다.</p>
-<p><strong>Spring Legacy Project의 장점</strong><br>1.현재까지 실무에서 많이 사용되고 있다.<br>2.다양한 자료가 존재한다.<br>3.기존 프로젝트를 이해하는데 도움이 된다.<br>4.모든 버전의 스프링에서 사용할 수 있다.</p>
-<p><strong>Spring Legacy Project의 단점</strong><br>1.초반 테스트 환경 구성 등이 어렵다.<br>2.WAS와 연동하는 경우 결과 확인에 많은 리소스를 소모한다.</p>
-<h3 id="Spring-Lagacy-Prject로-웹프로젝트를-만들기"><a href="#Spring-Lagacy-Prject로-웹프로젝트를-만들기" class="headerlink" title="Spring Lagacy Prject로 웹프로젝트를 만들기"></a>Spring Lagacy Prject로 웹프로젝트를 만들기</h3><p>STS에서 File -&gt; New -&gt; Spring Legacy Project 클릭</p>
-<p><img src="/images/20180408-spring-start-spring-legacy-project_1.png" alt="Spring Legacy Prject 생성1"></p>
-<p>Project name을 입력하고 Spring MVC Project 를 선택하고 next 버튼을 클릭한다.</p>
-<p><img src="/images/20180408-spring-start-spring-legacy-project_2.png" alt="Spring Legacy Prject 생성2"></p>
-<p><img src="/images/20180408-spring-start-spring-legacy-project_3.png" alt="Spring Legacy Prject 생성완료"></p>
-<h3 id="Tomcat-다운로드하고-STS에-연동하기"><a href="#Tomcat-다운로드하고-STS에-연동하기" class="headerlink" title="Tomcat 다운로드하고 STS에 연동하기"></a>Tomcat 다운로드하고 STS에 연동하기</h3><p><a href="https://tomcat.apache.org/" target="_blank" rel="external nofollow noopener noreferrer">https://tomcat.apache.org/</a> 이동 -&gt; Donwload -&gt; Tomcat9 클릭 자신에 맞는 톰캣 다운로드</p>
-<p><img src="/images/20180408-spring-start-spring-legacy-project_4.png" alt="Tomcat 다운로드"></p>
-<p>해당 압축파일을 C드라이브로 이동하고, 압축을 푼다.</p>
-<p><img src="/images/20180408-spring-start-spring-legacy-project_5.png" alt="Tomcat 압축풀기"></p>
-<p>STS를 다시 열고, window -&gt; preference -&gt; server -&gt; runtime enviroments 로 이동</p>
-<p>add버튼 클릭 Apache -&gt; Apache Tomcat v9.0을 선택 -&gt; Next 클릭</p>
-<p><img src="/images/20180408-spring-start-spring-legacy-project_6.png" alt="Tomcat Server를 STS에 연동1"></p>
-<p>Browse… 클릭 -&gt; 압축을 푼 tomcat 폴더 선택후 확인 -&gt; Finish -&gt; Apply and Close 클릭</p>
-<p><img src="/images/20180408-spring-start-spring-legacy-project_7.png" alt="Tomcat Server를 STS에 연동2"></p>
-<p>STS에서 Servers 탭 클릭 -&gt; No servers are available. Click this link to create a new server.. 선택</p>
-<p>Apache -&gt; Tomcat v9.0 Server 선택 -&gt; Finish 클릭</p>
-<p><img src="/images/20180408-spring-start-spring-legacy-project_8.png" alt="Tomcat Server를 STS에 연동3"></p>
-<h3 id="Spring-프로젝트-실행하기"><a href="#Spring-프로젝트-실행하기" class="headerlink" title="Spring 프로젝트 실행하기"></a>Spring 프로젝트 실행하기</h3><p>방금 STS에 연동한 톰캣 서버에 스프링 프로젝트를 연동하여 스프링 프로젝트를 실행해보자</p>
-<p>STS servers 탭에서 방금 등록한 톰캣을 마우스 우클릭 -&gt; Add and Remove 클릭<br>자신이 만든 spring MVC Project를 add 버튼으로 우측으로 옮긴뒤 Finish 클릭</p>
-<p><img src="/images/20180408-spring-start-spring-legacy-project_9.png" alt="tomcat에 스프링프로젝트 add1"><br><img src="/images/20180408-spring-start-spring-legacy-project_10.png" alt="tomcat에 스프링프로젝트 add2"></p>
-<p>그 다음은 STS의 Package Explorer에 Servers에 Tomcat에서 Server.xml파일을 열어서 방금 등록된 프로젝트의 Base URL을 확인하자.<br><img src="/images/20180408-spring-start-spring-legacy-project_11.png" alt="프로젝트 base url 확인"></p>
-<p>path에 /web 이라고 적혀 있는것을 확인 할수 있다. 따라서 http:localhost:8080/web 이 현재 프로젝트의 base url이 되겠다.</p>
-<p>STS에 Servers탭에서 Tomcat을 우클릭하고 start를 클릭한뒤 브라우저에 http:localhost:8080/web 를 입력하여 프로젝트 실행을 확인하자.</p>
-<p><img src="/images/20180408-spring-start-spring-legacy-project_12.png" alt="스프링 프로젝트 실행 결과"></p>
-<h4 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h4><p>책: 코드로 배우는 스프링 웹 프로젝트(구멍가게 코딩단 지음|남가람북스|2015년 08월 16일 출간)</p>
-
-      
-      
-          
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-
-  
-      
-
-
-  
-  
-  
-  
-
   </div>
 
   
@@ -1475,7 +1473,7 @@ gtag('config', 'UA-100596920-1');
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">221</span>
+          <span class="site-state-item-count">222</span>
           <span class="site-state-item-name">포스트</span>
         </a>
       </div>

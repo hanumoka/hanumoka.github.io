@@ -245,6 +245,128 @@ gtag('config', 'UA-100596920-1');
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2019/01/09/springBoot-20190109-springboot-mobile/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Hanumoka">
+      <meta itemprop="description" content="아마추어 개발자의 블로그">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hanumoka, IT Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/01/09/springBoot-20190109-springboot-mobile/" class="post-title-link" itemprop="url">springboot-mobile클라이언트 구별하기</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">작성일</span>
+
+              <time title="Post created: 2019-01-09 22:04:45" itemprop="dateCreated datePublished" datetime="2019-01-09T22:04:45+09:00">2019-01-09</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Updated at: 2020-04-16 01:50:12" itemprop="dateModified" datetime="2020-04-16T01:50:12+09:00">2020-04-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/springBoot/" itemprop="url" rel="index">
+                    <span itemprop="name">springBoot</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 20200427hexo_post_head -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h1><p>스프링에서 리퀘스트를 요청하는 클라이언트가 desktop인지 mobile인지 등을 구별하는 내용을 정리한다.<br>데스크탑 브라우저의 요청은 데스크탑용 뷰를, 모바일인 브라우저의 요청에는 모바일용 뷰를 응답하는 예제이다.</p>
+<h1 id="주의"><a href="#주의" class="headerlink" title="주의"></a>주의</h1><p>예제는 spring boot 2버전이다.<br>사용할 라이브러리는 spring-mobile-starter 라는 라이브러리인데, 이 라이브러리는 springboot 2.x 버전이 되면서 deprecated가 되어 자동으로 버전관리가 되지 않는다.</p>
+<p>이 예제는 springboot2.x 버전에서 spring-mobile-starter를 강제로 주입해서 사용하고 있다.<br>현재 springboot2.x에서 spring-mobile-starter를 대체하는 라이브러리나 기술을 확인하지 못하고 있다.<br>아시는분 댓글좀…</p>
+<h1 id="라이브러리-추가-및-설정"><a href="#라이브러리-추가-및-설정" class="headerlink" title="라이브러리 추가 및 설정"></a>라이브러리 추가 및 설정</h1><p>앞서 말했듯이 실습환경은 java8, springboot2, spring5, maven 환경이다.</p>
+<p><strong>pom.xml</strong> 아래 내용을 추가하자.</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.mobile<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-mobile-starter<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">version</span>&gt;</span>2.0.0.M2<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">repositories</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">repository</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">id</span>&gt;</span>spring-milestones<span class="tag">&lt;/<span class="name">id</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">name</span>&gt;</span>Spring Milestones<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">url</span>&gt;</span>https://repo.spring.io/milestone<span class="tag">&lt;/<span class="name">url</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">repository</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">repositories</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>springboot 1.5버전 대에서는 자동으로 버전관리가 되지만, springboot 2버전부터 제외된 라이브러리라 강제로 적용하였다.</p>
+<p><strong>application.profiles</strong> 파일에 아래 내용을 추가하자</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">spring.mobile.devicedelegatingviewresolver.enabled:true</span><br><span class="line">spring.mobile.devicedelegatingviewresolver.normal-prefix&#x3D;normal&#x2F;</span><br><span class="line">spring.mobile.devicedelegatingviewresolver.mobile-prefix&#x3D;mobile&#x2F;</span><br><span class="line">spring.mobile.devicedelegatingviewresolver.tablet-prefix&#x3D;tablet&#x2F;</span><br></pre></td></tr></table></figure>
+
+<p>맨위 설정은 요청의 종류에 따라서 뷰 리졸버의 접두어로 경로를 붙이는 것을 활성화 하는 것이다.<br>그리고 그 아래부터 normal 요청에는 뷰 리졸버의 앞에 normal이라는 경로를 추가한다는 것이다.<br>그 아래는 mobile인경우, 또 그 아래는 tablet인 경우의 설정이다.</p>
+<h1 id="controller-설정"><a href="#controller-설정" class="headerlink" title="controller 설정"></a>controller 설정</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> hanumoka.portfolio.nao.web;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.slf4j.Logger;</span><br><span class="line"><span class="keyword">import</span> org.slf4j.LoggerFactory;</span><br><span class="line"><span class="keyword">import</span> org.springframework.mobile.device.Device;</span><br><span class="line"><span class="keyword">import</span> org.springframework.mobile.device.DeviceUtils;</span><br><span class="line"><span class="keyword">import</span> org.springframework.stereotype.Controller;</span><br><span class="line"><span class="keyword">import</span> org.springframework.ui.Model;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.GetMapping;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.HttpServletRequest;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Controller</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HomeController</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    Logger logger = LoggerFactory.getLogger(HomeController<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@GetMapping</span>(value=&#123;<span class="string">"/"</span>, <span class="string">"/index"</span>&#125;)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">index</span><span class="params">(Device device, Model model, HttpServletRequest request)</span></span>&#123;</span><br><span class="line"></span><br><span class="line">        Device deviceFromRequest = DeviceUtils.getCurrentDevice(request);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (device.isMobile()) &#123;</span><br><span class="line">            logger.info(<span class="string">"Hello mobile user!"</span>);</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (device.isTablet()) &#123;</span><br><span class="line">            logger.info(<span class="string">"Hello tablet user!"</span>);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            logger.info(<span class="string">"Hello desktop user!"</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        logger.info(<span class="string">"device: "</span> + device);</span><br><span class="line">        logger.info(<span class="string">"device form request: "</span> + deviceFromRequest);</span><br><span class="line">        logger.info(<span class="string">"device platform: "</span> + device.getDevicePlatform());</span><br><span class="line"></span><br><span class="line">        model.addAttribute(<span class="string">"name"</span>, <span class="string">"hanumoka"</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"index"</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>컨트롤러의 device 객체를 통해서 클라이언트의 종류를 확인 할 수 있다.<br>내부적으로 http 요청 헤더의 user agent 값을 통해서 구별한다.<br>application.properties의 설정으로 인해 http 요청에 따라 다른 경로의 index.html을 응답하게 된다.<br>예를 들어 일반 컴퓨터의 브라우저에서 위 컨트롤러에 접근한다면 /normal/index.html이<br>모바일 브라우저에서 위 컨트롤러로 접근한다면 /mobile/index.html이<br>테블릿 브라우저에서 위 컨트롤러로 접근한다면 /tablet/index.html을 응답하게 된다.</p>
+<h1 id="뷰-파일-구성"><a href="#뷰-파일-구성" class="headerlink" title="뷰 파일 구성"></a>뷰 파일 구성</h1><p><img src="/images/20190109-springboot-mobile_1.png" alt="폴더구조와 html파일들"></p>
+<p>nomal, mobile, tablet 폴더를 만들고 그 내부의 index.html 파일을 생성했다.<br>참고로 이 예제는 thymeleaf가 적용되어있지만, 무시해도 상관 없다.</p>
+<h1 id="실행결과"><a href="#실행결과" class="headerlink" title="실행결과"></a>실행결과</h1><p>간단하게 크롬브라우저에서 테스트 했다.</p>
+<p><img src="/images/20190109-springboot-mobile_2.png" alt="일반 브라우저에서 접근"></p>
+<p><img src="/images/20190109-springboot-mobile_3.png" alt="모바일 브라우저에서 접근 "></p>
+<p><img src="/images/20190109-springboot-mobile_4.png" alt="테블릿 브라우저에서 접근"></p>
+<h1 id="spring-mobile-starter-테스트-예제"><a href="#spring-mobile-starter-테스트-예제" class="headerlink" title="spring-mobile-starter 테스트 예제"></a>spring-mobile-starter 테스트 예제</h1><p>참고로 spring-mobile-starter가 적용된 컨트롤러 테스트 코드를 추가한다.<br>주의 할 점은 WebMvcTest 어노테이션으로는 Device 객체를 생성하지 못해 테스트를 할 수가 없다.<br>SpringBootTest, AutoConfigureMockMvc 어노테이션으로 테스트를 할 수 있다.<br>그리고 요청의 header의 user agent 값을 변경하여 결과를 확인 할 수 있다.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> hanumoka.portfolio.nao;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> hanumoka.portfolio.nao.web.HomeController;</span><br><span class="line"><span class="keyword">import</span> org.junit.Before;</span><br><span class="line"><span class="keyword">import</span> org.junit.Test;</span><br><span class="line"><span class="keyword">import</span> org.junit.runner.RunWith;</span><br><span class="line"><span class="keyword">import</span> org.springframework.beans.factory.annotation.Autowired;</span><br><span class="line"><span class="keyword">import</span> org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;</span><br><span class="line"><span class="keyword">import</span> org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;</span><br><span class="line"><span class="keyword">import</span> org.springframework.boot.test.context.SpringBootTest;</span><br><span class="line"><span class="keyword">import</span> org.springframework.http.MediaType;</span><br><span class="line"><span class="keyword">import</span> org.springframework.test.context.junit4.SpringRunner;</span><br><span class="line"><span class="keyword">import</span> org.springframework.test.web.servlet.MockMvc;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="keyword">static</span> org.hamcrest.Matchers.is;</span><br><span class="line"><span class="keyword">import</span> <span class="keyword">static</span> org.hamcrest.core.StringContains.containsString;</span><br><span class="line"><span class="keyword">import</span> <span class="keyword">static</span> org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;</span><br><span class="line"><span class="keyword">import</span> <span class="keyword">static</span> org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;</span><br><span class="line"><span class="keyword">import</span> <span class="keyword">static</span> org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;</span><br><span class="line"></span><br><span class="line"><span class="meta">@RunWith</span>(SpringRunner<span class="class">.<span class="keyword">class</span>)</span></span><br><span class="line"><span class="class">@<span class="title">SpringBootTest</span></span></span><br><span class="line"><span class="class">@<span class="title">AutoConfigureMockMvc</span></span></span><br><span class="line"><span class="class">//@<span class="title">WebMvcTest</span>(<span class="title">HomeController</span>.<span class="title">class</span>)</span></span><br><span class="line"><span class="class"><span class="title">public</span> <span class="title">class</span> <span class="title">HomeControllerTest</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    MockMvc mockMvc;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Before</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setup</span><span class="params">()</span></span>&#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">hello</span><span class="params">()</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">        mockMvc.perform(get(<span class="string">"/"</span>)</span><br><span class="line">                .header(<span class="string">"user-agent"</span>, <span class="string">"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.107 Safari/537.36"</span>)</span><br><span class="line">                .accept(MediaType.TEXT_HTML))</span><br><span class="line">                .andExpect(status().isOk())</span><br><span class="line">                .andDo(print())</span><br><span class="line">                .andExpect(view().name(<span class="string">"index"</span>))</span><br><span class="line">                .andExpect(model().attribute(<span class="string">"name"</span>, is(<span class="string">"hanumoka"</span>)));</span><br><span class="line"></span><br><span class="line"><span class="comment">/*        mockMvc.perform(get("/")</span></span><br><span class="line"><span class="comment">                .header("user-agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.107 Safari/537.36")</span></span><br><span class="line"><span class="comment">                .accept(MediaType.TEXT_HTML))</span></span><br><span class="line"><span class="comment">                .andExpect(view().name(containsString("desktop")))</span></span><br><span class="line"><span class="comment">                .andExpect(status().isOk())</span></span><br><span class="line"><span class="comment">                .andDo(print())</span></span><br><span class="line"><span class="comment">                .andExpect(view().name("index"))</span></span><br><span class="line"><span class="comment">                .andExpect(model().attribute("name", is("hanumoka")));*/</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h1><p><a href="https://stackoverrun.com/ko/q/10317311" target="_blank" rel="external nofollow noopener noreferrer">https://stackoverrun.com/ko/q/10317311</a></p>
+<p>springboot2.0 spring mobile 디펜던시 <a href="https://stackoverflow.com/questions/53133226/how-to-use-device-resolver-for-spring-boot-2-00" target="_blank" rel="external nofollow noopener noreferrer">https://stackoverflow.com/questions/53133226/how-to-use-device-resolver-for-spring-boot-2-00</a></p>
+<p><a href="http://cpdev.tistory.com/50" target="_blank" rel="external nofollow noopener noreferrer">http://cpdev.tistory.com/50</a></p>
+<p><a href="http://codingdojang.com/scode/297" target="_blank" rel="external nofollow noopener noreferrer">http://codingdojang.com/scode/297</a></p>
+<p><a href="https://www.slipp.net/questions/439" target="_blank" rel="external nofollow noopener noreferrer">https://www.slipp.net/questions/439</a></p>
+<p><a href="http://arahansa.github.io/docs_spring/device.html" target="_blank" rel="external nofollow noopener noreferrer">http://arahansa.github.io/docs_spring/device.html</a></p>
+<p><a href="https://medium.com/@hun/%EC%8A%A4%ED%94%84%EB%A7%81-%EB%AA%A8%EB%B0%94%EC%9D%BC-%EC%82%AC%EC%9A%A9%ED%95%98%EA%B8%B0-bf6e03de29fc" target="_blank" rel="external nofollow noopener noreferrer">https://medium.com/@hun/%EC%8A%A4%ED%94%84%EB%A7%81-%EB%AA%A8%EB%B0%94%EC%9D%BC-%EC%82%AC%EC%9A%A9%ED%95%98%EA%B8%B0-bf6e03de29fc</a></p>
+<p><a href="https://coding-factory.tistory.com/32" target="_blank" rel="external nofollow noopener noreferrer">https://coding-factory.tistory.com/32</a></p>
+
+      
+      
+          
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+      
+
+
+  
+  
+  
+  
+
+        
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
     <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2019/01/07/springBoot-20190107-springboot-thymeleaf-layout-dialect/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1204,113 +1326,6 @@ gtag('config', 'UA-100596920-1');
   
   
 
-        
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
-    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2018/12/08/java-20181208-java-jdk-version-history/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Hanumoka">
-      <meta itemprop="description" content="아마추어 개발자의 블로그">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hanumoka, IT Blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2018/12/08/java-20181208-java-jdk-version-history/" class="post-title-link" itemprop="url">jdk version history(jdk 버전간 차이)</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">작성일</span>
-
-              <time title="Post created: 2018-12-08 07:27:44" itemprop="dateCreated datePublished" datetime="2018-12-08T07:27:44+09:00">2018-12-08</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Updated at: 2020-04-16 01:50:11" itemprop="dateModified" datetime="2020-04-16T01:50:11+09:00">2020-04-16</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/java/" itemprop="url" rel="index">
-                    <span itemprop="name">java</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-      <!-- 20200427hexo_post_head -->
-      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
-      <script>
-          (adsbygoogle = window.adsbygoogle || []).push({});
-      </script>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="jdk-버전"><a href="#jdk-버전" class="headerlink" title="jdk 버전"></a>jdk 버전</h1><h2 id="JDK1-1"><a href="#JDK1-1" class="headerlink" title="JDK1.1"></a>JDK1.1</h2><p>1997년 : RMI, JDBC, reflection, JIT, inner Class 개념포함</p>
-<h2 id="JDK1-2"><a href="#JDK1-2" class="headerlink" title="JDK1.2"></a>JDK1.2</h2><p>1998년 : Java SE 1.2, ME 1.2, EE 1.2 발표(J2EE라는 명칭 사용시작)<br>java가 세가지 버전으로 나뉨.<br>Swing이 SE에 포함, Corba IDL(이종 기기간 함수호출 스팩), Collection Framework 포함</p>
-<h2 id="JDK-1-3"><a href="#JDK-1-3" class="headerlink" title="JDK 1.3"></a>JDK 1.3</h2><p>2000년도<br>HotSpot(Sun에서 만든 JIT 구현), JNDI(java 네이밍, 디렉토리 인터페이스 J2EE스펙) 포함</p>
-<h2 id="JDK-1-4"><a href="#JDK-1-4" class="headerlink" title="JDK 1.4"></a>JDK 1.4</h2><p>2002년도<br>JCP(Java Community Process)에 의해서 오픈소스 정책으로 자바가 관리되기 시작한 버전<br>Java 2 Security 모델의 확립(Sandbox)<br>Java Web Start 포함 (Java Applet이 브라우저에서 돌아가는 것과 다르게, 외부 sandbox에서 동작)<br>Language : assert 도입<br>API : Reqular Expression, Assert keyword, Security 2 version(현재 security model), Non Blocking IO(NIO)</p>
-<h2 id="JDK-1-5"><a href="#JDK-1-5" class="headerlink" title="JDK 1.5"></a>JDK 1.5</h2><p>2004년<br>기능적으로 가장 많은 변화가 생긴 버전<br>Language : Generics, annotation, auto boxing, enum, vararg, foreach, static imports 도입<br>API : java.utio.concurrent APi, scanner class<br>J2EE라는 명칭이 Java EE로 개칭</p>
-<h2 id="JDK-1-6"><a href="#JDK-1-6" class="headerlink" title="JDK 1.6"></a>JDK 1.6</h2><p>2006년<br>기능에 큰 변화 없음, 보안 성능강화<br>JVM/Swing에 있어 많은 성능향상(synchronization, compiler, Gc, start-up time)<br>G1(Garbage Fist) GC도입</p>
-<h3 id="Interned-String-이슈"><a href="#Interned-String-이슈" class="headerlink" title="Interned String 이슈"></a>Interned String 이슈</h3><p>Java6 이하 버전의 경우 신규 생성된 String은 PermGen(런타임시 크기가 변경되지 않는 메모리)에 위치하며, 동일한 String의 경우 Pooling.</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">String test0 = <span class="string">"test"</span>; <span class="comment">// 내부적으로 new String 호출후 intern()메소드를 자동으로 호출한다.</span></span><br><span class="line">String test1 = <span class="keyword">new</span> String(<span class="string">"test"</span>).intern();  </span><br><span class="line"></span><br><span class="line">String test2 = <span class="keyword">new</span> String(<span class="string">"test"</span>);  <span class="comment">// 이 코드는 위 코드보다 메모리상 효율 적이지 못하다.</span></span><br></pre></td></tr></table></figure>
-
-<p>java6 이후 String이 저장되는 메모리가 PermGet에서 heap으로 변경되어, heap size 튜닝으로 Out.of.memeory를 극복(절대적 해결이 아님)할 수 있다.<br>java 임베디드 쪽에서 성능이슈라 웹에서는 별로 신경을 안써도 될 내용 같다.</p>
-<h2 id="JDK-1-7"><a href="#JDK-1-7" class="headerlink" title="JDK 1.7"></a>JDK 1.7</h2><p>2011년<br>JVM : Dynamic Language support<br>Language : Switch문 인자로 String 허용, try-resource, generics 타입추론, 숫자에서 undersocre 사용</p>
-<h3 id="숫자-언더스코어"><a href="#숫자-언더스코어" class="headerlink" title="숫자 언더스코어"></a>숫자 언더스코어</h3><p>조건 : 반드시 숫자 사이에만 올 수 있다.</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">int</span> moneyWon = <span class="number">19000000000</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> moneyWon2 = <span class="number">19_000_000_000</span>;  <span class="comment">// 숫자 언더스코어, 숫자의 가독성 상승</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="JDK-1-8"><a href="#JDK-1-8" class="headerlink" title="JDK 1.8"></a>JDK 1.8</h2><p>2014<br>오라클로 인수된 후 첫번째 버전<br>JDK 1.5이후 가장 큰 언어적 변화(Lambda및 함수형 프로그래밍,Interface default method)<br>JEP에 의해서 새로운 기능들이 발의되기 시작<br>Language : Lambda expression, Defauit Method Ingerface, functional programming for MapReduce style 지원, default method를 이용한 다중상속 지원, 메소드 참조<br>API : Nashorn(JS엔진), new Date and Tiem API, stream api, Collection에 대한 함수형화<br>병렬처리에 적합한 구조</p>
-<h2 id="JDK-1-9"><a href="#JDK-1-9" class="headerlink" title="JDK 1.9"></a>JDK 1.9</h2><p>2016 예정<br>Modular System (jigsaw) 지원 예정<br>Money API 지원예정<br>JAVA Shell 지원예정<br>변수에 대한 타입 추론 지원예정(var, val)<br>OpenCL 이용한 자동화된 병렬 프로그래밍 지원 예정</p>
-<h1 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h1><p><a href="http://koreateam.co.kr/162" target="_blank" rel="external nofollow noopener noreferrer">http://koreateam.co.kr/162</a><br><a href="https://01010011.blog/2016/12/29/java6-java7%EC%9D%84-%EC%93%B0%EB%A9%B4-%EC%95%88%EB%90%98%EB%8A%94-%EC%9D%B4%EC%9C%A0/" target="_blank" rel="external nofollow noopener noreferrer">https://01010011.blog/2016/12/29/java6-java7%EC%9D%84-%EC%93%B0%EB%A9%B4-%EC%95%88%EB%90%98%EB%8A%94-%EC%9D%B4%EC%9C%A0/</a><br><a href="http://seosh81.info/?p=739" target="_blank" rel="external nofollow noopener noreferrer">http://seosh81.info/?p=739</a></p>
-
-      
-      
-          
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-
-  
-      
-
-
-  
-  
-  
-  
-
   </div>
 
   
@@ -1381,7 +1396,7 @@ gtag('config', 'UA-100596920-1');
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">221</span>
+          <span class="site-state-item-count">222</span>
           <span class="site-state-item-name">포스트</span>
         </a>
       </div>

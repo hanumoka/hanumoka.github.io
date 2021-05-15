@@ -245,6 +245,134 @@ gtag('config', 'UA-100596920-1');
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2019/10/13/docker-20191013-docker-compose-gitlab/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Hanumoka">
+      <meta itemprop="description" content="아마추어 개발자의 블로그">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hanumoka, IT Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/10/13/docker-20191013-docker-compose-gitlab/" class="post-title-link" itemprop="url">ubuntu18.04에 docker compose로 gitlab 설치하기</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">작성일</span>
+
+              <time title="Post created: 2019-10-13 00:41:08" itemprop="dateCreated datePublished" datetime="2019-10-13T00:41:08+09:00">2019-10-13</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Updated at: 2020-04-16 01:50:11" itemprop="dateModified" datetime="2020-04-16T01:50:11+09:00">2020-04-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/docker/" itemprop="url" rel="index">
+                    <span itemprop="name">docker</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 20200427hexo_post_head -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="ubuntu에-docker-compose로-gitlab-설치하기"><a href="#ubuntu에-docker-compose로-gitlab-설치하기" class="headerlink" title="ubuntu에 docker compose로 gitlab 설치하기"></a>ubuntu에 docker compose로 gitlab 설치하기</h1><h1 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h1><p>가상머신의 ubuntu18.04에 docker compose를 통해서 gitlab 서버를 설치해 보겠다.</p>
+<p>ubuntu에 미리 docker, docker-compose 가 설치되어 있어야 한다.</p>
+<h1 id="1-docker-관리-폴더-만들기"><a href="#1-docker-관리-폴더-만들기" class="headerlink" title="1.docker 관리 폴더 만들기"></a>1.docker 관리 폴더 만들기</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">docker</span><br><span class="line">|-- gitlab</span><br><span class="line">  |-- gitlab-data</span><br><span class="line">  |    | -- backups</span><br><span class="line">  |    | -- config</span><br><span class="line">  |    | -- data</span><br><span class="line">  |    | -- logs </span><br><span class="line">  |-- docker-compose.yml</span><br></pre></td></tr></table></figure>
+
+<p>docker-compose.yml 파일과 컨테이너와 연결할 호스트 볼륨을 저장할 gitlab-data 폴더를 생성했다.</p>
+<h1 id="2-docker-compose-yml"><a href="#2-docker-compose-yml" class="headerlink" title="2. docker-compose.yml"></a>2. docker-compose.yml</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">web:</span><br><span class="line">  image: &#39;gitlab&#x2F;gitlab-ce:latest&#39;</span><br><span class="line">  restart: always</span><br><span class="line">  container_name: &#39;gitlab&#39;</span><br><span class="line">  hostname: &#39;127.0.0.1&#39;</span><br><span class="line">  environment:</span><br><span class="line">    GITLAB_OMNIBUS_CONFIG: |</span><br><span class="line">      external_url &#39;http:&#x2F;&#x2F;127.0.0.1:8929&#39;</span><br><span class="line">      gitlab_rails[&#39;gitlab_shell_ssh_port&#39;] &#x3D; 2224</span><br><span class="line">  ports:</span><br><span class="line">    - &#39;8929:8929&#39;</span><br><span class="line">    - &#39;2224:22&#39;</span><br><span class="line">  volumes:</span><br><span class="line">    - &#39;.&#x2F;gitlab-data&#x2F;config:&#x2F;etc&#x2F;gitlab&#39;</span><br><span class="line">    - &#39;.&#x2F;gitlab-data&#x2F;logs:&#x2F;var&#x2F;log&#x2F;gitlab&#39;</span><br><span class="line">    - &#39;.&#x2F;gitlab-data&#x2F;data:&#x2F;var&#x2F;opt&#x2F;gitlab&#39;</span><br><span class="line">    - &#39;.&#x2F;gitlab-data&#x2F;backups:&#x2F;var&#x2F;opt&#x2F;gitlab&#x2F;backups&#39;</span><br></pre></td></tr></table></figure>
+
+<p>gitlab 공식 사이트에 가면 gitlab을 위한 docker-compose 파일을 제공한다.</p>
+<p>그걸 받아서 볼륨과 포트정도만 수정했다.</p>
+<p>위 127.0.0.1로 설정된 부분은 필요한데로 고정아이피를 넣어주면 된다. </p>
+<p>지금은 실습을 위해 그냥 로컬호스트아이피로 박았다.</p>
+<p>참고로 external_url에 설정된 ULR은 나중에 gitlab서버에서 생성된 리파지토리의 clone할 URL로 제공된다.</p>
+<h1 id="3-혹시나-해서-gitlab-data-권한부여"><a href="#3-혹시나-해서-gitlab-data-권한부여" class="headerlink" title="3.혹시나 해서 gitlab-data 권한부여"></a>3.혹시나 해서 gitlab-data 권한부여</h1><p>이건 내가 공부가 적어 잘 모르겠다.</p>
+<p>혹시 컨테이너 실행시 볼륨에 파일을 쓰면서 권한 오류가 발생할까 싶어, gitlab-data 폴더에 777권한을 부여 할 것이다.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chmod -R 777 gitlab-data</span><br></pre></td></tr></table></figure>
+<p>-R 옵션은 gitlab-data폴더와 하위 폴더 모두에 한꺼번에 권한을 주는 옵션이다.</p>
+<p><img src="/images/2019/Untitled-4acbcbd0-73e5-4710-891b-7166d109aa71.png" alt></p>
+<h1 id="4-gitlab-도커-컨테이너-올리기"><a href="#4-gitlab-도커-컨테이너-올리기" class="headerlink" title="4. gitlab 도커 컨테이너 올리기"></a>4. gitlab 도커 컨테이너 올리기</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo docker-compose up -d</span><br></pre></td></tr></table></figure>
+<p>위 명령어로 gitlab 도커 컨테이너를 올리자.</p>
+<p><img src="/images/2019/Untitled-3f064605-782c-4f8d-a9ed-a1009c37ff20.png" alt></p>
+<p>위처럼 빨리 done이라 나오지만 gitlab은 컨테이너가 부트가 되는 시간이 좀 길다.</p>
+<p>로그를 확인해보자.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo docker-compose logs -f -t --tail&#x3D;&quot;all&quot;</span><br></pre></td></tr></table></figure>
+<p><img src="/images/2019/Untitled-4f6a3199-467a-4f8f-9bd0-7225d5b950ee.png" alt></p>
+<p>한참 로그가 나오다가 위처럼 http에 관한 로그가 나오기 시작하면 접속이 가능한 상태가 된다.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo docker-compose ps</span><br></pre></td></tr></table></figure>
+<p>위 명령어로 컨테이너 상태를 확인해보자.</p>
+<p><img src="/images/2019/Untitled-fc936bcf-cc1c-4e7c-952b-bbbfc824ccc7.png" alt></p>
+<p>status가 up으로 되어있으면 정상인 것이다. </p>
+<p>문제가 있는경우 계속 starting 인 경우가 있으니, 그땐 로그를 보고 해결책을 찾아야 한다.</p>
+<h1 id="5-gitlab에-접속해서-컨테이너-동작-확인하기"><a href="#5-gitlab에-접속해서-컨테이너-동작-확인하기" class="headerlink" title="5. gitlab에 접속해서 컨테이너 동작 확인하기."></a>5. gitlab에 접속해서 컨테이너 동작 확인하기.</h1><p>브라우저에 <a href="http://127.0.0.1:8928" target="_blank" rel="external nofollow noopener noreferrer">http://127.0.0.1:8928</a> 로 접속해보자.</p>
+<p><img src="/images/2019/Untitled-e27e4082-3782-4052-a6a8-7acde856c114.png" alt></p>
+<p>root 계정의 비밀번호를 입력해주자.</p>
+<p><img src="/images/2019/Untitled-9e112f2d-52f2-433a-8fa7-87c814b80b8d.png" alt></p>
+<p>그 다음 root/방금생성한 비멀번호 를 입력해서 로그인하자.</p>
+<p>그러면 Administrator 로 로그인 하게 된다.</p>
+<p>아래는 테스트 프로젝트를 push 해서 동작을 확인한 화면이다.</p>
+<p><img src="/images/2019/Untitled-717368c4-f393-471a-b9f7-60e1f3b7bb50.png" alt></p>
+
+      
+      
+          
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+
+  
+      
+
+
+  
+  
+  
+  
+
+        
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
     <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2019/10/12/docker-20191012-docker-compose-ubuntu-nexus/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1483,163 +1611,6 @@ public class HomeController {
   
   
 
-        
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="ko">
-    <link itemprop="mainEntityOfPage" href="https://www.hanumoka.net/2019/08/17/ubuntu-20190817-ubuntu-virtualbox-unity-tweak-tool/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Hanumoka">
-      <meta itemprop="description" content="아마추어 개발자의 블로그">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hanumoka, IT Blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/08/17/ubuntu-20190817-ubuntu-virtualbox-unity-tweak-tool/" class="post-title-link" itemprop="url">Ubuntu1804 Unity tweak tool 설치 및 테마변경</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">작성일</span>
-
-              <time title="Post created: 2019-08-17 19:04:36" itemprop="dateCreated datePublished" datetime="2019-08-17T19:04:36+09:00">2019-08-17</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Updated at: 2020-04-16 01:50:12" itemprop="dateModified" datetime="2020-04-16T01:50:12+09:00">2020-04-16</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/ubuntu/" itemprop="url" rel="index">
-                    <span itemprop="name">ubuntu</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-      <!-- 20200427hexo_post_head -->
-      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6388187282606796" data-ad-slot="4907587145" data-ad-format="auto" data-full-width-responsive="true"></ins>
-      <script>
-          (adsbygoogle = window.adsbygoogle || []).push({});
-      </script>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="들어가기"><a href="#들어가기" class="headerlink" title="들어가기"></a>들어가기</h3><p>우분투 데스크탑을 설치한 김에 나도 테마같은걸 바꿔보고 싶었다.</p>
-<p>이번에는 Unity twak tool 과 기타 익스텐션을 이용해서 우분투 테마등을 변경해 보겠다.</p>
-<h3 id="Unity-tweak-tool-란"><a href="#Unity-tweak-tool-란" class="headerlink" title="Unity tweak tool 란?"></a>Unity tweak tool 란?</h3><p>유니티 트윅은 윈도우로 치자면 제어판과 유사한 역할을 하는 프로그램이다.</p>
-<p>특히 우분투 데스크탑의 테바변경에서 핵심적으로 사용된다.</p>
-<p>테마를 설정할 수 있고, 폰트변경, 아이콘 변경, 프로그램 메뉴의 크기조정, 바로가기 및 전처 설정 등을 할 수 있다.</p>
-<p>우분투에 기본적으로 설정이 있지만 그것에 강화판 제어판 정도로 생각이된다.</p>
-<h3 id="Unity-tweak-tool-설치"><a href="#Unity-tweak-tool-설치" class="headerlink" title="Unity tweak tool 설치"></a>Unity tweak tool 설치</h3><p>우선 터미널을 열고 아래 명령어를 입력해서 Unity tweak tool을 설치하자.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install gnome-tweak-tool</span><br></pre></td></tr></table></figure>
-
-<p><img src="/images/2019/2/Untitled-a899ecea-645a-4b1d-b063-9f02cbf3f58c.png" alt></p>
-<p>설치가 완료되면 아래처럼 기능개선 이라는 프로그램을 확인 할 수 있다.</p>
-<p><img src="/images/2019/2/Untitled-23ea743c-dcfe-4ee3-9357-985188c3eb26.png" alt></p>
-<p><img src="/images/2019/2/Untitled-bd05a3f7-3128-488d-9604-9264fab6c0dc.png" alt></p>
-<p>기능개선은 위와 같은 부가적인 환경설정 기능등을 제공한다.</p>
-<h3 id="Adapta-테마-설치하기"><a href="#Adapta-테마-설치하기" class="headerlink" title="Adapta 테마 설치하기"></a>Adapta 테마 설치하기</h3><p>터미널에서 아래명령어3줄을 차례로 입력하자</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get-repository ppa:tista&#x2F;adapta</span><br><span class="line">sudo apt-get update</span><br><span class="line">sudo apt-get inatall adapta-gtk-theme</span><br></pre></td></tr></table></figure>
-
-<p>아까 설치한 기능개선 프로그램을 종료하고 다시 킨다.</p>
-<p>모양새 → 테마→ 프로그램 에서 방금 설치한 Adapta 테마를 선택할수 있다. </p>
-<p><img src="/images/2019/2/Untitled-b8f0d0f1-db58-493b-bc5d-f364e482eb4f.png" alt></p>
-<p>위처럼 프로그램 창이 어두운 형태로 변한것을 확인 할 수 있다. </p>
-<p>여러 색상이 있으니 원하는 것을 선택하면 된다.</p>
-<h3 id="Gnome-shell-Extention-설치로-상단-봐-테마-변경"><a href="#Gnome-shell-Extention-설치로-상단-봐-테마-변경" class="headerlink" title="Gnome shell Extention 설치로 상단 봐 테마 변경"></a>Gnome shell Extention 설치로 상단 봐 테마 변경</h3><p>우분투 상단바 테마는 Gnome 쉘에 포함되어 있다고 한다.</p>
-<p>위 상단바 테마를 수정하려면 Gnome shell Extention 을 설치해야 한다.</p>
-<p>터미널에서 아래명령어를 입력하자.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install chrome-gnome-shell</span><br></pre></td></tr></table></figure>
-
-<p>패키지명이 왜 크롬인지는 잘 모르겠다.</p>
-<p>그리고 우분투에서 파이어폭스 브라우저를 열고 아래 링크에 접속하자.</p>
-<p><a href="https://extensions.gnome.org/extension/19/user-themes" target="_blank" rel="external nofollow noopener noreferrer">https://extensions.gnome.org/extension/19/user-themes</a></p>
-<p><img src="/images/2019/2/Untitled-20e83fc3-36f5-48d7-b339-7fafbb519c82.png" alt></p>
-<p>Click here install borwer extension을 클릭해서 브라우저 익스텐션을 설치하자.</p>
-<p><img src="/images/2019/2/Untitled-750d8935-e401-4617-ad4e-475ee481f662.png" alt></p>
-<p><img src="/images/2019/2/Untitled-b80becd2-2c58-48fa-b367-22e15b32c64c.png" alt></p>
-<p><a href="https://addons.mozilla.org/ko/firefox/addon/gnome-shell-integration/" target="_blank" rel="external nofollow noopener noreferrer">https://addons.mozilla.org/ko/firefox/addon/gnome-shell-integration/</a></p>
-<p>반드시 파이어폭스 브라우저를 사용해야 한다.</p>
-<p>설치가 끝난뒤 파이어폭스 브라우저에서 아래 처럼 User Themes로 접근한다.</p>
-<p><img src="/images/2019/2/Untitled-ac641281-1c0c-4946-b0b2-8043aa6e6610.png" alt></p>
-<p><img src="/images/2019/2/Untitled-73afb19e-70c5-4153-884c-cbca7048afe7.png" alt></p>
-<p>Off로 되어있던 설정을 On으로 변경해준다.</p>
-<p><img src="/images/2019/2/Untitled-90b3072f-38d3-46fb-a112-0274c3147090.png" alt></p>
-<p>설치하자.</p>
-<p>설치가 완료된 다음, 다시 기능개선 프로그램을 종료하고 다시 열자.</p>
-<p><img src="/images/2019/2/Untitled-add8aac2-9e1e-40f7-b75e-e57c1fcc1ae2.png" alt></p>
-<p>모양세에 다시 들어가보면 쉘 항목이 활성화 되어있다. </p>
-<p>여기서 이것저것 바꿔보면 우분투의 상단바의 테마가 변경하는 것을 알 수 있다.</p>
-<h3 id="Flat-remix-아이콘-테마-적용하기"><a href="#Flat-remix-아이콘-테마-적용하기" class="headerlink" title="Flat remix 아이콘 테마 적용하기"></a>Flat remix 아이콘 테마 적용하기</h3><p>Flat remix라는 패키지를 설치해서 우분투의 아이콘 테마도 변경 할 수 있다.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo add-apt-repository ppa:daniruiz&#x2F;flat-remix</span><br><span class="line">sudo apt-get update</span><br><span class="line">sudo apt-get install flat-remix</span><br></pre></td></tr></table></figure>
-
-<p>위 명령을 순차적으로 입력해서 flat remix를 설치하자.</p>
-<p>설치가 완료된되 기능개선을 재시작하면 아래처럼 아이콘 테마를 설정 할 수 있다.</p>
-<p><img src="/images/2019/2/Untitled-5ac33c1d-fa00-46e9-8457-b9fe5423319f.png" alt></p>
-<h3 id="Dash-to-Dock-설치고-Dock-테마-변경하기"><a href="#Dash-to-Dock-설치고-Dock-테마-변경하기" class="headerlink" title="Dash to Dock 설치고 Dock 테마 변경하기"></a>Dash to Dock 설치고 Dock 테마 변경하기</h3><p>아래 링크애 파이어폭스로 접근하자.</p>
-<p><a href="https://extensions.gnome.org/extension/307/dash-to-dock" target="_blank" rel="external nofollow noopener noreferrer">https://extensions.gnome.org/extension/307/dash-to-dock</a></p>
-<p><img src="/images/2019/2/Untitled-28ffa173-de0c-463a-a7fb-57be01b43d3c.png" alt></p>
-<p>상태를 on으로 변경하고 설치하자.</p>
-<p><img src="/images/2019/2/Untitled-714f30f2-0983-41df-a10a-72ddd9fa85f7.png" alt></p>
-<p>설치가 되면 벌써 왼쪽의 독의모양이 변경된 것을 확인 할 수있다.</p>
-<p>다시 기능개선에 들어가서 확장 → Dash to dock에 환경설정에 들어가자.</p>
-<p><img src="/images/2019/2/Untitled-e7b91086-2866-4fce-871a-1c95fd406c8e.png" alt></p>
-<p>위처럼 독의 위치를 왼쪽이 아니라 아래로 옮길수 있다.</p>
-<p>최종적으로 아래와 같은 화면을 만들었다. 바탕화면이 마음에 안들지만 그건 나중에 바꿔야 겠다.</p>
-<p><img src="/images/2019/2/Untitled-b94bd3e9-0691-48f4-9f3c-51e55b7fd426.png" alt></p>
-<p>끝!!!</p>
-<h3 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h3><p><a href="https://smartaedi.tistory.com/137" target="_blank" rel="external nofollow noopener noreferrer">https://smartaedi.tistory.com/137</a></p>
-<p><a href="https://programmingsummaries.tistory.com/389" target="_blank" rel="external nofollow noopener noreferrer">https://programmingsummaries.tistory.com/389</a></p>
-<p><a href="https://codevkr.tistory.com/89" target="_blank" rel="external nofollow noopener noreferrer">https://codevkr.tistory.com/89</a></p>
-
-      
-      
-          
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-
-  
-      
-
-
-  
-  
-  
-  
-
   </div>
 
   
@@ -1710,7 +1681,7 @@ public class HomeController {
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">221</span>
+          <span class="site-state-item-count">222</span>
           <span class="site-state-item-name">포스트</span>
         </a>
       </div>
