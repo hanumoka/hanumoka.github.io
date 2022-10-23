@@ -3,7 +3,9 @@
     "target": "es5",
     "module": "commonjs",
     "allowJs": true,
-    "jsx": "preserve",
+    // "jsx": "preserve",
+    "jsx": "react-jsx",
+    "jsxImportSource": "@emotion/react",
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
@@ -17,7 +19,7 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
   },
   "include": ["src/**/*.tsx"],
   "exclude": ["node_modules"]

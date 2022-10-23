@@ -13,6 +13,7 @@ module.exports = {
         allExtensions: true,
       },
     },
+    `gatsby-plugin-emotion`,
     // `gatsby-plugin-image`,
     // {
     //   resolve: `gatsby-source-filesystem`,
