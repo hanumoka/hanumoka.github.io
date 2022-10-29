@@ -1,7 +1,7 @@
 // 페이지 상단 소개글
 import React, { FunctionComponent } from 'react'
 import styled from '@emotion/styled'
-import ProfileImage from 'components/main/ProfileImage'
+import ProfileImage from 'components/Main/ProfileImage'
 import { IGatsbyImageData } from 'gatsby-plugin-image'
 
 const Background = styled.div`

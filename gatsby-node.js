@@ -17,6 +17,7 @@ exports.onCreateWebpackConfig = ({ getConfig, actions }) => {
   });
 };
 
+// 글을 선택했을때 slug url을 만들어준다.
 // Generate a Slug Each Post Data
 exports.onCreateNode = ({ node, getNode, actions }) => {
   const { createNodeField } = actions;
@@ -26,4 +27,62 @@ exports.onCreateNode = ({ node, getNode, actions }) => {
 
     createNodeField({ node, name: 'slug', value: slug });
   }
+};
+
+// 페이지를 템플릿을 통해서 만들어주는 코드
+// Generate Post Page Through Markdown Data
+exports.createPages = async ({ actions, graphql, reporter }) => {
+  const { createPage } = actions;
+
+  // Get All Markdown File For Paging
+  const queryAllMarkdownData = await graphql(
+    `
+      {
+        allMarkdownRemark(
+          sort: {
+            order: DESC
+            fields: [frontmatter___date, frontmatter___title]
+          }
+        ) {
+          edges {
+            node {
+              fields {
+                slug
+              }
+            }
+          }
+        }
+      }
+    `,
+  );
+
+  // Handling GraphQL Query Error
+  if (queryAllMarkdownData.errors) {
+    reporter.panicOnBuild(`Error while running query`);
+    return;
+  }
+
+  // Import Post Template Component
+  const PostTemplateComponent = path.resolve(
+    __dirname,
+    'src/templates/post_template.tsx',
+  );
+
+  // Page Generating Function
+  const generatePostPage = ({
+    node: {
+      fields: { slug },
+    },
+  }) => {
+    const pageOptions = {
+      path: slug,
+      component: PostTemplateComponent,
+      context: { slug },
+    };
+
+    createPage(pageOptions);
+  };
+
+  // Generate Post Page And Passing Slug Props for Query
+  queryAllMarkdownData.data.allMarkdownRemark.edges.forEach(generatePostPage);
 };

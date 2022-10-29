@@ -1,21 +1,17 @@
 import React, { FunctionComponent, useMemo } from 'react'
 import styled from '@emotion/styled'
-import GlobalStyle from 'components/common/GlobalStyle'
-import Footer from 'components/common/Footer'
-import CategoryList, {CategoryListProps} from 'components/main/CategoryList'
-import Introduction from 'components/main/Introduction'
-import PostList from 'components/main/PostList'
+import GlobalStyle from 'components/Common/GlobalStyle'
+import Footer from 'components/Common/Footer'
+import CategoryList, {CategoryListProps} from 'components/Main/CategoryList'
+import Introduction from 'components/Main/Introduction'
+import PostList from 'components/Main/PostList'
 
 import { graphql } from 'gatsby'
 import { IGatsbyImageData } from 'gatsby-plugin-image'
 import { PostListItemType } from 'types/PostItem.types'
 import queryString, { ParsedQuery } from 'query-string'
+import Template from 'components/Common/Template'
 
-// const CATEGORY_LIST = {
-//   All: 5,
-//   Web: 3,
-//   Mobile: 2,
-// }
 
 const Container = styled.div`
   display: flex;
@@ -80,16 +76,14 @@ const IndexPage: FunctionComponent<IndexPageProps> = function ({
   )
 
   return (
-    <Container>
-      <GlobalStyle />
+    <Template>
       <Introduction profileImage={gatsbyImageData} />
       <CategoryList
         selectedCategory={selectedCategory}
         categoryList={categoryList}
       />
       <PostList selectedCategory={selectedCategory} posts={edges} />
-      <Footer />
-    </Container>
+    </Template>
   )
 }
 
@@ -103,6 +97,9 @@ export const getPostList = graphql`
       edges {
         node {
           id
+          fields {
+            slug
+          }
           frontmatter {
             title
             summary
