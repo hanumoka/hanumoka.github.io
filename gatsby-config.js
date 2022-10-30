@@ -1,9 +1,10 @@
 module.exports = {
+  pathPrefix: `/blog`,
   siteMetadata: {
-    title: `Gatsby Default Starter`,
-    description: `Kick off your next, great Gatsby project with this default starter. This barebones starter ships with the main Gatsby configuration files you might need.`,
-    author: `@gatsbyjs`,
-    siteUrl: `https://gatsbystarterdefaultsource.gatsbyjs.io/`,
+    title: `Hanumoka의 프로그래밍 블로그`,
+    description: `프로그래밍 관련자료를 기록할 예정입니다.`,
+    author: `@hanumoka`,
+    siteUrl: `https://hanumoka.net`,
   },
   plugins: [
     {
