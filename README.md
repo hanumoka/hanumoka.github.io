@@ -6,6 +6,4 @@
 
 ### TODOLISt
 
-- gatsby prefix 수정
-- 포스트 404
-- static 리소스 동작 안한다?
+- 인프런 댓글 기능
