@@ -13,6 +13,12 @@
 - main 브랜치 소스관리용
 - deploy 브랜치 git page 배포용
 
+현재 gitpage url
+
+https://hanumoka.net/blog
+
+- build 시 pathPrefix를 반듯이 적용해야 한다.
+
 - 배포방법
   - main에서 코드 변경
   - deploy에서 main merge

@@ -19,6 +19,7 @@
     "gatsby-plugin-manifest": "^4.24.0",
     "gatsby-plugin-react-helmet": "^5.24.0",
     "gatsby-plugin-sharp": "^4.24.0",
+    "gatsby-plugin-sitemap": "^5.24.0",
     "gatsby-remark-copy-linked-files": "^5.24.0",
     "gatsby-remark-external-links": "^0.0.4",
     "gatsby-remark-images": "^6.24.0",
@@ -50,6 +51,7 @@
   "license": "0BSD",
   "scripts": {
     "build": "gatsby build",
+    "build2": "gatsby build --prefix-paths",
     "develop": "gatsby develop",
     "deploy": "gatsby build --prefix-paths && gh-pages -d public -b deploy",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md,css}\"",
