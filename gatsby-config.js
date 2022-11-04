@@ -4,7 +4,7 @@ module.exports = {
     title: `Hanumoka의 프로그래밍 블로그`,
     description: `프로그래밍 관련자료를 기록할 예정입니다.`,
     author: `hanumoka`,
-    siteUrl: `https://hanumoka.net/blog`,
+    siteUrl: `https://hanumoka.net`,
   },
   plugins: [
     {
@@ -83,11 +83,17 @@ module.exports = {
     {
       resolve: 'gatsby-plugin-canonical-urls',
       options: {
-        siteUrl: 'https://hanumoka.net/blog',
+        siteUrl: 'https://hanumoka.net',
         stripQueryString: true,
       },
     },
-    'gatsby-plugin-sitemap'
+    'gatsby-plugin-sitemap',
+    {
+      resolve: 'gatsby-plugin-robots-txt',
+      options: {
+        policy: [{ userAgent: '*', allow: '/' }],
+      },
+    },
     // `gatsby-plugin-image`,
     // {
     //   resolve: `gatsby-source-filesystem`,
