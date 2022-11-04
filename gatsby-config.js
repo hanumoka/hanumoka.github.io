@@ -80,6 +80,13 @@ module.exports = {
         path: `${__dirname}/static`,
       },
     },
+    {
+      resolve: 'gatsby-plugin-canonical-urls',
+      options: {
+        siteUrl: 'https://hanumoka.net',
+        stripQueryString: true,
+      },
+    },
     // `gatsby-plugin-image`,
     // {
     //   resolve: `gatsby-source-filesystem`,
