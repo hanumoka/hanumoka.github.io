@@ -3,7 +3,7 @@ module.exports = {
   siteMetadata: {
     title: `Hanumoka의 프로그래밍 블로그`,
     description: `프로그래밍 관련자료를 기록할 예정입니다.`,
-    author: `@hanumoka`,
+    author: `hanumoka`,
     siteUrl: `https://hanumoka.net`,
   },
   plugins: [
