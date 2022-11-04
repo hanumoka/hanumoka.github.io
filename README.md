@@ -12,3 +12,8 @@
 
 - main 브랜치 소스관리용
 - deploy 브랜치 git page 배포용
+
+- 배포방법
+  - main에서 코드 변경
+  - deploy에서 main merge
+  - deploy에서 deploy 명령으로 git page에 블로그 배포
