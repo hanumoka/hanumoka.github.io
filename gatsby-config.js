@@ -5,7 +5,6 @@ module.exports = {
     description: `프로그래밍 관련자료를 기록할 예정입니다.`,
     author: `hanumoka`,
     siteUrl: `https://hanumoka.net/blog`,
-    // siteUrl: `http://localhost:8000`,
   },
   plugins: [
     {
@@ -89,7 +88,34 @@ module.exports = {
       },
     },
     'gatsby-plugin-sitemap',
-    'gatsby-plugin-advanced-sitemap',
+    {
+      resolve: `gatsby-plugin-advanced-sitemap`,
+      options: {
+        mapping : {
+              // Each data type can be mapped to a predefined sitemap
+              // Routes can be grouped in one of: posts, tags, authors, pages, or a custom name
+              // The default sitemap - if none is passed - will be pages
+              allGhostPost: {
+                  sitemap: `posts`,
+                  // Add a query level prefix to slugs, Don't get confused with global path prefix from Gatsby
+                  // This will add a prefix to this particular sitemap only
+                  prefix: 'blog/',
+              },
+              allGhostTag: {
+                  sitemap: `tags`,
+                  prefix: 'blog/',
+              },
+              allGhostAuthor: {
+                  sitemap: `authors`,
+                  prefix: 'blog/',
+              },
+              allGhostPage: {
+                  sitemap: `pages`,
+                  prefix: 'blog/',
+              },
+        }
+      }
+    },
     {
       resolve: 'gatsby-plugin-robots-txt',
       options: {
