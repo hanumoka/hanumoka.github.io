@@ -14,8 +14,9 @@
 - deploy 브랜치 git page 배포용
 
 현재 gitpage url
-
-https://hanumoka.net/blog
+hanumoka
+/
+hanumoka.github.io
 
 - build 시 pathPrefix를 반듯이 적용해야 한다.
 
