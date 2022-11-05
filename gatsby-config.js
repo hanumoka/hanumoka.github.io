@@ -87,7 +87,12 @@ module.exports = {
         stripQueryString: true,
       },
     },
-    'gatsby-plugin-sitemap',
+    {
+      resolve: "gatsby-plugin-sitemap",
+      options: {
+        resolveSiteUrl: () => `https://hanumoka.net/blog`,
+      }
+    },
     {
       resolve: 'gatsby-plugin-robots-txt',
       options: {
