@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
-Sitemap: https://hanumoka.net/sitemap/sitemap-index.xml
-Host: https://hanumoka.net
+Sitemap: https://hanumoka.github.io/sitemap/sitemap-index.xml
+Host: https://hanumoka.github.io
