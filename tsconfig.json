@@ -21,6 +21,6 @@
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
   },
-  "include": ["src/**/*.tsx"],
+  "include": ["src/**/*.tsx", "src/hooks/useTheme.ts"],
   "exclude": ["node_modules"]
 }
