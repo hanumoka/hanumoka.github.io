@@ -10,12 +10,6 @@ import queryString, { ParsedQuery } from 'query-string'
 import Template from 'components/Common/Template'
 
 
-// const Container = styled.div`
-//   display: flex;
-//   flex-direction: column;
-//   height: 100%;
-// `
-
 type IndexPageProps = {
   location: {
     search: string

@@ -58,13 +58,6 @@ const Template: FunctionComponent<TemplateProps> = function ({
     themeToggler(); // TODO: 이거 뭐지?
   }, [themeToggler, theme]);
 
-  // const changeTheme = () => {
-  //   alert("테마 버튼");
-  //   console.log(theme);
-  //   themeToggler();
-  // }
-  
-
   return (
     <Container>
       <Helmet>
@@ -107,14 +100,3 @@ const Template: FunctionComponent<TemplateProps> = function ({
 }
 
 export default Template;
-
-// const ThemeToggleButton = styled.button`
-//  width: 200px;
-//  height: 200px;
-//  position: absolute;
-//  top: 50%;
-//  left: 50%:
-//  transform: transition(-50%, -50%);
-//  color: ${({ theme }) => theme.color.fontColor };
-//  background-color: ${({ theme }) => theme.color.backgroundColor };
-// `;
