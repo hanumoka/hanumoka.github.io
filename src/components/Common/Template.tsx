@@ -1,13 +1,9 @@
-import React, { FunctionComponent, ReactNode, useCallback } from 'react'
+import React, { FunctionComponent, ReactNode } from 'react'
 import GlobalStyle from 'components/Common/GlobalStyle'
 import Footer from 'components/Common/Footer'
 import { Helmet } from 'react-helmet'
 
-import styled, { ThemeProvider } from 'styled-components';
-import { lightTheme, darkTheme } from '../../styles/theme';
-import useTheme from 'hooks/useTheme';
-import {CiDark} from 'react-icons/ci';
-import {MdDarkMode} from 'react-icons/md';
+import styled from 'styled-components';
 
 
 type TemplateProps = {
@@ -24,22 +20,6 @@ const Container = styled.main`
   height: 100vh;
 `
 
-const FloatingBtn = styled.div`
-  position: fixed; //포인트!
-  line-height: 63px;
-  bottom: 40px; //위치
-  right: 40px;  //위치
-  width: 50px;  
-  height: 50px;
-  border-radius: 50%;
-  background-color: white;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  z-index: 100;
-`;
-
 const Template: FunctionComponent<TemplateProps> = function ({
   title,
   description,
@@ -47,16 +27,6 @@ const Template: FunctionComponent<TemplateProps> = function ({
   image,
   children,
 }) {
-
-  const [theme, themeToggler] = useTheme();
-  const themeMode = theme === 'light' ? lightTheme : darkTheme;
-
-  console.log("theme:"+ theme);
-
-  const changeTheme = useCallback(() => {
-    console.log(theme);
-    themeToggler(); // TODO: 이거 뭐지?
-  }, [themeToggler, theme]);
 
   return (
     <Container>
@@ -86,15 +56,10 @@ const Template: FunctionComponent<TemplateProps> = function ({
 
         <html lang="ko" />
       </Helmet>
-      <ThemeProvider theme={themeMode}>
-        <FloatingBtn onClick={changeTheme}>
-          {theme === 'light' ? (<CiDark style={{ fontSize: "50px"}} />) : (<MdDarkMode style={{ fontSize: "50px"}} /> )}
-        </FloatingBtn>
         <GlobalStyle />
 
         {children}
         <Footer />
-      </ThemeProvider>
     </Container>
   )
 }
