@@ -109,5 +109,6 @@ module.exports = {
         icon: `static/logo.png`, // This path is relative to the root of the site.
       },
     },
+    'gatsby-plugin-postcss'
   ],
 }
