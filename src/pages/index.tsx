@@ -8,6 +8,7 @@ import { IGatsbyImageData } from 'gatsby-plugin-image'
 import { PostListItemType } from 'types/PostItem.types'
 import queryString, { ParsedQuery } from 'query-string'
 import Template from 'components/Common/Template'
+import useTheme from '../hooks/useTheme';
 
 
 type IndexPageProps = {
@@ -79,8 +80,14 @@ const IndexPage: FunctionComponent<IndexPageProps> = function ({
     [],
   )
 
+  const [theme, themeToggler] = useTheme();
+  console.log(`theme: ${theme}`);
+
   return (
-    <div className="dark">
+    <div className={ theme === 'dark' ? 'dark' : 'light' }>
+      <button onClick={() => {
+        themeToggler();
+      }}>테마변경</button>
       <Template
         title={title}
         description={description}

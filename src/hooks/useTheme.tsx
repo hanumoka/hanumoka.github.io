@@ -1,5 +1,9 @@
 import { useState } from 'react';
 
+/**
+ * 라이트 / 다크 테마용 훅
+ * @returns 
+ */
 const useTheme = () => {
   const prefersColorScheme = window.matchMedia("(prefers-color-scheme: dark)").matches
             ? 'dark'
