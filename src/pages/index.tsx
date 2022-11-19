@@ -85,9 +85,7 @@ const IndexPage: FunctionComponent<IndexPageProps> = function ({
 
   return (
     <div className={ theme === 'dark' ? 'dark' : 'light' }>
-      <button onClick={() => {
-        themeToggler();
-      }}>테마변경</button>
+      
       <Template
         title={title}
         description={description}
@@ -106,6 +104,9 @@ const IndexPage: FunctionComponent<IndexPageProps> = function ({
         />
         <PostList selectedCategory={selectedCategory} posts={edges} />
       </Template>
+      <div style={{position: 'fixed', right: '0px', bottom: '0px'}}>
+        <button onClick={() => { themeToggler(); }}> 테마변경 </button>
+      </div>
       </div>
   )
 }
