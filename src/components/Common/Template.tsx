@@ -56,7 +56,7 @@ const Template: FunctionComponent<TemplateProps> = function ({
 
         <html lang="ko" />
       </Helmet>
-        <GlobalStyle />
+        {/* <GlobalStyle /> */}
         {/* <h1 className="text-3xl font-bold underline">
           Hello world!
         </h1> */}
