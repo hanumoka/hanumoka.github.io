@@ -21,7 +21,7 @@ const useTheme = () => {
   const themeToggler = () => {
     theme === 'light' ? setMode('dark') : setMode('light');
   };
-  return [theme, themeToggler];
+  return [theme, themeToggler] as const;
 };
 
 export default useTheme;
