@@ -6,6 +6,7 @@ import PostList from 'components/Main/PostList'
 import { graphql } from 'gatsby'
 import { IGatsbyImageData } from 'gatsby-plugin-image'
 import { PostListItemType } from 'types/PostItem.types'
+import {BsSun, BsMoonFill} from 'react-icons/bs';
 import queryString, { ParsedQuery } from 'query-string'
 import Template from 'components/Common/Template'
 import useTheme from '../hooks/useTheme';
@@ -34,6 +35,10 @@ type IndexPageProps = {
     }
   }
 }
+
+const buttonStyling = `flex space-x-3 mr-2 font-semibold bg-gradient-to-r from-blue-600 via-indigo-700 to-indigo-900 
+  text-gray-100 rounded-sm ring-2 ring-blue-200 px-6 py-2 
+  hover:bg-white  hover:text-white hover:ring-slate-300 mx-8`;
 
 
 const IndexPage: FunctionComponent<IndexPageProps> = function ({
@@ -79,6 +84,7 @@ const IndexPage: FunctionComponent<IndexPageProps> = function ({
       ),
     [],
   )
+  
 
   const [hasMounted, setHasMounted] = React.useState(false);
 
@@ -110,9 +116,11 @@ const IndexPage: FunctionComponent<IndexPageProps> = function ({
       />
       <PostList selectedCategory={selectedCategory} posts={edges} />
     </Template>
-           <div style={{position: 'fixed', right: '0px', bottom: '0px'}}>
-           <button onClick={() => { themeToggler(); }}> 테마변경 </button>
-         </div>
+    <div style={{position: 'fixed', right: '5px', bottom: '5px'}}>
+      <button onClick={() => { themeToggler(); }}> 
+        {theme === 'dark' ? (<BsMoonFill size="2.5rem" />) : (<BsSun size="2.5rem" />)}
+      </button>
+    </div>
 </div>)
   }
 }
