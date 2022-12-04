@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useMemo } from 'react'
+import React, { FunctionComponent, useEffect, useMemo } from 'react'
 import CategoryList, {CategoryListProps} from 'components/Main/CategoryList'
 import Introduction from 'components/Main/Introduction'
 import PostList from 'components/Main/PostList'
@@ -80,35 +80,41 @@ const IndexPage: FunctionComponent<IndexPageProps> = function ({
     [],
   )
 
-  const [theme, themeToggler] = useTheme();
-  console.log(`theme: ${theme}`);
+  const [hasMounted, setHasMounted] = React.useState(false);
 
-  return (
-    <div className={ theme === 'dark' ? 'dark' : 'light' }>
-      
-      <Template
-        title={title}
-        description={description}
-        url={siteUrl}
-        image={publicURL}
-      >
-        <div className="h-screen w-full bg-white dark:bg-gray-900">
-          <h1 className="text-3xl text-gray-900 dark:text-pink-500">
-            Welcome to Your App
-          </h1>
-        </div>
-        <Introduction profileImage={gatsbyImageData} />
-        <CategoryList
-          selectedCategory={selectedCategory}
-          categoryList={categoryList}
-        />
-        <PostList selectedCategory={selectedCategory} posts={edges} />
-      </Template>
-      <div style={{position: 'fixed', right: '0px', bottom: '0px'}}>
-        <button onClick={() => { themeToggler(); }}> 테마변경 </button>
+  const [theme, themeToggler] = useTheme();
+
+  React.useEffect(() => {
+    setHasMounted(true);
+  }, []);
+
+  if (!hasMounted) {
+    return null;
+  } else{
+    return (<div className={ theme === 'dark' ? 'dark' : 'light' }>
+    <Template
+      title={title}
+      description={description}
+      url={siteUrl}
+      image={publicURL}
+    >
+      <div className="h-screen w-full bg-white dark:bg-gray-900">
+        <h1 className="text-3xl text-gray-900 dark:text-pink-500">
+          Welcome to Your App
+        </h1>
       </div>
-      </div>
-  )
+      <Introduction profileImage={gatsbyImageData} />
+      <CategoryList
+        selectedCategory={selectedCategory}
+        categoryList={categoryList}
+      />
+      <PostList selectedCategory={selectedCategory} posts={edges} />
+    </Template>
+           <div style={{position: 'fixed', right: '0px', bottom: '0px'}}>
+           <button onClick={() => { themeToggler(); }}> 테마변경 </button>
+         </div>
+</div>)
+  }
 }
 
 export default IndexPage
