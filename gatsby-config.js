@@ -6,6 +6,9 @@ module.exports = {
     author: `hanumoka`,
     siteUrl: `https://hanumoka.github.io`,
   },
+  flags: {
+    DEV_SSR: true
+  },
   plugins: [
     {
       resolve: 'gatsby-plugin-typescript',
