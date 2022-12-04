@@ -57,7 +57,7 @@ const CategoryList: FunctionComponent<CategoryListProps> = function ({
   categoryList,
 }) {
   return (
-    <CategoryListWrapper className="text-gray-900 dark:text-pink-500 bg-white dark:bg-gray-900">
+    <CategoryListWrapper>
       {Object.entries(categoryList).map(([name, count]) => (
         <CategoryItem
           to={`/?category=${name}`}

@@ -54,8 +54,10 @@ const PostHead: FunctionComponent<PostHeadProps> = function ({
 
     return (
       <PostHeadWrapper>
-        <BackgroundImage image={gatsbyImageData} alt="thumbnail" />
-        <PostHeadInfo title={title} date={date} categories={categories} />
+        <div>
+          <BackgroundImage image={gatsbyImageData} alt="thumbnail" />
+          <PostHeadInfo title={title} date={date} categories={categories} />
+        </div>
       </PostHeadWrapper>
     )
   }

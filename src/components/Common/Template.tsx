@@ -62,7 +62,8 @@ const Template: FunctionComponent<TemplateProps> = function ({
         <html lang="ko" />
       </Helmet>
 
-        <div className="text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-900">
+        <div className="text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-900 bg-opacity-30">
+        {/* <div> */}
         {children}
         <Footer />
         <div style={{position: 'fixed', right: '5px', bottom: '5px'}}>
