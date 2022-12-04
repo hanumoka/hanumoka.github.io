@@ -1,9 +1,12 @@
 import React, { FunctionComponent, ReactNode } from 'react'
-import GlobalStyle from 'components/Common/GlobalStyle'
+// import GlobalStyle from 'components/Common/GlobalStyle'
 import Footer from 'components/Common/Footer'
 import { Helmet } from 'react-helmet'
 
 import styled from 'styled-components';
+import useTheme from '../../hooks/useTheme';
+
+import { BsMoonFill, BsSun} from 'react-icons/bs';
 
 
 type TemplateProps = {
@@ -28,8 +31,10 @@ const Template: FunctionComponent<TemplateProps> = function ({
   children,
 }) {
 
+  const [theme, themeToggler] = useTheme();
+
   return (
-    <Container>
+    <Container className={ theme === 'dark' ? 'dark' : 'light' }>
       <Helmet>
         <title>{title}</title>
 
@@ -63,6 +68,11 @@ const Template: FunctionComponent<TemplateProps> = function ({
 
         {children}
         <Footer />
+        <div style={{position: 'fixed', right: '5px', bottom: '5px'}}>
+          <button onClick={() => { themeToggler(); }}> 
+            {theme === 'dark' ? (<BsMoonFill size="2rem" />) : (<BsSun size="2rem" />)}
+          </button>
+        </div>
     </Container>
   )
 }
