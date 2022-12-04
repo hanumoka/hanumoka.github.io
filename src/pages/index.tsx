@@ -95,11 +95,11 @@ const IndexPage: FunctionComponent<IndexPageProps> = function ({
         url={siteUrl}
         image={publicURL}
       >
-        <div className="h-screen w-full bg-white dark:bg-gray-900">
+        {/* <div className="h-screen w-full bg-white dark:bg-gray-900">
           <h1 className="text-3xl text-gray-900 dark:text-pink-500">
             Welcome to Your App
           </h1>
-        </div>
+        </div> */}
         <Introduction profileImage={gatsbyImageData} />
         <CategoryList
           selectedCategory={selectedCategory}

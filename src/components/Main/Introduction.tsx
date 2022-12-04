@@ -58,6 +58,7 @@ const Introduction: FunctionComponent<IntroductionProps> = function ({
       <Wrapper>
         <ProfileImage profileImage={profileImage} />
 
+        {/* <div className="text-gray-900 dark:text-pink-500"> */}
         <div>
           <SubTitle>Hanumoka's 개발노트</SubTitle>
           <Title>공사중...</Title>

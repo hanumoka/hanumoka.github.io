@@ -61,17 +61,15 @@ const Template: FunctionComponent<TemplateProps> = function ({
 
         <html lang="ko" />
       </Helmet>
-        {/* <GlobalStyle /> */}
-        {/* <h1 className="text-3xl font-bold underline">
-          Hello world!
-        </h1> */}
 
+        <div className="text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-900">
         {children}
         <Footer />
         <div style={{position: 'fixed', right: '5px', bottom: '5px'}}>
           <button onClick={() => { themeToggler(); }}> 
             {theme === 'dark' ? (<BsMoonFill size="2rem" />) : (<BsSun size="2rem" />)}
           </button>
+        </div>
         </div>
     </Container>
   )
