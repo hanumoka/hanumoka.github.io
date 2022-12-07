@@ -5,6 +5,7 @@ import Template from 'components/Common/Template'
 import PostHead from 'components/Post/PostHead'
 import PostContent from 'components/Post/PostContent'
 import CommentWidget from 'components/Post/CommentWidget'
+import TableOfContents from 'components/Post/TableOfContents'
 
 type PostTemplateProps = {
   data: {
@@ -26,16 +27,13 @@ const PostTemplate: FunctionComponent<PostTemplateProps> = function ({
   const {
     node: {
       html,
+      tableOfContents,
       frontmatter: {
         title,
         summary,
         date,
         categories,
         thumbnail
-        // thumbnail: {
-        //   childImageSharp: { gatsbyImageData },
-        //   publicURL,
-        // },
       },
     },
   } = edges[0];
@@ -50,6 +48,7 @@ const PostTemplate: FunctionComponent<PostTemplateProps> = function ({
         categories={categories}
         thumbnail={thumbnail}
       />
+      <TableOfContents toc={tableOfContents} />
       <PostContent html={html} />
       <CommentWidget />
     </Template>
@@ -64,6 +63,7 @@ export const queryMarkdownDataBySlug = graphql`
       edges {
         node {
           html
+          tableOfContents
           frontmatter {
             title
             summary
