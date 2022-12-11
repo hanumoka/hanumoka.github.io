@@ -61,6 +61,7 @@ module.exports = {
               rel: 'nofollow',
             },
           },
+          // gatsby-remark-prismjs버그가 있는듯 이건 맨 매자막에 두자
           {
             resolve: 'gatsby-remark-prismjs',
             options: {
