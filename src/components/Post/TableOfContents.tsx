@@ -10,14 +10,19 @@ const TableOfContents: FunctionComponent = function ({ toc }) {
 
   return (
     <div>
-      <div class="fixed right-0 top-0 py-2 px-14">
+      <div class="fixed right-0 top-0 py-2 px-14 z-20">
         <button
           class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded"
           onClick={onClickToc}
         >
           TOC 버튼
         </button>
-        <div className={isOpen ? 'visible' : 'collapse'}>
+        <div
+          className={`top-20 right-0 w-[35vw] bg-blue-600 p-10 pl-20 text-white fixed h-3/4  z-40 ease-in-out duration-300 ${
+            isOpen ? 'translate-x-0 ' : 'translate-x-full'
+          }`}
+        >
+          {/* <h3 className="mt-20 text-4xl font-semibold text-white">I am a sidebar</h3> */}
           <div dangerouslySetInnerHTML={{ __html: toc }} />
         </div>
       </div>
