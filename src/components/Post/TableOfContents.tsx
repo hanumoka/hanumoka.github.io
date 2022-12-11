@@ -2,8 +2,10 @@
 import React, { FunctionComponent } from 'react';
 
 const TableOfContents: FunctionComponent = function ({ toc }) {
+  const [isOpen, setIsOpen] = React.useState(false);
+
   const onClickToc = () => {
-    alert('클릭');
+    setIsOpen((prev) => !prev);
   };
 
   return (
@@ -15,11 +17,21 @@ const TableOfContents: FunctionComponent = function ({ toc }) {
         >
           TOC 버튼
         </button>
+        <div className={isOpen ? 'visible' : 'collapse'}>
+          <div dangerouslySetInnerHTML={{ __html: toc }} />
+        </div>
       </div>
       <div>
-        {/* <div>
-              <div dangerouslySetInnerHTML={{ __html: toc }} />
-            </div> */}
+        {/* <div
+          className={
+            ' fixed overflow-hidden z-10 bg-gray-900 bg-opacity-25 inset-0 transform ease-in-out ' +
+            (isOpen
+              ? ' transition-opacity opacity-100 duration-500 translate-x-0  '
+              : ' transition-all delay-500 opacity-0 translate-x-full  ')
+          }
+        >
+          toc 본문
+        </div> */}
         {/* <div className="toc-open-btn" onClick={onClickTOCOpen}></div> */}
       </div>
       {/* <div class="fixed bottom-0 w-full">
