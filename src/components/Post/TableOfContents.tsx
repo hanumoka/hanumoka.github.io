@@ -10,9 +10,9 @@ const TableOfContents: FunctionComponent = function ({ toc }) {
 
   return (
     <div>
-      <div class="fixed right-0 top-0 py-2 px-14 z-20">
+      <div className="fixed right-0 top-0 py-2 px-14 z-20">
         <button
-          class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded"
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded"
           onClick={onClickToc}
         >
           TOC 버튼
