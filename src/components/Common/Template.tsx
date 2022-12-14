@@ -1,40 +1,32 @@
-import React, { FunctionComponent, ReactNode } from 'react'
+import React, { FunctionComponent, ReactNode } from 'react';
 // import GlobalStyle from 'components/Common/GlobalStyle'
-import Footer from 'components/Common/Footer'
-import { Helmet } from 'react-helmet'
+import Footer from 'components/Common/Footer';
+import { Helmet } from 'react-helmet';
 
 import styled from 'styled-components';
 import useTheme from '../../hooks/useTheme';
 
-import { BsMoonFill, BsSun} from 'react-icons/bs';
-
+import { BsMoonFill, BsSun } from 'react-icons/bs';
 
 type TemplateProps = {
-  title: string
-  description: string
-  url: string
-  image: string
-  children: ReactNode
-}
+  title: string;
+  description: string;
+  url: string;
+  image: string;
+  children: ReactNode;
+};
 
 const Container = styled.main`
   display: flex;
   flex-direction: column;
   height: 100vh;
-`
+`;
 
-const Template: FunctionComponent<TemplateProps> = function ({
-  title,
-  description,
-  url,
-  image,
-  children,
-}) {
-
+const Template: FunctionComponent<TemplateProps> = function ({ title, description, url, image, children }) {
   const [theme, themeToggler] = useTheme();
 
   return (
-    <Container className={ theme === 'dark' ? 'dark' : 'light' }>
+    <Container className={theme === 'dark' ? 'dark' : 'light'}>
       <Helmet>
         <title>{title}</title>
 
@@ -62,18 +54,22 @@ const Template: FunctionComponent<TemplateProps> = function ({
         <html lang="ko" />
       </Helmet>
 
-        <div className="text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-900 bg-opacity-30">
+      <div className="text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-900 bg-opacity-30">
         {/* <div> */}
         {children}
         <Footer />
-        <div style={{position: 'fixed', right: '5px', bottom: '5px'}}>
-          <button onClick={() => { themeToggler(); }}> 
-            {theme === 'dark' ? (<BsMoonFill size="2rem" />) : (<BsSun size="2rem" />)}
+        <div style={{ position: 'fixed', right: '5px', bottom: '5px' }}>
+          <button
+            onClick={() => {
+              themeToggler();
+            }}
+          >
+            {theme === 'dark' ? <BsMoonFill size="2rem" /> : <BsSun size="2rem" />}
           </button>
         </div>
-        </div>
+      </div>
     </Container>
-  )
-}
+  );
+};
 
 export default Template;
