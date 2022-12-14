@@ -1,0 +1,29 @@
+.toc-content .toc ul {
+    margin: 0;
+    padding-left: 16px;
+    padding-bottom: 5px;
+    font-weight: 700;
+    overflow: visible;
+    list-style-position: outside;
+    list-style-image: none;
+    list-style-type: circle;
+}
+
+toc-content .toc {
+    height: 100%;
+    padding: 20px 10px 30px 25px;
+    box-sizing: border-box;
+    font-size: 90%;
+    line-height: 1.5;
+    overflow: auto;
+}
+
+.toc-content .toc:before {
+    content: "Table Of Contents";
+    margin: 10px 0 20px;
+}
+
+.toc-content .toc:after {
+    content: "The End";
+    margin: 20px 0 10px;
+}

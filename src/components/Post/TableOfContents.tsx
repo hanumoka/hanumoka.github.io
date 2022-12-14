@@ -1,5 +1,6 @@
 // @ts-nocheck // TODO: 나중에 타입스크립트
 import React, { FunctionComponent } from 'react';
+import './TableOfContents.css';
 
 const TableOfContents: FunctionComponent = function ({ toc }) {
   const [isOpen, setIsOpen] = React.useState(false);
@@ -7,6 +8,9 @@ const TableOfContents: FunctionComponent = function ({ toc }) {
   const onClickToc = () => {
     setIsOpen((prev) => !prev);
   };
+
+  console.log('-------------- toc -------------------');
+  console.log(toc);
 
   return (
     <div>
@@ -18,12 +22,22 @@ const TableOfContents: FunctionComponent = function ({ toc }) {
           TOC 버튼
         </button>
         <div
-          className={`rounded-md text-gray-200 dark:text-gray-900 bg-gray-900 dark:bg-white top-20 right-0 w-[35vw] p-10 pl-20 fixed h-3/4 z-40 ease-in-out duration-300 ${
+          className={`rounded-md text-gray-200 dark:text-gray-900 bg-gray-900 dark:bg-white top-20 right-0 w-[35vw] p-5 fixed h-3/4 z-40 ease-in-out duration-300 ${
             isOpen ? 'translate-x-0 ' : 'translate-x-full'
           }`}
         >
           {/* <h3 className="mt-20 text-4xl font-semibold text-white">I am a sidebar</h3> */}
-          <div dangerouslySetInnerHTML={{ __html: toc }} />
+          {/* <h2>Toc</h2> */}
+          <br />
+          <div className="toc-container">
+            <div className="toc-wrapper">
+              <div className="toc-content">
+                <div className="toc" dangerouslySetInnerHTML={{ __html: toc }} />
+              </div>
+              {/* <div className="toc-open-btn" onClick={onClickTOCOpen}></div> */}
+            </div>
+          </div>
+          {/* <div>{toc}</div> */}
         </div>
       </div>
       <div>
