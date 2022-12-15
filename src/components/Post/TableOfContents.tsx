@@ -9,9 +9,6 @@ const TableOfContents: FunctionComponent = function ({ toc }) {
     setIsOpen((prev) => !prev);
   };
 
-  console.log('-------------- toc -------------------');
-  console.log(toc);
-
   return (
     <div>
       <div className="fixed right-0 top-0 py-2 px-14 z-20">
@@ -32,26 +29,13 @@ const TableOfContents: FunctionComponent = function ({ toc }) {
           <div className="toc-container">
             <div className="toc-wrapper">
               <div className="toc-content">
-                <div className="toc" dangerouslySetInnerHTML={{ __html: toc }} />
+                <aside className="border-l-4">
+                  <div className="toc" dangerouslySetInnerHTML={{ __html: toc }} />
+                </aside>
               </div>
-              {/* <div className="toc-open-btn" onClick={onClickTOCOpen}></div> */}
             </div>
           </div>
-          {/* <div>{toc}</div> */}
         </div>
-      </div>
-      <div>
-        {/* <div
-          className={
-            ' fixed overflow-hidden z-10 bg-gray-900 bg-opacity-25 inset-0 transform ease-in-out ' +
-            (isOpen
-              ? ' transition-opacity opacity-100 duration-500 translate-x-0  '
-              : ' transition-all delay-500 opacity-0 translate-x-full  ')
-          }
-        >
-          toc 본문
-        </div> */}
-        {/* <div className="toc-open-btn" onClick={onClickTOCOpen}></div> */}
       </div>
       {/* <div class="fixed bottom-0 w-full">
         <button class="animate-pulse my-8 float-right px-5 py-2 bg-red-500 text-white text-sm font-bold tracking-wide rounded-full focus:outline-none">

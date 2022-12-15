@@ -41,7 +41,17 @@ module.exports = {
               dashes: 'oldschool',
             },
           },
-          'gatsby-remark-autolink-headers',
+          // 'gatsby-remark-autolink-headers',
+          {
+            resolve: 'gatsby-remark-autolink-headers',
+            options: {
+              className: 'anchor-header',
+              maintainCase: false,
+              removeAccents: true,
+              elements: ['h2', 'h3', 'h4'],
+            },
+          },
+
           {
             resolve: 'gatsby-remark-images',
             options: {

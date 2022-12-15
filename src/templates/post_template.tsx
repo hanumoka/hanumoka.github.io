@@ -1,6 +1,6 @@
 // @ts-nocheck
 
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, useEffect } from 'react';
 import { graphql } from 'gatsby';
 import { PostPageItemType } from 'types/PostItem.types'; // 바로 아래에서 정의할 것입니다
 import Template from 'components/Common/Template';
@@ -35,6 +35,53 @@ const PostTemplate: FunctionComponent<PostTemplateProps> = function ({
   } = edges[0];
 
   const publicURL = thumbnail.publicURL;
+
+  const scrollHandler = () => {
+    const toc = document.getElementsByTagName('aside');
+
+    console.dir(toc);
+
+    if (!toc || toc.length < 0 || !toc[0] || !toc[0].style || toc[0].offsetWidth === 0) {
+      return;
+    }
+
+    const anchor_holder = document.getElementsByClassName('anchor-header');
+    if (!anchor_holder || anchor_holder.length <= 0) {
+      return;
+    }
+    console.log('111');
+    let selected_anchor = null;
+    const anchor_holder_arr = Array.from(anchor_holder);
+    for (let a of anchor_holder_arr) {
+      if (a.getBoundingClientRect().top > -30) {
+        selected_anchor = a.getAttribute('href');
+        break;
+      }
+    }
+    if (!selected_anchor) {
+      selected_anchor = anchor_holder_arr[anchor_holder_arr.length - 1].getAttribute('href');
+    }
+    document.querySelectorAll('aside a.selected').forEach((a) => {
+      a.classList.remove('selected');
+    });
+
+    console.log('적용 selected_anchor:' + selected_anchor);
+
+    if (selected_anchor) {
+      const toc_selected = document.querySelector("aside a[href='" + decodeURIComponent(selected_anchor) + "']");
+      toc_selected && toc_selected.classList.add('selected');
+    }
+  };
+
+  useEffect(() => {
+    console.log('post_template useEffect...');
+
+    document.addEventListener('scroll', scrollHandler);
+
+    return () => {
+      document.removeEventListener('scroll', scrollHandler);
+    };
+  }, []);
 
   return (
     <Template title={title} description={summary} url={href} image={publicURL}>
