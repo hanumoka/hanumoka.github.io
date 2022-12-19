@@ -86,7 +86,7 @@ const IndexPage: FunctionComponent<IndexPageProps> = function ({
     return (
       <div>
         <Template title={title} description={description} url={siteUrl} image={publicURL}>
-          <Introduction profileImage={gatsbyImageData} />
+          {/* <Introduction profileImage={gatsbyImageData} /> */}
           <CategoryList selectedCategory={selectedCategory} categoryList={categoryList} />
           <PostList selectedCategory={selectedCategory} posts={edges} />
         </Template>

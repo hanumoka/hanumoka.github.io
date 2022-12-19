@@ -2,6 +2,7 @@ import React, { FunctionComponent, ReactNode } from 'react';
 // import GlobalStyle from 'components/Common/GlobalStyle'
 import Footer from 'components/Common/Footer';
 import { Helmet } from 'react-helmet';
+import Introduction from 'components/Main/Introduction';
 
 import styled from 'styled-components';
 import useTheme from '../../hooks/useTheme';
@@ -55,7 +56,11 @@ const Template: FunctionComponent<TemplateProps> = function ({ title, descriptio
       </Helmet>
 
       <div className="text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-900 bg-opacity-30">
-        {children}
+        <header className="sticky top-0 z-50">
+          스티키 헤더 위치
+          {/* <Introduction profileImage={gatsbyImageData} /> */}
+        </header>
+        <main className="relative">{children}</main>
         <Footer />
         <div style={{ position: 'fixed', right: '5px', bottom: '5px' }}>
           <button

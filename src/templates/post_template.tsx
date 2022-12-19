@@ -96,7 +96,7 @@ const PostTemplate: FunctionComponent<PostTemplateProps> = function ({
 
   return (
     <Template title={title} description={summary} url={href} image={thumbnailPublicURL}>
-      <Introduction profileImage={gatsbyImageData} />
+      {/* <Introduction profileImage={gatsbyImageData} /> */}
       <PostHead title={title} date={date} categories={categories} thumbnail={thumbnail} />
       <TableOfContents toc={tableOfContents} />
       <PostContent html={html} />

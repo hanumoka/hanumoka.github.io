@@ -53,10 +53,15 @@ const Introduction: FunctionComponent<IntroductionProps> = function ({ profileIm
   return (
     <Background>
       <Wrapper>
-        <ProfileImage profileImage={profileImage} />
-        <div>
-          {/* <SubTitle>Hanumoka's 개발노트</SubTitle> */}
-          {/* <Title>공사중...</Title> */}
+        <div className="flex w-full gap-4">
+          <div className="flex-none">
+            <ProfileImage profileImage={profileImage} />
+          </div>
+          <div className="flex-auto w-64">
+            <SubTitle>Hanumoka's 개발노트</SubTitle>
+            <Title>공사중...</Title>
+          </div>
+          <div className="flex-auto w-32">메뉴자리1</div>
         </div>
       </Wrapper>
     </Background>
