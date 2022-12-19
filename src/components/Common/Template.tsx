@@ -3,6 +3,7 @@ import React, { FunctionComponent, ReactNode } from 'react';
 import Footer from 'components/Common/Footer';
 import { Helmet } from 'react-helmet';
 import Introduction from 'components/Main/Introduction';
+import { IGatsbyImageData } from 'gatsby-plugin-image';
 
 import styled from 'styled-components';
 import useTheme from '../../hooks/useTheme';
@@ -15,6 +16,7 @@ type TemplateProps = {
   url: string;
   image: string;
   children: ReactNode;
+  profileImage: IGatsbyImageData;
 };
 
 const Container = styled.main`
@@ -23,7 +25,14 @@ const Container = styled.main`
   height: 100vh;
 `;
 
-const Template: FunctionComponent<TemplateProps> = function ({ title, description, url, image, children }) {
+const Template: FunctionComponent<TemplateProps> = function ({
+  title,
+  description,
+  url,
+  image,
+  children,
+  profileImage,
+}) {
   const [theme, themeToggler] = useTheme();
 
   return (
@@ -57,8 +66,7 @@ const Template: FunctionComponent<TemplateProps> = function ({ title, descriptio
 
       <div className="text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-900 bg-opacity-30">
         <header className="sticky top-0 z-50">
-          스티키 헤더 위치
-          {/* <Introduction profileImage={gatsbyImageData} /> */}
+          <Introduction profileImage={profileImage} />
         </header>
         <main className="relative">{children}</main>
         <Footer />

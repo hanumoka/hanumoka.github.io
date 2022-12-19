@@ -1,6 +1,5 @@
 import React, { FunctionComponent, useMemo } from 'react';
 import CategoryList, { CategoryListProps } from 'components/Main/CategoryList';
-import Introduction from 'components/Main/Introduction';
 import PostList from 'components/Main/PostList';
 
 import { graphql } from 'gatsby';
@@ -85,8 +84,13 @@ const IndexPage: FunctionComponent<IndexPageProps> = function ({
   } else {
     return (
       <div>
-        <Template title={title} description={description} url={siteUrl} image={publicURL}>
-          {/* <Introduction profileImage={gatsbyImageData} /> */}
+        <Template
+          title={title}
+          description={description}
+          url={siteUrl}
+          image={publicURL}
+          profileImage={gatsbyImageData}
+        >
           <CategoryList selectedCategory={selectedCategory} categoryList={categoryList} />
           <PostList selectedCategory={selectedCategory} posts={edges} />
         </Template>
