@@ -8,23 +8,34 @@ import PostHead from 'components/Post/PostHead';
 import PostContent from 'components/Post/PostContent';
 import CommentWidget from 'components/Post/CommentWidget';
 import TableOfContents from 'components/Post/TableOfContents';
+import Introduction from 'components/Main/Introduction';
 
 type PostTemplateProps = {
+  location: {
+    href: string;
+  };
   data: {
     allMarkdownRemark: {
       edges: PostPageItemType[];
     };
-  };
-  location: {
-    href: string;
+    file: {
+      childImageSharp: {
+        gatsbyImageData: IGatsbyImageData;
+      };
+      publicURL: string;
+    };
   };
 };
 
 const PostTemplate: FunctionComponent<PostTemplateProps> = function ({
+  location: { href },
   data: {
     allMarkdownRemark: { edges },
+    file: {
+      childImageSharp: { gatsbyImageData },
+      publicURL,
+    },
   },
-  location: { href },
 }) {
   const {
     node: {
@@ -34,7 +45,7 @@ const PostTemplate: FunctionComponent<PostTemplateProps> = function ({
     },
   } = edges[0];
 
-  const publicURL = thumbnail.publicURL;
+  const thumbnailPublicURL = thumbnail.publicURL;
 
   const scrollHandler = () => {
     const toc = document.getElementsByTagName('aside');
@@ -84,7 +95,8 @@ const PostTemplate: FunctionComponent<PostTemplateProps> = function ({
   }, []);
 
   return (
-    <Template title={title} description={summary} url={href} image={publicURL}>
+    <Template title={title} description={summary} url={href} image={thumbnailPublicURL}>
+      <Introduction profileImage={gatsbyImageData} />
       <PostHead title={title} date={date} categories={categories} thumbnail={thumbnail} />
       <TableOfContents toc={tableOfContents} />
       <PostContent html={html} />
@@ -116,6 +128,12 @@ export const queryMarkdownDataBySlug = graphql`
           }
         }
       }
+    }
+    file(name: { eq: "profile-image" }) {
+      childImageSharp {
+        gatsbyImageData(width: 120, height: 120)
+      }
+      publicURL
     }
   }
 `;

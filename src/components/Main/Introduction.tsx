@@ -1,14 +1,14 @@
 // 페이지 상단 소개글
-import React, { FunctionComponent } from 'react'
-import styled from '@emotion/styled'
-import ProfileImage from 'components/Main/ProfileImage'
-import { IGatsbyImageData } from 'gatsby-plugin-image'
+import React, { FunctionComponent } from 'react';
+import styled from '@emotion/styled';
+import ProfileImage from 'components/Main/ProfileImage';
+import { IGatsbyImageData } from 'gatsby-plugin-image';
 
 const Background = styled.div`
   width: 100%;
   background-image: linear-gradient(60deg, #29323c 0%, #485563 100%);
   color: #ffffff;
-`
+`;
 
 const Wrapper = styled.div`
   display: flex;
@@ -16,15 +16,15 @@ const Wrapper = styled.div`
   justify-content: center;
   align-items: flex-start;
   width: 768px;
-  height: 400px;
+  height: 120px;
   margin: 0 auto;
 
   @media (max-width: 768px) {
     width: 100%;
-    height: 300px;
+    height: 80px;
     padding: 0 20px;
   }
-`
+`;
 
 const SubTitle = styled.div`
   font-size: 20px;
@@ -33,7 +33,7 @@ const SubTitle = styled.div`
   @media (max-width: 768px) {
     font-size: 15px;
   }
-`
+`;
 
 const Title = styled.div`
   margin-top: 5px;
@@ -43,29 +43,24 @@ const Title = styled.div`
   @media (max-width: 768px) {
     font-size: 25px;
   }
-`
+`;
 
 type IntroductionProps = {
-  profileImage: IGatsbyImageData
-}
+  profileImage: IGatsbyImageData;
+};
 
-
-const Introduction: FunctionComponent<IntroductionProps> = function ({
-  profileImage,
-}) {
+const Introduction: FunctionComponent<IntroductionProps> = function ({ profileImage }) {
   return (
     <Background>
       <Wrapper>
         <ProfileImage profileImage={profileImage} />
-
-        {/* <div className="text-gray-900 dark:text-pink-500"> */}
         <div>
-          <SubTitle>Hanumoka's 개발노트</SubTitle>
-          <Title>공사중...</Title>
+          {/* <SubTitle>Hanumoka's 개발노트</SubTitle> */}
+          {/* <Title>공사중...</Title> */}
         </div>
       </Wrapper>
     </Background>
-  )
-}
+  );
+};
 
-export default Introduction
+export default Introduction;
