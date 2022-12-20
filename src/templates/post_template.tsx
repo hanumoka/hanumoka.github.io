@@ -50,7 +50,7 @@ const PostTemplate: FunctionComponent<PostTemplateProps> = function ({
   const scrollHandler = () => {
     const toc = document.getElementsByTagName('aside');
 
-    console.dir(toc);
+    // console.dir(toc);
 
     if (!toc || toc.length < 0 || !toc[0] || !toc[0].style || toc[0].offsetWidth === 0) {
       return;
@@ -60,7 +60,7 @@ const PostTemplate: FunctionComponent<PostTemplateProps> = function ({
     if (!anchor_holder || anchor_holder.length <= 0) {
       return;
     }
-    console.log('111');
+
     let selected_anchor = null;
     const anchor_holder_arr = Array.from(anchor_holder);
     for (let a of anchor_holder_arr) {

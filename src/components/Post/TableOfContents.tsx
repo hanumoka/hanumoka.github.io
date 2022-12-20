@@ -23,13 +23,13 @@ const TableOfContents: FunctionComponent = function ({ toc }) {
 
   return (
     <div>
-      <div className="fixed right-0 top-0 py-2 px-14 z-40">
+      <div className="fixed right-0 top-1px py-2 px-1 z-40">
         {!isOpen && (
           <button
             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded"
             onClick={onClickToc}
           >
-            TOC 버튼
+            TOC
           </button>
         )}
 
@@ -51,17 +51,17 @@ const TableOfContents: FunctionComponent = function ({ toc }) {
           </div>
         </div>
       </div>
-      {/* <div class="fixed bottom-0 w-full">
-        <button class="animate-pulse my-8 float-right px-5 py-2 bg-red-500 text-white text-sm font-bold tracking-wide rounded-full focus:outline-none">
+      <div className="fixed bottom-0 w-full">
+        <button className="animate-pulse my-8 float-right px-5 py-2 bg-red-500 text-white text-sm font-bold tracking-wide rounded-full focus:outline-none">
           Back
         </button>
-        <button class="animate-bounce my-8 ml-auto px-5 py-2 bg-red-500 text-white text-sm font-bold tracking-wide rounded-full focus:outline-none">
+        <button className="animate-bounce my-8 ml-auto px-5 py-2 bg-red-500 text-white text-sm font-bold tracking-wide rounded-full focus:outline-none">
           Next(Quiz)
         </button>
-        <button class="bottom-0 my-8 float-right px-5 py-2 bg-red-500 text-white text-sm font-bold tracking-wide rounded-full focus:outline-none">
+        <button className="bottom-0 my-8 float-right px-5 py-2 bg-red-500 text-white text-sm font-bold tracking-wide rounded-full focus:outline-none">
           Next
         </button>
-      </div> */}
+      </div>
     </div>
   );
 };
