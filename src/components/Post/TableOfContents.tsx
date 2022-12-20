@@ -51,17 +51,6 @@ const TableOfContents: FunctionComponent = function ({ toc }) {
           </div>
         </div>
       </div>
-      <div className="fixed bottom-0 w-full">
-        <button className="animate-pulse my-8 float-right px-5 py-2 bg-red-500 text-white text-sm font-bold tracking-wide rounded-full focus:outline-none">
-          Back
-        </button>
-        <button className="animate-bounce my-8 ml-auto px-5 py-2 bg-red-500 text-white text-sm font-bold tracking-wide rounded-full focus:outline-none">
-          Next(Quiz)
-        </button>
-        <button className="bottom-0 my-8 float-right px-5 py-2 bg-red-500 text-white text-sm font-bold tracking-wide rounded-full focus:outline-none">
-          Next
-        </button>
-      </div>
     </div>
   );
 };

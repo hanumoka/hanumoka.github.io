@@ -68,7 +68,25 @@ const Template: FunctionComponent<TemplateProps> = function ({
         <header className="sticky top-0 z-30">
           <Introduction profileImage={profileImage} />
         </header>
-        <main className="relative">{children}</main>
+        <main className="relative w-full">
+          <div className="flex-1 flex flex-col sm:flex-row">
+            <main className="flex-1 bg-indigo-100">{children} </main>
+            <nav className="order-first sm:w-32 bg-purple-200">Sidebar</nav>
+            <aside className="sm:w-32 bg-yellow-100">Right Sidebar</aside>
+          </div>
+          <div className="fixed bottom-0 w-full">
+            <button className="animate-pulse my-8 float-right px-5 py-2 bg-red-500 text-white text-sm font-bold tracking-wide rounded-full focus:outline-none">
+              Back
+            </button>
+            <button className="animate-bounce my-8 ml-auto px-5 py-2 bg-red-500 text-white text-sm font-bold tracking-wide rounded-full focus:outline-none">
+              Next(Quiz)
+            </button>
+            <button className="bottom-0 my-8 float-right px-5 py-2 bg-red-500 text-white text-sm font-bold tracking-wide rounded-full focus:outline-none">
+              Next
+            </button>
+          </div>
+          {/* {children} */}
+        </main>
         <Footer />
         <div style={{ position: 'fixed', right: '5px', bottom: '5px' }}>
           <button
