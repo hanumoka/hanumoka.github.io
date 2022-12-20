@@ -10,39 +10,41 @@ const globalStyle = css`
     box-sizing: border-box;
 
     font-size: 20px;
+
+    background-color: #dfdbe5;
+    background-image: url("data:image/svg+xml,%3Csvg width='6' height='6' viewBox='0 0 6 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%239C92AC' fill-opacity='0.4' fill-rule='evenodd'%3E%3Cpath d='M5 0h1L0 6V5zM6 5v1H5z'/%3E%3C/g%3E%3C/svg%3E");
   }
-`
+`;
 
 const TextStyle = css`
   font-size: 18px;
   font-weight: 700;
   color: gray;
-`
+`;
 
 const Text1 = styled.div<{ disable: boolean }>`
   font-size: 20px;
   font-weight: 700;
   text-decoration: ${({ disable }) => (disable ? 'line-through' : 'none')};
-`
+`;
 
 const Text2 = styled('div')<{ disable: boolean }>(({ disable }) => ({
   fontSize: '15px',
   color: 'blue',
   textDecoration: disable ? 'line-through' : 'none',
-}))
-
+}));
 
 type InfoPageProps = {
   data: {
     site: {
       siteMetadata: {
-        title: string
-        description: string
-        author: string
-      }
-    }
-  }
-}
+        title: string;
+        description: string;
+        author: string;
+      };
+    };
+  };
+};
 
 const InfoPage: FunctionComponent<InfoPageProps> = function ({
   data: {
@@ -58,10 +60,10 @@ const InfoPage: FunctionComponent<InfoPageProps> = function ({
       <Text1 disable={true}>{description}</Text1>
       <Text2 disable={true}>{author}</Text2>
     </div>
-  )
-}
+  );
+};
 
-export default InfoPage
+export default InfoPage;
 
 export const metadataQuery = graphql`
   {
@@ -73,4 +75,4 @@ export const metadataQuery = graphql`
       }
     }
   }
-`
+`;

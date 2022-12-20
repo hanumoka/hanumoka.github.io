@@ -64,17 +64,22 @@ const Template: FunctionComponent<TemplateProps> = function ({
         <html lang="ko" />
       </Helmet>
 
-      <div className="text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-900 bg-opacity-30">
+      <div className="text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-800 bg-opacity-30">
         <header className="sticky top-0 z-30">
           <Introduction profileImage={profileImage} />
         </header>
         <main className="relative w-full">
           <div className="flex-1 flex flex-col sm:flex-row">
-            <main className="flex-1 bg-indigo-100">{children} </main>
-            <nav className="order-first sm:w-32 bg-purple-200">Sidebar</nav>
-            <aside className="sm:w-32 bg-yellow-100">Right Sidebar</aside>
+            <main className="flex-1 border-dashed border-l-2 border-r-2 border-b-2 gray-500">
+              {children}
+              <Footer />
+            </main>
+            {/* 왼쪽 */}
+            <nav className="order-first sm:w-32"></nav>
+            {/* 오른쪽 */}
+            <aside className="sm:w-32"></aside>
           </div>
-          <div className="fixed bottom-0 w-full">
+          {/* <div className="fixed bottom-0 w-full">
             <button className="animate-pulse my-8 float-right px-5 py-2 bg-red-500 text-white text-sm font-bold tracking-wide rounded-full focus:outline-none">
               Back
             </button>
@@ -84,10 +89,9 @@ const Template: FunctionComponent<TemplateProps> = function ({
             <button className="bottom-0 my-8 float-right px-5 py-2 bg-red-500 text-white text-sm font-bold tracking-wide rounded-full focus:outline-none">
               Next
             </button>
-          </div>
-          {/* {children} */}
+          </div> */}
         </main>
-        <Footer />
+
         <div style={{ position: 'fixed', right: '5px', bottom: '5px' }}>
           <button
             onClick={() => {

@@ -4,11 +4,11 @@ import styled from '@emotion/styled';
 import ProfileImage from 'components/Main/ProfileImage';
 import { IGatsbyImageData } from 'gatsby-plugin-image';
 
-const Background = styled.div`
-  width: 100%;
-  background-image: linear-gradient(60deg, #29323c 0%, #485563 100%);
-  color: #ffffff;
-`;
+// const Background = styled.div`
+//   width: 100%;
+//   background-image: linear-gradient(60deg, #29323c 0%, #485563 100%);
+//   color: #ffffff;
+// `;
 
 const Wrapper = styled.div`
   display: flex;
@@ -51,20 +51,22 @@ type IntroductionProps = {
 
 const Introduction: FunctionComponent<IntroductionProps> = function ({ profileImage }) {
   return (
-    <Background>
+    // <Background>
+    <div className="bg-white border-dashed border-2">
       <Wrapper>
         <div className="flex w-full gap-4">
           <div className="flex-none">
             <ProfileImage profileImage={profileImage} />
           </div>
           <div className="flex-auto w-64">
-            <SubTitle>Hanumoka's 개발노트</SubTitle>
+            <SubTitle>개발블로그</SubTitle>
             <Title>공사중...</Title>
           </div>
           <div className="flex-auto w-32">메뉴자리1</div>
         </div>
       </Wrapper>
-    </Background>
+    </div>
+    // </Background>
   );
 };
 

@@ -35,7 +35,7 @@ const TableOfContents: FunctionComponent = function ({ toc }) {
 
         <div
           ref={wrapperRef}
-          className={`rounded-md text-gray-200 dark:text-gray-900 bg-gray-900 dark:bg-white top-20 right-0 w-[35vw] p-5 fixed h-3/4 z-40 ease-in-out duration-300 ${
+          className={`rounded-md text-gray-200 dark:text-gray-900 bg-gray-900 dark:bg-white top-20 right-0 w-[25vw] p-5 fixed h-3/4 z-40 ease-in-out duration-300 ${
             isOpen ? 'translate-x-0 ' : 'translate-x-full'
           }`}
         >
