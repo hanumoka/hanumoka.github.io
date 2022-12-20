@@ -65,7 +65,7 @@ const Template: FunctionComponent<TemplateProps> = function ({
       </Helmet>
 
       <div className="text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-900 bg-opacity-30">
-        <header className="sticky top-0 z-50">
+        <header className="sticky top-0 z-30">
           <Introduction profileImage={profileImage} />
         </header>
         <main className="relative">{children}</main>
