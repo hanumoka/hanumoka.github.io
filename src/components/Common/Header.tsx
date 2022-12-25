@@ -3,12 +3,7 @@ import React, { FunctionComponent } from 'react';
 import styled from '@emotion/styled';
 import ProfileImage from 'components/Main/ProfileImage';
 import { IGatsbyImageData } from 'gatsby-plugin-image';
-
-// const Background = styled.div`
-//   width: 100%;
-//   background-image: linear-gradient(60deg, #29323c 0%, #485563 100%);
-//   color: #ffffff;
-// `;
+import Navbar from './Navbar';
 
 const Wrapper = styled.div`
   display: flex;
@@ -45,11 +40,11 @@ const Title = styled.div`
   }
 `;
 
-type IntroductionProps = {
+type HeaderProps = {
   profileImage: IGatsbyImageData;
 };
 
-const Introduction: FunctionComponent<IntroductionProps> = function ({ profileImage }) {
+const Header: FunctionComponent<HeaderProps> = function ({ profileImage }) {
   return (
     // <Background>
     <div className="text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-800 border-dashed border-2">
@@ -62,7 +57,7 @@ const Introduction: FunctionComponent<IntroductionProps> = function ({ profileIm
             <SubTitle>개발블로그</SubTitle>
             <Title>공사중...</Title>
           </div>
-          <div className="flex-auto w-32">메뉴자리1</div>
+          <Navbar />
         </div>
       </Wrapper>
     </div>
@@ -70,4 +65,4 @@ const Introduction: FunctionComponent<IntroductionProps> = function ({ profileIm
   );
 };
 
-export default Introduction;
+export default Header;

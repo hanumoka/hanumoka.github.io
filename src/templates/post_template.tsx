@@ -8,7 +8,7 @@ import PostHead from 'components/Post/PostHead';
 import PostContent from 'components/Post/PostContent';
 import CommentWidget from 'components/Post/CommentWidget';
 import TableOfContents from 'components/Post/TableOfContents';
-import Introduction from 'components/Main/Introduction';
+import Introduction from 'components/Common/Header';
 
 type PostTemplateProps = {
   location: {

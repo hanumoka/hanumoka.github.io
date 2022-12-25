@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import React, { FunctionComponent } from 'react';
 import { graphql } from 'gatsby';
 import { Global, css } from '@emotion/react';
@@ -34,7 +36,7 @@ const Text2 = styled('div')<{ disable: boolean }>(({ disable }) => ({
   textDecoration: disable ? 'line-through' : 'none',
 }));
 
-type InfoPageProps = {
+type AboutProps = {
   data: {
     site: {
       siteMetadata: {
@@ -46,7 +48,7 @@ type InfoPageProps = {
   };
 };
 
-const InfoPage: FunctionComponent<InfoPageProps> = function ({
+const About: FunctionComponent<AboutProps> = function ({
   data: {
     site: {
       siteMetadata: { title, description, author },
@@ -55,15 +57,16 @@ const InfoPage: FunctionComponent<InfoPageProps> = function ({
 }) {
   return (
     <div>
-      <Global styles={globalStyle} />
+      About 페이지
+      {/* <Global styles={globalStyle} />
       <div css={TextStyle}>{title}</div>
       <Text1 disable={true}>{description}</Text1>
-      <Text2 disable={true}>{author}</Text2>
+      <Text2 disable={true}>{author}</Text2> */}
     </div>
   );
 };
 
-export default InfoPage;
+export default About;
 
 export const metadataQuery = graphql`
   {

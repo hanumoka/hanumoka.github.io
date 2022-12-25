@@ -2,7 +2,7 @@ import React, { FunctionComponent, ReactNode } from 'react';
 // import GlobalStyle from 'components/Common/GlobalStyle'
 import Footer from 'components/Common/Footer';
 import { Helmet } from 'react-helmet';
-import Introduction from 'components/Main/Introduction';
+import Introduction from 'components/Common/Header';
 import { IGatsbyImageData } from 'gatsby-plugin-image';
 
 import styled from 'styled-components';
@@ -79,17 +79,6 @@ const Template: FunctionComponent<TemplateProps> = function ({
             {/* 오른쪽 */}
             <aside className="sm:w-32"></aside>
           </div>
-          {/* <div className="fixed bottom-10 w-full">
-            <button className="animate-pulse my-8 float-right px-5 py-2 bg-red-500 text-white text-sm font-bold tracking-wide rounded-full focus:outline-none">
-              Back
-            </button>
-            <button className="animate-bounce my-8 ml-auto px-5 py-2 bg-red-500 text-white text-sm font-bold tracking-wide rounded-full focus:outline-none">
-              Next(Quiz)
-            </button>
-            <button className="bottom-0 my-8 float-right px-5 py-2 bg-red-500 text-white text-sm font-bold tracking-wide rounded-full focus:outline-none">
-              Next
-            </button>
-          </div> */}
         </main>
 
         <div style={{ position: 'fixed', right: '5px', bottom: '5px' }}>
