@@ -1,81 +1,139 @@
-// @ts-nocheck
+import React, { FunctionComponent, useMemo } from 'react';
+import CategoryList2, { CategoryList2Props } from 'components/Main/CategoryList2';
 
-import React, { FunctionComponent } from 'react';
 import { graphql } from 'gatsby';
-import { Global, css } from '@emotion/react';
-import styled from '@emotion/styled';
+import { IGatsbyImageData } from 'gatsby-plugin-image';
+import { PostListItemType } from 'types/PostItem.types';
+import queryString, { ParsedQuery } from 'query-string';
+import Template from 'components/Common/Template';
 
-const globalStyle = css`
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-
-    font-size: 20px;
-
-    background-color: #dfdbe5;
-    background-image: url("data:image/svg+xml,%3Csvg width='6' height='6' viewBox='0 0 6 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%239C92AC' fill-opacity='0.4' fill-rule='evenodd'%3E%3Cpath d='M5 0h1L0 6V5zM6 5v1H5z'/%3E%3C/g%3E%3C/svg%3E");
-  }
-`;
-
-const TextStyle = css`
-  font-size: 18px;
-  font-weight: 700;
-  color: gray;
-`;
-
-const Text1 = styled.div<{ disable: boolean }>`
-  font-size: 20px;
-  font-weight: 700;
-  text-decoration: ${({ disable }) => (disable ? 'line-through' : 'none')};
-`;
-
-const Text2 = styled('div')<{ disable: boolean }>(({ disable }) => ({
-  fontSize: '15px',
-  color: 'blue',
-  textDecoration: disable ? 'line-through' : 'none',
-}));
-
-type AboutProps = {
+type TagsPageProps = {
+  location: {
+    search: string;
+  };
   data: {
     site: {
       siteMetadata: {
         title: string;
         description: string;
-        author: string;
+        siteUrl: string;
       };
+    };
+    allMarkdownRemark: {
+      edges: PostListItemType[];
+    };
+    file: {
+      childImageSharp: {
+        gatsbyImageData: IGatsbyImageData;
+      };
+      publicURL: string;
     };
   };
 };
 
-const Tags: FunctionComponent<AboutProps> = function ({
+const IndexPage: FunctionComponent<TagsPageProps> = function ({
+  location: { search },
   data: {
     site: {
-      siteMetadata: { title, description, author },
+      siteMetadata: { title, description, siteUrl },
+    },
+    allMarkdownRemark: { edges },
+    file: {
+      childImageSharp: { gatsbyImageData },
+      publicURL,
     },
   },
 }) {
-  return (
-    <div>
-      Tags 페이지
-      {/* <Global styles={globalStyle} />
-      <div css={TextStyle}>{title}</div>
-      <Text1 disable={true}>{description}</Text1>
-      <Text2 disable={true}>{author}</Text2> */}
-    </div>
+  const parsed: ParsedQuery<string> = queryString.parse(search);
+  const selectedCategory: string = typeof parsed.category !== 'string' || !parsed.category ? 'All' : parsed.category;
+
+  const categoryList = useMemo(
+    () =>
+      edges.reduce(
+        (
+          list: CategoryList2Props['categoryList'],
+          {
+            node: {
+              frontmatter: { categories },
+            },
+          }: PostListItemType,
+        ) => {
+          categories.forEach((category) => {
+            if (list[category] === undefined) list[category] = 1;
+            else list[category]++;
+          });
+
+          list['All']++;
+
+          return list;
+        },
+        { All: 0 },
+      ),
+    [],
   );
+
+  const [hasMounted, setHasMounted] = React.useState(false);
+
+  React.useEffect(() => {
+    setHasMounted(true);
+  }, []);
+
+  if (!hasMounted) {
+    return null;
+  } else {
+    return (
+      <div>
+        <Template
+          title={title}
+          description={description}
+          url={siteUrl}
+          image={publicURL}
+          profileImage={gatsbyImageData}
+        >
+          <CategoryList2 selectedCategory={selectedCategory} categoryList={categoryList} />
+        </Template>
+      </div>
+    );
+  }
 };
 
-export default Tags;
+export default IndexPage;
 
-export const metadataQuery = graphql`
-  {
+export const getPostList = graphql`
+  query getPostList {
     site {
       siteMetadata {
         title
         description
-        author
+        siteUrl
       }
+    }
+    allMarkdownRemark(sort: { order: DESC, fields: [frontmatter___date, frontmatter___title] }) {
+      edges {
+        node {
+          id
+          fields {
+            slug
+          }
+          frontmatter {
+            title
+            summary
+            date(formatString: "YYYY.MM.DD.")
+            categories
+            thumbnail {
+              childImageSharp {
+                gatsbyImageData(width: 768, height: 400)
+              }
+            }
+          }
+        }
+      }
+    }
+    file(name: { eq: "profile-image" }) {
+      childImageSharp {
+        gatsbyImageData(width: 120, height: 120)
+      }
+      publicURL
     }
   }
 `;
