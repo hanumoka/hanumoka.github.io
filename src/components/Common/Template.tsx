@@ -64,7 +64,7 @@ const Template: FunctionComponent<TemplateProps> = function ({
         <html lang="ko" />
       </Helmet>
 
-      <div className="text-gray-900 dark:text-gray-200 bg-amber-100 dark:bg-gray-800 bg-opacity-30">
+      <div className="text-gray-900 dark:text-gray-200 bg-amber-100 dark:bg-gray-700 bg-opacity-30">
         <header className="sticky top-0 z-30 border-dashed border-2">
           <Introduction profileImage={profileImage} />
         </header>
