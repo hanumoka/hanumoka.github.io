@@ -46,7 +46,6 @@ type HeaderProps = {
 
 const Header: FunctionComponent<HeaderProps> = function ({ profileImage }) {
   return (
-    // <Background>
     <div className="text-gray-900 dark:text-gray-200 bg-amber-100 dark:bg-gray-800">
       <Wrapper>
         <div className="flex w-full gap-4">
@@ -63,7 +62,6 @@ const Header: FunctionComponent<HeaderProps> = function ({ profileImage }) {
         </div>
       </Wrapper>
     </div>
-    // </Background>
   );
 };
 
