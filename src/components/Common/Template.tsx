@@ -2,7 +2,7 @@ import React, { FunctionComponent, ReactNode } from 'react';
 // import GlobalStyle from 'components/Common/GlobalStyle'
 import Footer from 'components/Common/Footer';
 import { Helmet } from 'react-helmet';
-import Introduction from 'components/Common/Header';
+import Header from 'components/Common/Header';
 import { IGatsbyImageData } from 'gatsby-plugin-image';
 
 import styled from 'styled-components';
@@ -66,7 +66,7 @@ const Template: FunctionComponent<TemplateProps> = function ({
 
       <div className="text-gray-900 dark:text-gray-200 bg-amber-100 dark:bg-gray-700 bg-opacity-30">
         <header className="sticky top-0 z-30 border-dashed border-2">
-          <Introduction profileImage={profileImage} />
+          <Header profileImage={profileImage} />
         </header>
         <main className="relative w-full border-dashed border-l-2 border-r-2 border-b-2">
           <div className="flex-1 flex flex-col sm:flex-row">
