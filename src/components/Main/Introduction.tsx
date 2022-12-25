@@ -52,7 +52,7 @@ type IntroductionProps = {
 const Introduction: FunctionComponent<IntroductionProps> = function ({ profileImage }) {
   return (
     // <Background>
-    <div className="bg-white border-dashed border-2">
+    <div className="text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-800 border-dashed border-2">
       <Wrapper>
         <div className="flex w-full gap-4">
           <div className="flex-none">

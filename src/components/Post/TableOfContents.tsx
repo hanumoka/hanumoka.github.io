@@ -23,16 +23,16 @@ const TableOfContents: FunctionComponent = function ({ toc }) {
 
   return (
     <div>
-      <div className="fixed right-0 top-1px py-2 px-1 z-40">
+      {/* <div className="fixed bottom-10 w-full"></div> */}
+      <div className="fixed right-0 top-1px py-2 px-1 z-40 bottom-10">
         {!isOpen && (
           <button
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded"
+            className="animate-pulse my-8 float-right px-5 py-2 bg-red-500 text-white text-sm font-bold tracking-wide rounded-full focus:outline-none"
             onClick={onClickToc}
           >
             TOC
           </button>
         )}
-
         <div
           ref={wrapperRef}
           className={`rounded-md text-gray-200 dark:text-gray-900 bg-gray-900 dark:bg-white top-20 right-0 w-[25vw] p-5 fixed h-3/4 z-40 ease-in-out duration-300 ${

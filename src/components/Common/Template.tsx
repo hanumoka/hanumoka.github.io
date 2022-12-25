@@ -79,7 +79,7 @@ const Template: FunctionComponent<TemplateProps> = function ({
             {/* 오른쪽 */}
             <aside className="sm:w-32"></aside>
           </div>
-          {/* <div className="fixed bottom-0 w-full">
+          {/* <div className="fixed bottom-10 w-full">
             <button className="animate-pulse my-8 float-right px-5 py-2 bg-red-500 text-white text-sm font-bold tracking-wide rounded-full focus:outline-none">
               Back
             </button>
