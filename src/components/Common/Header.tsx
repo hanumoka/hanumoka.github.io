@@ -53,11 +53,13 @@ const Header: FunctionComponent<HeaderProps> = function ({ profileImage }) {
           <div className="flex-none">
             <ProfileImage profileImage={profileImage} />
           </div>
-          <div className="flex-auto w-64">
+          <div className="flex-1 w-74">
             <SubTitle>개발블로그</SubTitle>
             <Title>공사중...</Title>
           </div>
-          <Navbar />
+          <div className="flex-2 w-22">
+            <Navbar />
+          </div>
         </div>
       </Wrapper>
     </div>
