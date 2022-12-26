@@ -1,5 +1,5 @@
 // @ts-nocheck
-import React, { FunctionComponent, ReactNode, useEffect } from 'react';
+import React, { FunctionComponent, ReactNode, useEffect, useMemo } from 'react';
 import styled from '@emotion/styled';
 import { Link } from 'gatsby';
 
@@ -23,11 +23,11 @@ const CategoryListWrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
   width: 768px;
-  margin: 100px auto 0;
+  margin: 50px 50px 0;
 
   @media (max-width: 768px) {
     width: 100%;
-    margin-top: 50px;
+    margin-top: 25px;
     padding: 0 20px;
   }
 `;
@@ -56,27 +56,83 @@ const descending = (a: string, b: string) => {
 };
 
 const CategoryList2: FunctionComponent<CategoryList2Props> = function ({ categoryList }) {
-  useEffect(() => {
-    // categoryList.array.forEach((x) => {
-    //   console.log(JSON.stringify(x));
-    // });
-    console.log(JSON.stringify(categoryList)); // 배열이 아니라 객체 형태, TODO: 객체의 프로퍼티를 배열로 변경하고 정렬하자.
+  const tags = useMemo(() => {
+    return Object.entries(categoryList)
+      .map((tag) => {
+        return { name: tag[0].toUpperCase(), count: tag[1] };
+      })
+      .sort((a, b) => {
+        return a.name < b.name ? -1 : a.name > b.name ? 1 : 0;
+      })
+      .sort((a, b) => {
+        if (a.name === 'ALL') return -1;
+        else return 1;
+      });
   }, [categoryList]);
 
+  // useEffect(() => {
+  //   let tags = Object.entries(categoryList)
+  //     .map((tag) => {
+  //       return { name: tag[0].toUpperCase(), count: tag[1] };
+  //     })
+  //     .sort((a, b) => {
+  //       return a.name < b.name ? -1 : a.name > b.name ? 1 : 0;
+  //     })
+  //     .sort((a, b) => {
+  //       if (a.name === 'ALL') return -1;
+  //       else return 1;
+  //     });
+  //   console.log(JSON.stringify(tags));
+  // }, [categoryList]);
+
   return (
-    <div>
-      <h1>tags 페이지</h1>
-      {}
-    </div>
-    // <CategoryListWrapper>
-    //   {Object.entries(categoryList).map(([name, count]) => (
-    //     <>
-    //       <CategoryItem to={`/?category=${name}`} active={false} key={name}>
-    //         #{name}({count})
-    //       </CategoryItem>
-    //     </>
-    //   ))}
-    // </CategoryListWrapper>
+    <>
+      {/* <p className="text-4xl">Tags</p> */}
+      <div>
+        <CategoryListWrapper>
+          {tags
+            .filter((tag) => tag.name === 'ALL')
+            .map((tag) => (
+              <CategoryItem to={`/?category=${tag.name}`} active={false} key={tag.name}>
+                #{tag.name}({tag.count})
+              </CategoryItem>
+            ))}
+        </CategoryListWrapper>
+      </div>
+      <div>
+        <CategoryListWrapper>
+          {tags
+            .filter((tag) => tag.name !== 'ALL' && /^[a-z|A-Z]+$/.test(tag.name))
+            .map((tag) => (
+              <CategoryItem to={`/?category=${tag.name}`} active={false} key={tag.name}>
+                #{tag.name}({tag.count})
+              </CategoryItem>
+            ))}
+        </CategoryListWrapper>
+      </div>
+      <div>
+        <CategoryListWrapper>
+          {tags
+            .filter((tag) => tag.name !== 'ALL' && /^[ㄱ-ㅎ|가-힣]+$/.test(tag.name))
+            .map((tag) => (
+              <CategoryItem to={`/?category=${tag.name}`} active={false} key={tag.name}>
+                #{tag.name}({tag.count})
+              </CategoryItem>
+            ))}
+        </CategoryListWrapper>
+      </div>
+      <div>
+        <CategoryListWrapper>
+          {tags
+            .filter((tag) => tag.name !== 'ALL' && !/^[a-z|A-Z|ㄱ-ㅎ|가-힣]+$/.test(tag.name))
+            .map((tag) => (
+              <CategoryItem to={`/?category=${tag.name}`} active={false} key={tag.name}>
+                #{tag.name}({tag.count})
+              </CategoryItem>
+            ))}
+        </CategoryListWrapper>
+      </div>
+    </>
   );
 };
 

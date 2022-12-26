@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import React, { FunctionComponent, useMemo } from 'react';
 import CategoryList2, { CategoryList2Props } from 'components/Main/CategoryList2';
 
