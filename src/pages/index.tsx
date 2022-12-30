@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import React, { FunctionComponent, useMemo } from 'react';
 import CategoryList, { CategoryListProps } from 'components/Main/CategoryList';
 import PostList from 'components/Main/PostList';
@@ -83,18 +85,10 @@ const IndexPage: FunctionComponent<IndexPageProps> = function ({
     return null;
   } else {
     return (
-      <div>
-        <Template
-          title={title}
-          description={description}
-          url={siteUrl}
-          image={publicURL}
-          profileImage={gatsbyImageData}
-        >
-          <CategoryList selectedCategory={selectedCategory} categoryList={categoryList} />
-          <PostList selectedCategory={selectedCategory} posts={edges} />
-        </Template>
-      </div>
+      <Template title={title} description={description} url={siteUrl} image={publicURL} profileImage={gatsbyImageData}>
+        <CategoryList selectedCategory={selectedCategory} categoryList={categoryList} />
+        <PostList selectedCategory={selectedCategory} posts={edges} />
+      </Template>
     );
   }
 };

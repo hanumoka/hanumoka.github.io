@@ -1,9 +1,10 @@
 // @ts-nocheck
+import { AppContext } from '../context/app';
 import { graphql, useStaticQuery } from 'gatsby';
 import * as React from 'react';
 import { useGatsbyPluginFusejs } from 'react-use-fusejs';
 
-export function Search() {
+export function SearchPost() {
   const data = useStaticQuery(graphql`
     {
       fusejs {
@@ -13,7 +14,7 @@ export function Search() {
   `);
 
   const [query, setQuery] = React.useState('');
-  const [fusejs, setFusejs] = React.useState(null);
+  const { usejs, setFusejs } = React.useContext(AppContext);
   const result = useGatsbyPluginFusejs(query, fusejs);
 
   const fetching = React.useRef(false);
@@ -40,4 +41,4 @@ export function Search() {
   );
 }
 
-export default Search;
+export default SearchPost;
