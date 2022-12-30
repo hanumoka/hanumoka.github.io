@@ -59,7 +59,8 @@ const CategoryList2: FunctionComponent<CategoryList2Props> = function ({ categor
   const tags = useMemo(() => {
     return Object.entries(categoryList)
       .map((tag) => {
-        return { name: tag[0].toUpperCase(), count: tag[1] };
+        return { name: tag[0], count: tag[1] };
+        // return { name: tag[0].toUpperCase(), count: tag[1] };
       })
       .sort((a, b) => {
         return a.name < b.name ? -1 : a.name > b.name ? 1 : 0;
@@ -69,21 +70,6 @@ const CategoryList2: FunctionComponent<CategoryList2Props> = function ({ categor
         else return 1;
       });
   }, [categoryList]);
-
-  // useEffect(() => {
-  //   let tags = Object.entries(categoryList)
-  //     .map((tag) => {
-  //       return { name: tag[0].toUpperCase(), count: tag[1] };
-  //     })
-  //     .sort((a, b) => {
-  //       return a.name < b.name ? -1 : a.name > b.name ? 1 : 0;
-  //     })
-  //     .sort((a, b) => {
-  //       if (a.name === 'ALL') return -1;
-  //       else return 1;
-  //     });
-  //   console.log(JSON.stringify(tags));
-  // }, [categoryList]);
 
   return (
     <>

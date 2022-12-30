@@ -125,5 +125,35 @@ module.exports = {
       },
     },
     'gatsby-plugin-postcss',
+    {
+      resolve: `gatsby-plugin-fusejs`,
+      options: {
+        // 인덱스를 만들고자 하는 데이터의 쿼리
+        query: `
+          {
+            allMarkdownRemark {
+              nodes {
+                id
+                rawMarkdownBody
+                frontmatter {
+                  title
+                }
+              }
+            }
+          }
+        `,
+
+        // 인덱스를 만들고자 하는 데이터의 프로퍼티
+        keys: ['title', 'body'],
+
+        // graphql의 결과물을 단순 객체 배열로 변환하는 함수
+        normalizer: ({ data }) =>
+          data.allMarkdownRemark.nodes.map((node) => ({
+            id: node.id,
+            title: node.frontmatter.title,
+            body: node.rawMarkdownBody,
+          })),
+      },
+    },
   ],
 };
