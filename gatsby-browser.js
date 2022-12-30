@@ -9,9 +9,3 @@
 import 'prismjs/themes/prism-tomorrow.css'; // 마크다운 코드 테마 선택
 
 import './src/styles/global.css';
-
-import { AppProvider } from './src/context/app';
-
-export const wrapRootElement = ({ element }) => {
-  return <AppProvider>{element}</AppProvider>;
-};
