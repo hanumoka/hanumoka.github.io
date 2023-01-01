@@ -1,2 +1,0 @@
-"use strict";(self.webpackChunkgatsby_starter_default=self.webpackChunkgatsby_starter_default||[]).push([[334],{4681:function(t,u,e){e.r(u);var a=e(3431);u.default=function(){return(0,a.tZ)("div",null,(0,a.tZ)("div",null,"검색어"))}}}]);
-//# sourceMappingURL=component---src-pages-search-tsx-bcdc93368dd9f02c7a83.js.map
