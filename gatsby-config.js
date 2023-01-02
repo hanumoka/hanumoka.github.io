@@ -126,35 +126,32 @@ module.exports = {
     },
     'gatsby-plugin-postcss',
     {
-      resolve: 'gatsby-plugin-local-search',
+      resolve: `gatsby-plugin-fusejs`,
       options: {
-        name: 'pages',
-        engine: 'flexsearch',
+        // 인덱스를 만들고자 하는 데이터의 쿼리
         query: `
-          query {
-            allMarkdownRemark(sort: { fields: [frontmatter___date], order: DESC }) {
+          {
+            allMarkdownRemark {
               nodes {
-                excerpt
-                fields {
-                  slug
-                }
+                id
+                rawMarkdownBody
                 frontmatter {
-                  date(formatString: "MMMM DD, YYYY")
                   title
                 }
               }
             }
           }
         `,
-        ref: 'slug',
-        index: ['title', 'excerpt'],
-        store: ['title', 'excerpt', 'date', 'slug'],
+
+        // 인덱스를 만들고자 하는 데이터의 프로퍼티
+        keys: ['title', 'body'],
+
+        // graphql의 결과물을 단순 객체 배열로 변환하는 함수
         normalizer: ({ data }) =>
           data.allMarkdownRemark.nodes.map((node) => ({
+            id: node.id,
             title: node.frontmatter.title,
-            excerpt: node.excerpt,
-            date: node.frontmatter.date,
-            slug: node.fields.slug,
+            body: node.rawMarkdownBody,
           })),
       },
     },
