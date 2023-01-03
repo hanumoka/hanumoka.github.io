@@ -1,4 +1,6 @@
-// @ts-nocheck
+//@ts-nocheck
+
+import { AppContext } from '../context/app';
 import { graphql, useStaticQuery } from 'gatsby';
 import * as React from 'react';
 import { useGatsbyPluginFusejs } from 'react-use-fusejs';
@@ -7,16 +9,26 @@ export function Search() {
   const data = useStaticQuery(graphql`
     {
       fusejs {
-        index
-        data
+        publicUrl
       }
     }
   `);
 
   const [query, setQuery] = React.useState('');
+  const { fusejs, setFusejs } = React.useContext(AppContext);
+  const result = useGatsbyPluginFusejs(query, fusejs);
 
-  // fusejs 객체를 가공 없이 그대로 넘긴다
-  const result = useGatsbyPluginFusejs(query, data.fusejs);
+  const fetching = React.useRef(false);
+
+  React.useEffect(() => {
+    if (!fetching.current && !fusejs && query) {
+      fetching.current = true;
+
+      fetch(data.fusejs.publicUrl)
+        .then((res) => res.json())
+        .then((json) => setFusejs(json));
+    }
+  }, [fusejs, query]);
 
   return (
     <div>
@@ -26,7 +38,6 @@ export function Search() {
           <li key={item.id}>{item.title}</li>
         ))}
       </ul>
-      <div className="border-2">{JSON.stringify(result)}</div>
     </div>
   );
 }
