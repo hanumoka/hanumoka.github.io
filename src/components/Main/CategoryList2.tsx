@@ -77,7 +77,7 @@ const CategoryList2: FunctionComponent<CategoryList2Props> = function ({ categor
       <div>
         <CategoryListWrapper>
           {tags
-            .filter((tag) => tag.name === 'ALL')
+            .filter((tag) => tag.name === 'All')
             .map((tag) => (
               <CategoryItem to={`/?category=${tag.name}`} active={false} key={tag.name}>
                 #{tag.name}({tag.count})
@@ -88,7 +88,7 @@ const CategoryList2: FunctionComponent<CategoryList2Props> = function ({ categor
       <div>
         <CategoryListWrapper>
           {tags
-            .filter((tag) => tag.name !== 'ALL' && /^[a-z|A-Z]+$/.test(tag.name))
+            .filter((tag) => tag.name !== 'All' && /^[a-z|A-Z]+$/.test(tag.name))
             .map((tag) => (
               <CategoryItem to={`/?category=${tag.name}`} active={false} key={tag.name}>
                 #{tag.name}({tag.count})
@@ -99,7 +99,7 @@ const CategoryList2: FunctionComponent<CategoryList2Props> = function ({ categor
       <div>
         <CategoryListWrapper>
           {tags
-            .filter((tag) => tag.name !== 'ALL' && /^[ㄱ-ㅎ|가-힣]+$/.test(tag.name))
+            .filter((tag) => tag.name !== 'All' && /^[ㄱ-ㅎ|가-힣]+$/.test(tag.name))
             .map((tag) => (
               <CategoryItem to={`/?category=${tag.name}`} active={false} key={tag.name}>
                 #{tag.name}({tag.count})
@@ -110,7 +110,7 @@ const CategoryList2: FunctionComponent<CategoryList2Props> = function ({ categor
       <div>
         <CategoryListWrapper>
           {tags
-            .filter((tag) => tag.name !== 'ALL' && !/^[a-z|A-Z|ㄱ-ㅎ|가-힣]+$/.test(tag.name))
+            .filter((tag) => tag.name !== 'All' && !/^[a-z|A-Z|ㄱ-ㅎ|가-힣]+$/.test(tag.name))
             .map((tag) => (
               <CategoryItem to={`/?category=${tag.name}`} active={false} key={tag.name}>
                 #{tag.name}({tag.count})
