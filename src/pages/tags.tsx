@@ -3,11 +3,12 @@
 import React, { FunctionComponent, useMemo } from 'react';
 import CategoryList2, { CategoryList2Props } from 'components/Main/CategoryList2';
 
-import { graphql } from 'gatsby';
+import { graphql, useStaticQuery } from 'gatsby';
 import { IGatsbyImageData } from 'gatsby-plugin-image';
 import { PostListItemType } from 'types/PostItem.types';
 import queryString, { ParsedQuery } from 'query-string';
 import Template from 'components/Common/Template';
+import Search from 'components/Common/Search';
 
 type TagsPageProps = {
   location: {
@@ -92,6 +93,7 @@ const IndexPage: FunctionComponent<TagsPageProps> = function ({
           image={publicURL}
           profileImage={gatsbyImageData}
         >
+          <Search />
           <CategoryList2 selectedCategory={selectedCategory} categoryList={categoryList} />
         </Template>
       </div>
