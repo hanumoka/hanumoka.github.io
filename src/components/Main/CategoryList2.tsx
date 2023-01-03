@@ -73,9 +73,8 @@ const CategoryList2: FunctionComponent<CategoryList2Props> = function ({ categor
 
   return (
     <>
-      {/* <p className="text-4xl">Tags</p> */}
-      <div>
-        <CategoryListWrapper>
+      <CategoryListWrapper>
+        <div>
           {tags
             .filter((tag) => tag.name === 'All')
             .map((tag) => (
@@ -83,8 +82,9 @@ const CategoryList2: FunctionComponent<CategoryList2Props> = function ({ categor
                 #{tag.name}({tag.count})
               </CategoryItem>
             ))}
-        </CategoryListWrapper>
-      </div>
+        </div>
+      </CategoryListWrapper>
+
       <div>
         <CategoryListWrapper>
           {tags
