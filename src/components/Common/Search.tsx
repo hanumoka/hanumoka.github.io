@@ -2,7 +2,7 @@
 
 import { AppContext } from '../../context/app';
 import styled from '@emotion/styled';
-import { graphql, useStaticQuery } from 'gatsby';
+import { graphql, useStaticQuery, Link } from 'gatsby';
 import * as React from 'react';
 import { useGatsbyPluginFusejs } from 'react-use-fusejs';
 
@@ -51,7 +51,7 @@ const Search = ({ searchQuery, setSearchQuery }) => {
         <ul>
           {result.map(({ item }) => (
             <li key={item.id}>
-              {item.title} : {item.slug}
+              <Link to={item.slug}>{item.title}</Link>
             </li>
           ))}
         </ul>
