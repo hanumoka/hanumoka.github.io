@@ -1,6 +1,6 @@
 ---
 date: '2023-01-01'
-title: 'React 공부'
+title: 'React 공부22222'
 categories: ['react', '리액트']
 summary: 'react를 공부해라'
 thumbnail: './test.png'
