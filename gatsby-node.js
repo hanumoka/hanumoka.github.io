@@ -25,7 +25,7 @@ exports.onCreateNode = ({ node, getNode, actions }) => {
   if (node.internal.type === `MarkdownRemark`) {
     const slug = createFilePath({ node, getNode });
 
-    createNodeField({ node, name: 'slug', value: slug });
+    createNodeField({ node, name: 'slug', value: '/post' + slug });
   }
 };
 
@@ -38,12 +38,7 @@ exports.createPages = async ({ actions, graphql, reporter }) => {
   const queryAllMarkdownData = await graphql(
     `
       {
-        allMarkdownRemark(
-          sort: {
-            order: DESC
-            fields: [frontmatter___date, frontmatter___title]
-          }
-        ) {
+        allMarkdownRemark(sort: { order: DESC, fields: [frontmatter___date, frontmatter___title] }) {
           edges {
             node {
               fields {
@@ -63,10 +58,7 @@ exports.createPages = async ({ actions, graphql, reporter }) => {
   }
 
   // Import Post Template Component
-  const PostTemplateComponent = path.resolve(
-    __dirname,
-    'src/templates/post_template.tsx',
-  );
+  const PostTemplateComponent = path.resolve(__dirname, 'src/templates/post_template.tsx');
 
   // Page Generating Function
   const generatePostPage = ({
