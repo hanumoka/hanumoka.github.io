@@ -6,20 +6,20 @@ import { graphql, useStaticQuery } from 'gatsby';
 import * as React from 'react';
 import { useGatsbyPluginFusejs } from 'react-use-fusejs';
 
-const SearchWrapper = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-gap: 20px;
-  width: 876px;
-  margin: 0 auto;
-  padding: 50px 0 100px;
+// const SearchWrapper = styled.div`
+//   display: grid;
+//   grid-template-columns: 1fr 1fr;
+//   grid-gap: 20px;
+//   width: 876px;
+//   margin: 0 auto;
+//   padding: 50px 0 100px;
 
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-    width: 100%;
-    padding: 50px 20px;
-  }
-`;
+//   @media (max-width: 768px) {
+//     grid-template-columns: 1fr;
+//     width: 100%;
+//     padding: 50px 20px;
+//   }
+// `;
 
 const Search = ({ searchQuery, setSearchQuery }) => {
   const data = useStaticQuery(graphql`
@@ -47,8 +47,8 @@ const Search = ({ searchQuery, setSearchQuery }) => {
   }, [fusejs, query]);
 
   return (
-    <SearchWrapper>
-      <label for="default-search" className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">
+    <>
+      <label htmlFor="default-search" className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">
         Search
       </label>
       <div className="w-full">
@@ -66,7 +66,7 @@ const Search = ({ searchQuery, setSearchQuery }) => {
           ))}
         </ul>
       </div>
-    </SearchWrapper>
+    </>
   );
 };
 

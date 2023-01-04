@@ -86,8 +86,14 @@ const IndexPage: FunctionComponent<TagsPageProps> = function ({
   } else {
     return (
       <Template title={title} description={description} url={siteUrl} image={publicURL} profileImage={gatsbyImageData}>
-        <Search />
-        <CategoryList2 selectedCategory={selectedCategory} categoryList={categoryList} />
+        <div className="grid grid-cols-1 gap-4 place-content-center">
+          <div className="p-10">
+            <Search />
+          </div>
+          <div className="p-10">
+            <CategoryList2 selectedCategory={selectedCategory} categoryList={categoryList} />
+          </div>
+        </div>
       </Template>
     );
   }
