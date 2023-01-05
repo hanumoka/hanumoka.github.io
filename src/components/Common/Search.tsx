@@ -48,13 +48,16 @@ const Search = ({ searchQuery, setSearchQuery }) => {
           className="block w-full p-4 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
           placeholder="검색어를 입력... 태그는 검색안됨"
         />
-        <ul>
-          {result.map(({ item }) => (
-            <li key={item.id}>
-              <Link to={item.slug}>{item.title}</Link>
-            </li>
-          ))}
-        </ul>
+        <div className="mt-8">
+          <ul>
+            {result.map(({ item }) => (
+              <li key={item.id} className="p-2">
+                <Link to={item.slug}>{item.title}</Link>
+              </li>
+            ))}
+          </ul>
+          {result.length < 1 && query && <div>검색결과가 없습니다.</div>}
+        </div>
       </div>
     </>
   );
