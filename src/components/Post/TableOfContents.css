@@ -7,7 +7,7 @@
   overflow: auto;
 }
 
-.toc-content .toc:before {
+/* .toc-content .toc:before {
   content: 'Table Of Contents';
   margin: 10px 0 20px;
 }
@@ -15,7 +15,7 @@
 .toc-content .toc:after {
   content: 'The End';
   margin: 20px 0 10px;
-}
+} */
 
 .toc-content .toc ul {
   margin: 0;

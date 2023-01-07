@@ -23,7 +23,6 @@ const TableOfContents: FunctionComponent = function ({ toc }) {
 
   return (
     <div>
-      {/* <div className="fixed bottom-10 w-full"></div> */}
       <div className="fixed right-0 top-1px py-2 px-1 z-40 bottom-10">
         {!isOpen && (
           <button
@@ -35,7 +34,7 @@ const TableOfContents: FunctionComponent = function ({ toc }) {
         )}
         <div
           ref={wrapperRef}
-          className={`rounded-md border-dashed border-2 dark:text-gray-200 text-gray-900 dark:bg-gray-600 bg-yellow-50 top-40 right-0 w-[25vw] p-5 fixed h-3/4 z-40 ease-in-out duration-300 ${
+          className={`rounded-md border-dashed border-2 dark:text-gray-200 text-gray-900 dark:bg-gray-600 bg-yellow-50 top-40 right-0 lg:w-1/4 md:w-2/5 sm:w-3/4 p-5 fixed h-3/4 z-40 ease-in-out duration-300 ${
             isOpen ? 'translate-x-0 ' : 'translate-x-full'
           }`}
         >
