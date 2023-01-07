@@ -31,9 +31,6 @@ const Search = ({ searchQuery, setSearchQuery }) => {
     }
   }, [fusejs, query]);
 
-  console.log('result====>');
-  console.log(JSON.stringify(result));
-
   return (
     <>
       <label htmlFor="default-search" className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">
@@ -45,14 +42,16 @@ const Search = ({ searchQuery, setSearchQuery }) => {
           onChange={(e) => setQuery(e.target.value)}
           type="search"
           id="default-search"
-          className="block w-full p-4 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+          className="block w-full p-4 text-4xl text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
           placeholder="검색어를 입력... 태그는 검색안됨"
         />
         <div className="mt-8">
-          <ul>
+          <ul role="list" class="p-6 divide-y divide-slate-400 text-2xl ">
             {result.map(({ item }) => (
-              <li key={item.id} className="p-2">
-                <Link to={item.slug}>{item.title}</Link>
+              <li key={item.id} class="flex py-4 first:pt-0 last:pb-0 hover:underline">
+                <div class="ml-3 overflow-hidden">
+                  <Link to={item.slug}>{item.title}</Link>
+                </div>
               </li>
             ))}
           </ul>

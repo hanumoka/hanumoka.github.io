@@ -14,16 +14,15 @@ const FooterWrapper = styled.footer`
   @media (max-width: 768px) {
     font-size: 13px;
   }
-`
+`;
 
 const Footer: FunctionComponent = function () {
-
   return (
     <FooterWrapper>
       Thank You for Visiting My Blog, Have a Good Day 😆
       <br />© 2022 Developer Hanumoka, Powered By Gatsby.
     </FooterWrapper>
-  )
-}
+  );
+};
 
-export default Footer
+export default Footer;
