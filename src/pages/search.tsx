@@ -2,6 +2,7 @@
 
 import React, { FunctionComponent, useMemo } from 'react';
 import CategoryList2, { CategoryList2Props } from 'components/Main/CategoryList2';
+import styled from '@emotion/styled';
 
 import { graphql, useStaticQuery } from 'gatsby';
 import { IGatsbyImageData } from 'gatsby-plugin-image';
@@ -9,6 +10,21 @@ import { PostListItemType } from 'types/PostItem.types';
 import queryString, { ParsedQuery } from 'query-string';
 import Template from 'components/Common/Template';
 import Search from 'components/Common/Search';
+
+const PageWrapper = styled.div`
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-gap: 20px;
+  width: 876px;
+  margin: 0 auto;
+  padding: 50px 0 100px;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    width: 100%;
+    padding: 50px 20px;
+  }
+`;
 
 type TagsPageProps = {
   location: {
@@ -86,14 +102,12 @@ const IndexPage: FunctionComponent<TagsPageProps> = function ({
   } else {
     return (
       <Template title={title} description={description} url={siteUrl} image={publicURL} profileImage={gatsbyImageData}>
-        <div className="grid grid-cols-1 gap-4 place-content-center">
-          <div className="p-10">
-            <Search />
-          </div>
-          <div className="p-10">
-            <CategoryList2 selectedCategory={selectedCategory} categoryList={categoryList} />
-          </div>
-        </div>
+        {/* <div className="grid grid-cols-1 gap-4 place-content-center h-screen"> */}
+        <PageWrapper>
+          <Search />
+          <CategoryList2 selectedCategory={selectedCategory} categoryList={categoryList} />
+        </PageWrapper>
+        {/* </div> */}
       </Template>
     );
   }
