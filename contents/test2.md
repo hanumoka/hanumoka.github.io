@@ -1,7 +1,7 @@
 ---
 date: '2023-01-02'
 title: 'Java 공부'
-categories: ['Java']
+categories: ['Java', '2023']
 summary: 'Java를 공부해라'
 thumbnail: './test.png'
 ---
