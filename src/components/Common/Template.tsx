@@ -38,6 +38,7 @@ const Template: FunctionComponent<TemplateProps> = function ({
   return (
     <Container className={theme === 'dark' ? 'dark' : 'light'}>
       <Helmet>
+        <html lang="ko" />
         <title>{title}</title>
 
         <meta name="description" content={description} />
@@ -60,8 +61,6 @@ const Template: FunctionComponent<TemplateProps> = function ({
         {/* <meta name="twitter:creator" content="@사용자이름" /> */}
 
         <meta name="google-site-verification" content="VMkP0_r8pL9_xczIsGhPaHsuo55RNiskxagZq4gYP9c" />
-
-        <html lang="ko" />
       </Helmet>
 
       <div className="text-gray-900 dark:text-gray-200 bg-amber-100 dark:bg-gray-700 bg-opacity-30">
