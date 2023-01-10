@@ -60,7 +60,8 @@ const Template: FunctionComponent<TemplateProps> = function ({
         {/* <meta name="twitter:site" content="@사용자이름" /> */}
         {/* <meta name="twitter:creator" content="@사용자이름" /> */}
 
-        <meta name="google-site-verification" content="VMkP0_r8pL9_xczIsGhPaHsuo55RNiskxagZq4gYP9c" />
+        {/* google search console 설정: 태그로 아래처럼 지정했는데 소유자 검사 실패 */}
+        {/* <meta name="google-site-verification" content="VMkP0_r8pL9_xczIsGhPaHsuo55RNiskxagZq4gYP9c" /> */}
       </Helmet>
 
       <div className="text-gray-900 dark:text-gray-200 bg-amber-100 dark:bg-gray-700 bg-opacity-30">
