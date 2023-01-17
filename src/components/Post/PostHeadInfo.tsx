@@ -1,13 +1,24 @@
-import React, { FunctionComponent } from 'react'
-import styled from '@emotion/styled'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faArrowLeft } from '@fortawesome/free-solid-svg-icons'
+import React, { FunctionComponent, ReactNode } from 'react';
+import styled from '@emotion/styled';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import { Link } from 'gatsby';
 
 export type PostHeadInfoProps = {
-  title: string
-  date: string
-  categories: string[]
-}
+  title: string;
+  date: string;
+  categories: string[];
+};
+
+type CategoryItemProps = {
+  active: boolean;
+};
+
+type GatsbyLinkProps = {
+  children: ReactNode;
+  className?: string;
+  to: string;
+} & CategoryItemProps;
 
 const PostHeadInfoWrapper = styled.div`
   display: flex;
@@ -21,7 +32,7 @@ const PostHeadInfoWrapper = styled.div`
     width: 100%;
     padding: 40px 20px;
   }
-`
+`;
 
 const PrevPageIcon = styled.div`
   display: grid;
@@ -38,7 +49,7 @@ const PrevPageIcon = styled.div`
     height: 30px;
     font-size: 18px;
   }
-`
+`;
 
 const Title = styled.div`
   display: -webkit-box;
@@ -55,7 +66,7 @@ const Title = styled.div`
   @media (max-width: 768px) {
     font-size: 30px;
   }
-`
+`;
 
 const PostData = styled.div`
   display: flex;
@@ -71,27 +82,61 @@ const PostData = styled.div`
     font-size: 15px;
     font-weight: 400;
   }
-`
+`;
 
-const PostHeadInfo: FunctionComponent<PostHeadInfoProps> = function ({
-    title,
-    date,
-    categories,
-  }) {
-    const goBackPage = () => window.history.back();
-  
-    return (
-      <PostHeadInfoWrapper>
-        <PrevPageIcon onClick={goBackPage}>
-          <FontAwesomeIcon icon={faArrowLeft} />
-        </PrevPageIcon>
-        <Title>{title}</Title>
-        <PostData>
-          <div>{categories.join(' / ')}</div>
-          <div>{date}</div>
-        </PostData>
-      </PostHeadInfoWrapper>
-    )
+const CategoryListWrapper = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  width: 768px;
+  margin: 50px 50px 0;
+
+  @media (max-width: 768px) {
+    width: 100%;
+    margin-top: 25px;
+    padding: 0 20px;
   }
-  
-  export default PostHeadInfo
+`;
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const CategoryItem = styled(({ active, ...props }: GatsbyLinkProps) => <Link {...props} />)<CategoryItemProps>`
+  margin-right: 20px;
+  padding: 5px 0;
+  font-size: 18px;
+  font-weight: ${({ active }) => (active ? '800' : '400')};
+  cursor: pointer;
+
+  &:last-of-type {
+    margin-right: 0;
+  }
+
+  @media (max-width: 768px) {
+    font-size: 15px;
+  }
+`;
+
+const PostHeadInfo: FunctionComponent<PostHeadInfoProps> = function ({ title, date, categories }) {
+  const goBackPage = () => window.history.back();
+
+  return (
+    <PostHeadInfoWrapper>
+      <PrevPageIcon onClick={goBackPage}>
+        <FontAwesomeIcon icon={faArrowLeft} />
+      </PrevPageIcon>
+      <Title>{title}</Title>
+      <PostData>
+        <CategoryListWrapper>
+          <div>
+            {categories.map((tag) => (
+              <CategoryItem to={`/?category=${tag}`} active={false} key={tag}>
+                <span className="font-bold text-xl">#{tag}</span>
+              </CategoryItem>
+            ))}
+          </div>
+        </CategoryListWrapper>
+        <div>{date}</div>
+      </PostData>
+    </PostHeadInfoWrapper>
+  );
+};
+
+export default PostHeadInfo;
