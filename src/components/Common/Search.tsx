@@ -46,10 +46,10 @@ const Search = ({ searchQuery, setSearchQuery }) => {
           placeholder="검색어를 입력하세요."
         />
         <div className="mt-8">
-          <ul role="list" class="p-6 divide-y divide-slate-400 text-2xl ">
+          <ul role="list" className="p-6 divide-y divide-slate-400 text-2xl ">
             {result.map(({ item }) => (
-              <li key={item.id} class="flex py-4 first:pt-0 last:pb-0 hover:underline">
-                <div class="ml-3 overflow-hidden">
+              <li key={item.id} className="flex py-4 first:pt-0 last:pb-0 hover:underline">
+                <div className="ml-3 overflow-hidden">
                   <Link to={item.slug}>{item.title}</Link>
                 </div>
               </li>

@@ -10,7 +10,7 @@ const Navbar = () => {
   };
 
   const handleResize = () => {
-    setDropMenu(true);
+    setDropMenu(false);
   };
 
   useEffect(() => {
@@ -34,7 +34,7 @@ const Navbar = () => {
               onClick={clickDropMenu}
             >
               <span className="sr-only">Open menu</span>
-              {dropMenu && (
+              {!dropMenu && (
                 <svg
                   className="w-6 h-6"
                   aria-hidden="true"
@@ -49,7 +49,7 @@ const Navbar = () => {
                   ></path>
                 </svg>
               )}
-              {!dropMenu && (
+              {dropMenu && (
                 <svg
                   className="h-6 w-6"
                   xmlns="http://www.w3.org/2000/svg"
@@ -104,7 +104,7 @@ const Navbar = () => {
       From: "transform opacity-100 scale-100"
       To: "transform opacity-0 scale-95"
   --> */}
-        {!dropMenu && (
+        {dropMenu && (
           <div
             className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
             role="menu"
