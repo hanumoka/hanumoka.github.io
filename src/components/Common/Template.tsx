@@ -81,7 +81,7 @@ const Template: FunctionComponent<TemplateProps> = function ({
           </div>
         </main>
 
-        <div style={{ position: 'fixed', right: '30px', bottom: '30px' }}>
+        <div style={{ position: 'fixed', right: '30px', bottom: '30px', zIndex: 200 }}>
           <button
             onClick={() => {
               themeToggler();

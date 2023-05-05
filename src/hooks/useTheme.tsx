@@ -29,6 +29,7 @@ const useTheme = () => {
     setTheme(mode);
   };
   const themeToggler = () => {
+    console.log('themeToggler.... theme:' + theme);
     theme === 'light' ? setMode('dark') : setMode('light');
   };
   return [theme, themeToggler] as const;

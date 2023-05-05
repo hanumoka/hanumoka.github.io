@@ -1,8 +1,11 @@
 // @ts-nocheck
 import React, { useState, useEffect } from 'react';
 import { Link } from 'gatsby';
+import { BsMoonFill, BsSun } from 'react-icons/bs';
+import useTheme from '../../hooks/useTheme';
 
 const Navbar = () => {
+  const [theme, themeToggler] = useTheme();
   const [dropMenu, setDropMenu] = useState(false);
 
   const clickDropMenu = () => {
