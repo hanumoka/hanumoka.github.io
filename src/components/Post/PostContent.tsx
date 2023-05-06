@@ -11,7 +11,7 @@ const MarkdownRenderer = styled.div`
   flex-direction: column;
   width: 876px;
   margin: 0 auto;
-  padding: 100px 0;
+  padding: 50px 0;
   word-break: break-all;
 
   // Markdown Style
@@ -65,10 +65,14 @@ const MarkdownRenderer = styled.div`
   }
 
   // Adjust List Element Style
+  ul {
+    list-style-type: disc;
+  }
+
   ol,
   ul {
     margin-left: 20px;
-    padding: 30px 0;
+    padding: 10px 0;
   }
 
   // Adjust Horizontal Rule style

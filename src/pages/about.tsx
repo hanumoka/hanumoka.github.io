@@ -93,7 +93,7 @@ const IndexPage: FunctionComponent<TagsPageProps> = function ({
                   alt="Profile Image"
                 />
                 <h3 className="pt-4 pb-2 text-2xl font-bold leading-8 tracking-tight">Hanumoka</h3>
-                <div className="text-gray-500 dark:text-gray-400">모지리 개발자</div>
+                <div className="text-gray-500 dark:text-gray-400">만년코더</div>
                 {/* <div className="text-gray-500 dark:text-gray-400">company</div> */}
                 <div className="flex space-x-3 pt-6">
                   <div className="flex justify-center">
