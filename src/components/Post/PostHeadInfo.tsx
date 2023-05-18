@@ -51,22 +51,22 @@ const PrevPageIcon = styled.div`
   }
 `;
 
-const Title = styled.div`
-  display: -webkit-box;
-  overflow: hidden;
-  overflow-wrap: break-word;
-  margin-top: auto;
-  text-overflow: ellipsis;
-  white-space: normal;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  font-size: 45px;
-  font-weight: 800;
+// const Title = styled.div`
+//   display: -webkit-box;
+//   overflow: hidden;
+//   overflow-wrap: break-word;
+//   margin-top: auto;
+//   text-overflow: ellipsis;
+//   white-space: normal;
+//   -webkit-line-clamp: 2;
+//   -webkit-box-orient: vertical;
+//   font-size: 45px;
+//   font-weight: 800;
 
-  @media (max-width: 768px) {
-    font-size: 30px;
-  }
-`;
+//   @media (max-width: 768px) {
+//     font-size: 30px;
+//   }
+// `;
 
 const PostData = styled.div`
   display: flex;
@@ -122,19 +122,15 @@ const PostHeadInfo: FunctionComponent<PostHeadInfoProps> = function ({ title, da
       <PrevPageIcon onClick={goBackPage}>
         <FontAwesomeIcon icon={faArrowLeft} />
       </PrevPageIcon>
-      <Title>{title}</Title>
-      <PostData>
-        <CategoryListWrapper>
-          <div>
-            {categories.map((tag) => (
-              <CategoryItem to={`/?category=${tag}`} active={false} key={tag}>
-                <span className="font-bold text-xl">#{tag}</span>
-              </CategoryItem>
-            ))}
-          </div>
-        </CategoryListWrapper>
-        <div>{date}</div>
-      </PostData>
+      <div className="text-4xl font-extrabold my-5">{title}</div>
+      <div className="my-5">
+        {categories.map((tag) => (
+          <Link to={`/?category=${tag}`} key={tag}>
+            <span className="font-semibold text-xl mr-2">#{tag}</span>
+          </Link>
+        ))}
+      </div>
+      <div>{date}</div>
     </PostHeadInfoWrapper>
   );
 };
