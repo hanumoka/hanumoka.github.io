@@ -1,6 +1,6 @@
 ---
 date: '2023-05-06'
-title: 'JPA Cascade와 mappedBy의 혼동?(feat. orphanRemoval)'
+title: 'JPA Cascade와 mappedBy를 공부할 때 오는 헷갈림(feat. orphanRemoval bug)'
 categories: ['JPA', 'cascade', 'mappedBy', 'orphanRemoval']
 summary: 'JPA cascade, mappedBy, orphanRemoval을 알아보자'
 thumbnail: './main.png'
