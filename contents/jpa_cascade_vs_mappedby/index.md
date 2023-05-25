@@ -24,28 +24,28 @@ Cascade는 엔티티 선언시 연관관계를 설정할 때 옵션으로 설정
 
 > 쉽게 말해 부모엔티티가 퍼시스턴스 영속화가 될 때 영속화가 되기 전의 자식엔티티를 부모엔티티에 연관관계로 설정하면, 부모엔티티 영속화 시점에 자식 엔티티도 함께 자동으로 퍼시스턴스 영속화가 되고, 부모엔티티가 삭제되면 해당 부모엔티티의 자식 엔티티도 함께 삭제 가 되는 것이다.
 
-> RDB에서 FK 설정시 사용되는 cascade와 비슷하다고 보면 이해가 슆다.
+> RDB에서 FK 설정시 사용되는 cascade와 비슷하다고 보면 이해가 쉽다.
 
 ### JPA Cascade 옵션 종류
 
-아래 6개 정도의 JPA Cascade 옵션종류가 존재하는데 ALL, PERSIST, REMOVE 정도만 사용된다고 한다.(인프런에서 김영환님은 주로 ALL, PERSIST 정도만 사용하신다고 한다.)
+아래 6개 정도의 JPA Cascade 옵션종류가 존재하는데 ALL, PERSIST, REMOVE 정도만 사용된다고 한다.(인프런 피셜)
 
 - **CascadeType.ALL : 모두 적용**
 
-  - 부모엔티티의 모든 영속성상태 변화가 자식엔티티에 반영된다.
+  - 부모엔티티의 모든 영속성 상태변화가 자식엔티티에 반영된다.
 
 - **CascadeType.PERSIST: 영속**
 
-  - 부모엔티티가 퍼시스턴스될때 자식엔티티도 함께 퍼시스턴트 상태가 된다.
+  - 부모엔티티가 퍼시스턴스될 때 자식엔티티도 함께 퍼시스턴트 상태가 된다.
 
 - **CascadeType.REMOVE: 삭제**
 
-  - 부모엔티티가 삭제될때 자식엔티티도 함께 삭제 된다.
+  - 부모엔티티가 삭제될 때 자식엔티티도 함께 삭제 된다.
 
 - CascadeType.MERGE: 병합
-  - 부모엔티티가 merge 작업이 수행될 때 자식엔티티도 함게 merge 작업이 수행된다.
+  - 부모엔티티가 merge 작업이 수행될 때 자식엔티티도 함께 merge 작업이 수행된다.
 - CascadeType.REFRESH: REFRESH
-  - entityManager.refersh() 작업으로 부모엔티티가 새로고침 될 때 자식엔티티도 함께 새로고침이 된다.(리프래쉬는 DB에서 해당 엔티티를 재조회 하는 것을 의미한다.)
+  - entityManager.refersh() 작업으로 부모엔티티가 새로고침 될 때 자식엔티티도 함께 새로고침이 된다.(리프래쉬는 DB에서 해당 엔티티를 재 조회 하는 것을 의미한다.)
 - CascadeType.DETACH: DETACH
   - 부모엔티티가 영속성 콘텍스트에서 detach되면 자식엔티티도 함께 detach된다.
 
@@ -134,7 +134,8 @@ Cascade 옵션은 신중하게 사용해야 한다.
 
 의도치 않게 고아 데이터가 생성되거나, 반대로 삭제되면 안되는 데이터가 삭제되어 버리는 동작이 발생할수 있으므로 JPA Cascade 기능은 프로젝트내에서 사용규칙을 정하고 구현하는 비지니스에 주의하여 적용해야 한다.
 
-> JPA Cascade의 사용시 주의해야 하는 경우의 예
+> JPA Cascade의 사용시 주의해야 하는 경우의 예:
+>
 > A라는 부모, B라는 부모가 동시에 C라는 자식엔티티를 연관관계로 갖을 때, 만약 A라는 엔티티에서 Cascade.REMOVE가 설정되어 있고 A가 삭제가 되는 경우 B부모 엔티티에서는 연관관계가 깨지는 상황이 발생하게 된다.
 
 > TIP.
@@ -235,14 +236,14 @@ public class Children {
 }
 ```
 
-> mappedBy 사용시 햇갈리는 부분은 연관관계의 주인이 아닌 엔티티에 mappedBy 설정이 들어간다는 것이다.
+> mappedBy 사용시 헷갈리는 부분은 연관관계의 주인이 아닌 엔티티에 mappedBy 설정이 들어간다는 것이다.
 > mappedBy 옵션이 보인다면 해당 엔티티의 반대편 엔티티가 연관관계의 주인이며, 그 주인 엔티티에 실제 FK 가 저장된다.
 
 ### 연관관계 주인의 권한 : 연관관계를 설정할 수 있는 권한은 연관관계 주인이 갖는다.
 
 위 예제에서 연관관계의 주인은 Children이다. 즉 Children 엔티티에서 setParent 호출만이 실제 연관관계를 설정하게 된다.
 
-아래 Parent 부모엔티티의 addChildren 메소드를 보면 children.setParent 를 호출하는 것을 볼 수 있다. 만약 children.setParen 호출하지 않게 되면, Parent, Children 엔티티는 DB에 저장되지만 연관관계 없이 저장되게 된다.
+아래 Parent 부모엔티티의 addChildren 메소드를 보면 children.setParent를 호출하는 것을 볼 수 있다. 만약 children.setParent를 호출하지 않게 되면, Parent, Children 엔티티는 DB에 저장되지만 연관관계 없이 저장되게 된다.
 
 ```java
 public void addChildren(Children children){
@@ -258,7 +259,7 @@ public void addChildren(Children children){
 
 addChildren, removeChildren의 동작을 자세히 확인하길 바란다.
 
-엔티티
+- 엔티티
 
 ```java
 
@@ -303,7 +304,7 @@ public class Children {
 
 ```
 
-테스트 코드
+- 테스트 코드
 
 ```java
 Parent parent = new Parent();
@@ -320,7 +321,9 @@ parent.addChildren(children2);
 
 entityManager.persist(parent);
 entityManager.persist(children1);
-entityManager.persist(children2);Parent parent = new Parent();
+entityManager.persist(children2);
+
+Parent parent = new Parent();
 ```
 
 실행결과는 다음과 같다.
@@ -401,11 +404,13 @@ public void removeChildren(Children children){
 ```
 
 Parent앤티티에서 chidlrenList에서 특정 Children 엔티티를 제거하고, 해당 Children의 엔티티의 setParent(null)을 호출함으로써 Parent와 Children가의 연관관계를 제거한다.
+
 **나는 이렇게 하면 Children객체는 고아객체기 되고, 이 고아객체는 Parent 앤티티에서 설정한 orphanRemovel = true 설정에 의하여 DB에서 제거될 줄 알았았다.**
-하지만 경과는 Children 객체의 FK 프로퍼티에 null이 셋팅될 뿐이다. (연관관계는 끊어졌다.)
+
+하지만 결과는 Children 객체의 FK 프로퍼티에 null이 셋팅될 뿐이다. (연관관계는 끊어졌다.)
 
 JPA스팩상 연관관계가 끊어진 고아객체는 orphanRemoval = true 에 의하여 제거 되어야 한다.
-해당내용을 구글링해보니 버그는 언급이 많다.
+해당내용을 구글링해보니 해당동작이 버그ㄴ같다는 언급이 많다.
 
 **orphanRemoval = true 는 가급적 사용하지 않는 편이 안전해보인다.**
 인터넷에서는 부모엔티티에서 Cascade.ALL과 함께 사용시에는 동작한다고 했지만, 내 경우에는 정상동작하지 않았다.
@@ -413,7 +418,7 @@ JPA스팩상 연관관계가 끊어진 고아객체는 orphanRemoval = true 에 
 ## 정리
 
 - Cascade와 mappedby는 별개다.
-- Cascade는 영속성라이프사이클에 관련된 어떤 이벤트가 발생시 그 이벤트를 자식 엔티티에 전파 할 것인지에 대한 설정이다.
+- Cascade는 영속성 라이프사이클에 관련된 어떤 이벤트가 발생시 그 이벤트를 자식 엔티티에 전파 할 것인지에 대한 설정이다.
 - mappedBy는 양방향 연관관계에서 연관관계의 주인을 명시하는 설정이다.
 - **mappedBy와 orphanRemoval = true를 같이 사용하면, 부모엔티티가 삭제 시 Cascade.Remove와 동일한 동작을 한다. => 2개의 다른 설정으로 동일한 동작을 해서 이부분이 햇갈렸다.**
 - Cascade.ALL + orphanRemoval = true 같이 사용하면, 부모엔티티에서 자식엔티티의 라이프사이클을 완전히 컨트롤 할 수 있다.
