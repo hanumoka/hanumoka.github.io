@@ -18,8 +18,9 @@
 - build 시 pathPrefix를 반듯이 적용해야 한다.
 
 - 배포방법
-  - main에서 코드 변경
-  - deploy에서 main merge
-  - deploy에서 deploy 명령으로 git page에 블로그 배포
+
+```
+yarn deploy
+```
 
 그냥 build하고 deploy 하면 배포 된다.
