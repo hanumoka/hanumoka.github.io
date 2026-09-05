@@ -58,6 +58,19 @@ export default {
 
     searchTitle: "검색",
     searchDesc: "글을 검색합니다",
+
+    kindTitle: "종류",
+    kindDesc: "이 종류의 글",
+
+    kindsTitle: "종류",
+    kindsDesc: "글의 종류 전체입니다.",
+  },
+  kinds: {
+    til: "배운 것",
+    troubleshooting: "장애 대응",
+    concept: "개념",
+    snippet: "스니펫",
+    "agent-issue": "AI 도구 이슈",
   },
   a11y: {
     skipToContent: "본문으로 건너뛰기",

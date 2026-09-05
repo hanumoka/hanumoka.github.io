@@ -1,5 +1,7 @@
 ---
 import { type CollectionEntry, getCollection, render } from "astro:content";
+import { getRelativeLocaleUrl } from "astro:i18n";
+import { useTranslations } from "@/i18n";
 import PostLayout from "@/layouts/PostLayout.astro";
 import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
@@ -70,8 +72,11 @@ const {
   modDatetime,
   timezone,
   tags,
+  kind,
   hideEditPost,
 } = post.data;
+
+const t = useTranslations(locale);
 
 const { Content } = await render(post);
 
@@ -151,7 +156,19 @@ const ogImage = ogImageUrl
 
     <BackToTopButton />
 
-    <ul class="mt-4 mb-8 flex flex-wrap gap-4 sm:my-8">
+    <ul class="mt-4 mb-8 flex flex-wrap items-center gap-4 sm:my-8">
+      {
+        kind && (
+          <li>
+            <a
+              href={getRelativeLocaleUrl(locale, `kinds/${kind}/`)}
+              class="border-foreground hover:border-accent hover:text-accent rounded-full border px-2.5 py-0.5 text-sm"
+            >
+              {t.kinds[kind as keyof typeof t.kinds] ?? kind}
+            </a>
+          </li>
+        )
+      }
       {tags.map(tag => <Tag tag={slugifyStr(tag)} tagName={tag} size="sm" />)}
     </ul>
 

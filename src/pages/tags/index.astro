@@ -1,5 +1,6 @@
 ---
 import { getCollection } from "astro:content";
+import { getRelativeLocaleUrl } from "astro:i18n";
 import Layout from "@/layouts/Layout.astro";
 import Header from "@/components/Header.astro";
 import Breadcrumb from "@/components/Breadcrumb.astro";
@@ -26,6 +27,16 @@ const t = useTranslations(locale);
     <ul class="flex flex-wrap gap-6">
       {tags.map(({ tag, tagName }) => <Tag {tag} {tagName} />)}
     </ul>
+
+    <p class="mt-10 text-sm opacity-80">
+      <a
+        href={getRelativeLocaleUrl(locale, "kinds/")}
+        class="hover:text-accent underline decoration-dashed underline-offset-4"
+      >
+        {t.pages.kindsTitle}
+      </a>
+      {" "}별로도 볼 수 있습니다.
+    </p>
   </Main>
 
   <Footer />

@@ -1,0 +1,57 @@
+---
+import { getCollection } from "astro:content";
+import type { GetStaticPathsOptions } from "astro";
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Main from "@/components/Main.astro";
+import Breadcrumb from "@/components/Breadcrumb.astro";
+import Card from "@/components/Card.astro";
+import Footer from "@/components/Footer.astro";
+import Pagination from "@/components/Pagination.astro";
+import { getUniqueKinds } from "@/utils/getUniqueKinds";
+import { getSortedPosts } from "@/utils/getSortedPosts";
+import { useTranslations } from "@/i18n";
+import config from "@/config";
+
+export async function getStaticPaths({ paginate }: GetStaticPathsOptions) {
+  const posts = await getCollection("posts", ({ data }) => !data.draft);
+  const kinds = getUniqueKinds(posts);
+
+  return kinds.flatMap(({ kind }) => {
+    const kindPosts = getSortedPosts(
+      posts.filter(({ data }) => data.kind === kind)
+    );
+
+    return paginate(kindPosts, {
+      params: { kind },
+      props: { kind },
+      pageSize: config.posts.perPage,
+    });
+  });
+}
+
+const { page, kind } = Astro.props;
+
+const locale = Astro.currentLocale ?? config.site.lang;
+const t = useTranslations(locale);
+const label = t.kinds[kind as keyof typeof t.kinds] ?? kind;
+---
+
+<Layout title={`${t.pages.kindTitle}: ${label} | ${config.site.title}`}>
+  <Header />
+
+  <Breadcrumb />
+
+  <Main
+    pageTitle={`${t.pages.kindTitle}: ${label}`}
+    pageDesc={`${t.pages.kindDesc} (${kind}).`}
+  >
+    <ul>
+      {page.data.map(data => <Card {...data} />)}
+    </ul>
+  </Main>
+
+  <Pagination {page} />
+
+  <Footer noMarginTop={page.lastPage > 1} />
+</Layout>

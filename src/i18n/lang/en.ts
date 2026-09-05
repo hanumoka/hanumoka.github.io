@@ -52,6 +52,19 @@ export default {
 
     searchTitle: "Search",
     searchDesc: "Search any article ...",
+
+    kindTitle: "Kind",
+    kindDesc: "All the articles of the kind",
+
+    kindsTitle: "Kinds",
+    kindsDesc: "All the kinds used in posts.",
+  },
+  kinds: {
+    til: "TIL",
+    troubleshooting: "Troubleshooting",
+    concept: "Concept",
+    snippet: "Snippet",
+    "agent-issue": "Agent issue",
   },
   a11y: {
     skipToContent: "Skip to content",
