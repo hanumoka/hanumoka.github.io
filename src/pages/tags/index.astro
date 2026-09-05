@@ -1,0 +1,53 @@
+---
+import Base from '../../layouts/Base.astro';
+import { countByTag, getPublishedPosts } from '../../lib/posts';
+
+const posts = await getPublishedPosts();
+const tags = countByTag(posts);
+---
+
+<Base title="태그" description="태그별 글 목록.">
+  <h1>태그</h1>
+
+  {
+    tags.size === 0 ? (
+      <p class="muted">아직 태그가 없습니다.</p>
+    ) : (
+      <ul class="cloud">
+        {[...tags].map(([tag, count]) => (
+          <li>
+            <a href={`/tags/${tag}/`}>
+              {tag}
+              <span class="count">{count}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    )
+  }
+</Base>
+
+<style>
+  .cloud {
+    list-style: none;
+    padding: 0;
+    margin: 2rem 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+  .cloud a {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.4rem;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 0.25rem 0.8rem;
+    text-decoration: none;
+    font-size: 0.9rem;
+  }
+  .count {
+    color: var(--muted);
+    font-size: 0.8rem;
+  }
+</style>

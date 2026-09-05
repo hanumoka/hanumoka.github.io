@@ -1,0 +1,38 @@
+---
+import PostList from '../../components/PostList.astro';
+import Base from '../../layouts/Base.astro';
+import { getPublishedPosts, type Post } from '../../lib/posts';
+
+export async function getStaticPaths() {
+  const posts = await getPublishedPosts();
+  const tags = new Set(posts.flatMap((post) => post.data.tags));
+
+  return [...tags].map((tag) => ({
+    params: { tag },
+    props: { posts: posts.filter((post) => post.data.tags.includes(tag)) },
+  }));
+}
+
+interface Props {
+  posts: Post[];
+}
+
+const { tag } = Astro.params;
+const { posts } = Astro.props;
+---
+
+<Base title={`#${tag}`} description={`${tag} 태그가 달린 글.`}>
+  <h1>#{tag}</h1>
+  <p class="muted count small">{posts.length}편</p>
+  <PostList posts={posts} empty="이 태그의 글이 없습니다." />
+  <p class="small back"><a href="/tags/">← 태그 전체</a></p>
+</Base>
+
+<style>
+  .count {
+    margin: 0 0 2.5rem;
+  }
+  .back {
+    margin-top: 3rem;
+  }
+</style>

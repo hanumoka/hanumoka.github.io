@@ -6,5 +6,7 @@ export const GITHUB_URL = 'https://github.com/hanumoka';
 export const NAV = [
   { href: '/', label: '홈' },
   { href: '/posts/', label: '글' },
+  { href: '/tags/', label: '태그' },
+  { href: '/search/', label: '검색' },
   { href: '/about/', label: '소개' },
 ] as const;
