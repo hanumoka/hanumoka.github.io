@@ -1,0 +1,56 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import FormattedDate from './FormattedDate.astro';
+
+interface Props {
+  posts: CollectionEntry<'posts'>[];
+  /** 비어 있을 때 보여줄 문구. */
+  empty: string;
+}
+
+const { posts, empty } = Astro.props;
+---
+
+{
+  posts.length === 0 ? (
+    <p class="muted">{empty}</p>
+  ) : (
+    <ul class="list">
+      {posts.map((post) => (
+        <li>
+          <a href={`/posts/${post.id}/`}>{post.data.title}</a>
+          <p class="desc muted">{post.data.description}</p>
+          <p class="meta muted small">
+            <FormattedDate date={post.data.pubDate} />
+            {post.data.kind && <span class="sep">·</span>}
+            {post.data.kind}
+          </p>
+        </li>
+      ))}
+    </ul>
+  )
+}
+
+<style>
+  .list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .list > li + li {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--line);
+  }
+  .list a {
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+  .desc,
+  .meta {
+    margin: 0.3rem 0 0;
+  }
+  .sep {
+    margin: 0 0.4em;
+  }
+</style>

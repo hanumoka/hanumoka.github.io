@@ -1,0 +1,40 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  # 저장소 Actions 탭에서 손으로 돌릴 수 있게 둔다.
+  workflow_dispatch:
+
+# Pages 배포에 필요한 최소 권한. 셋 중 하나라도 빠지면 배포 단계에서 실패한다.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 배포는 한 번에 하나만. 진행 중인 것을 취소하지 않는 이유는
+# 취소된 배포가 사이트를 중간 상태로 남길 수 있기 때문이다.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+      - name: Build
+        # 락파일을 보고 패키지 매니저를 판별한다. package-lock.json을 커밋해 두어야 한다.
+        uses: withastro/action@v6
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v5

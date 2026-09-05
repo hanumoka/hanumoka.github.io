@@ -1,0 +1,35 @@
+---
+import { getCollection } from 'astro:content';
+import PostList from '../components/PostList.astro';
+import Base from '../layouts/Base.astro';
+import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
+
+const posts = (await getCollection('posts', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 5);
+---
+
+<Base title={SITE_TITLE} description={SITE_DESCRIPTION}>
+  <section class="intro">
+    <h1>hanumoka</h1>
+    <p class="muted">백엔드 개발자. Java · Spring · Kotlin.</p>
+  </section>
+
+  <section>
+    <h2>최근 글</h2>
+    <PostList posts={posts} empty="아직 공개한 글이 없습니다." />
+  </section>
+</Base>
+
+<style>
+  .intro {
+    margin-bottom: 3.5rem;
+  }
+  h2 {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    margin: 0 0 1.25rem;
+  }
+</style>

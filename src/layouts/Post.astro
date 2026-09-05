@@ -1,0 +1,47 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import FormattedDate from '../components/FormattedDate.astro';
+import Base from './Base.astro';
+
+type Props = CollectionEntry<'posts'>['data'];
+
+const { title, description, pubDate, updatedDate, kind, tags } = Astro.props;
+---
+
+<Base title={title} description={description}>
+  <article>
+    <h1>{title}</h1>
+    <p class="meta muted small">
+      <FormattedDate date={pubDate} />
+      {updatedDate && <span> · {'수정 '}<FormattedDate date={updatedDate} /></span>}
+      {kind && <span> · {kind}</span>}
+    </p>
+
+    <div class="body">
+      <slot />
+    </div>
+
+    {
+      tags.length > 0 && (
+        <p class="tags muted small">{tags.map((t) => `#${t}`).join('  ')}</p>
+      )
+    }
+  </article>
+
+  <p class="small"><a href="/posts/">← 글 목록</a></p>
+</Base>
+
+<style>
+  .meta {
+    margin: 0 0 2.5rem;
+  }
+  .body :global(h2) {
+    margin-top: 2.5rem;
+  }
+  .body :global(h2:first-child) {
+    margin-top: 0;
+  }
+  .tags {
+    margin-top: 3rem;
+  }
+</style>
