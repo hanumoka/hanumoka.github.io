@@ -17,6 +17,7 @@ import {
   transformerNotationWordHighlight,
 } from "@shikijs/transformers";
 import { transformerFileName } from "./src/utils/transformers/fileName";
+import { remarkMermaid } from "./src/utils/remarkMermaid";
 import config from "./astro-paper.config";
 
 // ★ `site.lang` 이 UI 문자열을 고르고 아래 `i18n.defaultLocale` 이 라우팅을 고른다.
@@ -59,6 +60,9 @@ export default defineConfig({
         // 한글 글에 `## Table of contents`라고 써야 목차가 생겼다.
         [remarkToc, { heading: "목차|table[ -]of[ -]contents?" }],
         [remarkCollapse, { test: /목차|Table of contents/i }],
+        // ★ Shiki 보다 먼저 돌아야 한다. 순서가 뒤집히면 다이어그램이
+        // 문법 강조된 코드 블록이 되어 되돌릴 수 없다.
+        remarkMermaid,
       ],
       rehypePlugins: [rehypeCallouts],
     }),
