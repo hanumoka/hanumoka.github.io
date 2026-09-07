@@ -1,0 +1,142 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Breadcrumb from "@/components/Breadcrumb.astro";
+import Main from "@/components/Main.astro";
+import Footer from "@/components/Footer.astro";
+import BrowseAxes from "@/components/BrowseAxes.astro";
+import Datetime from "@/components/Datetime.astro";
+import { getRelativeLocaleUrl } from "astro:i18n";
+import { getLocalizedPosts } from "@/utils/getLocalizedPosts";
+import { getUniqueSeries, getSeriesPosts } from "@/utils/getUniqueSeries";
+import { getSortedPosts } from "@/utils/getSortedPosts";
+import { getPostUrl } from "@/utils/getPostPaths";
+import { localePaths, resolveLocale } from "@/utils/locales";
+import { useTranslations } from "@/i18n";
+import config from "@/config";
+
+export const getStaticPaths = localePaths;
+
+const locale = resolveLocale(Astro.currentLocale);
+const t = useTranslations(locale);
+
+const posts = await getLocalizedPosts(locale);
+const series = getUniqueSeries(posts);
+
+// ★ 연재에 속한 글을 낱글에서 뺀다. 두 곳에 나오면 트리가 아니라 목록 둘이다.
+const grouped = series.map(entry => ({
+  ...entry,
+  parts: getSeriesPosts(posts, entry.series),
+}));
+const inSeries = new Set(grouped.flatMap(g => g.parts.map(p => p.id)));
+const standalone = getSortedPosts(posts).filter(post => !inSeries.has(post.id));
+
+const total =
+  grouped.reduce((sum, g) => sum + g.parts.length, 0) + standalone.length;
+---
+
+<Layout title={`${t.pages.treeTitle} | ${config.site.title}`}>
+  <Header />
+
+  <Breadcrumb />
+
+  <Main pageTitle={t.pages.treeTitle} pageDesc={t.pages.treeDesc}>
+    {total === 0 && <p class="text-muted-foreground">{t.pages.treeEmpty}</p>}
+
+    {
+      grouped.length > 0 && (
+        <section class="mb-10">
+          <h2 class="mb-3 flex items-baseline gap-2 text-lg font-semibold">
+            {t.pages.seriesTitle}
+            <span class="text-muted-foreground text-sm font-normal">
+              {grouped.length}
+            </span>
+          </h2>
+
+          <ul class="flex flex-col gap-4">
+            {grouped.map(entry => (
+              <li>
+                <details open class="border-border border-s ps-4">
+                  <summary class="cursor-pointer">
+                    <a
+                      href={getRelativeLocaleUrl(
+                        locale,
+                        `series/${entry.series}/`
+                      )}
+                      class="hover:text-accent font-medium underline decoration-dashed underline-offset-4"
+                    >
+                      {entry.seriesName}
+                    </a>
+                    <span class="text-muted-foreground ms-2 text-sm">
+                      {entry.parts.length}
+                    </span>
+                  </summary>
+
+                  <ol class="mt-2 flex flex-col gap-2">
+                    {entry.parts.map((part, index) => (
+                      <li class="flex flex-wrap items-baseline gap-x-2">
+                        <span class="text-muted-foreground w-6 shrink-0 text-end text-sm tabular-nums">
+                          {index + 1}.
+                        </span>
+                        <a
+                          href={getPostUrl(part.id, part.filePath, locale)}
+                          class="hover:text-accent underline decoration-dashed underline-offset-4"
+                        >
+                          {part.data.title}
+                        </a>
+                        <Datetime
+                          pubDatetime={part.data.pubDatetime}
+                          modDatetime={part.data.modDatetime}
+                          timezone={part.data.timezone}
+                          size="sm"
+                          class="text-xs"
+                        />
+                      </li>
+                    ))}
+                  </ol>
+                </details>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
+
+    {
+      standalone.length > 0 && (
+        <section>
+          <h2 class="mb-3 flex items-baseline gap-2 text-lg font-semibold">
+            {t.pages.standalonePosts}
+            <span class="text-muted-foreground text-sm font-normal">
+              {standalone.length}
+            </span>
+          </h2>
+
+          <ul class="border-border flex flex-col gap-2 border-s ps-4">
+            {standalone.map(post => (
+              <li class="flex flex-wrap items-baseline gap-x-2">
+                <a
+                  href={getPostUrl(post.id, post.filePath, locale)}
+                  class="hover:text-accent underline decoration-dashed underline-offset-4"
+                >
+                  {post.data.title}
+                </a>
+                <Datetime
+                  pubDatetime={post.data.pubDatetime}
+                  modDatetime={post.data.modDatetime}
+                  timezone={post.data.timezone}
+                  size="sm"
+                  class="text-xs"
+                />
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
+
+    <BrowseAxes current="tree" />
+  </Main>
+
+  <Footer />
+</Layout>

@@ -7,7 +7,7 @@ import { useTranslations } from "@/i18n";
  * 분류 축이 셋이 되면서 「A 별로도 볼 수 있습니다」 한 줄로는 모자란다.
  * 지금 보고 있는 축을 빼고 나머지를 나열한다.
  */
-type Axis = "tags" | "kinds" | "series";
+type Axis = "tags" | "kinds" | "series" | "tree";
 
 type Props = { current: Axis };
 
@@ -20,6 +20,7 @@ const AXES: { key: Axis; label: string; href: string }[] = [
   { key: "tags", label: t.pages.tagsTitle, href: "tags/" },
   { key: "kinds", label: t.pages.kindsTitle, href: "kinds/" },
   { key: "series", label: t.pages.seriesTitle, href: "series/" },
+  { key: "tree", label: t.pages.treeTitle, href: "tree/" },
 ];
 
 const others = AXES.filter(axis => axis.key !== current);

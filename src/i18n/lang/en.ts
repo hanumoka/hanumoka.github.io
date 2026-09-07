@@ -68,6 +68,11 @@ export default {
 
     seriesTitle: "Series",
     seriesDesc: "Posts written as a run.",
+
+    treeTitle: "Contents",
+    treeDesc: "Every series and standalone post in one tree.",
+    standalonePosts: "Standalone posts",
+    treeEmpty: "No posts yet.",
     seriesOneTitle: "Series",
     seriesOneDesc: "Posts in this series",
 

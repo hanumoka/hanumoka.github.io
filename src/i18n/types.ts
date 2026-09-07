@@ -79,6 +79,14 @@ export interface UIStrings {
 
     seriesTitle: string;
     seriesDesc: string;
+
+    /** 글·연재 전체를 한 트리로 보는 페이지 */
+    treeTitle: string;
+    treeDesc: string;
+    /** 어느 연재에도 속하지 않는 글 묶음 */
+    standalonePosts: string;
+    /** 트리에 아무것도 없을 때 */
+    treeEmpty: string;
     /** 연재 하나의 페이지 제목 */
     seriesOneTitle: string;
     seriesOneDesc: string;
