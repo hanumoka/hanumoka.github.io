@@ -1,10 +1,10 @@
 ---
 title: Hello World!
-description: Notes and project records from hanumoka, a backend developer.
+description: A backend developer's blog. Working through what I do not know and what I am curious about, and recording the technical debt that piles up on the job.
 ---
 
 A backend developer who spent years with Java and Spring. Not just the backend —
 I am interested in the many areas it takes to build a service.
 
-What broke while building, and **the number I measured at the time**, gets
-written down here. [About](/en/about/)
+Just another developer's blog, where I sort out the things I do not know and the
+things I am curious about. [About](/en/about/)

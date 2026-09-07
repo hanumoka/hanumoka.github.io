@@ -39,7 +39,7 @@ export default {
   },
   dateFormat: "D MMM, YYYY",
   siteDescription:
-    "Notes and project records from hanumoka, a backend developer. What broke while building, and the number measured at the time.",
+    "A backend developer's blog. Working through what I do not know and what I am curious about, and recording the technical debt that piles up on the job.",
   pages: {
     tagTitle: "Tag",
     tagDesc: "All the articles with the tag",

@@ -4,8 +4,11 @@ export default defineAstroPaperConfig({
   site: {
     url: "https://hanumoka.github.io/",
     title: "hanumoka",
+    // ★ 화면과 피드에 나가는 설명은 여기가 아니라 `src/i18n/lang/*.ts` 의
+    // `siteDescription` 이다. 언어마다 달라야 하기 때문이다. 이 값은 언어를
+    // 모르는 자리에서만 쓰이는 마지막 기본값이므로 한국어로 둔다.
     description:
-      "백엔드 개발자 hanumoka의 기술 글과 프로젝트 기록. 만들면서 부딪힌 것과 그때 잰 값을 남깁니다.",
+      "백엔드 개발자 hanumoka의 블로그. 모르는 것과 궁금한 것을 정리하고, 개발자로 일하며 쌓이는 기술부채를 인식하고 학습하고 기록합니다.",
     author: "hanumoka",
     profile: "https://github.com/hanumoka",
     ogImage: "default-og.jpg",

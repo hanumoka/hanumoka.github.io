@@ -1,27 +1,20 @@
 ---
 title: About
-description: About hanumoka, a backend developer.
+description: About hanumoka, a backend developer — what I work with, and why this site exists.
 ---
 
 A backend developer who spent years with Java and Spring. Not just the backend —
 I am interested in the many areas it takes to build a service.
 
-## What goes on this site
+Just another developer's blog, where I sort out the things I do not know and the
+things I am curious about.
 
-What broke while building, and **the number I measured at the time**. What went
-wrong and why tends to stay useful longer than a finished result does.
+## Why this site exists
 
-Where I can, each post carries four things.
+Working as a developer builds up technical debt. I wanted a place to notice it,
+learn from it, and write it down — so I made this one.
 
-- What broke
-- Why it broke
-- How I fixed it
-- The number I measured
-
-When I write a number down, I write the conditions it was measured under. A
-number without them cannot be measured again.
-
-## What I work with
+## What I am interested in
 
 - **Languages and frameworks** — Java, Kotlin, Spring Boot, JPA
 - **Problems I care about** — event-driven architecture, domain design,
