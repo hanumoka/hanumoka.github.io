@@ -31,6 +31,24 @@ function getIdSlug(id: string): string {
 function getPostSlugPath(id: string, filePath: string | undefined): string {
   const pathSegments = getPostPathSegments(filePath);
   const slug = getIdSlug(id);
+
+  // ★ 글을 폴더로 두고 본문을 `index.md` 로 쓰는 형태를 받는다.
+  //
+  //   posts/ko/2026-09-07-media-test/
+  //     index.md
+  //     contrast.png
+  //
+  // 이러면 글과 그 글의 이미지가 한 폴더에 있어 **글 단위로 관리되고**,
+  // 본문에서 `./contrast.png` 로 부르므로 **VS Code 미리보기에서도 그대로
+  // 보인다**(상대 경로를 파일 위치 기준으로 풀기 때문이다).
+  //
+  // ★ 판정은 **파일 이름**으로 한다. `id` 를 보면 안 된다 — Astro 의 glob
+  // 로더가 `…/index.md` 의 id 에서 `/index` 를 이미 떼기 때문에, id 의 마지막
+  // 조각이 폴더 이름과 같아져 주소가 `/posts/글/글` 로 겹친다. 실제로 그랬다.
+  if (/(^|\/)index\.mdx?$/.test(filePath ?? "") && pathSegments.length > 0) {
+    return pathSegments.join("/");
+  }
+
   return pathSegments.length > 0
     ? [...pathSegments, slug].join("/")
     : String(slug);
