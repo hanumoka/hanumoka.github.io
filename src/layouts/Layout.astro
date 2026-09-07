@@ -49,6 +49,12 @@ const rssHref = getRelativeLocaleUrl(
       cssVariable="--font-google-sans-code"
       preload={[{ subset: "latin", weight: 400, style: "normal" }]}
     />
+    {/* 한글 본문 폰트. 이 컴포넌트가 @font-face 를 내보내므로 빠지면 폰트를
+        내려받아 두고도 브라우저가 쓰지 못한다 — 실제로 그 상태였다.
+        preload 는 걸지 않는다: 한글은 unicode-range 로 잘게 쪼개져 있어
+        어느 조각이 필요한지가 글마다 다르고, 아무 조각이나 미리 받으면
+        대부분의 방문에서 헛된 다운로드가 된다. */}
+    <Font cssVariable="--font-noto-sans-kr" />
 
     <!-- Primary meta -->
     <title>{title}</title>

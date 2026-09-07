@@ -7,7 +7,11 @@
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
   --color-border: var(--border);
-  --font-app: var(--font-google-sans-code);
+  /* 라틴 → Google Sans Code, 한글 → Noto Sans KR, 그 밖 → monospace.
+   * 순서가 곧 규칙이다. 앞의 변수가 generic family로 끝나면 뒤가 죽으므로
+   * 두 폰트 모두 `astro.config.ts`에서 `fallbacks: []`로 두었다. */
+  --font-app:
+    var(--font-google-sans-code), var(--font-noto-sans-kr), monospace;
 }
 
 /* Light theme values */
