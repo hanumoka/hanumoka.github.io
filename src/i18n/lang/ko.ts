@@ -29,7 +29,6 @@ export default {
     editPage: "이 문서 고치기",
     previousPost: "이전 글",
     nextPost: "다음 글",
-    tableOfContents: "목차",
     inSeries: "연재 「{{series}}」",
     seriesPosition: "{{total}}편 중 {{index}}번째",
     currentPost: "지금 읽는 글",

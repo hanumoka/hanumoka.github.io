@@ -23,8 +23,6 @@ export interface UIStrings {
     editPage: string;
     previousPost: string;
     nextPost: string;
-    /** 글의 제목 트리(목차) 제목 */
-    tableOfContents: string;
     /** 글 안의 연재 상자 제목. {{series}} 는 연재 이름이다. */
     inSeries: string;
     /** "N편 중 M번째". {{index}} 와 {{total}} */

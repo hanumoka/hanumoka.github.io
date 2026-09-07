@@ -20,7 +20,6 @@ import BackToTopButton from "./_components/BackToTopButton.astro";
 import AdjacentPostNav from "./_components/AdjacentPostNav.astro";
 import Comments from "@/components/Comments.astro";
 import SeriesNav from "@/components/SeriesNav.astro";
-import TableOfContents from "@/components/TableOfContents.astro";
 import config from "@/config";
 
 export async function getStaticPaths() {
@@ -98,7 +97,7 @@ const {
 
 const t = useTranslations(locale);
 
-const { Content, headings } = await render(post);
+const { Content } = await render(post);
 
 let ogImageUrl: string | undefined;
 
@@ -158,9 +157,6 @@ const ogImage = ogImageUrl
       </span>
       <EditPost {hideEditPost} {post} class="max-sm:hidden" />
     </div>
-
-    <TableOfContents {headings} variant="inline" />
-    <TableOfContents {headings} variant="sidebar" />
 
     <article
       id="article"
