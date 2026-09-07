@@ -3,8 +3,8 @@ title: About
 description: About hanumoka, a backend developer.
 ---
 
-A backend developer who spent years with Java and Spring. Lately I work with
-Kotlin and event-driven architecture.
+A backend developer who spent years with Java and Spring. Not just the backend —
+I am interested in the many areas it takes to build a service.
 
 ## What goes on this site
 
