@@ -8,6 +8,7 @@ import type { UIStrings } from "../types";
  */
 export default {
   nav: {
+    tree: "글 구조",
     home: "홈",
     posts: "글",
     tags: "태그",

@@ -2,6 +2,8 @@ export interface UIStrings {
   nav: {
     home: string;
     posts: string;
+    /** 글·연재 전체 트리 */
+    tree: string;
     tags: string;
     about: string;
     archives: string;
