@@ -41,8 +41,11 @@ export default {
   },
   footer: {
     copyright: "저작권",
-    allRightsReserved: "All rights reserved.",
+    allRightsReserved: "모든 권리 보유.",
   },
+  // dayjs 는 로케일을 따로 넣지 않으면 월을 영어 약어로 낸다.
+  // 숫자만 쓰면 그 문제가 없고, 글 파일 이름(YYYY-MM-DD)과도 형식이 맞는다.
+  dateFormat: "YYYY년 M월 D일",
   pages: {
     tagTitle: "태그",
     tagDesc: "이 태그가 달린 글",

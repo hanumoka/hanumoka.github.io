@@ -37,6 +37,7 @@ export default {
     copyright: "Copyright",
     allRightsReserved: "All rights reserved.",
   },
+  dateFormat: "D MMM, YYYY",
   pages: {
     tagTitle: "Tag",
     tagDesc: "All the articles with the tag",

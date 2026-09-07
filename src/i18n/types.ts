@@ -35,6 +35,11 @@ export interface UIStrings {
     copyright: string;
     allRightsReserved: string;
   };
+  /**
+   * 날짜 표시 형식(dayjs 토큰). 언어마다 다르므로 언어 파일이 정본이다.
+   * 하드코딩하면 한국어 사이트에 영어 월 약어가 나온다 — 실제로 그랬다.
+   */
+  dateFormat: string;
   pages: {
     tagTitle: string;
     tagDesc: string;
