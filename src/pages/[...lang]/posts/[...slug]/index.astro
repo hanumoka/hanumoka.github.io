@@ -19,6 +19,7 @@ import BackButton from "./_components/BackButton.astro";
 import BackToTopButton from "./_components/BackToTopButton.astro";
 import AdjacentPostNav from "./_components/AdjacentPostNav.astro";
 import Comments from "@/components/Comments.astro";
+import SeriesNav from "@/components/SeriesNav.astro";
 import config from "@/config";
 
 export async function getStaticPaths() {
@@ -194,13 +195,17 @@ const ogImage = ogImageUrl
 
     <hr class="my-8 border-dashed" />
 
+    <SeriesNav {post} />
+
     <AdjacentPostNav {prevPost} {nextPost} />
 
     <Comments />
   </main>
 
   {/* 다이어그램이 있는 글에서만 mermaid 청크를 내려받는다. */}
-  <script>import "@/scripts/mermaid";</script>
+  <script>
+    import "@/scripts/mermaid";
+  </script>
   <Footer />
 </PostLayout>
 

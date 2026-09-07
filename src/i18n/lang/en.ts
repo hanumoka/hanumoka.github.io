@@ -22,6 +22,9 @@ export default {
     editPage: "Edit page",
     previousPost: "Previous Post",
     nextPost: "Next Post",
+    inSeries: "Series: {{series}}",
+    seriesPosition: "part {{index}} of {{total}}",
+    currentPost: "you are here",
   },
   pagination: {
     prev: "Prev",
@@ -60,8 +63,12 @@ export default {
     kindTitle: "Kind",
     kindDesc: "All the articles of the kind",
 
-    alsoBrowseByPrefix: "You can also browse by ",
-    alsoBrowseBySuffix: ".",
+    alsoBrowseBy: "You can also browse by",
+
+    seriesTitle: "Series",
+    seriesDesc: "Posts written as a run.",
+    seriesOneTitle: "Series",
+    seriesOneDesc: "Posts in this series",
 
     kindsTitle: "Kinds",
     kindsDesc: "All the kinds used in posts.",

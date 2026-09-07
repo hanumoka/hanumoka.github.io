@@ -1,50 +1,48 @@
 ---
-import { getLocalizedPosts } from "@/utils/getLocalizedPosts";
+import { getRelativeLocaleUrl } from "astro:i18n";
 import Layout from "@/layouts/Layout.astro";
 import Header from "@/components/Header.astro";
 import Breadcrumb from "@/components/Breadcrumb.astro";
 import Main from "@/components/Main.astro";
 import Footer from "@/components/Footer.astro";
 import BrowseAxes from "@/components/BrowseAxes.astro";
-import { getRelativeLocaleUrl } from "astro:i18n";
-import { getUniqueKinds } from "@/utils/getUniqueKinds";
-import { useTranslations } from "@/i18n";
+import { getLocalizedPosts } from "@/utils/getLocalizedPosts";
+import { getUniqueSeries } from "@/utils/getUniqueSeries";
 import { localePaths, resolveLocale } from "@/utils/locales";
+import { useTranslations } from "@/i18n";
 import config from "@/config";
 
 export const getStaticPaths = localePaths;
 
 const locale = resolveLocale(Astro.currentLocale);
 const posts = await getLocalizedPosts(locale);
-const kinds = getUniqueKinds(posts);
-
+const series = getUniqueSeries(posts);
 const t = useTranslations(locale);
 ---
 
-<Layout title={`${t.pages.kindsTitle} | ${config.site.title}`}>
+<Layout title={`${t.pages.seriesTitle} | ${config.site.title}`}>
   <Header />
 
   <Breadcrumb />
 
-  <Main pageTitle={t.pages.kindsTitle} pageDesc={t.pages.kindsDesc}>
+  <Main pageTitle={t.pages.seriesTitle} pageDesc={t.pages.seriesDesc}>
     <ul class="flex flex-col gap-3">
       {
-        kinds.map(({ kind, count }) => (
+        series.map(({ series: slug, seriesName, count }) => (
           <li>
             <a
-              href={getRelativeLocaleUrl(locale, `kinds/${kind}/`)}
+              href={getRelativeLocaleUrl(locale, `series/${slug}/`)}
               class="hover:text-accent inline-flex items-baseline gap-2 underline decoration-dashed underline-offset-4"
             >
-              <span>{t.kinds[kind as keyof typeof t.kinds] ?? kind}</span>
+              <span>{seriesName}</span>
               <span class="text-sm opacity-70">{count}</span>
             </a>
-            <span class="ms-1 text-sm opacity-50">{kind}</span>
           </li>
         ))
       }
     </ul>
 
-    <BrowseAxes current="kinds" />
+    <BrowseAxes current="series" />
   </Main>
 
   <Footer />

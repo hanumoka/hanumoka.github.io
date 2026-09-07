@@ -1,0 +1,88 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { getRelativeLocaleUrl } from "astro:i18n";
+import { getLocalizedPosts } from "@/utils/getLocalizedPosts";
+import { getSeriesPosts } from "@/utils/getUniqueSeries";
+import { getPostSlug, getPostUrl } from "@/utils/getPostPaths";
+import { slugifyStr } from "@/utils/slugify";
+import { resolveLocale } from "@/utils/locales";
+import { useTranslations, tplStr } from "@/i18n";
+
+type Props = { post: CollectionEntry<"posts"> };
+
+const { post } = Astro.props;
+
+const locale = resolveLocale(Astro.currentLocale);
+const t = useTranslations(locale);
+
+const seriesName = post.data.series;
+const seriesSlug = seriesName ? slugifyStr(seriesName) : null;
+
+// 연재가 아닌 글에서는 아무것도 내지 않는다.
+const parts = seriesSlug
+  ? getSeriesPosts(await getLocalizedPosts(locale), seriesSlug)
+  : [];
+
+const currentSlug = getPostSlug(post.id, post.filePath);
+const currentIndex = parts.findIndex(
+  part => getPostSlug(part.id, part.filePath) === currentSlug
+);
+---
+
+{
+  parts.length > 1 && seriesName && seriesSlug && (
+    <aside
+      data-pagefind-ignore
+      class="border-border bg-muted/40 my-8 border p-4 sm:p-5"
+      aria-labelledby="series-heading"
+    >
+      <div class="mb-3 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
+        <h2 id="series-heading" class="text-base font-semibold">
+          <a
+            href={getRelativeLocaleUrl(locale, `series/${seriesSlug}/`)}
+            class="hover:text-accent underline decoration-dashed underline-offset-4"
+          >
+            {tplStr(t.post.inSeries, { series: seriesName })}
+          </a>
+        </h2>
+        <span class="text-muted-foreground text-sm">
+          {tplStr(t.post.seriesPosition, {
+            index: currentIndex + 1,
+            total: parts.length,
+          })}
+        </span>
+      </div>
+
+      <ol class="flex flex-col gap-1">
+        {parts.map((part, index) => {
+          const isCurrent = index === currentIndex;
+          return (
+            <li class="flex gap-2 text-sm">
+              <span
+                class:list={[
+                  "text-muted-foreground w-6 shrink-0 text-end tabular-nums",
+                  { "text-accent font-semibold": isCurrent },
+                ]}
+              >
+                {index + 1}.
+              </span>
+              {isCurrent ? (
+                <span class="text-foreground font-semibold" aria-current="true">
+                  {part.data.title}
+                  <span class="sr-only"> — {t.post.currentPost}</span>
+                </span>
+              ) : (
+                <a
+                  href={getPostUrl(part.id, part.filePath, locale)}
+                  class="hover:text-accent underline decoration-dashed underline-offset-4"
+                >
+                  {part.data.title}
+                </a>
+              )}
+            </li>
+          );
+        })}
+      </ol>
+    </aside>
+  )
+}

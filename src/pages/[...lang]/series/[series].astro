@@ -1,0 +1,60 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Breadcrumb from "@/components/Breadcrumb.astro";
+import Main from "@/components/Main.astro";
+import Card from "@/components/Card.astro";
+import Footer from "@/components/Footer.astro";
+import { getLocalizedPosts } from "@/utils/getLocalizedPosts";
+import { getUniqueSeries, getSeriesPosts } from "@/utils/getUniqueSeries";
+import { localePaths, resolveLocale } from "@/utils/locales";
+import { useTranslations } from "@/i18n";
+import config from "@/config";
+
+/**
+ * ★ 연재 페이지는 페이지네이션을 두지 않는다. 태그·종류와 다른 점이다.
+ * 연재는 **순서가 본질**이라 몇 편이 다음 장으로 넘어가면 그 순서가 끊긴다.
+ */
+export async function getStaticPaths() {
+  const routes = [];
+
+  for (const { params, props } of localePaths()) {
+    const posts = await getLocalizedPosts(props.locale);
+
+    for (const { series, seriesName } of getUniqueSeries(posts)) {
+      routes.push({
+        params: { lang: params.lang, series },
+        props: { seriesName },
+      });
+    }
+  }
+
+  return routes;
+}
+
+const { series } = Astro.params;
+const { seriesName } = Astro.props;
+
+const locale = resolveLocale(Astro.currentLocale);
+const t = useTranslations(locale);
+const parts = getSeriesPosts(await getLocalizedPosts(locale), series ?? "");
+---
+
+<Layout
+  title={`${t.pages.seriesOneTitle}: ${seriesName} | ${config.site.title}`}
+>
+  <Header />
+
+  <Breadcrumb />
+
+  <Main
+    pageTitle={`${t.pages.seriesOneTitle}: ${seriesName}`}
+    pageDesc={`${t.pages.seriesOneDesc} "${seriesName}".`}
+  >
+    <ol class="flex flex-col">
+      {parts.map(data => <Card {...data} />)}
+    </ol>
+  </Main>
+
+  <Footer />
+</Layout>

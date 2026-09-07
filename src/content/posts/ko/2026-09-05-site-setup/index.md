@@ -3,6 +3,8 @@ title: '이 사이트는 어떻게 만들어졌는가'
 description: 'Astro와 GitHub Pages로 세운 구성, 그리고 Gatsby를 버린 이유.'
 pubDatetime: 2026-09-05T16:00:00+09:00
 kind: snippet
+series: 이 사이트 만들기
+seriesOrder: 1
 tags: [astro, github-pages, ci]
 ---
 

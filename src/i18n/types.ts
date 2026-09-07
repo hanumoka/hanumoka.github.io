@@ -21,6 +21,12 @@ export interface UIStrings {
     editPage: string;
     previousPost: string;
     nextPost: string;
+    /** 글 안의 연재 상자 제목. {{series}} 는 연재 이름이다. */
+    inSeries: string;
+    /** "N편 중 M번째". {{index}} 와 {{total}} */
+    seriesPosition: string;
+    /** 지금 읽고 있는 편임을 스크린리더에 알린다 */
+    currentPost: string;
   };
   pagination: {
     prev: string;
@@ -69,9 +75,14 @@ export interface UIStrings {
     kindsTitle: string;
     kindsDesc: string;
 
-    /** "태그" 또는 "종류" 별로도 볼 수 있다는 안내. 언어마다 어순이 달라 앞뒤로 나눈다. */
-    alsoBrowseByPrefix: string;
-    alsoBrowseBySuffix: string;
+    seriesTitle: string;
+    seriesDesc: string;
+    /** 연재 하나의 페이지 제목 */
+    seriesOneTitle: string;
+    seriesOneDesc: string;
+
+    /** 분류 축이 셋이라 「A · B 로도 볼 수 있다」 형태로 나열한다. */
+    alsoBrowseBy: string;
   };
   /**
    * 글의 종류 이름. 값(`til` 등)은 비공개 문서 허브의 `kind` 계약과 같아야 하므로

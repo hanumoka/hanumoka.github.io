@@ -28,6 +28,9 @@ export default {
     editPage: "이 문서 고치기",
     previousPost: "이전 글",
     nextPost: "다음 글",
+    inSeries: "연재 「{{series}}」",
+    seriesPosition: "{{total}}편 중 {{index}}번째",
+    currentPost: "지금 읽는 글",
   },
   pagination: {
     prev: "이전",
@@ -71,8 +74,12 @@ export default {
     kindsTitle: "종류",
     kindsDesc: "글의 종류 전체입니다.",
 
-    alsoBrowseByPrefix: "",
-    alsoBrowseBySuffix: " 별로도 볼 수 있습니다.",
+    seriesTitle: "연재",
+    seriesDesc: "이어서 쓴 글 묶음입니다.",
+    seriesOneTitle: "연재",
+    seriesOneDesc: "이 연재의 글",
+
+    alsoBrowseBy: "이렇게도 볼 수 있습니다 —",
   },
   kinds: {
     til: "배운 것",

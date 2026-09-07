@@ -3,6 +3,8 @@ title: 이미지·GIF·다이어그램이 되는지 재 본다
 pubDatetime: 2026-09-07T14:00:00+09:00
 description: 글에 이미지와 애니메이션 GIF를 넣을 수 있는지, 머메이드 다이어그램이 그려지는지 실제로 확인한다.
 kind: snippet
+series: 이 사이트 만들기
+seriesOrder: 2
 tags:
   - astro
   - markdown
