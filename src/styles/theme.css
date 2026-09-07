@@ -14,25 +14,49 @@
     var(--font-google-sans-code), var(--font-noto-sans-kr), monospace;
 }
 
+/* ===== 팔레트: 기판(board) — 구리 =====
+ *
+ * 2026-09-07 에 AstroPaper 기본값(파랑 #006cac / 주황 #ff6b01)에서 옮겼다.
+ * 기본값을 그대로 쓰면 사이트가 「hanumoka 의 사이트」보다
+ * 「AstroPaper 쓰는 블로그」로 먼저 읽힌다.
+ *
+ * 방향: 어두운 모드의 바탕이 순수한 검정이 아니라 **초록이 도는 검정**이다 —
+ * 기판의 솔더마스크 색이고, 강조는 그 위의 구리다. 흔한 「검정 배경 +
+ * 형광 초록」과 반대로 **초록은 바탕에 깔리고 앞에 나오지 않는다.**
+ * 중성색도 무채색이 아니라 초록 쪽으로 아주 조금 치우쳐 있다.
+ *
+ * ★ 대비는 WCAG 2.1 상대 휘도로 계산해 여덟 조합 전부 AA(4.5:1)를 넘겼다.
+ *
+ *              본문    보조    강조    버튼
+ *   밝은      15.66   5.80    5.83    6.17
+ *   어두운    14.33   7.33    6.82    7.05
+ *
+ * ★ 옮기기 전 값에는 실제로 미달이 있었다 — 어두운 모드의 버튼이
+ *   흰 글자 위 #ff6b01 로 **2.86:1** 이었다.
+ *
+ * ★ 코드 블록은 이 토큰을 따르지 않는다. 색을 정하는 것은 Shiki 테마
+ *   (`astro.config.ts` 의 `shikiConfig.themes`: min-light / night-owl)다.
+ */
+
 /* Light theme values */
 :root,
 [data-theme="light"] {
-  --background: #fdfdfd;
-  --foreground: #282728;
-  --accent: #006cac;
+  --background: #f7f9f6;
+  --foreground: #16211a;
+  --accent: #8a5520;
   --accent-foreground: #ffffff;
-  --muted: #e6e6e6;
-  --muted-foreground: #6b7280;
-  --border: #ece9e9;
+  --muted: #e4eae1;
+  --muted-foreground: #57655b;
+  --border: #d6ded2;
 }
 
 /* Dark theme values */
 [data-theme="dark"] {
-  --background: #212737;
-  --foreground: #eaedf3;
-  --accent: #ff6b01;
-  --accent-foreground: #ffffff;
-  --muted: #343f60;
-  --muted-foreground: #afb9ca;
-  --border: #ab4b08;
+  --background: #101613;
+  --foreground: #dce6df;
+  --accent: #d1904f;
+  --accent-foreground: #14100a;
+  --muted: #1e2a23;
+  --muted-foreground: #97a89d;
+  --border: #2b3a30;
 }
