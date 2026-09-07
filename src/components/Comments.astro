@@ -1,0 +1,33 @@
+---
+import { resolveLocale } from "@/utils/locales";
+import { useTranslations } from "@/i18n";
+import config from "@/config";
+
+const { comments } = config.features;
+const locale = resolveLocale(Astro.currentLocale);
+const t = useTranslations(locale);
+---
+
+{
+  comments.enabled && (
+    <section class="app-layout mt-10" aria-labelledby="comments-heading">
+      <h2
+        id="comments-heading"
+        class="border-border mb-4 border-t pt-8 text-lg font-semibold"
+      >
+        {t.post.comments}
+      </h2>
+      <div
+        id="giscus-container"
+        data-repo={comments.repo}
+        data-repo-id={comments.repoId}
+        data-category={comments.category}
+        data-category-id={comments.categoryId}
+        data-mapping={comments.mapping}
+        data-lang={locale}
+      />
+    </section>
+  )
+}
+
+{comments.enabled && <script>import "@/scripts/giscus";</script>}

@@ -16,6 +16,7 @@ export default {
     search: "검색",
   },
   post: {
+    comments: "댓글",
     publishedAt: "작성",
     updatedAt: "수정",
     sharePostIntro: "이 글 공유하기:",

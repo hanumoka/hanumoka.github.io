@@ -30,6 +30,18 @@ export default defineAstroPaperConfig({
     // 공개본을 GitHub에서 직접 고치게 하면 정본과 갈라지므로 끈다.
     editPost: { enabled: false },
     search: "pagefind",
+    // 댓글은 GitHub Discussions 에 쌓인다. 아래 두 ID 는 이 저장소의 것이며
+    // GitHub GraphQL API 로 확인했다. 저장소를 옮기면 둘 다 다시 받아야 한다.
+    comments: {
+      enabled: true,
+      repo: "hanumoka/hanumoka.github.io",
+      repoId: "R_kgDOIYEadg",
+      // giscus 가 권하는 대로 아무나 토론을 새로 열 수 없는 카테고리를 쓴다.
+      category: "Announcements",
+      categoryId: "DIC_kwDOIYEads4CTpNz",
+      // 언어판마다 경로가 다르므로 댓글도 언어별로 갈린다. 의도한 것이다.
+      mapping: "pathname",
+    },
   },
   socials: [{ name: "github", url: "https://github.com/hanumoka" }],
   // 공유 링크는 두지 않는다. 지금 필요하지 않고, 각 버튼이 외부 도메인을 부른다.

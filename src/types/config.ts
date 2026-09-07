@@ -59,6 +59,31 @@ interface FeaturesConfig {
    * Set to false to disable search entirely.
    */
   search?: "pagefind" | false;
+  /**
+   * 글 아래에 붙는 댓글. GitHub Discussions 를 저장소로 쓰는 giscus 다.
+   * 서버도 데이터베이스도 없고, 댓글은 이 저장소의 Discussions 에 쌓인다.
+   *
+   * ★ 댓글을 쓰려면 방문자가 GitHub 계정으로 로그인해야 한다. 로그인 없는
+   * 댓글이 필요해지면 giscus 로는 안 되고 다른 것을 골라야 한다.
+   */
+  comments?:
+    | {
+        enabled: true;
+        /** `소유자/저장소` */
+        repo: `${string}/${string}`;
+        /** GitHub GraphQL 의 저장소 노드 ID. giscus.app 이나 API 로 얻는다. */
+        repoId: string;
+        /** Discussions 카테고리 이름 */
+        category: string;
+        /** 그 카테고리의 노드 ID */
+        categoryId: string;
+        /**
+         * 글과 토론을 무엇으로 잇는가. `pathname` 이면 한국어판과 영어판이
+         * 서로 다른 경로이므로 **댓글도 언어별로 갈린다.**
+         */
+        mapping: "pathname" | "url" | "title" | "og:title";
+      }
+    | { enabled: false };
 }
 
 interface SocialLink {

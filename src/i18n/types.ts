@@ -8,6 +8,8 @@ export interface UIStrings {
     search: string;
   };
   post: {
+    /** 글 아래 댓글 구역의 제목. */
+    comments: string;
     publishedAt: string;
     updatedAt: string;
     sharePostIntro: string;
