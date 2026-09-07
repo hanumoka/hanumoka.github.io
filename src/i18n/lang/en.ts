@@ -22,6 +22,7 @@ export default {
     editPage: "Edit page",
     previousPost: "Previous Post",
     nextPost: "Next Post",
+    tableOfContents: "On this page",
     inSeries: "Series: {{series}}",
     seriesPosition: "part {{index}} of {{total}}",
     currentPost: "you are here",
