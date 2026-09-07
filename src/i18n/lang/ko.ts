@@ -46,6 +46,8 @@ export default {
   // dayjs 는 로케일을 따로 넣지 않으면 월을 영어 약어로 낸다.
   // 숫자만 쓰면 그 문제가 없고, 글 파일 이름(YYYY-MM-DD)과도 형식이 맞는다.
   dateFormat: "YYYY년 M월 D일",
+  siteDescription:
+    "백엔드 개발자 hanumoka의 기술 글과 프로젝트 기록. 만들면서 부딪힌 것과 그때 잰 값을 남깁니다.",
   pages: {
     tagTitle: "태그",
     tagDesc: "이 태그가 달린 글",
@@ -67,6 +69,9 @@ export default {
 
     kindsTitle: "종류",
     kindsDesc: "글의 종류 전체입니다.",
+
+    alsoBrowseByPrefix: "",
+    alsoBrowseBySuffix: " 별로도 볼 수 있습니다.",
   },
   kinds: {
     til: "배운 것",
@@ -80,6 +85,8 @@ export default {
     openMenu: "메뉴 열기",
     closeMenu: "메뉴 닫기",
     toggleTheme: "밝기 전환",
+    switchTo: "{{language}}로 보기",
+    noTranslationYet: "이 글은 아직 번역되지 않아 글 목록으로 갑니다",
     searchPlaceholder: "글 검색...",
     noResults: "결과가 없습니다",
     goToPreviousPage: "이전 페이지로",

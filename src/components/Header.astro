@@ -9,12 +9,19 @@ import IconMoon from "@/assets/icons/IconMoon.svg";
 import IconX from "@/assets/icons/IconX.svg";
 import LinkButton from "./LinkButton.astro";
 import { stripBase, stripLocale } from "@/utils/withBase";
-import { useTranslations } from "@/i18n";
+import { getTranslatedPath } from "@/utils/getTranslatedPath";
+import {
+  LOCALES,
+  LOCALE_LABELS,
+  LOCALE_SHORT,
+  resolveLocale,
+} from "@/utils/locales";
+import { useTranslations, tplStr } from "@/i18n";
 import config from "@/config";
 
 const { site, features } = config;
 
-const locale = Astro.currentLocale ?? config.site.lang;
+const locale = resolveLocale(Astro.currentLocale);
 const t = useTranslations(locale);
 
 // Strip the base prefix so isActive comparisons work regardless of deploy subdirectory.
@@ -26,6 +33,22 @@ const pathWithoutTrailingSlash =
     : relativePath;
 
 const currentPath = stripLocale(pathWithoutTrailingSlash, locale);
+
+// ── 언어 전환 ──────────────────────────────────────────────
+// 지금 보는 것에 대응하는 다른 언어의 경로를 고른다. 대응이 없으면
+// `exact: false` 로 오고, 그때는 그 구역의 목록으로 물러선다.
+const otherLocale = LOCALES.find(candidate => candidate !== locale) ?? locale;
+const translated = await getTranslatedPath(currentPath, otherLocale);
+const otherHref = getRelativeLocaleUrl(
+  otherLocale,
+  translated.path.replace(/^\//, "")
+);
+const switchLabel = tplStr(t.a11y.switchTo, {
+  language: LOCALE_LABELS[otherLocale],
+});
+const switchTitle = translated.exact
+  ? switchLabel
+  : `${switchLabel} — ${t.a11y.noTranslationYet}`;
 
 const isActive = (path: string) => {
   const currentPathArray = currentPath.split("/").filter(p => p.trim());
@@ -159,6 +182,25 @@ const isActive = (path: string) => {
             </li>
           )
         }
+        <li class="col-span-1 flex items-center justify-center">
+          <a
+            href={otherHref}
+            hreflang={otherLocale}
+            lang={otherLocale}
+            title={switchTitle}
+            aria-label={switchTitle}
+            class="focus-outline hover:text-accent flex h-12 items-center justify-center px-3 text-sm font-medium tracking-wide sm:h-8 sm:px-2"
+          >
+            {LOCALE_SHORT[otherLocale]}
+            {
+              !translated.exact && (
+                <span aria-hidden="true" class="opacity-50">
+                  *
+                </span>
+              )
+            }
+          </a>
+        </li>
       </ul>
     </nav>
   </div>

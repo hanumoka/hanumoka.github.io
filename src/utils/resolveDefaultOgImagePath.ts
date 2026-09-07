@@ -1,5 +1,6 @@
 import type { ResolvedAstroPaperConfig } from "@/types/config";
 import { getAssetPath } from "./withBase";
+import { getLocaleFileUrl, type Locale } from "./locales";
 
 const publicFiles = import.meta.glob("/public/*", { eager: false });
 
@@ -19,7 +20,8 @@ function existsInPublic(filename: string): boolean {
  * - When disabled, requires `public/{site.ogImage}` to exist.
  */
 export function resolveDefaultOgImagePath(
-  config: ResolvedAstroPaperConfig
+  config: ResolvedAstroPaperConfig,
+  locale: Locale
 ): string {
   const filename = config.site.ogImage;
   if (
@@ -35,7 +37,7 @@ export function resolveDefaultOgImagePath(
   if (config.features.dynamicOgImage) {
     return existsInPublic(filename)
       ? getAssetPath(filename)
-      : getAssetPath("og.png");
+      : getLocaleFileUrl(locale, "og.png");
   }
 
   if (!existsInPublic(filename)) {

@@ -5,13 +5,17 @@ import Header from "@/components/Header.astro";
 import Breadcrumb from "@/components/Breadcrumb.astro";
 import Main from "@/components/Main.astro";
 import Footer from "@/components/Footer.astro";
+import { localePaths, resolveLocale } from "@/utils/locales";
 import config from "@/config";
 
-const about = await getEntry("pages", "about");
+export const getStaticPaths = localePaths;
+
+const locale = resolveLocale(Astro.currentLocale);
+const about = await getEntry("pages", `${locale}/about`);
 
 if (!about) {
   throw new Error(
-    "Missing content entry: `about.md` or `about.mdx` in `src/content/pages/`"
+    `Missing content entry: src/content/pages/${locale}/about.md`
   );
 }
 

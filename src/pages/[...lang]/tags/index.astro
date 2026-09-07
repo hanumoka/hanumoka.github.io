@@ -1,5 +1,5 @@
 ---
-import { getCollection } from "astro:content";
+import { getLocalizedPosts } from "@/utils/getLocalizedPosts";
 import { getRelativeLocaleUrl } from "astro:i18n";
 import Layout from "@/layouts/Layout.astro";
 import Header from "@/components/Header.astro";
@@ -9,12 +9,15 @@ import Footer from "@/components/Footer.astro";
 import Tag from "@/components/Tag.astro";
 import { getUniqueTags } from "@/utils/getUniqueTags";
 import { useTranslations } from "@/i18n";
+import { localePaths, resolveLocale } from "@/utils/locales";
 import config from "@/config";
 
-const posts = await getCollection("posts", ({ data }) => !data.draft);
+export const getStaticPaths = localePaths;
+
+const locale = resolveLocale(Astro.currentLocale);
+const posts = await getLocalizedPosts(locale);
 const tags = getUniqueTags(posts);
 
-const locale = Astro.currentLocale ?? config.site.lang;
 const t = useTranslations(locale);
 ---
 
@@ -29,13 +32,12 @@ const t = useTranslations(locale);
     </ul>
 
     <p class="mt-10 text-sm opacity-80">
-      <a
+      {t.pages.alsoBrowseByPrefix}<a
         href={getRelativeLocaleUrl(locale, "kinds/")}
         class="hover:text-accent underline decoration-dashed underline-offset-4"
       >
         {t.pages.kindsTitle}
-      </a>
-      {" "}별로도 볼 수 있습니다.
+      </a>{t.pages.alsoBrowseBySuffix}
     </p>
   </Main>
 

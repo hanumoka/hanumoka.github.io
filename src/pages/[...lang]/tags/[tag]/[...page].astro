@@ -1,5 +1,6 @@
 ---
-import { getCollection } from "astro:content";
+import { getLocalizedPosts } from "@/utils/getLocalizedPosts";
+import { localePaths, resolveLocale } from "@/utils/locales";
 import type { GetStaticPathsOptions } from "astro";
 import Layout from "@/layouts/Layout.astro";
 import Header from "@/components/Header.astro";
@@ -15,25 +16,35 @@ import { useTranslations } from "@/i18n";
 import config from "@/config";
 
 export async function getStaticPaths({ paginate }: GetStaticPathsOptions) {
-  const posts = await getCollection("posts", ({ data }) => !data.draft);
-  const tags = getUniqueTags(posts);
+  // ★ 태그는 언어별로 따로 모은다. 합치면 영어 목록에 한국어 글에만 있는
+  // 태그가 나타나고, 그 태그 페이지는 비어 있게 된다.
+  const routes = [];
+  for (const { params, props } of localePaths()) {
+    const posts = await getLocalizedPosts(props.locale);
 
-  return tags.flatMap(({ tag, tagName }) => {
-    const tagPosts = getSortedPosts(
-      posts.filter(({ data }) => slugifyAll(data.tags).includes(tag))
-    );
+    for (const { tag, tagName } of getUniqueTags(posts)) {
+      const tagPosts = getSortedPosts(
+        posts.filter(({ data }) => slugifyAll(data.tags).includes(tag))
+      );
 
-    return paginate(tagPosts, {
-      params: { tag },
-      props: { tagName },
-      pageSize: config.posts.perPage,
-    });
-  });
+      routes.push(
+        ...paginate(tagPosts, {
+          params: { tag },
+          props: { tagName },
+          pageSize: config.posts.perPage,
+        }).map(route => ({
+          ...route,
+          params: { ...route.params, lang: params.lang },
+        }))
+      );
+    }
+  }
+  return routes;
 }
 
 const { page, tagName } = Astro.props;
 
-const locale = Astro.currentLocale ?? config.site.lang;
+const locale = resolveLocale(Astro.currentLocale);
 const t = useTranslations(locale);
 ---
 

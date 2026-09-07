@@ -40,6 +40,11 @@ export interface UIStrings {
    * 하드코딩하면 한국어 사이트에 영어 월 약어가 나온다 — 실제로 그랬다.
    */
   dateFormat: string;
+  /**
+   * 사이트 한 줄 설명. `astro-paper.config.ts` 의 `site.description` 은 한 벌뿐이라
+   * 그대로 쓰면 영어 페이지의 meta description 과 OG 카드가 한국어로 나간다.
+   */
+  siteDescription: string;
   pages: {
     tagTitle: string;
     tagDesc: string;
@@ -61,6 +66,10 @@ export interface UIStrings {
 
     kindsTitle: string;
     kindsDesc: string;
+
+    /** "태그" 또는 "종류" 별로도 볼 수 있다는 안내. 언어마다 어순이 달라 앞뒤로 나눈다. */
+    alsoBrowseByPrefix: string;
+    alsoBrowseBySuffix: string;
   };
   /**
    * 글의 종류 이름. 값(`til` 등)은 비공개 문서 허브의 `kind` 계약과 같아야 하므로
@@ -78,6 +87,10 @@ export interface UIStrings {
     openMenu: string;
     closeMenu: string;
     toggleTheme: string;
+    /** 언어 전환 버튼. {{language}} 는 바뀔 언어 이름이다. */
+    switchTo: string;
+    /** 이 글의 번역이 아직 없을 때 버튼에 붙는 설명. */
+    noTranslationYet: string;
     searchPlaceholder: string;
     noResults: string;
     goToPreviousPage: string;

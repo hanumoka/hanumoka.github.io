@@ -19,6 +19,16 @@ import {
 import { transformerFileName } from "./src/utils/transformers/fileName";
 import config from "./astro-paper.config";
 
+// ★ `site.lang` 이 UI 문자열을 고르고 아래 `i18n.defaultLocale` 이 라우팅을 고른다.
+// 둘이 갈라지면 Astro 가 MissingLocaleError 로 죽는데, 그 메시지만으로는 원인이
+// 여기라는 것이 드러나지 않는다. 그래서 먼저 잡는다.
+if (config.site.lang !== "ko") {
+  throw new Error(
+    `astro-paper.config.ts 의 site.lang 이 "${config.site.lang}" 인데 ` +
+      `astro.config.ts 의 i18n.defaultLocale 은 "ko" 입니다. 둘을 같게 맞추세요.`
+  );
+}
+
 export default defineConfig({
   site: config.site.url,
   integrations: [
@@ -29,11 +39,15 @@ export default defineConfig({
     }),
   ],
   i18n: {
-    // 로케일을 여기 직접 적지 않는다. `astro-paper.config.ts`의 `site.lang`이
-    // UI 문자열을 고르는데, 그 값과 여기가 갈라지면 빌드가 MissingLocaleError로
-    // 죽는다(실제로 `ko`로 바꿨을 때 그렇게 됐다). 정본을 하나로 둔다.
-    locales: [config.site.lang ?? "en"],
-    defaultLocale: config.site.lang ?? "en",
+    // 한국어가 기본이고 접두사가 없다(`/`), 영어는 `/en/` 아래에 선다.
+    //
+    // ★ `defaultLocale`은 `astro-paper.config.ts`의 `site.lang`과 반드시 같아야
+    // 한다. 그 값이 UI 문자열을 고르는데 여기와 갈라지면 빌드가
+    // MissingLocaleError로 죽는다 — 실제로 겪었다.
+    locales: ["ko", "en"],
+    // Astro 가 이 값을 `locales` 의 리터럴 유니온으로 좁히므로 `config.site.lang`
+    // (string) 을 그대로 넣을 수 없다. 리터럴로 적되 아래 검사로 갈라짐을 막는다.
+    defaultLocale: "ko",
     routing: {
       prefixDefaultLocale: false,
     },

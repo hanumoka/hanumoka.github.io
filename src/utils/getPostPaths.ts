@@ -1,18 +1,26 @@
 import { getRelativeLocaleUrl } from "astro:i18n";
 import { BLOG_PATH } from "@/content.config";
 import { slugifyStr } from "./slugify";
+import { isLocale } from "./locales";
 import config from "@/config";
 
 function getPostPathSegments(filePath: string | undefined): string[] {
-  return (
+  const segments =
     filePath
       ?.replace(BLOG_PATH, "")
       .split("/")
       .filter(path => path !== "")
       .filter(path => !path.startsWith("_"))
-      .slice(0, -1)
-      .map(segment => slugifyStr(segment)) ?? []
-  );
+      .slice(0, -1) ?? [];
+
+  // ★ 첫 조각이 언어면 버린다. 언어는 디렉터리로 나뉘어 있지만
+  // (`posts/ko/…`) URL 의 언어 접두사는 Astro 의 i18n 라우팅이 붙이므로,
+  // 여기서 남기면 `/en/posts/en/글` 처럼 두 번 붙는다.
+  if (isLocale(segments[0])) {
+    segments.shift();
+  }
+
+  return segments.map(segment => slugifyStr(segment));
 }
 
 function getIdSlug(id: string): string {

@@ -3,7 +3,15 @@ import { Font } from "astro:assets";
 import { ClientRouter } from "astro:transitions";
 import { getRelativeLocaleUrl } from "astro:i18n";
 import { resolveDefaultOgImagePath } from "@/utils/resolveDefaultOgImagePath";
-import { getAssetPath } from "@/utils/withBase";
+import { getAssetPath, stripBase, stripLocale } from "@/utils/withBase";
+import { getTranslatedPath } from "@/utils/getTranslatedPath";
+import {
+  LOCALES,
+  DEFAULT_LOCALE,
+  resolveLocale,
+  getLocaleFileUrl,
+} from "@/utils/locales";
+import { useTranslations } from "@/i18n";
 import config from "@/config";
 import "@/styles/global.css";
 
@@ -16,24 +24,54 @@ type Props = {
 
 const { site } = config;
 
+const layoutLocale = resolveLocale(Astro.currentLocale);
+const layoutT = useTranslations(layoutLocale);
+
 const {
   title = site.title,
-  description = site.description,
-  ogImage = resolveDefaultOgImagePath(config),
+  description = layoutT.siteDescription,
+  ogImage = resolveDefaultOgImagePath(config, layoutLocale),
   canonicalURL = new URL(Astro.url.pathname, Astro.site).href,
 } = Astro.props;
 
 const socialImageURL = new URL(ogImage, Astro.site ?? Astro.url);
-const rssHref = getRelativeLocaleUrl(
-  Astro.currentLocale ?? config.site.lang,
-  "rss.xml"
+const locale = layoutLocale;
+const rssHref = getLocaleFileUrl(locale, "rss.xml");
+
+// ── hreflang ────────────────────────────────────────────────
+// 같은 내용의 다른 언어판을 검색엔진에 알린다. ★ 대응이 없는 페이지
+// (아직 번역되지 않은 글)는 **내보내지 않는다** — 목록으로 물러선 주소를
+// 그 글의 번역이라고 알리면 거짓말이 된다.
+const pathForAlternates = stripLocale(
+  stripBase(Astro.url.pathname).replace(/\/+$/, "") || "/",
+  locale
 );
+
+const alternates = (
+  await Promise.all(
+    LOCALES.map(async candidate => {
+      if (candidate === locale) {
+        return { locale: candidate, href: canonicalURL };
+      }
+      const translated = await getTranslatedPath(pathForAlternates, candidate);
+      if (!translated.exact) return null;
+      const href = getRelativeLocaleUrl(
+        candidate,
+        translated.path.replace(/^\//, "")
+      );
+      return {
+        locale: candidate,
+        href: new URL(href, Astro.site ?? Astro.url).href,
+      };
+    })
+  )
+).filter(entry => entry !== null);
 ---
 
 <!doctype html>
 <html
   dir={site.dir ?? "ltr"}
-  lang={Astro.currentLocale ?? site.lang}
+  lang={locale}
   class="overflow-y-scroll scroll-smooth"
 >
   <head>
@@ -42,6 +80,23 @@ const rssHref = getRelativeLocaleUrl(
     <link rel="icon" type="image/svg+xml" href={getAssetPath("favicon.svg")} />
     <link rel="icon" href={getAssetPath("favicon.ico")} />
     <link rel="canonical" href={canonicalURL} />
+    {
+      alternates.length > 1 && (
+        <>
+          {alternates.map(entry => (
+            <link rel="alternate" hreflang={entry.locale} href={entry.href} />
+          ))}
+          <link
+            rel="alternate"
+            hreflang="x-default"
+            href={
+              alternates.find(entry => entry.locale === DEFAULT_LOCALE)?.href ??
+              alternates[0].href
+            }
+          />
+        </>
+      )
+    }
     <meta name="generator" content={Astro.generator} />
 
     <!-- Font -->
@@ -49,11 +104,13 @@ const rssHref = getRelativeLocaleUrl(
       cssVariable="--font-google-sans-code"
       preload={[{ subset: "latin", weight: 400, style: "normal" }]}
     />
-    {/* 한글 본문 폰트. 이 컴포넌트가 @font-face 를 내보내므로 빠지면 폰트를
+    {
+      /* 한글 본문 폰트. 이 컴포넌트가 @font-face 를 내보내므로 빠지면 폰트를
         내려받아 두고도 브라우저가 쓰지 못한다 — 실제로 그 상태였다.
         preload 는 걸지 않는다: 한글은 unicode-range 로 잘게 쪼개져 있어
         어느 조각이 필요한지가 글마다 다르고, 아무 조각이나 미리 받으면
-        대부분의 방문에서 헛된 다운로드가 된다. */}
+        대부분의 방문에서 헛된 다운로드가 된다. */
+    }
     <Font cssVariable="--font-noto-sans-kr" />
 
     <!-- Primary meta -->

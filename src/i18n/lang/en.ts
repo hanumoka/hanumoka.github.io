@@ -38,6 +38,8 @@ export default {
     allRightsReserved: "All rights reserved.",
   },
   dateFormat: "D MMM, YYYY",
+  siteDescription:
+    "Notes and project records from hanumoka, a backend developer. What broke while building, and the number measured at the time.",
   pages: {
     tagTitle: "Tag",
     tagDesc: "All the articles with the tag",
@@ -57,6 +59,9 @@ export default {
     kindTitle: "Kind",
     kindDesc: "All the articles of the kind",
 
+    alsoBrowseByPrefix: "You can also browse by ",
+    alsoBrowseBySuffix: ".",
+
     kindsTitle: "Kinds",
     kindsDesc: "All the kinds used in posts.",
   },
@@ -72,6 +77,9 @@ export default {
     openMenu: "Open menu",
     closeMenu: "Close menu",
     toggleTheme: "Toggle theme",
+    switchTo: "Read in {{language}}",
+    noTranslationYet:
+      "This post has no translation yet — going to the post list",
     searchPlaceholder: "Search posts...",
     noResults: "No results found",
     goToPreviousPage: "Go to previous page",

@@ -1,5 +1,5 @@
 ---
-import { getCollection } from "astro:content";
+import { getEntry, render } from "astro:content";
 import { getRelativeLocaleUrl } from "astro:i18n";
 import IconRss from "@/assets/icons/IconRss.svg";
 import IconArrowRight from "@/assets/icons/IconArrowRight.svg";
@@ -10,15 +10,25 @@ import Socials from "@/components/Socials.astro";
 import Card from "@/components/Card.astro";
 import LinkButton from "@/components/LinkButton.astro";
 import { getSortedPosts } from "@/utils/getSortedPosts";
+import { getLocalizedPosts } from "@/utils/getLocalizedPosts";
+import { localePaths, resolveLocale, getLocaleFileUrl } from "@/utils/locales";
 import { useTranslations } from "@/i18n";
 import config from "@/config";
 
+export const getStaticPaths = localePaths;
+
 const { socials, posts: postsConfig } = config;
 
-const locale = Astro.currentLocale ?? config.site.lang;
+const locale = resolveLocale(Astro.currentLocale);
 const t = useTranslations(locale);
 
-const posts = await getCollection("posts");
+const home = await getEntry("pages", `${locale}/home`);
+if (!home) {
+  throw new Error(`Missing content entry: src/content/pages/${locale}/home.md`);
+}
+const { Content: HomeIntro } = await render(home);
+
+const posts = await getLocalizedPosts(locale);
 const sortedPosts = getSortedPosts(posts);
 const featuredPosts = sortedPosts.filter(({ data }) => data.featured);
 const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
@@ -39,7 +49,7 @@ const homePath = getRelativeLocaleUrl(locale, "");
       </h1>
       <a
         target="_blank"
-        href={`${import.meta.env.BASE_URL.replace(/\/?$/, "/")}rss.xml`}
+        href={getLocaleFileUrl(locale, "rss.xml")}
         class="inline-block"
         aria-label="RSS Feed"
         title="RSS Feed"
@@ -52,20 +62,9 @@ const homePath = getRelativeLocaleUrl(locale, "");
         <span class="sr-only">RSS Feed</span>
       </a>
 
-      <p>
-        Java와 Spring으로 오래 일한 백엔드 개발자입니다. 최근에는 Kotlin과 이벤트
-        기반 구조를 다루고 있습니다.
-      </p>
-      <p class="mt-2">
-        만들면서 부딪힌 것과 <strong>그때 잰 값</strong>을 남깁니다. 완성된 결과보다
-        무엇이 깨졌고 왜 그랬는지가 더 오래 쓸모 있다고 생각합니다.{" "}
-        <LinkButton
-          class="hover:text-accent underline decoration-dashed underline-offset-4"
-          href="/about/"
-        >
-          소개
-        </LinkButton>
-      </p>
+      <div class="app-prose max-w-none">
+        <HomeIntro />
+      </div>
       {
         socials.length > 0 && (
           <div class="mt-4 flex max-sm:flex-col sm:items-center">

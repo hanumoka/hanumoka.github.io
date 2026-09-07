@@ -2,9 +2,15 @@ import type { APIRoute } from "astro";
 import satori from "satori";
 import sharp from "sharp";
 import { getOgFonts } from "@/utils/getOgFonts";
+import { localePaths, resolveLocale } from "@/utils/locales";
+import { useTranslations } from "@/i18n";
 import config from "@/config";
 
+export const getStaticPaths = localePaths;
+
 export const GET: APIRoute = async context => {
+  const locale = resolveLocale(context.currentLocale);
+  const t = useTranslations(locale);
   const fonts = await getOgFonts(context.url);
 
   const svg = await satori(
@@ -90,7 +96,7 @@ export const GET: APIRoute = async context => {
                             type: "p",
                             props: {
                               style: { fontSize: 28 },
-                              children: config.site.description,
+                              children: t.siteDescription,
                             },
                           },
                         ],

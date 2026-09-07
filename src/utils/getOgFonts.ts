@@ -47,9 +47,9 @@ export async function getOgFonts(url: URL): Promise<OgFont[]> {
       if (path === undefined) {
         throw new Error(`Cannot find the ${family.name} ${weight} font path.`);
       }
-      const buffer = await fetch(
-        experimental_getFontFileURL(path, url)
-      ).then(res => res.arrayBuffer());
+      const buffer = await fetch(experimental_getFontFileURL(path, url)).then(
+        res => res.arrayBuffer()
+      );
 
       fonts.push({ name: family.name, data: buffer, weight, style: "normal" });
     }

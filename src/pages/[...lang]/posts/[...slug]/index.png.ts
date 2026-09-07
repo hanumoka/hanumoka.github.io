@@ -1,5 +1,6 @@
 import type { APIRoute } from "astro";
-import { getCollection } from "astro:content";
+import { getLocalizedPosts } from "@/utils/getLocalizedPosts";
+import { localePaths } from "@/utils/locales";
 import satori from "satori";
 import sharp from "sharp";
 import { getOgFonts } from "@/utils/getOgFonts";
@@ -11,14 +12,25 @@ export async function getStaticPaths() {
     return [];
   }
 
-  const posts = await getCollection("posts").then(p =>
-    p.filter(({ data }) => !data.draft && !data.ogImage)
-  );
+  const routes = [];
 
-  return posts.map(post => ({
-    params: { slug: getPostSlug(post.id, post.filePath) },
-    props: post,
-  }));
+  for (const { params, props } of localePaths()) {
+    const posts = await getLocalizedPosts(props.locale).then(p =>
+      p.filter(({ data }) => !data.ogImage)
+    );
+
+    routes.push(
+      ...posts.map(post => ({
+        params: {
+          lang: params.lang,
+          slug: getPostSlug(post.id, post.filePath),
+        },
+        props: post,
+      }))
+    );
+  }
+
+  return routes;
 }
 
 export const GET: APIRoute = async ({ props, url }) => {
