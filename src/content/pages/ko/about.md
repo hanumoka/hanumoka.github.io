@@ -22,4 +22,5 @@ Java와 Spring으로 오래 일한 백엔드 개발자입니다. 백엔드뿐만
 ## 링크
 
 - [GitHub](https://github.com/hanumoka)
+- [메일](mailto:amagramer@gmail.com)
 - [RSS](/rss.xml)

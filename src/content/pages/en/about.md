@@ -25,4 +25,5 @@ learn from it, and write it down — so I made this one.
 ## Links
 
 - [GitHub](https://github.com/hanumoka)
+- [Email](mailto:amagramer@gmail.com)
 - [RSS](/en/rss.xml)

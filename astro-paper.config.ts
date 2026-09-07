@@ -43,7 +43,12 @@ export default defineAstroPaperConfig({
       mapping: "pathname",
     },
   },
-  socials: [{ name: "github", url: "https://github.com/hanumoka" }],
+  socials: [
+    { name: "github", url: "https://github.com/hanumoka" },
+    // 채용 담당자가 이 사이트를 읽고 연락할 수 있는 유일한 경로다.
+    // GitHub 링크만 있으면 연락 방법이 사실상 없다.
+    { name: "mail", url: "mailto:amagramer@gmail.com" },
+  ],
   // 공유 링크는 두지 않는다. 지금 필요하지 않고, 각 버튼이 외부 도메인을 부른다.
   shareLinks: [],
 });
