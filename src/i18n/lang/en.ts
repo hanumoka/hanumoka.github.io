@@ -72,7 +72,7 @@ export default {
     treeTitle: "Contents",
     treeDesc: "Every series and standalone post in one tree.",
     standalonePosts: "Standalone posts",
-    treeEmpty: "No posts yet.",
+    listEmpty: "No posts yet.",
     seriesOneTitle: "Series",
     seriesOneDesc: "Posts in this series",
 

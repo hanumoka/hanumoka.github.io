@@ -81,7 +81,7 @@ export default {
     treeTitle: "글 구조",
     treeDesc: "연재와 낱글을 한눈에 봅니다.",
     standalonePosts: "낱글",
-    treeEmpty: "아직 글이 없습니다.",
+    listEmpty: "아직 글이 없습니다.",
     seriesOneTitle: "연재",
     seriesOneDesc: "이 연재의 글",
 

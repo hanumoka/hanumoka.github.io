@@ -20,6 +20,12 @@ type Props = {
   description?: string;
   ogImage?: string;
   canonicalURL?: string;
+  /**
+   * 검색엔진에서 뺄 페이지(빈 목록, 404). 켜면 robots noindex 를 내고
+   * canonical·공유 주소·hreflang 을 내지 않는다 — 검색에서 뺄 페이지가 자기 주소나
+   * 언어 짝을 알리면 서로 모순된다.
+   */
+  noindex?: boolean;
 };
 
 const { site } = config;
@@ -32,6 +38,7 @@ const {
   description = layoutT.siteDescription,
   ogImage = resolveDefaultOgImagePath(config, layoutLocale),
   canonicalURL = new URL(Astro.url.pathname, Astro.site).href,
+  noindex = false,
 } = Astro.props;
 
 const socialImageURL = new URL(ogImage, Astro.site ?? Astro.url);
@@ -47,29 +54,31 @@ const pathForAlternates = stripLocale(
   locale
 );
 
-const alternates = (
-  await Promise.all(
-    LOCALES.map(async candidate => {
-      if (candidate === locale) {
-        return { locale: candidate, href: canonicalURL };
-      }
-      const translated = await getTranslatedPath(
-        pathForAlternates,
-        candidate,
-        locale
-      );
-      if (!translated.exact) return null;
-      const href = getRelativeLocaleUrl(
-        candidate,
-        translated.path.replace(/^\//, "")
-      );
-      return {
-        locale: candidate,
-        href: new URL(href, Astro.site ?? Astro.url).href,
-      };
-    })
-  )
-).filter(entry => entry !== null);
+const alternates = noindex
+  ? []
+  : (
+      await Promise.all(
+        LOCALES.map(async candidate => {
+          if (candidate === locale) {
+            return { locale: candidate, href: canonicalURL };
+          }
+          const translated = await getTranslatedPath(
+            pathForAlternates,
+            candidate,
+            locale
+          );
+          if (!translated.exact) return null;
+          const href = getRelativeLocaleUrl(
+            candidate,
+            translated.path.replace(/^\//, "")
+          );
+          return {
+            locale: candidate,
+            href: new URL(href, Astro.site ?? Astro.url).href,
+          };
+        })
+      )
+    ).filter(entry => entry !== null);
 ---
 
 <!doctype html>
@@ -83,7 +92,8 @@ const alternates = (
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/svg+xml" href={getAssetPath("favicon.svg")} />
     <link rel="icon" href={getAssetPath("favicon.ico")} />
-    <link rel="canonical" href={canonicalURL} />
+    {noindex && <meta name="robots" content="noindex, follow" />}
+    {!noindex && <link rel="canonical" href={canonicalURL} />}
     {
       alternates.length > 1 && (
         <>
@@ -129,12 +139,12 @@ const alternates = (
     <meta property="og:site_name" content={site.title} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:url" content={canonicalURL} />
+    {!noindex && <meta property="og:url" content={canonicalURL} />}
     <meta property="og:image" content={socialImageURL} />
 
     <!-- Twitter / X -->
     <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:url" content={canonicalURL} />
+    {!noindex && <meta property="twitter:url" content={canonicalURL} />}
     <meta property="twitter:title" content={title} />
     <meta property="twitter:description" content={description} />
     <meta property="twitter:image" content={socialImageURL} />

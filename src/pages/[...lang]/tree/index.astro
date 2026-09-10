@@ -35,13 +35,16 @@ const total =
   grouped.reduce((sum, g) => sum + g.parts.length, 0) + standalone.length;
 ---
 
-<Layout title={`${t.pages.treeTitle} | ${config.site.title}`}>
+<Layout
+  title={`${t.pages.treeTitle} | ${config.site.title}`}
+  noindex={total === 0}
+>
   <Header />
 
   <Breadcrumb />
 
   <Main pageTitle={t.pages.treeTitle} pageDesc={t.pages.treeDesc}>
-    {total === 0 && <p class="text-muted-foreground">{t.pages.treeEmpty}</p>}
+    {total === 0 && <p class="text-muted-foreground">{t.pages.listEmpty}</p>}
 
     {
       grouped.length > 0 && (

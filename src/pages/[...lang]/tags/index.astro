@@ -22,12 +22,20 @@ const tags = getUniqueTags(posts);
 const t = useTranslations(locale);
 ---
 
-<Layout title={`${t.pages.tagsTitle} | ${config.site.title}`}>
+<Layout
+  title={`${t.pages.tagsTitle} | ${config.site.title}`}
+  noindex={tags.length === 0}
+>
   <Header />
 
   <Breadcrumb />
 
   <Main pageTitle={t.pages.tagsTitle} pageDesc={t.pages.tagsDesc}>
+    {
+      tags.length === 0 && (
+        <p class="text-muted-foreground">{t.pages.listEmpty}</p>
+      )
+    }
     <ul class="flex flex-wrap gap-6">
       {tags.map(({ tag, tagName }) => <Tag {tag} {tagName} />)}
     </ul>

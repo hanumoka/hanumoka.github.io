@@ -7,6 +7,9 @@ import {
 import tailwindcss from "@tailwindcss/vite";
 import mdx from "@astrojs/mdx";
 import sitemap from "@astrojs/sitemap";
+import { existsSync, readFileSync } from "node:fs";
+import { join } from "node:path";
+import { fileURLToPath } from "node:url";
 import { unified } from "@astrojs/markdown-remark";
 import remarkToc from "remark-toc";
 import remarkCollapse from "remark-collapse";
@@ -19,6 +22,22 @@ import {
 import { transformerFileName } from "./src/utils/transformers/fileName";
 import { remarkMermaid } from "./src/utils/remarkMermaid";
 import config from "./astro-paper.config";
+
+// 사이트맵 필터는 HTML 이 다 쓰인 뒤(astro:build:done) 돈다. 그래서 빌드된 페이지에
+// robots noindex 가 붙었는지 직접 읽어 판정할 수 있다. 판정을 두 곳(페이지·설정)에
+// 따로 적지 않으려는 것이다. 기본값 outDir "dist" 와 build.format "directory" 를 전제한다.
+const DIST = fileURLToPath(new URL("./dist/", import.meta.url));
+const isNoindex = (pageUrl: string) => {
+  const file = join(
+    DIST,
+    decodeURIComponent(new URL(pageUrl).pathname),
+    "index.html"
+  );
+  return (
+    existsSync(file) &&
+    /<meta name="robots" content="noindex/.test(readFileSync(file, "utf8"))
+  );
+};
 
 // ★ `site.lang` 이 UI 문자열을 고르고 아래 `i18n.defaultLocale` 이 라우팅을 고른다.
 // 둘이 갈라지면 Astro 가 MissingLocaleError 로 죽는데, 그 메시지만으로는 원인이
@@ -36,7 +55,12 @@ export default defineConfig({
     mdx(),
     sitemap({
       filter: page =>
-        config.features?.showArchives !== false || !page.endsWith("/archives/"),
+        (config.features?.showArchives !== false ||
+          !page.endsWith("/archives/")) &&
+        !isNoindex(page),
+      // 걸러지고 남은 주소끼리만 언어 짝을 짓는다(짝이 둘 이상일 때만 적는다).
+      // 그래서 번역이 없는 글이나 빈 목록을 짝이라고 주장하지 않는다.
+      i18n: { defaultLocale: "ko", locales: { ko: "ko", en: "en" } },
     }),
   ],
   i18n: {

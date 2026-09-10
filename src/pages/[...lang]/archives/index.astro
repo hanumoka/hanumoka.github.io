@@ -30,12 +30,20 @@ const filteredPosts = posts.filter(postFilter);
 const monthFormatter = new Intl.DateTimeFormat(locale, { month: "long" });
 ---
 
-<Layout title={`${t.pages.archivesTitle} | ${config.site.title}`}>
+<Layout
+  title={`${t.pages.archivesTitle} | ${config.site.title}`}
+  noindex={filteredPosts.length === 0}
+>
   <Header />
 
   <Breadcrumb />
 
   <Main pageTitle={t.pages.archivesTitle} pageDesc={t.pages.archivesDesc}>
+    {
+      filteredPosts.length === 0 && (
+        <p class="text-muted-foreground">{t.pages.listEmpty}</p>
+      )
+    }
     {
       Object.entries(
         getPostsByGroupCondition(filteredPosts, post =>
