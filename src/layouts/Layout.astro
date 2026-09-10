@@ -53,7 +53,11 @@ const alternates = (
       if (candidate === locale) {
         return { locale: candidate, href: canonicalURL };
       }
-      const translated = await getTranslatedPath(pathForAlternates, candidate);
+      const translated = await getTranslatedPath(
+        pathForAlternates,
+        candidate,
+        locale
+      );
       if (!translated.exact) return null;
       const href = getRelativeLocaleUrl(
         candidate,

@@ -93,7 +93,7 @@ export default {
     toggleTheme: "Toggle theme",
     switchTo: "Read in {{language}}",
     noTranslationYet:
-      "This post has no translation yet — going to the post list",
+      "No matching page in this language yet — going to the nearest one",
     searchPlaceholder: "Search posts...",
     noResults: "No results found",
     goToPreviousPage: "Go to previous page",

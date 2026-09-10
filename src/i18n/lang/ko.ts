@@ -100,7 +100,7 @@ export default {
     closeMenu: "메뉴 닫기",
     toggleTheme: "밝기 전환",
     switchTo: "{{language}}로 보기",
-    noTranslationYet: "이 글은 아직 번역되지 않아 글 목록으로 갑니다",
+    noTranslationYet: "맞는 번역 페이지가 아직 없어 가까운 페이지로 갑니다",
     searchPlaceholder: "글 검색...",
     noResults: "결과가 없습니다",
     goToPreviousPage: "이전 페이지로",

@@ -38,7 +38,7 @@ const currentPath = stripLocale(pathWithoutTrailingSlash, locale);
 // 지금 보는 것에 대응하는 다른 언어의 경로를 고른다. 대응이 없으면
 // `exact: false` 로 오고, 그때는 그 구역의 목록으로 물러선다.
 const otherLocale = LOCALES.find(candidate => candidate !== locale) ?? locale;
-const translated = await getTranslatedPath(currentPath, otherLocale);
+const translated = await getTranslatedPath(currentPath, otherLocale, locale);
 const otherHref = getRelativeLocaleUrl(
   otherLocale,
   translated.path.replace(/^\//, "")
