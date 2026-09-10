@@ -11,7 +11,6 @@ export default defineAstroPaperConfig({
       "백엔드 개발자 hanumoka의 블로그. 모르는 것과 궁금한 것을 정리하고, 개발자로 일하며 쌓이는 기술부채를 인식하고 학습하고 기록합니다.",
     author: "hanumoka",
     profile: "https://github.com/hanumoka",
-    ogImage: "default-og.jpg",
     lang: "ko",
     timezone: "Asia/Seoul",
     dir: "ltr",

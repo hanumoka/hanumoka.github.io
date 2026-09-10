@@ -130,17 +130,10 @@ interface AstroPaperConfig {
 type ResolvedSiteConfig = Required<
   Pick<
     SiteConfig,
-    | "url"
-    | "title"
-    | "description"
-    | "author"
-    | "lang"
-    | "timezone"
-    | "dir"
-    | "ogImage"
+    "url" | "title" | "description" | "author" | "lang" | "timezone" | "dir"
   >
 > &
-  Pick<SiteConfig, "profile" | "googleVerification">;
+  Pick<SiteConfig, "profile" | "googleVerification" | "ogImage">;
 
 export interface ResolvedAstroPaperConfig {
   site: ResolvedSiteConfig;
