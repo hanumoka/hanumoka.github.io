@@ -10,8 +10,7 @@
   /* 라틴 → Google Sans Code, 한글 → Noto Sans KR, 그 밖 → monospace.
    * 순서가 곧 규칙이다. 앞의 변수가 generic family로 끝나면 뒤가 죽으므로
    * 두 폰트 모두 `astro.config.ts`에서 `fallbacks: []`로 두었다. */
-  --font-app:
-    var(--font-google-sans-code), var(--font-noto-sans-kr), monospace;
+  --font-app: var(--font-google-sans-code), var(--font-noto-sans-kr), monospace;
 }
 
 /* ===== 팔레트: 기판(board) — 구리 =====

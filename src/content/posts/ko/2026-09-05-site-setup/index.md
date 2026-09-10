@@ -12,11 +12,11 @@ tags: [astro, github-pages, ci]
 
 ## 구성
 
-| 층 | 무엇 |
-|---|---|
-| 생성기 | Astro 7 |
-| 배포 | GitHub Actions → GitHub Pages |
-| 폰트 | 시스템 폰트만 |
+| 층     | 무엇                                        |
+| ------ | ------------------------------------------- |
+| 생성기 | Astro 7                                     |
+| 배포   | GitHub Actions → GitHub Pages               |
+| 폰트   | 시스템 폰트만                               |
 | 의존성 | `astro`, `@astrojs/sitemap`, `@astrojs/rss` |
 
 ## Gatsby를 버렸다

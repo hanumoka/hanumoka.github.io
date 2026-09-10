@@ -15,6 +15,12 @@
       "options": {
         "parser": "astro"
       }
+    },
+    {
+      "files": "*.md",
+      "options": {
+        "embeddedLanguageFormatting": "off"
+      }
     }
   ]
 }

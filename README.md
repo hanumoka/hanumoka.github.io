@@ -4,13 +4,13 @@
 
 ## 스택
 
-| 층 | 무엇 |
-|---|---|
-| 생성기 | **Astro 7** |
-| 테마 | **[AstroPaper](https://github.com/satnaing/astro-paper)** (MIT, Sat Naing) 을 고쳐서 사용 |
-| 배포 | GitHub Actions → GitHub Pages |
-| 검색 | Pagefind (테마 기본값) |
-| 스타일 | Tailwind CSS 4 |
+| 층     | 무엇                                                                                      |
+| ------ | ----------------------------------------------------------------------------------------- |
+| 생성기 | **Astro 7**                                                                               |
+| 테마   | **[AstroPaper](https://github.com/satnaing/astro-paper)** (MIT, Sat Naing) 을 고쳐서 사용 |
+| 배포   | GitHub Actions → GitHub Pages                                                             |
+| 검색   | Pagefind (테마 기본값)                                                                    |
+| 스타일 | Tailwind CSS 4                                                                            |
 
 라이선스와 제3자 고지는 [`LICENSE`](LICENSE)와
 [`THIRD-PARTY-NOTICES.md`](THIRD-PARTY-NOTICES.md)에 있다. **공개 저장소는 그 자체로
@@ -63,18 +63,17 @@ src/content/posts/ko/2026-09-07-media-test/
 언어는 그 위 단계다 — 한국어는 `posts/ko/`, 영어는 `posts/en/`. **같은 폴더
 이름이 같은 글의 두 언어판**이다.
 
-
 ```markdown
 ---
-title: '제목'
-description: '목록과 메타 설명에 쓰는 한 문장'
+title: "제목"
+description: "목록과 메타 설명에 쓰는 한 문장"
 pubDatetime: 2026-09-05T16:00:00+09:00
-modDatetime: 2026-09-10T09:00:00+09:00   # 선택
+modDatetime: 2026-09-10T09:00:00+09:00 # 선택
 tags: [git, windows]
-kind: troubleshooting                    # 선택 — 아래 참조
-sourceNote: 'docs/knowledge/…'           # 선택 — 파생 추적
-featured: false                          # 선택
-draft: false                             # true면 배포 제외
+kind: troubleshooting # 선택 — 아래 참조
+sourceNote: "docs/knowledge/…" # 선택 — 파생 추적
+featured: false # 선택
+draft: false # true면 배포 제외
 ---
 ```
 
@@ -107,10 +106,10 @@ frontmatter는 Zod 스키마로 검사하며 **어기면 빌드가 실패한다.
 
 ### 테마에 없는 필드 둘을 더했다
 
-| 필드 | 왜 |
-|---|---|
-| `kind` | 비공개 문서 허브의 지식 노트 `kind` 계약과 대응시킨다. `til` · `troubleshooting` · `concept` · `snippet` · `agent-issue` |
-| `sourceNote` | 이 글이 허브의 어느 노트에서 나왔는지 기록한다 |
+| 필드         | 왜                                                                                                                       |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------ |
+| `kind`       | 비공개 문서 허브의 지식 노트 `kind` 계약과 대응시킨다. `til` · `troubleshooting` · `concept` · `snippet` · `agent-issue` |
+| `sourceNote` | 이 글이 허브의 어느 노트에서 나왔는지 기록한다                                                                           |
 
 ## 콘텐츠는 어디서 오는가
 
@@ -128,14 +127,14 @@ frontmatter는 Zod 스키마로 검사하며 **어기면 빌드가 실패한다.
 - **`i18n.locales`를 설정에서 파생.**
 
 ★ **Pagefind는 한국어를 형태소 분석하지 않는다.** 빌드 로그도 그렇게 말한다 —
-*"Pagefind doesn't support stemming for the language ko."* 그래도 쓸 만한 이유는
+_"Pagefind doesn't support stemming for the language ko."_ 그래도 쓸 만한 이유는
 **접두 일치**가 조사 문제를 덮기 때문이다. 2026-09-05 실측:
 
-| 질의 | 결과 |
-|---|---|
+| 질의   | 결과                                       |
+| ------ | ------------------------------------------ |
 | `검사` | ✅ `검사가` · `검사는` · `검사한다`를 찾음 |
-| `배포` | ✅ `배포라서` · `배포에서`를 찾음 |
-| `뜨린` | ❌ 어절 중간부터는 못 찾음 |
+| `배포` | ✅ `배포라서` · `배포에서`를 찾음          |
+| `뜨린` | ❌ 어절 중간부터는 못 찾음                 |
 
 한계는 복합어 중간 매칭 하나다(`배포`로 `재배포`를 못 찾는다).
 

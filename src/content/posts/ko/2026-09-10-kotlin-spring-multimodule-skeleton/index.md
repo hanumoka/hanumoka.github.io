@@ -91,12 +91,12 @@ hanumoka-be/
 
 ## 0단계. 준비
 
-| 필요한 것     | 이유                                                                                     |
-| ------------- | ---------------------------------------------------------------------------------------- |
+| 필요한 것     | 이유                                                                                   |
+| ------------- | -------------------------------------------------------------------------------------- |
 | JDK 17 이상   | Gradle 9를 실행하는 데 필요하다. 컴파일용 JDK 25는 없어도 된다. 3단계 설정이 받아 온다 |
 | Gradle 설치본 | 1단계에서 래퍼를 만들 때 한 번만 쓴다. 그 뒤로는 래퍼(`./gradlew`)만 쓴다              |
-| Git           | 2단계와 9단계에서 쓴다                                                                   |
-| curl          | 7단계 확인에 쓴다                                                                        |
+| Git           | 2단계와 9단계에서 쓴다                                                                 |
+| curl          | 7단계 확인에 쓴다                                                                      |
 
 이 글의 명령은 Git Bash, macOS, Linux 기준이다. Windows PowerShell에서는 `./gradlew` 대신 `.\gradlew`를 친다.
 
@@ -419,11 +419,11 @@ dependencies {
 }
 ```
 
-| 플러그인                  | 쓰는 모듈                  | 더하는 것                                          |
-| ------------------------- | -------------------------- | -------------------------------------------------- |
-| `hanumoka.kotlin-base`    | 스프링을 모르는 모듈       | Kotlin, 좌표, 툴체인 25, 테스트 러너               |
-| `hanumoka.spring-library` | `service/*`                | 위 + 스프링. Boot 플러그인 없이 BOM을 직접 가져옴 |
-| `hanumoka.spring-app`     | `app/*`                    | 위 + Boot 플러그인. BOM은 Boot 플러그인이 넣어 줌  |
+| 플러그인                  | 쓰는 모듈            | 더하는 것                                         |
+| ------------------------- | -------------------- | ------------------------------------------------- |
+| `hanumoka.kotlin-base`    | 스프링을 모르는 모듈 | Kotlin, 좌표, 툴체인 25, 테스트 러너              |
+| `hanumoka.spring-library` | `service/*`          | 위 + 스프링. Boot 플러그인 없이 BOM을 직접 가져옴 |
+| `hanumoka.spring-app`     | `app/*`              | 위 + Boot 플러그인. BOM은 Boot 플러그인이 넣어 줌 |
 
 `spring-library`에서 BOM을 직접 가져오는 것은 Boot 플러그인을 뺀 대가다. Boot 플러그인과 `io.spring.dependency-management`가 함께 있으면 BOM이 자동으로 들어오지만, Boot 플러그인이 없으면 들어오지 않는다. 그 상태로 두면 모든 의존성에 버전을 손으로 적어야 한다.
 
@@ -591,11 +591,11 @@ Tomcat started on port 8080 (http) with context path '/'
 
 **실패하면**
 
-| 증상                                                                                    | 원인                                                | 대응                                          |
-| --------------------------------------------------------------------------------------- | --------------------------------------------------- | --------------------------------------------- |
-| `Cannot find a Java installation on your machine (...) matching: {languageVersion=25, ...}` | JDK 25가 없고 받아 올 주소도 없다                   | 3단계의 foojay 플러그인이 있는지 본다         |
-| `Main class name has not been configured and it could not be resolved from classpath`  | `main`이 없는 모듈에 Boot 플러그인이 적용돼 있다    | 그 모듈을 `hanumoka.spring-library`로 바꾼다 |
-| 앱은 뜨는데 도메인 모듈의 빈을 못 찾는다                                                | `scanBasePackages`에 그 패키지가 없다               | 목록에 패키지를 더한다                        |
+| 증상                                                                                        | 원인                                             | 대응                                         |
+| ------------------------------------------------------------------------------------------- | ------------------------------------------------ | -------------------------------------------- |
+| `Cannot find a Java installation on your machine (...) matching: {languageVersion=25, ...}` | JDK 25가 없고 받아 올 주소도 없다                | 3단계의 foojay 플러그인이 있는지 본다        |
+| `Main class name has not been configured and it could not be resolved from classpath`       | `main`이 없는 모듈에 Boot 플러그인이 적용돼 있다 | 그 모듈을 `hanumoka.spring-library`로 바꾼다 |
+| 앱은 뜨는데 도메인 모듈의 빈을 못 찾는다                                                    | `scanBasePackages`에 그 패키지가 없다            | 목록에 패키지를 더한다                       |
 
 ## 7단계. HTTP와 JSON이 오가는지 확인
 
@@ -817,12 +817,12 @@ class JacksonKotlinModuleTest @Autowired constructor(
 
 Boot 3에서 쓰던 좌표를 그대로 적으면 이 단계에서 컴파일이 깨진다.
 
-| 무엇                           | Boot 3                                                     | Boot 4                                               |
-| ------------------------------ | ---------------------------------------------------------- | ---------------------------------------------------- |
+| 무엇                           | Boot 3                                                    | Boot 4                                               |
+| ------------------------------ | --------------------------------------------------------- | ---------------------------------------------------- |
 | `@AutoConfigureMockMvc` 패키지 | `org.springframework.boot.test.autoconfigure.web.servlet` | `org.springframework.boot.webmvc.test.autoconfigure` |
-| 그 애노테이션이 든 아티팩트    | `spring-boot-test-autoconfigure` (starter-test에 포함)     | `spring-boot-webmvc-test` (starter-test에 없음)      |
-| Jackson Kotlin 모듈 그룹       | `com.fasterxml.jackson.module`                             | `tools.jackson.module`                               |
-| `ObjectMapper` 패키지          | `com.fasterxml.jackson.databind`                           | `tools.jackson.databind`                             |
+| 그 애노테이션이 든 아티팩트    | `spring-boot-test-autoconfigure` (starter-test에 포함)    | `spring-boot-webmvc-test` (starter-test에 없음)      |
+| Jackson Kotlin 모듈 그룹       | `com.fasterxml.jackson.module`                            | `tools.jackson.module`                               |
+| `ObjectMapper` 패키지          | `com.fasterxml.jackson.databind`                          | `tools.jackson.databind`                             |
 
 좌표를 기억에 의존해 찾기보다 classpath를 직접 보는 편이 빠르다. 다음 두 명령은 버전이 바뀌어도 그대로 쓸 수 있다.
 
@@ -901,10 +901,10 @@ curl이 응답을 받았다고 해서 방금 띄운 서버가 응답한 것은 �
 
 규칙 다섯은 문서에만 있으면 지켜지지 않는다. 검사를 둘 두고, 두 검사가 보는 것은 서로 다르다.
 
-| 검사                     | 보는 것                                                         | 위치                                 |
-| ------------------------ | --------------------------------------------------------------- | ------------------------------------ |
+| 검사                     | 보는 것                                                        | 위치                                   |
+| ------------------------ | -------------------------------------------------------------- | -------------------------------------- |
 | `checkLayerDependencies` | 모듈이 모듈을 의존하는가 (`build.gradle.kts`의 `project(...)`) | `buildSrc`. 모든 모듈의 `check`에 붙음 |
-| `LayerDependencyTest`    | 클래스가 클래스를 참조하는가                                    | `app-monolith`의 테스트. ArchUnit    |
+| `LayerDependencyTest`    | 클래스가 클래스를 참조하는가                                   | `app-monolith`의 테스트. ArchUnit      |
 
 둘 다 필요하다. 예를 들어 주문 도메인 클래스를 실수로 `app` 모듈 안에 만들면 모듈 의존은 그대로이므로 앞의 검사는 아무 말도 못 한다. 클래스 참조를 보는 뒤의 검사만 이것을 잡는다.
 
@@ -1145,16 +1145,16 @@ foojay 플러그인을 뺀 설정으로 돌리면 3단계에 적은 오류로 �
 
 ## 겪은 실패 모음
 
-| 증상                                                                                 | 원인                                                        | 단계 |
-| ------------------------------------------------------------------------------------ | ----------------------------------------------------------- | ---- |
-| `Directory '...' does not contain a Gradle build.`                                   | 설정 파일 없이 `gradle wrapper`를 쳤다                      | 1    |
-| `Configuring project ':app:app-monolith' without an existing directory is not allowed.` | 디렉터리를 만들기 전에 `include`했다                        | 3    |
-| `Toolchain download repositories have not been configured.`                          | JDK 25가 없고 foojay 플러그인도 없다                        | 3    |
-| 관례 플러그인을 쓰는 모듈에서 `Unresolved reference 'implementation'`               | 블록 주석 안의 `app/*`가 주석을 하나 더 열었다              | 4    |
-| 커밋은 됐는데 클론한 빌드만 깨진다                                                   | `.gitignore`의 `build/`가 같은 이름의 소스 패키지를 무시했다 | 2, 9 |
-| `Main class name has not been configured ...`                                        | `main`이 없는 모듈에 Boot 플러그인이 적용됐다               | 6    |
-| `@AutoConfigureMockMvc`를 찾지 못한다                                                | Boot 4에서 `spring-boot-webmvc-test`로 옮겨 갔다            | 7    |
-| `` MismatchedInputException: Cannot map `null` into type `int` ``                     | jackson-module-kotlin 없이 Kotlin 기본값을 썼다             | 7    |
+| 증상                                                                                    | 원인                                                         | 단계 |
+| --------------------------------------------------------------------------------------- | ------------------------------------------------------------ | ---- |
+| `Directory '...' does not contain a Gradle build.`                                      | 설정 파일 없이 `gradle wrapper`를 쳤다                       | 1    |
+| `Configuring project ':app:app-monolith' without an existing directory is not allowed.` | 디렉터리를 만들기 전에 `include`했다                         | 3    |
+| `Toolchain download repositories have not been configured.`                             | JDK 25가 없고 foojay 플러그인도 없다                         | 3    |
+| 관례 플러그인을 쓰는 모듈에서 `Unresolved reference 'implementation'`                   | 블록 주석 안의 `app/*`가 주석을 하나 더 열었다               | 4    |
+| 커밋은 됐는데 클론한 빌드만 깨진다                                                      | `.gitignore`의 `build/`가 같은 이름의 소스 패키지를 무시했다 | 2, 9 |
+| `Main class name has not been configured ...`                                           | `main`이 없는 모듈에 Boot 플러그인이 적용됐다                | 6    |
+| `@AutoConfigureMockMvc`를 찾지 못한다                                                   | Boot 4에서 `spring-boot-webmvc-test`로 옮겨 갔다             | 7    |
+| `` MismatchedInputException: Cannot map `null` into type `int` ``                       | jackson-module-kotlin 없이 Kotlin 기본값을 썼다              | 7    |
 
 ## 여기서 멈춘 것
 

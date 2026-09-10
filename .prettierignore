@@ -11,7 +11,8 @@
 !.prettierrc
 !eslint.config.js
 !README.md
-!.vscode
+!astro-paper.config.ts
+!/scripts
 
 # Ignore MDX files
 *.mdx
