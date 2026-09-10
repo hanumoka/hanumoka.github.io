@@ -117,43 +117,24 @@ export default defineConfig({
       fallbacks: [],
       weights: [300, 400, 500, 600, 700],
       styles: ["normal", "italic"],
-      formats: ["woff", "ttf"],
-    },
-    {
-      // 이 폰트가 한글 본문을 담당한다. Google Sans Code는 라틴 전용이라
-      // 한글 글리프가 하나도 없고(cmap 확인: A 있음 / 가·한·ㄱ 없음),
-      // 그동안 한글은 브라우저 기본 monospace로 떨어지고 있었다.
-      name: "Noto Sans KR",
-      cssVariable: "--font-noto-sans-kr",
-      provider: fontProviders.google(),
-      // 한글만 받는다. 라틴은 앞의 Google Sans Code가 이미 담당한다.
-      subsets: ["korean"],
-      // ★ 400 하나만 적는다. 굵게를 포기한 것이 아니라 이 폰트로는 못 받는다.
-      //
-      // Google Fonts의 Noto Sans KR은 **가변 폰트**라 wght 400과 700이 같은
-      // 파일 124개를 가리킨다(직접 조회해 확인). Astro가 중복을 합쳐 얼굴을
-      // 하나만 내고 `font-weight: 400`으로 적으므로, 굵은 한글은 브라우저가
-      // 합성해 그린다. `[400, 700]`·`["400 700"]`·`["100 900"]` 셋 다 시도했고
-      // 전부 400 하나만 나왔다.
-      //
-      // ★ 진짜 굵기를 원하면 `provider`를 `fontProviders.fontsource()`로 바꾸면
-      // 된다. 400·700이 각각 실제 파일로 온다. **대신 unicode-range 분할이
-      // 사라진다** — 실측으로 방문당 내려받는 양이 이렇게 갈렸다.
-      //
-      //   google     : 조각 120개 중 필요한 것만 →   270 KB (합성 굵게)
-      //   fontsource : 통짜 두 벌            → 1,075 KB (진짜 굵게)
-      //
-      // 4배 차이라 작은 쪽을 골랐다. 굵기 품질이 더 중요하다고 판단하면
-      // 이 한 줄만 바꾸면 되돌아간다.
-      weights: [400],
-      styles: ["normal"],
-      fallbacks: [],
-      // woff2 하나만 받는다. 2016년 이후 모든 대상 브라우저가 지원하고,
-      // 포맷을 셋으로 두었더니 폰트 산출물이 31MB가 됐다.
+      // 웹용은 woff2 만 받는다. 공유 이미지(satori)는 woff2 를 못 읽으므로 ttf 는
+      // 아래 `--font-google-sans-code-og` 항목이 따로 받는다.
       formats: ["woff2"],
     },
     {
-      // ★ OG 이미지(satori) 전용. 위 항목과 같은 폰트지만 통짜 ttf 로 받는다.
+      // ★ OG 이미지(satori) 전용. satori 는 woff2 를 읽지 못해 ttf 를 받는다.
+      // `<Font>` 를 걸지 않으므로 방문자는 이 파일을 받지 않는다.
+      name: "Google Sans Code",
+      cssVariable: "--font-google-sans-code-og",
+      provider: fontProviders.google(),
+      fallbacks: [],
+      weights: [400, 700],
+      styles: ["normal"],
+      formats: ["ttf"],
+    },
+    {
+      // ★ OG 이미지(satori) 전용 한글. 브라우저용 한글은 Layout.astro 가 가져오는
+      // Fontsource CSS 가 따로 싣는다. 이쪽은 통짜 ttf 를 받는다.
       // satori 는 woff2 를 읽지 못하고, unicode-range 조각 하나에는 제목의
       // 글자가 다 들어 있지도 않기 때문이다.
       //

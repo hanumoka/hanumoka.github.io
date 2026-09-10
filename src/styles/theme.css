@@ -9,8 +9,16 @@
   --color-border: var(--border);
   /* 라틴 → Google Sans Code, 한글 → Noto Sans KR, 그 밖 → monospace.
    * 순서가 곧 규칙이다. 앞의 변수가 generic family로 끝나면 뒤가 죽으므로
-   * 두 폰트 모두 `astro.config.ts`에서 `fallbacks: []`로 두었다. */
+   * Google Sans Code는 `astro.config.ts`에서 `fallbacks: []`로 두었다.
+   * 한글 폰트는 이름만 적으므로(아래 :root) 폴백이 붙지 않는다. */
   --font-app: var(--font-google-sans-code), var(--font-noto-sans-kr), monospace;
+}
+
+/* 한글 본문 폰트의 이름. 선언(@font-face)은 Layout.astro 가 가져오는
+ * `@fontsource/noto-sans-kr/400.css` 에 있다. Astro <Font> 를 쓸 때는 그
+ * 컴포넌트가 이 변수를 정의했으므로, 옮기면서 여기서 직접 정의한다. */
+:root {
+  --font-noto-sans-kr: "Noto Sans KR";
 }
 
 /* ===== 팔레트: 기판(board) — 구리 =====
