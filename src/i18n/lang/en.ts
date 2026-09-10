@@ -11,6 +11,12 @@ export default {
     search: "Search",
   },
   post: {
+    copyCode: "Copy",
+    copied: "Copied",
+    zoomImage: "Zoom image",
+    imagePreview: "Image preview",
+    closeImagePreview: "Close image preview",
+    byAuthor: "by {{author}}",
     comments: "Comments",
     publishedAt: "Published at",
     updatedAt: "Updated",
@@ -33,6 +39,7 @@ export default {
     page: "Page",
   },
   home: {
+    rssFeed: "RSS Feed",
     socialLinks: "Social Links",
     featured: "Featured",
     recentPosts: "Recent Posts",
@@ -87,6 +94,12 @@ export default {
     "agent-issue": "Agent issue",
   },
   a11y: {
+    pagination: "Pagination",
+    breadcrumb: "Breadcrumb",
+    sendEmail: "Send an email to {{site}}",
+    socialOn: "{{site}} on {{platform}}",
+    switchToDark: "Switch to dark theme",
+    switchToLight: "Switch to light theme",
     skipToContent: "Skip to content",
     openMenu: "Open menu",
     closeMenu: "Close menu",

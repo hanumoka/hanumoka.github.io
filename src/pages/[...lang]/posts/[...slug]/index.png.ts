@@ -1,6 +1,7 @@
 import type { APIRoute } from "astro";
 import { getLocalizedPosts } from "@/utils/getLocalizedPosts";
-import { localePaths } from "@/utils/locales";
+import { getEntryLocale, localePaths } from "@/utils/locales";
+import { useTranslations } from "@/i18n";
 import satori from "satori";
 import sharp from "sharp";
 import { getOgFonts } from "@/utils/getOgFonts";
@@ -34,6 +35,11 @@ export async function getStaticPaths() {
 }
 
 export const GET: APIRoute = async ({ props, url }) => {
+  // 작성자 앞말을 글의 언어로 쓴다. 이름은 아래에서 굵게 따로 그리므로
+  // 템플릿의 `{{author}}` 앞부분만 쓴다.
+  const byPrefix = useTranslations(
+    getEntryLocale((props as { id: string }).id)
+  ).post.byAuthor.split("{{author}}")[0];
   if (!config.features.dynamicOgImage) {
     return new Response(null, { status: 404, statusText: "Not found" });
   }
@@ -124,7 +130,7 @@ export const GET: APIRoute = async ({ props, url }) => {
                             type: "span",
                             props: {
                               children: [
-                                "by ",
+                                byPrefix,
                                 {
                                   type: "span",
                                   props: {

@@ -17,6 +17,12 @@ export default {
     search: "검색",
   },
   post: {
+    copyCode: "복사",
+    copied: "복사됨",
+    zoomImage: "이미지 크게 보기",
+    imagePreview: "이미지 미리보기",
+    closeImagePreview: "이미지 미리보기 닫기",
+    byAuthor: "글쓴이 {{author}}",
     comments: "댓글",
     publishedAt: "작성",
     updatedAt: "수정",
@@ -39,6 +45,7 @@ export default {
     page: "페이지",
   },
   home: {
+    rssFeed: "RSS 피드",
     socialLinks: "링크",
     featured: "골라 둔 글",
     recentPosts: "최근 글",
@@ -95,6 +102,12 @@ export default {
     "agent-issue": "AI 도구 이슈",
   },
   a11y: {
+    pagination: "쪽 이동",
+    breadcrumb: "현재 위치",
+    sendEmail: "{{site}}에게 메일 보내기",
+    socialOn: "{{platform}}의 {{site}}",
+    switchToDark: "어두운 화면으로 바꾸기",
+    switchToLight: "밝은 화면으로 바꾸기",
     skipToContent: "본문으로 건너뛰기",
     openMenu: "메뉴 열기",
     closeMenu: "메뉴 닫기",

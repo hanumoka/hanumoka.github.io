@@ -10,6 +10,13 @@ export interface UIStrings {
     search: string;
   };
   post: {
+    copyCode: string;
+    copied: string;
+    zoomImage: string;
+    imagePreview: string;
+    closeImagePreview: string;
+    /** 공유 이미지의 작성자 표기. `{{author}}` 자리에 이름이 들어간다. */
+    byAuthor: string;
     /** 글 아래 댓글 구역의 제목. */
     comments: string;
     publishedAt: string;
@@ -36,6 +43,7 @@ export interface UIStrings {
     page: string;
   };
   home: {
+    rssFeed: string;
     socialLinks: string;
     featured: string;
     recentPosts: string;
@@ -106,6 +114,14 @@ export interface UIStrings {
     "agent-issue": string;
   };
   a11y: {
+    pagination: string;
+    breadcrumb: string;
+    /** `{{site}}` */
+    sendEmail: string;
+    /** `{{site}}` · `{{platform}}` */
+    socialOn: string;
+    switchToDark: string;
+    switchToLight: string;
     skipToContent: string;
     openMenu: string;
     closeMenu: string;

@@ -51,15 +51,15 @@ const homePath = getRelativeLocaleUrl(locale, "");
         target="_blank"
         href={getLocaleFileUrl(locale, "rss.xml")}
         class="inline-block"
-        aria-label="RSS Feed"
-        title="RSS Feed"
+        aria-label={t.home.rssFeed}
+        title={t.home.rssFeed}
       >
         <IconRss
           width={20}
           height={20}
           class="stroke-accent scale-125 stroke-3 rtl:-rotate-90"
         />
-        <span class="sr-only">RSS Feed</span>
+        <span class="sr-only">{t.home.rssFeed}</span>
       </a>
 
       <div class="app-prose max-w-none">

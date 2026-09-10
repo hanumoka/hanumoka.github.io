@@ -160,6 +160,11 @@ const ogImage = ogImageUrl
 
     <article
       id="article"
+      data-label-copy={t.post.copyCode}
+      data-label-copied={t.post.copied}
+      data-label-zoom={t.post.zoomImage}
+      data-label-preview={t.post.imagePreview}
+      data-label-close={t.post.closeImagePreview}
       class:list={[
         "mt-8 w-full",
         "app-prose max-w-app",
@@ -263,7 +268,10 @@ const ogImage = ogImageUrl
   addHeadingLinks();
 
   function attachCopyButtons() {
-    const copyButtonLabel = "Copy";
+    // 이 스크립트는 is:inline 이라 번역 모듈을 가져올 수 없다. 라벨은
+    // <article> 의 data-label-* 로 받는다(서버가 페이지 언어로 채운다).
+    const labels = document.getElementById("article")?.dataset ?? {};
+    const copyButtonLabel = labels.labelCopy ?? "Copy";
     // 다이어그램은 코드가 아니라 그림이다. 복사 버튼을 붙일 것이 없고,
     // 붙이면 그 글자가 `<pre>` 의 텍스트에 섞여 mermaid 가 문법 오류를 낸다.
     const codeBlocks = Array.from(
@@ -302,7 +310,7 @@ const ogImage = ogImageUrl
 
       await navigator.clipboard.writeText(text ?? "");
 
-      button.innerText = "Copied";
+      button.innerText = labels.labelCopied ?? "Copied";
 
       setTimeout(() => {
         button.innerText = copyButtonLabel;
@@ -319,6 +327,10 @@ const ogImage = ogImageUrl
     const prefersReducedMotion = () =>
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+    const zoomLabel = article.dataset.labelZoom ?? "Zoom image";
+    const previewLabel = article.dataset.labelPreview ?? "Image preview";
+    const closeLabel = article.dataset.labelClose ?? "Close image preview";
+
     let overlay = null;
     let lastFocused = null;
 
@@ -333,7 +345,7 @@ const ogImage = ogImageUrl
         image.setAttribute("aria-haspopup", "dialog");
         image.setAttribute(
           "aria-label",
-          image.alt ? `Zoom image: ${image.alt}` : "Zoom image"
+          image.alt ? `${zoomLabel}: ${image.alt}` : zoomLabel
         );
       }
     });
@@ -347,14 +359,14 @@ const ogImage = ogImageUrl
       overlay.setAttribute("aria-modal", "true");
       overlay.setAttribute(
         "aria-label",
-        alt ? `Image preview: ${alt}` : "Image preview"
+        alt ? `${previewLabel}: ${alt}` : previewLabel
       );
       overlay.className =
         "fixed inset-0 z-50 flex cursor-zoom-out items-center justify-center bg-black/70 backdrop-blur-sm opacity-0 transition-opacity duration-200 motion-reduce:transition-none";
 
       const closeButton = document.createElement("button");
       closeButton.type = "button";
-      closeButton.setAttribute("aria-label", "Close image preview");
+      closeButton.setAttribute("aria-label", closeLabel);
       closeButton.className =
         "absolute end-4 top-4 rounded p-2 text-3xl leading-none text-white";
       closeButton.innerHTML = "&#10005;";

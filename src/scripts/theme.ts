@@ -24,7 +24,13 @@ function reflect(): void {
   const root = document.firstElementChild;
   root?.setAttribute("data-theme", themeValue);
   root?.classList.toggle("dark", themeValue === DARK);
-  document.querySelector("#theme-btn")?.setAttribute("aria-label", themeValue);
+  // 지금 상태가 아니라 누르면 할 일을 읽어 준다. 라벨은 Header 가 번역해 넣는다.
+  const button = document.querySelector<HTMLElement>("#theme-btn");
+  const label =
+    themeValue === DARK
+      ? button?.dataset.labelToLight
+      : button?.dataset.labelToDark;
+  if (button && label) button.setAttribute("aria-label", label);
 
   // Fill <meta name="theme-color"> with the computed background colour so
   // Android's browser chrome matches the page background.

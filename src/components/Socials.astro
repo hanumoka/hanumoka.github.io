@@ -1,8 +1,18 @@
 ---
 import config from "@/config";
+import { tplStr, useTranslations } from "@/i18n";
+import { resolveLocale } from "@/utils/locales";
 import LinkButton from "./LinkButton.astro";
 
 const { site, socials } = config;
+const t = useTranslations(resolveLocale(Astro.currentLocale));
+
+/** 화면에 쓰는 서비스 이름. 식별자 첫 글자만 대문자로 바꾸면 "Github" 가 된다. */
+const PLATFORM_NAMES: Record<string, string> = {
+  github: "GitHub",
+  linkedin: "LinkedIn",
+  x: "X",
+};
 
 const icons = import.meta.glob<{
   default: (_props: Record<string, unknown>) => unknown;
@@ -15,8 +25,13 @@ const items = await Promise.all(
     const title =
       linkTitle ??
       (url.startsWith("mailto:") || name === "mail"
-        ? `Send an email to ${site.title}`
-        : `${site.title} on ${name.charAt(0).toUpperCase() + name.slice(1)}`);
+        ? tplStr(t.a11y.sendEmail, { site: site.title })
+        : tplStr(t.a11y.socialOn, {
+            site: site.title,
+            platform:
+              PLATFORM_NAMES[name] ??
+              name.charAt(0).toUpperCase() + name.slice(1),
+          }));
     return { url, title, Icon };
   })
 );
