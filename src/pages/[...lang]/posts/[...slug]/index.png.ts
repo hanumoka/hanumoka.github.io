@@ -16,9 +16,11 @@ export async function getStaticPaths() {
   const routes = [];
 
   for (const { params, props } of localePaths()) {
-    const posts = await getLocalizedPosts(props.locale).then(p =>
-      p.filter(({ data }) => !data.ogImage)
-    );
+    // 초안 글 페이지도 `{slug}/index.png` 를 og:image 로 쓴다. 정식만 만들면
+    // 그 PNG 가 없어 check:dist 가 실패한다.
+    const posts = await getLocalizedPosts(props.locale, {
+      includeDrafts: true,
+    }).then(p => p.filter(({ data }) => !data.ogImage));
 
     routes.push(
       ...posts.map(post => ({

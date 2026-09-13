@@ -10,6 +10,7 @@ import Footer from "@/components/Footer.astro";
 import Datetime from "@/components/Datetime.astro";
 import Tag from "@/components/Tag.astro";
 import { getPostSlug, getPostUrl } from "@/utils/getPostPaths";
+import { hasOfficialTerm } from "@/utils/hasListingEntries";
 import { getSortedDrafts, getSortedPosts } from "@/utils/getSortedPosts";
 import { slugifyStr } from "@/utils/slugify";
 import { toTransitionName } from "@/utils/toTransitionName";
@@ -97,6 +98,8 @@ const {
 } = post.data;
 
 const t = useTranslations(locale);
+const kindListed = kind ? await hasOfficialTerm("kinds", locale, kind) : false;
+const kindLabel = kind ? (t.kinds[kind as keyof typeof t.kinds] ?? kind) : "";
 
 const { Content } = await render(post);
 
@@ -194,12 +197,18 @@ const ogImage = ogImageUrl
       {
         kind && (
           <li>
-            <a
-              href={getRelativeLocaleUrl(locale, `kinds/${kind}/`)}
-              class="border-foreground hover:border-accent hover:text-accent rounded-full border px-2.5 py-0.5 text-sm"
-            >
-              {t.kinds[kind as keyof typeof t.kinds] ?? kind}
-            </a>
+            {kindListed ? (
+              <a
+                href={getRelativeLocaleUrl(locale, `kinds/${kind}/`)}
+                class="border-foreground hover:border-accent hover:text-accent rounded-full border px-2.5 py-0.5 text-sm"
+              >
+                {kindLabel}
+              </a>
+            ) : (
+              <span class="border-foreground rounded-full border px-2.5 py-0.5 text-sm">
+                {kindLabel}
+              </span>
+            )}
           </li>
         )
       }
