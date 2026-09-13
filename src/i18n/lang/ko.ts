@@ -15,6 +15,7 @@ export default {
     about: "소개",
     archives: "아카이브",
     search: "검색",
+    drafts: "초안",
   },
   post: {
     copyCode: "복사",
@@ -38,6 +39,9 @@ export default {
     inSeries: "연재 「{{series}}」",
     seriesPosition: "{{total}}편 중 {{index}}번째",
     currentPost: "지금 읽는 글",
+    draftBadge: "초안",
+    draftNotice:
+      "아직 소유자가 검토하고 실습해 확인하지 않은 글입니다. 학습 기록이 아니라, 확인 전의 글입니다.",
   },
   pagination: {
     prev: "이전",
@@ -68,7 +72,11 @@ export default {
     tagsDesc: "글에 쓰인 태그 전체입니다.",
 
     postsTitle: "글",
-    postsDesc: "지금까지 쓴 글 전체입니다.",
+    postsDesc: "소유자가 검토하고 실습해 확인한 글입니다.",
+
+    draftsTitle: "초안",
+    draftsDesc:
+      "아직 소유자가 확인하지 않은 글입니다. 특히 AI가 먼저 쓴 글이 여기 있습니다.",
 
     archivesTitle: "아카이브",
     archivesDesc: "날짜별로 모아 둔 글입니다.",

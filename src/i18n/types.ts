@@ -8,6 +8,8 @@ export interface UIStrings {
     about: string;
     archives: string;
     search: string;
+    /** 아직 소유자가 확인하지 않은 공개 초안 */
+    drafts: string;
   };
   post: {
     copyCode: string;
@@ -36,6 +38,10 @@ export interface UIStrings {
     seriesPosition: string;
     /** 지금 읽고 있는 편임을 스크린리더에 알린다 */
     currentPost: string;
+    /** 초안 배지. 짧게. */
+    draftBadge: string;
+    /** 초안 본문 위 안내. */
+    draftNotice: string;
   };
   pagination: {
     prev: string;
@@ -72,6 +78,9 @@ export interface UIStrings {
 
     postsTitle: string;
     postsDesc: string;
+
+    draftsTitle: string;
+    draftsDesc: string;
 
     archivesTitle: string;
     archivesDesc: string;

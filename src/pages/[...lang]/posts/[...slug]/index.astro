@@ -10,7 +10,7 @@ import Footer from "@/components/Footer.astro";
 import Datetime from "@/components/Datetime.astro";
 import Tag from "@/components/Tag.astro";
 import { getPostSlug, getPostUrl } from "@/utils/getPostPaths";
-import { getSortedPosts } from "@/utils/getSortedPosts";
+import { getSortedDrafts, getSortedPosts } from "@/utils/getSortedPosts";
 import { slugifyStr } from "@/utils/slugify";
 import { toTransitionName } from "@/utils/toTransitionName";
 import EditPost from "./_components/EditPost.astro";
@@ -31,37 +31,38 @@ export async function getStaticPaths() {
     const posts = await getLocalizedPosts(props.locale, {
       includeDrafts: true,
     });
-    const sortedPosts = getSortedPosts(posts);
+    // 정식과 초안을 모두 공개한다. 이전/다음만 같은 묶음 안에서 잇는다.
+    const groups = [getSortedPosts(posts), getSortedDrafts(posts)];
 
-    routes.push(
-      ...sortedPosts.map((post, index) => ({
-        params: {
-          lang: params.lang,
-          slug: getPostSlug(post.id, post.filePath),
-        },
-        props: {
-          post,
-          // sortedPosts is newest-first, so "older" (prev) is a higher index
-          // and "newer" (next) is a lower index.
-          prevPost:
-            index < sortedPosts.length - 1
-              ? {
-                  id: sortedPosts[index + 1].id,
-                  title: sortedPosts[index + 1].data.title,
-                  filePath: sortedPosts[index + 1].filePath,
-                }
-              : null,
-          nextPost:
-            index > 0
-              ? {
-                  id: sortedPosts[index - 1].id,
-                  title: sortedPosts[index - 1].data.title,
-                  filePath: sortedPosts[index - 1].filePath,
-                }
-              : null,
-        },
-      }))
-    );
+    for (const sortedPosts of groups) {
+      routes.push(
+        ...sortedPosts.map((post, index) => ({
+          params: {
+            lang: params.lang,
+            slug: getPostSlug(post.id, post.filePath),
+          },
+          props: {
+            post,
+            prevPost:
+              index < sortedPosts.length - 1
+                ? {
+                    id: sortedPosts[index + 1].id,
+                    title: sortedPosts[index + 1].data.title,
+                    filePath: sortedPosts[index + 1].filePath,
+                  }
+                : null,
+            nextPost:
+              index > 0
+                ? {
+                    id: sortedPosts[index - 1].id,
+                    title: sortedPosts[index - 1].data.title,
+                    filePath: sortedPosts[index - 1].filePath,
+                  }
+                : null,
+          },
+        }))
+      );
+    }
   }
 
   return routes;
@@ -127,6 +128,7 @@ const ogImage = ogImageUrl
   canonicalURL={canonicalURL}
   pubDatetime={pubDatetime}
   modDatetime={modDatetime}
+  noindex={!!post.data.draft}
 >
   <Header />
 
@@ -135,7 +137,7 @@ const ogImage = ogImageUrl
   <main
     id="main-content"
     class:list={["app-layout", { "mt-8": !config.features.showBackButton }]}
-    data-pagefind-body
+    data-pagefind-body={post.data.draft ? undefined : true}
   >
     <h1
       style={{ viewTransitionName: toTransitionName(post.id) }}
@@ -143,6 +145,14 @@ const ogImage = ogImageUrl
     >
       {title}
     </h1>
+    {
+      post.data.draft && (
+        <p class="border-border bg-muted/40 mt-3 rounded-md border px-3 py-2 text-sm">
+          <span class="mr-2 font-semibold">{t.post.draftBadge}</span>
+          {t.post.draftNotice}
+        </p>
+      )
+    }
 
     <div class="my-2 flex items-center gap-2">
       <Datetime {pubDatetime} {modDatetime} {timezone} size="lg" />

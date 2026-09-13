@@ -9,6 +9,7 @@ export default {
     about: "About",
     archives: "Archives",
     search: "Search",
+    drafts: "Drafts",
   },
   post: {
     copyCode: "Copy",
@@ -32,6 +33,9 @@ export default {
     inSeries: "Series: {{series}}",
     seriesPosition: "part {{index}} of {{total}}",
     currentPost: "you are here",
+    draftBadge: "Draft",
+    draftNotice:
+      "The owner has not yet reviewed, practiced, and confirmed this post. It is not a learning record yet.",
   },
   pagination: {
     prev: "Prev",
@@ -60,7 +64,11 @@ export default {
     tagsDesc: "All the tags used in posts.",
 
     postsTitle: "Posts",
-    postsDesc: "All the articles I've posted.",
+    postsDesc: "Posts the owner has reviewed, practiced, and confirmed.",
+
+    draftsTitle: "Drafts",
+    draftsDesc:
+      "Posts the owner has not confirmed yet. AI-written pieces live here first.",
 
     archivesTitle: "Archives",
     archivesDesc: "All the articles I've archived.",
