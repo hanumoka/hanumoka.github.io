@@ -1,18 +1,8 @@
 import { getRelativeLocaleUrl } from "astro:i18n";
 import config from "@/config";
+import { DEFAULT_LOCALE, isLocale, LOCALES, type Locale } from "@/catalog";
 
-/**
- * 이 사이트가 내는 언어. 순서가 곧 언어 전환 버튼의 순서다.
- *
- * ★ `astro.config.ts`의 `i18n.locales`와 같아야 한다. 그쪽은 라우팅을,
- * 이쪽은 콘텐츠 분류와 화면을 담당하며 둘이 갈라지면 라우트는 생기는데
- * 글이 하나도 안 걸리는 상태가 된다.
- */
-export const LOCALES = ["ko", "en"] as const;
-
-export type Locale = (typeof LOCALES)[number];
-
-export const DEFAULT_LOCALE: Locale = "ko";
+export { DEFAULT_LOCALE, isLocale, LOCALES, type Locale };
 
 /** 화면에 보이는 언어 이름. 그 언어를 쓰는 사람이 읽으므로 자기 언어로 적는다. */
 export const LOCALE_LABELS: Record<Locale, string> = {
@@ -35,10 +25,6 @@ export const LOCALE_SHORT: Record<Locale, string> = {
  */
 export function getLocaleFileUrl(locale: string, file: string): string {
   return getRelativeLocaleUrl(locale, file).replace(/\/$/, "");
-}
-
-export function isLocale(value: string | undefined): value is Locale {
-  return LOCALES.includes(value as Locale);
 }
 
 /** `Astro.currentLocale`은 string | undefined 라 그대로 쓰면 좁혀지지 않는다. */

@@ -16,6 +16,7 @@ import {
   LOCALE_SHORT,
   resolveLocale,
 } from "@/utils/locales";
+import { HEADER_NAV } from "@/catalog";
 import { useTranslations, tplStr } from "@/i18n";
 import config from "@/config";
 
@@ -55,6 +56,10 @@ const isActive = (path: string) => {
   const pathArray = path.split("/").filter(p => p.trim());
   return currentPath === path || currentPathArray[0] === pathArray[0];
 };
+
+const textLinks = HEADER_NAV.filter(item => item.appearance === "text");
+const showArchives = HEADER_NAV.some(item => item.section === "archives");
+const showSearch = HEADER_NAV.some(item => item.section === "search");
 ---
 
 <a
@@ -97,48 +102,20 @@ const isActive = (path: string) => {
         id="menu-items"
         class="[&>li>a]:hover:text-accent mt-4 hidden w-44 grid-cols-2 place-content-center gap-2 sm:mt-0 sm:flex sm:w-auto sm:gap-x-5 sm:gap-y-0 sm:[&>li]:h-8 [&>li>a]:block [&>li>a]:px-4 [&>li>a]:py-3 [&>li>a]:text-center [&>li>a]:font-medium sm:[&>li>a]:px-2 sm:[&>li>a]:py-1"
       >
-        <li class="col-span-2">
-          <a
-            href={getRelativeLocaleUrl(locale, "posts")}
-            class:list={{ "active-nav": isActive("/posts") }}
-          >
-            {t.nav.posts}
-          </a>
-        </li>
-        <li class="col-span-2">
-          <a
-            href={getRelativeLocaleUrl(locale, "drafts")}
-            class:list={{ "active-nav": isActive("/drafts") }}
-          >
-            {t.nav.drafts}
-          </a>
-        </li>
-        <li class="col-span-2">
-          <a
-            href={getRelativeLocaleUrl(locale, "tree")}
-            class:list={{ "active-nav": isActive("/tree") }}
-          >
-            {t.nav.tree}
-          </a>
-        </li>
-        <li class="col-span-2">
-          <a
-            href={getRelativeLocaleUrl(locale, "tags")}
-            class:list={{ "active-nav": isActive("/tags") }}
-          >
-            {t.nav.tags}
-          </a>
-        </li>
-        <li class="col-span-2">
-          <a
-            href={getRelativeLocaleUrl(locale, "about")}
-            class:list={{ "active-nav": isActive("/about") }}
-          >
-            {t.nav.about}
-          </a>
-        </li>
         {
-          features.showArchives && (
+          textLinks.map(item => (
+            <li class="col-span-2">
+              <a
+                href={getRelativeLocaleUrl(locale, item.section)}
+                class:list={{ "active-nav": isActive(`/${item.section}`) }}
+              >
+                {t.nav[item.section as keyof typeof t.nav]}
+              </a>
+            </li>
+          ))
+        }
+        {
+          showArchives && features.showArchives && (
             <li class="col-span-2">
               <LinkButton
                 href={getRelativeLocaleUrl(locale, "archives")}
@@ -162,7 +139,7 @@ const isActive = (path: string) => {
           )
         }
         {
-          features.search !== false && (
+          showSearch && features.search !== false && (
             <li class="col-span-1 flex items-center justify-center">
               <LinkButton
                 href={getRelativeLocaleUrl(locale, "search")}

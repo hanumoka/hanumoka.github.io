@@ -1,9 +1,10 @@
+import { isListingSection, isStaticPage, isTaxonomy } from "@/catalog";
 import { getLocalizedPosts } from "./getLocalizedPosts";
 import { getPostSlug } from "./getPostPaths";
 import { getUniqueKinds } from "./getUniqueKinds";
 import { getUniqueSeries } from "./getUniqueSeries";
 import { getUniqueTags } from "./getUniqueTags";
-import { hasListingEntries, LISTING_SECTIONS } from "./hasListingEntries";
+import { hasListingEntries } from "./hasListingEntries";
 import type { Locale } from "./locales";
 import { postFilter } from "./postFilter";
 
@@ -16,9 +17,6 @@ export type TranslatedPath = {
    */
   exact: boolean;
 };
-
-/** 모든 언어에 늘 있고 내용도 서로 대응하는 최상위 페이지. */
-const STATIC_PAGES = new Set(["about", "search"]);
 
 /** `Astro.url.pathname` 은 퍼센트 인코딩돼 있어서 한글 이름과 바로 비교하면 틀린다. */
 const decodeSegment = (value: string) => {
@@ -59,8 +57,8 @@ export async function getTranslatedPath(
   const sectionPath = `/${section}`;
 
   if (rest.length === 0) {
-    if (STATIC_PAGES.has(section)) return { path: sectionPath, exact: true };
-    if (LISTING_SECTIONS.has(section)) {
+    if (isStaticPage(section)) return { path: sectionPath, exact: true };
+    if (isListingSection(section)) {
       const exact =
         (await hasListingEntries(section, target)) &&
         (!from || (await hasListingEntries(section, from)));
@@ -73,37 +71,32 @@ export async function getTranslatedPath(
   const leaf = rest[0]!;
   const posts = (await getLocalizedPosts(target)).filter(postFilter);
 
-  switch (section) {
-    case "posts": {
-      // 쪽 번호(`/posts/2`)는 저쪽 글 수가 다르면 없다. 목록 첫 쪽으로.
-      if (rest.length === 1 && /^\d+$/.test(leaf)) {
-        return { path: sectionPath, exact: false };
-      }
-      const slugs = new Set(
-        posts.map(post =>
-          getPostSlug(post.id, post.filePath).replace(/^\//, "")
-        )
-      );
-      const slug = rest.join("/");
-      return slugs.has(slug)
-        ? { path: `/posts/${slug}`, exact: true }
-        : { path: sectionPath, exact: false };
+  if (section === "posts") {
+    // 쪽 번호(`/posts/2`)는 저쪽 글 수가 다르면 없다. 목록 첫 쪽으로.
+    if (rest.length === 1 && /^\d+$/.test(leaf)) {
+      return { path: sectionPath, exact: false };
     }
-    case "tags":
-    case "kinds":
-    case "series": {
-      const terms = new Set<string>(
-        section === "tags"
-          ? getUniqueTags(posts).map(({ tag }) => tag)
-          : section === "kinds"
-            ? getUniqueKinds(posts).map(({ kind }) => kind)
-            : getUniqueSeries(posts).map(({ series }) => series)
-      );
-      if (!terms.has(leaf)) return { path: sectionPath, exact: false };
-      // `/tags/x/2` 같은 쪽 번호는 저쪽 글 수가 달라 같은 쪽이 없다. 첫 쪽으로.
-      return { path: `${sectionPath}/${leaf}`, exact: rest.length === 1 };
-    }
-    default:
-      return { path: "/", exact: false };
+    const slugs = new Set(
+      posts.map(post => getPostSlug(post.id, post.filePath).replace(/^\//, ""))
+    );
+    const slug = rest.join("/");
+    return slugs.has(slug)
+      ? { path: `/posts/${slug}`, exact: true }
+      : { path: sectionPath, exact: false };
   }
+
+  if (isTaxonomy(section)) {
+    const terms = new Set<string>(
+      section === "tags"
+        ? getUniqueTags(posts).map(({ tag }) => tag)
+        : section === "kinds"
+          ? getUniqueKinds(posts).map(({ kind }) => kind)
+          : getUniqueSeries(posts).map(({ series }) => series)
+    );
+    if (!terms.has(leaf)) return { path: sectionPath, exact: false };
+    // `/tags/x/2` 같은 쪽 번호는 저쪽 글 수가 달라 같은 쪽이 없다. 첫 쪽으로.
+    return { path: `${sectionPath}/${leaf}`, exact: rest.length === 1 };
+  }
+
+  return { path: "/", exact: false };
 }

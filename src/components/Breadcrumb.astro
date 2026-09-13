@@ -1,5 +1,6 @@
 ---
 import { getRelativeLocaleUrl } from "astro:i18n";
+import { isSection } from "@/catalog";
 import { stripBase, stripLocale } from "@/utils/withBase";
 import { useTranslations } from "@/i18n";
 import config from "@/config";
@@ -30,13 +31,16 @@ const navLabels: Record<string, string> = {
   about: t.nav.about,
   archives: t.nav.archives,
   search: t.nav.search,
-  // ★ 새 구역을 추가하면 여기도 채워야 한다. 빠뜨리면 빵부스러기에 URL 조각이
-  // 그대로 노출된다 — 「홈 » Tree」 처럼 영어가 섞여 나온다.
   kinds: t.pages.kindsTitle,
   series: t.pages.seriesTitle,
   tree: t.pages.treeTitle,
   drafts: t.nav.drafts,
 };
+
+const labelFor = (segment: string) =>
+  isSection(segment)
+    ? (navLabels[segment] ?? decodeSegment(segment))
+    : decodeSegment(segment);
 
 // if breadcrumb is Home > Posts > [page] <etc>
 // replace Posts with localized "Posts (page number)"
@@ -82,7 +86,7 @@ if (breadcrumbList[0] === "tags" && !isNaN(Number(breadcrumbList[2]))) {
               aria-current="page"
             >
               {/* make the last part lowercase in Home > Tags > some-tag */}
-              {navLabels[breadcrumb] ?? decodeSegment(breadcrumb)}
+              {labelFor(breadcrumb)}
             </span>
           </li>
         ) : (
@@ -91,7 +95,7 @@ if (breadcrumbList[0] === "tags" && !isNaN(Number(breadcrumbList[2]))) {
               href={getRelativeLocaleUrl(locale, breadcrumb)}
               class="capitalize opacity-70"
             >
-              {navLabels[breadcrumb] ?? decodeSegment(breadcrumb)}
+              {labelFor(breadcrumb)}
             </a>
             <span aria-hidden="true" class="opacity-70">
               &raquo;

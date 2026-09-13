@@ -1,3 +1,5 @@
+import type { Kind } from "@/catalog";
+
 export interface UIStrings {
   nav: {
     home: string;
@@ -112,16 +114,10 @@ export interface UIStrings {
     alsoBrowseBy: string;
   };
   /**
-   * 글의 종류 이름. 값(`til` 등)은 비공개 문서 허브의 `kind` 계약과 같아야 하므로
+   * 글의 종류 이름. 값(`til` 등)은 `src/catalog.ts` 의 `KINDS` 와 같아야 하므로
    * 영문 그대로 두고, 화면에 보이는 이름만 여기서 옮긴다.
    */
-  kinds: {
-    til: string;
-    troubleshooting: string;
-    concept: string;
-    snippet: string;
-    "agent-issue": string;
-  };
+  kinds: Record<Kind, string>;
   a11y: {
     pagination: string;
     breadcrumb: string;

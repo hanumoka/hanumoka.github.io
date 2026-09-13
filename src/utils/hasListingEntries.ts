@@ -1,3 +1,4 @@
+import type { Taxonomy } from "@/catalog";
 import { getLocalizedPosts } from "./getLocalizedPosts";
 import { getUniqueKinds } from "./getUniqueKinds";
 import { getUniqueSeries } from "./getUniqueSeries";
@@ -5,21 +6,7 @@ import { getUniqueTags } from "./getUniqueTags";
 import type { Locale } from "./locales";
 import { draftFilter, postFilter } from "./postFilter";
 
-/**
- * 글에서 모아 만드는 목록 구역. 그 언어에 글이 없으면 빈 페이지가 된다.
- *
- * 경로는 언어마다 늘 만들어진다(언어 전환 버튼이 갈 곳이 있어야 하므로).
- * 그래서 "그 페이지가 있는가"가 아니라 "보여 줄 항목이 있는가"를 따로 물어야 한다.
- */
-export const LISTING_SECTIONS = new Set([
-  "posts",
-  "archives",
-  "tree",
-  "tags",
-  "kinds",
-  "series",
-  "drafts",
-]);
+export { isListingSection, LISTING_SECTIONS } from "@/catalog";
 
 /**
  * 그 언어의 정식 글로 태그·종류·연재 **개별** 페이지가 실제로 만들어지는가.
@@ -28,7 +15,7 @@ export const LISTING_SECTIONS = new Set([
  * 만든다. 초안에만 있는 값으로 `/tags/…`·`/kinds/…` 를 링크하면 404 가 된다.
  */
 export async function hasOfficialTerm(
-  section: "tags" | "kinds" | "series",
+  section: Taxonomy,
   locale: Locale,
   slug: string
 ): Promise<boolean> {

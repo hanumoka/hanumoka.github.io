@@ -22,6 +22,7 @@ import {
 import { transformerFileName } from "./src/utils/transformers/fileName";
 import { remarkMermaid } from "./src/utils/remarkMermaid";
 import config from "./astro-paper.config";
+import { DEFAULT_LOCALE, LOCALES, sitemapLocales } from "./src/catalog";
 
 // 사이트맵 필터는 HTML 이 다 쓰인 뒤(astro:build:done) 돈다. 그래서 빌드된 페이지에
 // robots noindex 가 붙었는지 직접 읽어 판정할 수 있다. 판정을 두 곳(페이지·설정)에
@@ -42,10 +43,10 @@ const isNoindex = (pageUrl: string) => {
 // ★ `site.lang` 이 UI 문자열을 고르고 아래 `i18n.defaultLocale` 이 라우팅을 고른다.
 // 둘이 갈라지면 Astro 가 MissingLocaleError 로 죽는데, 그 메시지만으로는 원인이
 // 여기라는 것이 드러나지 않는다. 그래서 먼저 잡는다.
-if (config.site.lang !== "ko") {
+if (config.site.lang !== DEFAULT_LOCALE) {
   throw new Error(
     `astro-paper.config.ts 의 site.lang 이 "${config.site.lang}" 인데 ` +
-      `astro.config.ts 의 i18n.defaultLocale 은 "ko" 입니다. 둘을 같게 맞추세요.`
+      `기본 언어는 "${DEFAULT_LOCALE}" 입니다. 둘을 같게 맞추세요.`
   );
 }
 
@@ -60,7 +61,7 @@ export default defineConfig({
         !isNoindex(page),
       // 걸러지고 남은 주소끼리만 언어 짝을 짓는다(짝이 둘 이상일 때만 적는다).
       // 그래서 번역이 없는 글이나 빈 목록을 짝이라고 주장하지 않는다.
-      i18n: { defaultLocale: "ko", locales: { ko: "ko", en: "en" } },
+      i18n: { defaultLocale: DEFAULT_LOCALE, locales: sitemapLocales() },
     }),
   ],
   i18n: {
@@ -69,10 +70,10 @@ export default defineConfig({
     // ★ `defaultLocale`은 `astro-paper.config.ts`의 `site.lang`과 반드시 같아야
     // 한다. 그 값이 UI 문자열을 고르는데 여기와 갈라지면 빌드가
     // MissingLocaleError로 죽는다 — 실제로 겪었다.
-    locales: ["ko", "en"],
-    // Astro 가 이 값을 `locales` 의 리터럴 유니온으로 좁히므로 `config.site.lang`
-    // (string) 을 그대로 넣을 수 없다. 리터럴로 적되 아래 검사로 갈라짐을 막는다.
-    defaultLocale: "ko",
+    locales: [...LOCALES],
+    // 정본은 `src/catalog.ts` 다. Astro 가 `config.site.lang`(string) 을
+    // 그대로 받으면 리터럴 유니온으로 좁히지 못하므로 카탈로그 값을 쓴다.
+    defaultLocale: DEFAULT_LOCALE,
     routing: {
       prefixDefaultLocale: false,
     },

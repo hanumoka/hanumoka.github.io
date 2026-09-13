@@ -38,9 +38,9 @@ Node 22.12 이상이 필요하다. 배포 워크플로는 [`.nvmrc`](.nvmrc)의 
 한 곳에서 정한다. `src/config.ts`는 거기에 기본값을 입혀 해석한 결과이므로 직접
 고치지 않는다.
 
-★ **`site.lang`을 바꾸면 `astro.config.ts`의 `i18n.locales`도 따라가야 한다.** 그래서
-그쪽이 이 값을 파생해 쓰도록 고쳐 두었다 — 두 곳에 적으면 갈라지고, 갈라지면 빌드가
-`MissingLocaleError`로 죽는다.
+언어·글 종류·최상위 구역의 목록은 **[`src/catalog.ts`](src/catalog.ts)** 한 곳이
+정본이다. 라우팅·스키마·헤더가 여기를 본다. `site.lang`은 그 기본 언어와 같아야
+한다. 갈라지면 빌드가 `MissingLocaleError`로 죽는다.
 
 한국어 UI 문자열은 [`src/i18n/lang/ko.ts`](src/i18n/lang/ko.ts)에 있다.
 `src/i18n/index.ts`가 `lang/*.ts`를 glob으로 읽으므로 파일을 두는 것만으로 잡힌다.

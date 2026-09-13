@@ -2,6 +2,7 @@ import { defineCollection } from "astro:content";
 import { z } from "astro/zod";
 import { glob } from "astro/loaders";
 import config from "@/config";
+import { KINDS } from "@/catalog";
 
 export const BLOG_PATH = "src/content/posts";
 
@@ -26,9 +27,7 @@ const posts = defineCollection({
        * 글의 종류. 비공개 문서 허브의 지식 노트 `kind` 계약에서 그대로 가져왔다.
        * 값을 바꾸면 양쪽이 갈라지므로 새 종류가 필요하면 허브 계약을 먼저 고친다.
        */
-      kind: z
-        .enum(["til", "troubleshooting", "concept", "snippet", "agent-issue"])
-        .optional(),
+      kind: z.enum(KINDS).optional(),
 
       /**
        * 연재 이름. 태그와 같은 방식으로 **언어마다 그 언어의 이름을 쓴다**
