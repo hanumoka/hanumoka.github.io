@@ -1,37 +1,31 @@
 import type { CollectionEntry } from "astro:content";
+import { type SeriesKey } from "@/series";
 import { postFilter } from "./postFilter";
-import { slugifyStr } from "./slugify";
 
 type Series = {
-  /** URL 에 쓰는 슬러그 */
-  series: string;
-  /** 화면에 쓰는 원래 이름 */
-  seriesName: string;
+  /** URL 에 쓰는 고정 키 */
+  series: SeriesKey;
   /** 그 연재에 속한 글 수 */
   count: number;
 };
 
 /**
- * 글 목록에서 연재를 모은다. 태그와 같은 규칙이다 — 슬러그로 중복을 없애고,
- * 표시 이름은 처음 만난 것을 쓴다.
+ * 글 목록에서 연재를 모은다. 키로 중복을 없앤다. 표시 이름은 호출하는
+ * 쪽이 `seriesLabel` 로 고른다 — 같은 키가 언어마다 다른 이름을 갖기
+ * 때문이다.
  */
 export function getUniqueSeries(posts: CollectionEntry<"posts">[]): Series[] {
-  const counts = new Map<string, Series>();
+  const counts = new Map<SeriesKey, number>();
 
   for (const post of posts.filter(postFilter)) {
-    const name = post.data.series;
-    if (!name) continue;
-
-    const slug = slugifyStr(name);
-    const found = counts.get(slug);
-    if (found) {
-      found.count += 1;
-    } else {
-      counts.set(slug, { series: slug, seriesName: name, count: 1 });
-    }
+    const key = post.data.series;
+    if (!key) continue;
+    counts.set(key, (counts.get(key) ?? 0) + 1);
   }
 
-  return [...counts.values()].sort((a, b) => a.series.localeCompare(b.series));
+  return [...counts.entries()]
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([series, count]) => ({ series, count }));
 }
 
 /**
@@ -43,13 +37,11 @@ export function getUniqueSeries(posts: CollectionEntry<"posts">[]): Series[] {
  */
 export function getSeriesPosts(
   posts: CollectionEntry<"posts">[],
-  seriesSlug: string
+  seriesKey: string
 ): CollectionEntry<"posts">[] {
   return posts
     .filter(postFilter)
-    .filter(
-      post => post.data.series && slugifyStr(post.data.series) === seriesSlug
-    )
+    .filter(post => post.data.series === seriesKey)
     .sort((a, b) => {
       const orderA = a.data.seriesOrder ?? Number.MAX_SAFE_INTEGER;
       const orderB = b.data.seriesOrder ?? Number.MAX_SAFE_INTEGER;

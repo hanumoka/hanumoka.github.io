@@ -8,6 +8,9 @@ import Footer from "@/components/Footer.astro";
 import { getLocalizedPosts } from "@/utils/getLocalizedPosts";
 import { getUniqueSeries, getSeriesPosts } from "@/utils/getUniqueSeries";
 import { localePaths, resolveLocale } from "@/utils/locales";
+import { DEFAULT_LOCALE } from "@/catalog";
+import { SERIES, seriesLabel, type SeriesKey } from "@/series";
+import { getRelativeLocaleUrl } from "astro:i18n";
 import { useTranslations } from "@/i18n";
 import config from "@/config";
 
@@ -20,41 +23,86 @@ export async function getStaticPaths() {
 
   for (const { params, props } of localePaths()) {
     const posts = await getLocalizedPosts(props.locale);
+    const listed = getUniqueSeries(posts);
 
-    for (const { series, seriesName } of getUniqueSeries(posts)) {
+    for (const { series } of listed) {
       routes.push({
         params: { lang: params.lang, series },
-        props: { seriesName },
+        props: {
+          seriesKey: series,
+          redirectTo: undefined as SeriesKey | undefined,
+        },
       });
+    }
+
+    // 옛 한글 주소는 기본 언어에만 있었다. GitHub Pages 는 서버 넘김이
+    // 없으므로 그 자리에 정적 넘김 페이지를 둔다.
+    if (props.locale === DEFAULT_LOCALE) {
+      for (const { series } of listed) {
+        for (const old of SERIES[series].legacySlugs) {
+          routes.push({
+            params: { lang: params.lang, series: old },
+            props: { seriesKey: series, redirectTo: series },
+          });
+        }
+      }
     }
   }
 
   return routes;
 }
 
-const { series } = Astro.params;
-const { seriesName } = Astro.props;
+const { seriesKey, redirectTo } = Astro.props;
 
 const locale = resolveLocale(Astro.currentLocale);
 const t = useTranslations(locale);
-const parts = getSeriesPosts(await getLocalizedPosts(locale), series ?? "");
+const seriesName = seriesLabel(seriesKey, locale);
+const dest = redirectTo
+  ? getRelativeLocaleUrl(locale, `series/${redirectTo}/`)
+  : null;
+const destAbs = dest ? new URL(dest, Astro.site).href : null;
+const parts = dest
+  ? []
+  : getSeriesPosts(await getLocalizedPosts(locale), seriesKey);
 ---
 
-<Layout
-  title={`${t.pages.seriesOneTitle}: ${seriesName} | ${config.site.title}`}
->
-  <Header />
+{
+  dest && destAbs ? (
+    <html lang={locale}>
+      <head>
+        <meta charset="utf-8" />
+        <title>{seriesName}</title>
+        <link rel="canonical" href={destAbs} />
+        <meta http-equiv="refresh" content={`0;url=${dest}`} />
+        <meta name="robots" content="noindex, follow" />
+        <script is:inline define:vars={{ dest }}>
+          location.replace(dest);
+        </script>
+      </head>
+      <body>
+        <a href={dest}>{seriesName}</a>
+      </body>
+    </html>
+  ) : (
+    <Layout
+      title={`${t.pages.seriesOneTitle}: ${seriesName} | ${config.site.title}`}
+    >
+      <Header />
 
-  <Breadcrumb />
+      <Breadcrumb />
 
-  <Main
-    pageTitle={`${t.pages.seriesOneTitle}: ${seriesName}`}
-    pageDesc={`${t.pages.seriesOneDesc} "${seriesName}".`}
-  >
-    <ol class="flex flex-col">
-      {parts.map(data => <Card {...data} />)}
-    </ol>
-  </Main>
+      <Main
+        pageTitle={`${t.pages.seriesOneTitle}: ${seriesName}`}
+        pageDesc={`${t.pages.seriesOneDesc} "${seriesName}".`}
+      >
+        <ol class="flex flex-col">
+          {parts.map(data => (
+            <Card {...data} />
+          ))}
+        </ol>
+      </Main>
 
-  <Footer />
-</Layout>
+      <Footer />
+    </Layout>
+  )
+}

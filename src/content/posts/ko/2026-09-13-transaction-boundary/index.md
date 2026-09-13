@@ -9,7 +9,7 @@ tags:
   - transaction
   - java
 draft: true
-series: 반드시 알아야 할 것
+series: must-know
 seriesOrder: 2
 ---
 

@@ -9,6 +9,7 @@ import BrowseAxes from "@/components/BrowseAxes.astro";
 import { getLocalizedPosts } from "@/utils/getLocalizedPosts";
 import { getUniqueSeries } from "@/utils/getUniqueSeries";
 import { localePaths, resolveLocale } from "@/utils/locales";
+import { seriesLabel } from "@/series";
 import { useTranslations } from "@/i18n";
 import config from "@/config";
 
@@ -36,13 +37,13 @@ const t = useTranslations(locale);
     }
     <ul class="flex flex-col gap-3">
       {
-        series.map(({ series: slug, seriesName, count }) => (
+        series.map(({ series: slug, count }) => (
           <li>
             <a
               href={getRelativeLocaleUrl(locale, `series/${slug}/`)}
               class="hover:text-accent inline-flex items-baseline gap-2 underline decoration-dashed underline-offset-4"
             >
-              <span>{seriesName}</span>
+              <span>{seriesLabel(slug, locale)}</span>
               <span class="text-sm opacity-70">{count}</span>
             </a>
           </li>

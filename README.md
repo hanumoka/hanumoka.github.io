@@ -58,7 +58,8 @@ Node 22.12 이상이 필요하다. 배포 워크플로는 [`.nvmrc`](.nvmrc)의 
 - **검색** `/search/` — 정식 글만
 
 종류 `/kinds/`와 연재 `/series/`는 헤더에 없고, 글 구조에서 연다.
-영어는 같은 나무를 `/en/` 아래에 둔다.
+연재 주소는 [`src/series.ts`](src/series.ts)의 영문 키다. 옛 한글 주소는
+그 키로 넘긴다. 영어는 같은 나무를 `/en/` 아래에 둔다.
 
 ## 글 쓰기
 
@@ -91,6 +92,7 @@ pubDatetime: 2026-09-05T16:00:00+09:00
 modDatetime: 2026-09-10T09:00:00+09:00 # 선택
 tags: [git, windows]
 kind: troubleshooting # 선택 — 아래 참조
+series: building-this-site # 선택 — src/series.ts 의 영문 키
 sourceNote: "docs/knowledge/…" # 선택 — 파생 추적
 featured: false # 선택
 draft: true # true면 초안. 공개되지만 /drafts/에 두고 검색·RSS에는 넣지 않는다

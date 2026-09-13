@@ -4,7 +4,7 @@ key: 2026-09-05-site-setup
 description: 'Astro와 GitHub Pages로 세운 구성, 그리고 Gatsby를 버린 이유.'
 pubDatetime: 2026-09-05T16:00:00+09:00
 kind: snippet
-series: 이 사이트 만들기
+series: building-this-site
 seriesOrder: 1
 tags: [astro, github-pages, ci]
 ---

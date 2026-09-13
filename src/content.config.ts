@@ -3,6 +3,7 @@ import { z } from "astro/zod";
 import { glob } from "astro/loaders";
 import config from "@/config";
 import { KINDS } from "@/catalog";
+import { SERIES_KEYS } from "@/series";
 
 export const BLOG_PATH = "src/content/posts";
 
@@ -40,11 +41,10 @@ const posts = defineCollection({
       kind: z.enum(KINDS).optional(),
 
       /**
-       * 연재 이름. 태그와 같은 방식으로 **언어마다 그 언어의 이름을 쓴다**
-       * (한국어 글은 한국어 이름, 영어 글은 영어 이름). 글이 언어별로 따로
-       * 쓰이므로 한 언어의 독자가 다른 언어의 연재 목록을 볼 일이 없다.
+       * 연재 키. 표시 이름이 아니라 `src/series.ts` 의 고정 영문 키다.
+       * 주소와 번역 짝이 여기서 나온다.
        */
-      series: z.string().optional(),
+      series: z.enum(SERIES_KEYS).optional(),
 
       /**
        * 연재 안에서의 순서. 비우면 발행일 순으로 놓는다.
