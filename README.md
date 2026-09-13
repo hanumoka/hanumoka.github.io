@@ -9,25 +9,28 @@
 | 생성기 | **Astro 7**                                                                               |
 | 테마   | **[AstroPaper](https://github.com/satnaing/astro-paper)** (MIT, Sat Naing) 을 고쳐서 사용 |
 | 배포   | GitHub Actions → GitHub Pages                                                             |
-| 검색   | Pagefind (테마 기본값)                                                                    |
+| 검색   | Pagefind. **정식 글만** 색인한다                                                          |
 | 스타일 | Tailwind CSS 4                                                                            |
 
 라이선스와 제3자 고지는 [`LICENSE`](LICENSE)와
 [`THIRD-PARTY-NOTICES.md`](THIRD-PARTY-NOTICES.md)에 있다. **공개 저장소는 그 자체로
-배포이므로** 실려 나가는 자산의 고지를 그쪽에 모아 둔다.
+배포이므로** 실려 나가는 자산의 고지를 그쪽에 모아 둔다. 고지 목록은 빌드가
+`package-lock.json`에서 다시 만든다. 손으로 고치지 않는다.
 
 ## 개발
 
 ```shell
 npm install
 npm run dev      # 로컬 서버
-npm run build    # dist/ 로 정적 빌드
+npm run build    # 고지 생성 → 형식 검사 → dist/ 빌드 → Pagefind 색인
 npm run preview  # 빌드 결과 확인
 ```
 
 Node 22.12 이상이 필요하다. 테마 원본은 pnpm을 쓰지만 이 저장소는 **npm**을 쓴다 —
 배포 Action이 락파일을 보고 패키지 매니저를 판별하므로 `package-lock.json`을
 커밋해 둔다.
+
+검색 색인은 `dist/` 안에만 만든다. 소스의 `public/`으로 되돌리지 않는다.
 
 ## 설정
 
@@ -41,6 +44,21 @@ Node 22.12 이상이 필요하다. 테마 원본은 pnpm을 쓰지만 이 저장
 
 한국어 UI 문자열은 [`src/i18n/lang/ko.ts`](src/i18n/lang/ko.ts)에 있다.
 `src/i18n/index.ts`가 `lang/*.ts`를 glob으로 읽으므로 파일을 두는 것만으로 잡힌다.
+
+## 메뉴
+
+헤더에 보이는 길은 이것이다.
+
+- **글** `/posts/` — 소유자가 검토하고 실습해 확인한 글
+- **초안** `/drafts/` — 아직 확인 전인 글. 특히 AI가 먼저 쓴 글
+- **글 구조** `/tree/` — 연재와 낱글
+- **태그** `/tags/`
+- **소개** `/about/`
+- **아카이브** `/archives/`
+- **검색** `/search/` — 정식 글만
+
+종류 `/kinds/`와 연재 `/series/`는 헤더에 없고, 글 구조에서 연다.
+영어는 같은 나무를 `/en/` 아래에 둔다.
 
 ## 글 쓰기
 
@@ -73,13 +91,23 @@ tags: [git, windows]
 kind: troubleshooting # 선택 — 아래 참조
 sourceNote: "docs/knowledge/…" # 선택 — 파생 추적
 featured: false # 선택
-draft: false # true면 배포 제외
+draft: true # true면 초안. 공개되지만 /drafts/에 두고 검색·RSS에는 넣지 않는다
 ---
 ```
 
 frontmatter는 Zod 스키마로 검사하며 **어기면 빌드가 실패한다.** 형식 통일이 목적이
 아니라 반쪽짜리 글이 조용히 공개되는 것을 막으려는 것이다. 정본은
 [`src/content.config.ts`](src/content.config.ts)에 있다.
+
+### 초안과 정식
+
+`draft: true`는 비공개가 아니다. GitHub Pages에 그대로 올라간다.
+
+- **정식** (`draft: false`) — `/posts/` 목록. 검색·RSS·사이트맵의 기본 경로
+- **초안** (`draft: true`) — `/drafts/` 목록. 글 주소는 같은 `/posts/이름/`이고,
+  본문 위에 초안이라고 적는다. 검색·RSS에는 넣지 않는다
+
+소유자가 검토하고 실습해 확인한 뒤에만 `draft: false`로 바꾼다.
 
 ### 이미지와 GIF
 
