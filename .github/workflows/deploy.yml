@@ -14,6 +14,8 @@ permissions:
 
 # 배포는 한 번에 하나만. 진행 중인 것을 취소하지 않는 이유는
 # 취소된 배포가 사이트를 중간 상태로 남길 수 있기 때문이다.
+# Pages 배포가 멈춘 적이 있다. 그 배포를 취소하면 다음 배포가 막히므로
+# 그룹 pages 의 cancel-in-progress 는 false 로 둔다.
 concurrency:
   group: pages
   cancel-in-progress: false
@@ -24,9 +26,31 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v5
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+      - name: Install
+        # 락파일과 어긋나면 실패한다. npm install 은 쓰지 않는다.
+        run: npm ci
+      - name: Format
+        run: npm run format:check
+      - name: Lint
+        run: npm run lint
+      - name: Astro check
+        run: npm run astro -- check
       - name: Build
-        # 락파일을 보고 패키지 매니저를 판별한다. package-lock.json을 커밋해 두어야 한다.
-        uses: withastro/action@v6
+        run: npm run build
+      - name: Check dist
+        run: npm run check:dist
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: dist
+          include-hidden-files: true
 
   deploy:
     needs: build

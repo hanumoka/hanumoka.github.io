@@ -1,7 +1,10 @@
 import type { CollectionEntry } from "astro:content";
 import { draftFilter, postFilter } from "./postFilter";
 
-function byUpdatedDesc(a: CollectionEntry<"posts">, b: CollectionEntry<"posts">) {
+function byUpdatedDesc(
+  a: CollectionEntry<"posts">,
+  b: CollectionEntry<"posts">
+) {
   return (
     Math.floor(
       new Date(b.data.modDatetime ?? b.data.pubDatetime).getTime() / 1000

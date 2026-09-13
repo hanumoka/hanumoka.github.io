@@ -26,9 +26,9 @@ npm run build    # 고지 생성 → 형식 검사 → dist/ 빌드 → Pagefind
 npm run preview  # 빌드 결과 확인
 ```
 
-Node 22.12 이상이 필요하다. 테마 원본은 pnpm을 쓰지만 이 저장소는 **npm**을 쓴다 —
-배포 Action이 락파일을 보고 패키지 매니저를 판별하므로 `package-lock.json`을
-커밋해 둔다.
+Node 22.12 이상이 필요하다. 배포 워크플로는 [`.nvmrc`](.nvmrc)의 Node 22를
+쓴다. 테마 원본은 pnpm을 쓰지만 이 저장소는 **npm**을 쓴다 —
+`package-lock.json`을 커밋해 두고, CI는 `npm ci`로 맞춘다.
 
 검색 색인은 `dist/` 안에만 만든다. 소스의 `public/`으로 되돌리지 않는다.
 
@@ -169,7 +169,8 @@ _"Pagefind doesn't support stemming for the language ko."_ 그래도 쓸 만한 
 ## 배포
 
 `main`에 푸시하면 [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml)이
-빌드해서 Pages로 올린다.
+`npm ci`로 의존성을 맞춘 뒤, 형식(Prettier)·린트·`astro check`·생산 빌드·
+`dist` 검사를 통과해야만 Pages로 올린다.
 
 ★ **Pages 설정의 빌드 소스가 「GitHub Actions」여야 한다.** 브랜치 빌드로 되어 있으면
 워크플로가 성공해도 사이트가 바뀌지 않는다.

@@ -16,7 +16,9 @@ import config from "@/config";
 export const getStaticPaths = (async ({ paginate }) => {
   const routes = [];
   for (const { params, props } of localePaths()) {
-    const posts = await getLocalizedPosts(props.locale, { includeDrafts: true });
+    const posts = await getLocalizedPosts(props.locale, {
+      includeDrafts: true,
+    });
     const drafts = getSortedDrafts(posts);
     const pages = paginate(drafts, {
       pageSize: config.posts.perPage,
