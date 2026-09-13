@@ -55,11 +55,24 @@ export const LISTING_SECTIONS = [
 ] as const satisfies readonly Section[];
 export type ListingSection = (typeof LISTING_SECTIONS)[number];
 
-/** 모든 언어에 늘 있고 내용도 서로 대응하는 최상위 페이지. */
-export const STATIC_PAGES = [
-  "about",
+/**
+ * 페이지 파일로 고정된 구역. 페이지 컬렉션 슬러그와 겹치면 안 된다.
+ * `about` 처럼 컬렉션에서 나오는 주소는 여기 넣지 않는다.
+ */
+export const FILE_ROUTES = [
+  "posts",
+  "drafts",
+  "tree",
+  "tags",
+  "kinds",
+  "series",
+  "archives",
   "search",
 ] as const satisfies readonly Section[];
+export type FileRoute = (typeof FILE_ROUTES)[number];
+
+/** 모든 언어에 늘 있고 내용도 서로 대응하는, 컬렉션이 아닌 최상위 페이지. */
+export const STATIC_PAGES = ["search"] as const satisfies readonly FileRoute[];
 export type StaticPage = (typeof STATIC_PAGES)[number];
 
 /** 항마다 하위 페이지가 있는 분류 축. */
@@ -69,6 +82,13 @@ export const TAXONOMIES = [
   "series",
 ] as const satisfies readonly Section[];
 export type Taxonomy = (typeof TAXONOMIES)[number];
+
+/** 쪽을 나누는 분류. 연재는 순서가 본질이라 한 페이지에 둔다. */
+export const PAGED_TAXONOMIES = [
+  "tags",
+  "kinds",
+] as const satisfies readonly Taxonomy[];
+export type PagedTaxonomy = (typeof PAGED_TAXONOMIES)[number];
 
 /** 분류 페이지 아래 「이렇게도 볼 수 있습니다」에 나열하는 축. */
 export const BROWSE_AXES = [
@@ -106,6 +126,10 @@ export function isSection(value: string): value is Section {
 
 export function isListingSection(value: string): value is ListingSection {
   return LISTING_SECTIONS.some(section => section === value);
+}
+
+export function isFileRoute(value: string): value is FileRoute {
+  return FILE_ROUTES.some(route => route === value);
 }
 
 export function isStaticPage(value: string): value is StaticPage {

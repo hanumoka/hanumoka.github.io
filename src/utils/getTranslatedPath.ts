@@ -3,6 +3,7 @@ import { getLocalizedPosts } from "./getLocalizedPosts";
 import { getUniqueKinds } from "./getUniqueKinds";
 import { getUniqueSeries } from "./getUniqueSeries";
 import { getUniqueTags } from "./getUniqueTags";
+import { hasContentPage } from "./hasContentPage";
 import { hasListingEntries } from "./hasListingEntries";
 import type { Locale } from "./locales";
 import { postFilter } from "./postFilter";
@@ -61,6 +62,10 @@ export async function getTranslatedPath(
       const exact =
         (await hasListingEntries(section, target)) &&
         (!from || (await hasListingEntries(section, from)));
+      return { path: sectionPath, exact };
+    }
+    if (await hasContentPage(section, target)) {
+      const exact = !from || (await hasContentPage(section, from));
       return { path: sectionPath, exact };
     }
     // 모르는 최상위 페이지(404 등)는 저쪽 홈으로 보낸다.

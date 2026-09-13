@@ -34,7 +34,8 @@ function mount(): void {
     "data-repo-id": data.repoId ?? "",
     "data-category": data.category ?? "",
     "data-category-id": data.categoryId ?? "",
-    "data-mapping": data.mapping ?? "pathname",
+    "data-mapping": data.mapping ?? "specific",
+    "data-term": data.term ?? "",
     // 느슨하게 맞추면 제목이 비슷한 다른 글의 토론이 붙는다.
     "data-strict": "1",
     "data-reactions-enabled": "1",

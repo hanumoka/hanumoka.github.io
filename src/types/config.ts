@@ -78,10 +78,11 @@ interface FeaturesConfig {
         /** 그 카테고리의 노드 ID */
         categoryId: string;
         /**
-         * 글과 토론을 무엇으로 잇는가. `pathname` 이면 한국어판과 영어판이
-         * 서로 다른 경로이므로 **댓글도 언어별로 갈린다.**
+         * 글과 토론을 무엇으로 잇는가. `specific` 이면 `data-term`
+         * (`posts/{locale}/{key}`) 으로 잇는다. 경로가 아니라 키라서
+         * 주소를 바꿔도 댓글이 따라오고, 언어판은 서로 다른 토론을 갖는다.
          */
-        mapping: "pathname" | "url" | "title" | "og:title";
+        mapping: "pathname" | "url" | "title" | "og:title" | "specific";
       }
     | { enabled: false };
 }

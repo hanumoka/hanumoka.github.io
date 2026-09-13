@@ -25,6 +25,11 @@ export function getPostUrl(
   return getRelativeLocaleUrl(locale, `posts/${key}`);
 }
 
+/** giscus 가 토론을 찾는 문자열. 경로가 아니라 키라서 주소를 바꿔도 댓글이 따라온다. */
+export function getCommentTerm(locale: string, key: string): string {
+  return `posts/${locale}/${key}`;
+}
+
 /** 한 언어 안에서 키가 겹치면 주소가 덮이므로 빌드를 죽인다. */
 export function assertUniquePostKeys(posts: CollectionEntry<"posts">[]): void {
   const seen = new Map<string, string>();

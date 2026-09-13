@@ -1,0 +1,63 @@
+---
+import { getCollection, render } from "astro:content";
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Breadcrumb from "@/components/Breadcrumb.astro";
+import Main from "@/components/Main.astro";
+import Footer from "@/components/Footer.astro";
+import { isFileRoute } from "@/catalog";
+import { getEntryLocale, localePaths } from "@/utils/locales";
+import config from "@/config";
+
+/**
+ * 페이지 컬렉션의 유일한 경로. `about.md` 를 두면 `/about/` 이 생긴다.
+ * 이력은 `_resume.md` 의 밑줄을 떼는 것만으로 공개된다.
+ *
+ * ★ `home` 은 루트라 여기 두지 않는다. 이 비교를 getStaticPaths 안에 적는
+ * 이유는 Astro 가 그 함수를 따로 묶어 내보내기 때문이다 — 바깥 상수를
+ * 참조하면 빌드가 `HOME_SLUG is not defined` 로 죽는다.
+ */
+export async function getStaticPaths() {
+  const pages = await getCollection("pages");
+  const routes = [];
+
+  for (const { params, props } of localePaths()) {
+    for (const entry of pages) {
+      if (getEntryLocale(entry.id) !== props.locale) continue;
+      const slug = entry.id.split("/").slice(1).join("/");
+      if (!slug || slug === "home") continue;
+      if (isFileRoute(slug)) {
+        throw new Error(
+          `Page slug "${slug}" collides with a file route. Rename ${entry.id}.`
+        );
+      }
+      routes.push({
+        params: { lang: params.lang, page: slug },
+        props: { entry },
+      });
+    }
+  }
+
+  return routes;
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+---
+
+<Layout
+  title={`${entry.data.title} | ${config.site.title}`}
+  description={entry.data.description}
+  ogImage={entry.data.ogImage}
+  canonicalURL={entry.data.canonicalURL}
+>
+  <Header />
+
+  <Breadcrumb />
+
+  <Main pageTitle={entry.data.title} class="app-prose">
+    <Content />
+  </Main>
+
+  <Footer />
+</Layout>

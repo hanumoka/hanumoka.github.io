@@ -3,6 +3,12 @@ import { resolveLocale } from "@/utils/locales";
 import { useTranslations } from "@/i18n";
 import config from "@/config";
 
+type Props = {
+  /** giscus 가 토론을 찾는 문자열. `posts/{locale}/{key}` */
+  term: string;
+};
+
+const { term } = Astro.props;
 const { comments } = config.features;
 const locale = resolveLocale(Astro.currentLocale);
 const t = useTranslations(locale);
@@ -24,6 +30,7 @@ const t = useTranslations(locale);
         data-category={comments.category}
         data-category-id={comments.categoryId}
         data-mapping={comments.mapping}
+        data-term={term}
         data-lang={locale}
       />
     </section>

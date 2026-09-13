@@ -38,8 +38,13 @@ export default defineAstroPaperConfig({
       // giscus 가 권하는 대로 아무나 토론을 새로 열 수 없는 카테고리를 쓴다.
       category: "Announcements",
       categoryId: "DIC_kwDOIYEads4CTpNz",
-      // 언어판마다 경로가 다르므로 댓글도 언어별로 갈린다. 의도한 것이다.
-      mapping: "pathname",
+      // 글의 고정 키로 잇는다 (`posts/{locale}/{key}`). 경로가 바뀌어도
+      // 댓글이 따라온다. 언어판은 서로 다른 토론이다.
+      //
+      // ★ 배포 전에 Discussion #4 본문에 새 연결 문자열의 해시를 넣어야
+      // 기존 댓글이 보인다. 그 절차는 소유자만 한다. 이 저장소에서
+      // Discussions 를 고치지 않는다.
+      mapping: "specific",
     },
   },
   socials: [

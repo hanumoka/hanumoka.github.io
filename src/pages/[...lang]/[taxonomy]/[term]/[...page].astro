@@ -1,0 +1,92 @@
+---
+import type { GetStaticPathsOptions } from "astro";
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Main from "@/components/Main.astro";
+import Breadcrumb from "@/components/Breadcrumb.astro";
+import Card from "@/components/Card.astro";
+import Footer from "@/components/Footer.astro";
+import Pagination from "@/components/Pagination.astro";
+import { PAGED_TAXONOMIES, type Kind } from "@/catalog";
+import { getLocalizedPosts } from "@/utils/getLocalizedPosts";
+import { getUniqueKinds } from "@/utils/getUniqueKinds";
+import { getUniqueTags } from "@/utils/getUniqueTags";
+import { getSortedPosts } from "@/utils/getSortedPosts";
+import { localePaths, resolveLocale } from "@/utils/locales";
+import { slugifyAll } from "@/utils/slugify";
+import { useTranslations } from "@/i18n";
+import config from "@/config";
+
+/**
+ * 태그와 종류의 글 목록. 두 분류의 페이지 코드가 같았으므로 한 경로로 둔다.
+ * 연재는 순서가 본질이라 쪽을 나누지 않고 `series/[series].astro` 가 맡는다.
+ */
+export async function getStaticPaths({ paginate }: GetStaticPathsOptions) {
+  const routes = [];
+
+  for (const { params, props } of localePaths()) {
+    const posts = await getLocalizedPosts(props.locale);
+
+    for (const taxonomy of PAGED_TAXONOMIES) {
+      const terms =
+        taxonomy === "tags"
+          ? getUniqueTags(posts).map(({ tag, tagName }) => ({
+              term: tag,
+              termName: tagName,
+            }))
+          : getUniqueKinds(posts).map(({ kind }) => ({
+              term: kind,
+              termName: kind,
+            }));
+
+      for (const { term, termName } of terms) {
+        const termPosts = getSortedPosts(
+          taxonomy === "tags"
+            ? posts.filter(({ data }) => slugifyAll(data.tags).includes(term))
+            : posts.filter(({ data }) => data.kind === term)
+        );
+
+        routes.push(
+          ...paginate(termPosts, {
+            params: { taxonomy, term },
+            props: { taxonomy, term, termName },
+            pageSize: config.posts.perPage,
+          }).map(route => ({
+            ...route,
+            params: { ...route.params, lang: params.lang },
+          }))
+        );
+      }
+    }
+  }
+
+  return routes;
+}
+
+const { page, taxonomy, term, termName } = Astro.props;
+
+const locale = resolveLocale(Astro.currentLocale);
+const t = useTranslations(locale);
+const label = taxonomy === "kinds" ? (t.kinds[term as Kind] ?? term) : termName;
+const titlePrefix = taxonomy === "kinds" ? t.pages.kindTitle : t.pages.tagTitle;
+const pageDesc =
+  taxonomy === "kinds"
+    ? `${t.pages.kindDesc} (${term}).`
+    : `${t.pages.tagDesc} "${termName}".`;
+---
+
+<Layout title={`${titlePrefix}: ${label} | ${config.site.title}`}>
+  <Header />
+
+  <Breadcrumb />
+
+  <Main pageTitle={`${titlePrefix}: ${label}`} {pageDesc}>
+    <ul>
+      {page.data.map(data => <Card {...data} />)}
+    </ul>
+  </Main>
+
+  <Pagination {page} />
+
+  <Footer noMarginTop={page.lastPage > 1} />
+</Layout>

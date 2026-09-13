@@ -9,7 +9,7 @@ import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
 import Datetime from "@/components/Datetime.astro";
 import Tag from "@/components/Tag.astro";
-import { getPostSlug, getPostUrl } from "@/utils/getPostPaths";
+import { getCommentTerm, getPostSlug, getPostUrl } from "@/utils/getPostPaths";
 import { hasOfficialTerm } from "@/utils/hasListingEntries";
 import { getSortedDrafts, getSortedPosts } from "@/utils/getSortedPosts";
 import { slugifyStr } from "@/utils/slugify";
@@ -217,7 +217,7 @@ const ogImage = ogImageUrl
 
     <AdjacentPostNav {prevPost} {nextPost} />
 
-    <Comments />
+    <Comments term={getCommentTerm(locale, post.data.key)} />
   </main>
 
   {/* 다이어그램이 있는 글에서만 mermaid 청크를 내려받는다. */}
