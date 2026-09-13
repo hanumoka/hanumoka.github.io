@@ -1,5 +1,6 @@
 ---
 title: Spring Boot 4 + Kotlin 멀티모듈 골격을 처음부터 세우기
+key: 2026-09-10-kotlin-spring-multimodule-skeleton
 description: 실행 모듈과 도메인 모듈을 나누고, 공통 빌드 설정을 buildSrc에 모으고, 모듈 사이 의존 규칙을 빌드가 검사하게 만드는 과정을 파일 단위로 따라간다.
 pubDatetime: 2026-09-10T18:00:00+09:00
 kind: snippet

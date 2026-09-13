@@ -82,7 +82,7 @@ const total =
                           {index + 1}.
                         </span>
                         <a
-                          href={getPostUrl(part.id, part.filePath, locale)}
+                          href={getPostUrl(part.data.key, locale)}
                           class="hover:text-accent underline decoration-dashed underline-offset-4"
                         >
                           {part.data.title}
@@ -119,7 +119,7 @@ const total =
             {standalone.map(post => (
               <li class="flex flex-wrap items-baseline gap-x-2">
                 <a
-                  href={getPostUrl(post.id, post.filePath, locale)}
+                  href={getPostUrl(post.data.key, locale)}
                   class="hover:text-accent underline decoration-dashed underline-offset-4"
                 >
                   {post.data.title}

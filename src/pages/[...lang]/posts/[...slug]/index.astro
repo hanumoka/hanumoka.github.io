@@ -40,24 +40,22 @@ export async function getStaticPaths() {
         ...sortedPosts.map((post, index) => ({
           params: {
             lang: params.lang,
-            slug: getPostSlug(post.id, post.filePath),
+            slug: getPostSlug(post.data.key),
           },
           props: {
             post,
             prevPost:
               index < sortedPosts.length - 1
                 ? {
-                    id: sortedPosts[index + 1].id,
+                    key: sortedPosts[index + 1].data.key,
                     title: sortedPosts[index + 1].data.title,
-                    filePath: sortedPosts[index + 1].filePath,
                   }
                 : null,
             nextPost:
               index > 0
                 ? {
-                    id: sortedPosts[index - 1].id,
+                    key: sortedPosts[index - 1].data.key,
                     title: sortedPosts[index - 1].data.title,
-                    filePath: sortedPosts[index - 1].filePath,
                   }
                 : null,
           },
@@ -70,9 +68,8 @@ export async function getStaticPaths() {
 }
 
 type AdjacentPost = {
-  id: string;
+  key: string;
   title: string;
-  filePath: string | undefined;
 } | null;
 
 type Props = {
@@ -112,10 +109,7 @@ if (typeof initOgImage === "string") {
 }
 
 if (!ogImageUrl && config.features.dynamicOgImage) {
-  const postUrl = getPostUrl(post.id, post.filePath, locale).replace(
-    /\/+$/,
-    ""
-  );
+  const postUrl = getPostUrl(post.data.key, locale).replace(/\/+$/, "");
   ogImageUrl = `${postUrl}/index.png`;
 }
 

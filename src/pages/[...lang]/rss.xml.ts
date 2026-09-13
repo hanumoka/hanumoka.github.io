@@ -18,8 +18,8 @@ export async function GET(context: { currentLocale?: string }) {
     title: config.site.title,
     description: t.siteDescription,
     site: config.site.url,
-    items: sortedPosts.map(({ data, id, filePath }) => ({
-      link: getPostUrl(id, filePath, locale),
+    items: sortedPosts.map(({ data }) => ({
+      link: getPostUrl(data.key, locale),
       title: data.title,
       description: data.description,
       pubDate: new Date(data.modDatetime ?? data.pubDatetime),

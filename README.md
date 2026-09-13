@@ -63,7 +63,8 @@ Node 22.12 이상이 필요하다. 배포 워크플로는 [`.nvmrc`](.nvmrc)의 
 ## 글 쓰기
 
 **글 하나가 폴더 하나다.** 본문은 그 폴더의 `index.md`이고, 그 글에 쓰는
-이미지·GIF는 **같은 폴더에 둔다.** 폴더 이름이 그대로 URL이 된다.
+이미지·GIF는 **같은 폴더에 둔다.** 공개 주소는 폴더 이름이 아니라 frontmatter의
+`key`다. 지금 글은 키가 폴더 이름과 같아서 주소가 그대로다.
 
 ```
 src/content/posts/ko/2026-09-07-media-test/
@@ -78,12 +79,13 @@ src/content/posts/ko/2026-09-07-media-test/
 편집기가 파일 위치를 기준으로 상대 경로를 풀기 때문에 미리보기에 이미지가
 뜬다. 자산을 공용 폴더에 모으면 이 둘이 다 깨진다.
 
-언어는 그 위 단계다 — 한국어는 `posts/ko/`, 영어는 `posts/en/`. **같은 폴더
-이름이 같은 글의 두 언어판**이다.
+언어는 그 위 단계다 — 한국어는 `posts/ko/`, 영어는 `posts/en/`. **같은 `key`가
+같은 글의 두 언어판**이다.
 
 ```markdown
 ---
 title: "제목"
+key: example-post-key # 공개 주소 /posts/{key}/. 한번 공개하면 바꾸지 않는다
 description: "목록과 메타 설명에 쓰는 한 문장"
 pubDatetime: 2026-09-05T16:00:00+09:00
 modDatetime: 2026-09-10T09:00:00+09:00 # 선택
@@ -104,7 +106,7 @@ frontmatter는 Zod 스키마로 검사하며 **어기면 빌드가 실패한다.
 `draft: true`는 비공개가 아니다. GitHub Pages에 그대로 올라간다.
 
 - **정식** (`draft: false`) — `/posts/` 목록. 검색·RSS·사이트맵의 기본 경로
-- **초안** (`draft: true`) — `/drafts/` 목록. 글 주소는 같은 `/posts/이름/`이고,
+- **초안** (`draft: true`) — `/drafts/` 목록. 글 주소는 같은 `/posts/{key}/`이고,
   본문 위에 초안이라고 적는다. 검색·RSS에는 넣지 않는다
 
 소유자가 검토하고 실습해 확인한 뒤에만 `draft: false`로 바꾼다.

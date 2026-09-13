@@ -1,6 +1,5 @@
 import { isListingSection, isStaticPage, isTaxonomy } from "@/catalog";
 import { getLocalizedPosts } from "./getLocalizedPosts";
-import { getPostSlug } from "./getPostPaths";
 import { getUniqueKinds } from "./getUniqueKinds";
 import { getUniqueSeries } from "./getUniqueSeries";
 import { getUniqueTags } from "./getUniqueTags";
@@ -76,11 +75,9 @@ export async function getTranslatedPath(
     if (rest.length === 1 && /^\d+$/.test(leaf)) {
       return { path: sectionPath, exact: false };
     }
-    const slugs = new Set(
-      posts.map(post => getPostSlug(post.id, post.filePath).replace(/^\//, ""))
-    );
+    const keys = new Set(posts.map(post => post.data.key));
     const slug = rest.join("/");
-    return slugs.has(slug)
+    return keys.has(slug)
       ? { path: `/posts/${slug}`, exact: true }
       : { path: sectionPath, exact: false };
   }

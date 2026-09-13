@@ -1,5 +1,6 @@
 ---
 title: 웹 요청 하나가 데이터베이스에 닿기까지
+key: 2026-09-13-request-to-db
 description: 브라우저의 호출이 컨트롤러를 지나 커넥션을 얻기까지, 열지 않고 손가락으로 가리킬 수 있어야 하는 길.
 pubDatetime: 2026-09-13T12:00:00+09:00
 kind: concept

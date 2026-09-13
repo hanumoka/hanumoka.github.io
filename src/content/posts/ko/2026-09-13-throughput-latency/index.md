@@ -1,5 +1,6 @@
 ---
 title: 느리다를 숫자로 말하는 법
+key: 2026-09-13-throughput-latency
 description: 처리량과 지연을 숫자로 남기지 않으면, 장애를 볼 때와 코드를 설명할 때 같은 빈칸이 된다. 무엇을 재고 어떤 조건과 함께 남기는가.
 pubDatetime: 2026-09-13T12:20:00+09:00
 kind: concept

@@ -14,6 +14,16 @@ const posts = defineCollection({
       pubDatetime: z.date(),
       modDatetime: z.date().optional().nullable(),
       title: z.string(),
+      /**
+       * 글의 고정 키. 주소·번역 짝·댓글 연결이 여기서 나온다.
+       * 한번 공개한 키는 바꾸지 않는다. 지금 글은 키가 폴더 이름과 같다.
+       */
+      key: z
+        .string()
+        .regex(
+          /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
+          "post key must be a lowercase English slug"
+        ),
       featured: z.boolean().optional(),
       draft: z.boolean().optional(),
       tags: z.array(z.string()).default(["others"]),

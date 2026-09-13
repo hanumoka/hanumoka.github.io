@@ -3,7 +3,7 @@ import type { CollectionEntry } from "astro:content";
 import { getRelativeLocaleUrl } from "astro:i18n";
 import { getLocalizedPosts } from "@/utils/getLocalizedPosts";
 import { getSeriesPosts } from "@/utils/getUniqueSeries";
-import { getPostSlug, getPostUrl } from "@/utils/getPostPaths";
+import { getPostUrl } from "@/utils/getPostPaths";
 import { slugifyStr } from "@/utils/slugify";
 import { resolveLocale } from "@/utils/locales";
 import { useTranslations, tplStr } from "@/i18n";
@@ -23,10 +23,7 @@ const parts = seriesSlug
   ? getSeriesPosts(await getLocalizedPosts(locale), seriesSlug)
   : [];
 
-const currentSlug = getPostSlug(post.id, post.filePath);
-const currentIndex = parts.findIndex(
-  part => getPostSlug(part.id, part.filePath) === currentSlug
-);
+const currentIndex = parts.findIndex(part => part.data.key === post.data.key);
 ---
 
 {
@@ -73,7 +70,7 @@ const currentIndex = parts.findIndex(
                 </span>
               ) : (
                 <a
-                  href={getPostUrl(part.id, part.filePath, locale)}
+                  href={getPostUrl(part.data.key, locale)}
                   class="hover:text-accent underline decoration-dashed underline-offset-4"
                 >
                   {part.data.title}

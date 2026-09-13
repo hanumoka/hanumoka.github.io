@@ -1,4 +1,5 @@
 import { getCollection } from "astro:content";
+import { assertUniquePostKeys } from "./getPostPaths";
 import { getEntryLocale, type Locale } from "./locales";
 
 /**
@@ -15,9 +16,11 @@ export async function getLocalizedPosts(
   locale: Locale,
   options: { includeDrafts?: boolean } = {}
 ) {
-  return getCollection(
+  const posts = await getCollection(
     "posts",
     ({ id, data }) =>
       getEntryLocale(id) === locale && (options.includeDrafts || !data.draft)
   );
+  assertUniquePostKeys(posts);
+  return posts;
 }

@@ -1,5 +1,6 @@
 ---
 title: 트랜잭션은 어디서 시작하고 어디서 끝나는가
+key: 2026-09-13-transaction-boundary
 description: 코드를 보지 않고도 말해야 하는 것. 메서드에 붙은 표시가 아니라, 어떤 일이 한 묶음으로 커밋되거나 전부 되돌려지는가다.
 pubDatetime: 2026-09-13T12:10:00+09:00
 kind: concept

@@ -26,7 +26,7 @@ export async function getStaticPaths() {
       ...posts.map(post => ({
         params: {
           lang: params.lang,
-          slug: getPostSlug(post.id, post.filePath),
+          slug: getPostSlug(post.data.key),
         },
         props: post,
       }))
