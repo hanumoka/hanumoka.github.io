@@ -3,6 +3,7 @@ title: '이 사이트는 어떻게 만들어졌는가'
 key: 2026-09-05-site-setup
 description: 'Astro와 GitHub Pages로 세운 구성, 그리고 Gatsby를 버린 이유.'
 pubDatetime: 2026-09-05T16:00:00+09:00
+modDatetime: 2026-09-14T18:30:00+09:00
 kind: snippet
 series: building-this-site
 seriesOrder: 1
@@ -17,8 +18,8 @@ tags: [astro, github-pages, ci]
 | ------ | ------------------------------------------- |
 | 생성기 | Astro 7                                     |
 | 배포   | GitHub Actions → GitHub Pages               |
-| 폰트   | 시스템 폰트만                               |
-| 의존성 | `astro`, `@astrojs/sitemap`, `@astrojs/rss` |
+| 폰트   | 2026-09-05에는 시스템 폰트만. 지금은 Google Sans Code와 Noto Sans KR |
+| 의존성 | 2026-09-05에는 `astro`, `@astrojs/sitemap`, `@astrojs/rss` 셋. 지금은 테마와 폰트가 들어 있다. 목록은 저장소 `THIRD-PARTY-NOTICES.md` |
 
 ## Gatsby를 버렸다
 
@@ -46,7 +47,13 @@ const posts = defineCollection({
 
 ## 폰트를 싣지 않았다
 
-한글 웹폰트는 가볍지 않다. 그리고 공개 저장소는 그 자체로 배포라서, 제3자 폰트를 실으면 라이선스 고지 의무가 따라온다. 시스템 폰트만 쓰면 실어 나르는 제3자 자산이 0이다.
+한글 웹폰트는 가볍지 않다. 그리고 공개 저장소는 그 자체로 배포라서, 제3자 폰트를 실으면 라이선스 고지 의무가 따라온다. 그래서 2026-09-05에는 시스템 폰트만 썼다. 그때는 실어 나르는 제3자 자산이 0이었다.
+
+## 2026-09-14 — 지금은 웹폰트를 쓴다
+
+그날의 문장을 지금도 사실인 것처럼 두면, 사이트를 보는 사람과 어긋난다.
+
+지금은 라틴 글자에 Google Sans Code, 한글에 Noto Sans KR을 사이트에 실어 쓴다. 공개 저장소는 배포라서, 실어 나르는 폰트의 라이선스를 저장소 `THIRD-PARTY-NOTICES.md`에 적어 두었다.
 
 ## 배포에서 한 번 헤맨 것
 
