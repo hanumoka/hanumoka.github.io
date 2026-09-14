@@ -2,6 +2,7 @@ import type { UIStrings } from "./types";
 import { DEFAULT_LOCALE } from "@/utils/locales";
 
 export { tplStr } from "./format";
+export { sectionLabel } from "./sectionLabel";
 
 const modules = import.meta.glob<{ default: UIStrings }>("./lang/*.ts", {
   eager: true,

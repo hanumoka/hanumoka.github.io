@@ -2,7 +2,7 @@
 import { getRelativeLocaleUrl } from "astro:i18n";
 import { BROWSE_AXES, type BrowseAxis } from "@/catalog";
 import { resolveLocale } from "@/utils/locales";
-import { useTranslations } from "@/i18n";
+import { sectionLabel, useTranslations } from "@/i18n";
 
 /**
  * 분류 축이 셋이 되면서 「A 별로도 볼 수 있습니다」 한 줄로는 모자란다.
@@ -16,16 +16,9 @@ const { current } = Astro.props;
 const locale = resolveLocale(Astro.currentLocale);
 const t = useTranslations(locale);
 
-const labels: Record<BrowseAxis, string> = {
-  tags: t.pages.tagsTitle,
-  kinds: t.pages.kindsTitle,
-  series: t.pages.seriesTitle,
-  tree: t.pages.treeTitle,
-};
-
 const AXES = BROWSE_AXES.map(key => ({
   key,
-  label: labels[key],
+  label: sectionLabel(key, t),
   href: `${key}/`,
 }));
 

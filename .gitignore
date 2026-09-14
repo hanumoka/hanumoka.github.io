@@ -2,6 +2,6 @@ dist/
 .astro/
 node_modules/
 
-# 빌드 산출물. `npm run build` 가 dist/pagefind 를 만들어 여기로 복사한다.
-# 커밋해 두면 항상 낡은 사본이 남고, 배포본은 어차피 빌드가 새로 만든다.
+# 예전에 빌드가 색인을 public/pagefind 로 복사하던 자리가 남아 있으면
+# 커밋되지 않게 막는다. 지금은 `pagefind --site dist` 가 dist 에만 만든다.
 public/pagefind/

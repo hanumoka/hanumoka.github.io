@@ -17,7 +17,7 @@ import {
   resolveLocale,
 } from "@/utils/locales";
 import { HEADER_NAV } from "@/catalog";
-import { useTranslations, tplStr } from "@/i18n";
+import { sectionLabel, useTranslations, tplStr } from "@/i18n";
 import config from "@/config";
 
 const { site, features } = config;
@@ -109,7 +109,7 @@ const showSearch = HEADER_NAV.some(item => item.section === "search");
                 href={getRelativeLocaleUrl(locale, item.section)}
                 class:list={{ "active-nav": isActive(`/${item.section}`) }}
               >
-                {t.nav[item.section as keyof typeof t.nav]}
+                {sectionLabel(item.section, t)}
               </a>
             </li>
           ))

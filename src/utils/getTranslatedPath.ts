@@ -6,7 +6,7 @@ import { getUniqueTags } from "./getUniqueTags";
 import { hasContentPage } from "./hasContentPage";
 import { hasListingEntries } from "./hasListingEntries";
 import type { Locale } from "./locales";
-import { postFilter } from "./postFilter";
+import { draftFilter, postFilter } from "./postFilter";
 
 export type TranslatedPath = {
   /** 언어 접두사가 없는 목적지 경로. 예: `/posts/my-post` */
@@ -73,19 +73,30 @@ export async function getTranslatedPath(
   }
 
   const leaf = rest[0]!;
-  const posts = (await getLocalizedPosts(target)).filter(postFilter);
+
+  // 목록의 쪽 번호는 언어마다 글 수가 달라 같은 쪽이 없다. 목록 첫 쪽으로.
+  // 초안 목록(`/drafts/2`)을 여기 안 두면 아래 최종 줄이 홈으로 보낸다.
+  if (isListingSection(section) && rest.length === 1 && /^\d+$/.test(leaf)) {
+    return { path: sectionPath, exact: false };
+  }
 
   if (section === "posts") {
-    // 쪽 번호(`/posts/2`)는 저쪽 글 수가 다르면 없다. 목록 첫 쪽으로.
-    if (rest.length === 1 && /^\d+$/.test(leaf)) {
-      return { path: sectionPath, exact: false };
-    }
-    const keys = new Set(posts.map(post => post.data.key));
     const slug = rest.join("/");
-    return keys.has(slug)
-      ? { path: `/posts/${slug}`, exact: true }
-      : { path: sectionPath, exact: false };
+    const targetAll = await getLocalizedPosts(target, { includeDrafts: true });
+    if (targetAll.some(post => post.data.key === slug)) {
+      return { path: `/posts/${slug}`, exact: true };
+    }
+    const fromAll = from
+      ? await getLocalizedPosts(from, { includeDrafts: true })
+      : [];
+    const fromIsDraft = fromAll.some(
+      post => post.data.key === slug && draftFilter(post)
+    );
+    // 초안 글의 짝이 없으면 정식 목록이 아니라 초안 목록으로 물러선다.
+    return { path: fromIsDraft ? "/drafts" : sectionPath, exact: false };
   }
+
+  const posts = (await getLocalizedPosts(target)).filter(postFilter);
 
   if (isTaxonomy(section)) {
     const terms = new Set<string>(
