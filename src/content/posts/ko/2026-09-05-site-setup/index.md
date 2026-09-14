@@ -14,11 +14,11 @@ tags: [astro, github-pages, ci]
 
 ## 구성
 
-| 층     | 무엇                                        |
-| ------ | ------------------------------------------- |
-| 생성기 | Astro 7                                     |
-| 배포   | GitHub Actions → GitHub Pages               |
-| 폰트   | 2026-09-05에는 시스템 폰트만. 지금은 Google Sans Code와 Noto Sans KR |
+| 층     | 무엇                                                                                                                                  |
+| ------ | ------------------------------------------------------------------------------------------------------------------------------------- |
+| 생성기 | Astro 7                                                                                                                               |
+| 배포   | GitHub Actions → GitHub Pages                                                                                                         |
+| 폰트   | 2026-09-05에는 시스템 폰트만. 지금은 Google Sans Code와 Noto Sans KR                                                                  |
 | 의존성 | 2026-09-05에는 `astro`, `@astrojs/sitemap`, `@astrojs/rss` 셋. 지금은 테마와 폰트가 들어 있다. 목록은 저장소 `THIRD-PARTY-NOTICES.md` |
 
 ## Gatsby를 버렸다
