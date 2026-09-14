@@ -26,7 +26,7 @@ npm run build    # 고지 생성 → 형식 검사 → dist/ 빌드 → Pagefind
 npm run preview  # 빌드 결과 확인
 ```
 
-Node 22.12 이상이 필요하다. 배포 워크플로는 [`.nvmrc`](.nvmrc)의 Node 22를
+Node 22.12 이상이 필요하다. 배포 워크플로는 [`.nvmrc`](.nvmrc)의 `22.12.0`을
 쓴다. 테마 원본은 pnpm을 쓰지만 이 저장소는 **npm**을 쓴다 —
 `package-lock.json`을 커밋해 두고, CI는 `npm ci`로 맞춘다.
 

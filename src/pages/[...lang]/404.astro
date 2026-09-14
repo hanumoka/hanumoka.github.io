@@ -5,28 +5,24 @@ import Footer from "@/components/Footer.astro";
 import LinkButton from "@/components/LinkButton.astro";
 import { getRelativeLocaleUrl } from "astro:i18n";
 import { useTranslations } from "@/i18n";
+import { DEFAULT_LOCALE } from "@/catalog";
+import { localePaths, resolveLocale } from "@/utils/locales";
 import config from "@/config";
 
-const locale = Astro.currentLocale ?? config.site.lang;
+/**
+ * GitHub Pages 는 루트 `404.html` 하나만 없는 주소에 쓴다.
+ * 영어 주소의 없는 페이지는 그 파일이 여기로 보낸다.
+ * 기본 언어는 루트 `404.html` 이 맡으므로 여기서는 내지 않는다.
+ */
+export function getStaticPaths() {
+  return localePaths().filter(({ props }) => props.locale !== DEFAULT_LOCALE);
+}
+
+const locale = resolveLocale(Astro.currentLocale);
 const t = useTranslations(locale);
-const enHome = getRelativeLocaleUrl("en", "");
-const enNotFound = getRelativeLocaleUrl("en", "404");
 ---
 
 <Layout title={`${t.notFound.title} | ${config.site.title}`} noindex>
-  <Fragment slot="head">
-    <script is:inline define:vars={{ enHome, enNotFound }}>
-      (function () {
-        var path = location.pathname;
-        var home = enHome.replace(/\/$/, "");
-        if (path !== home && path.indexOf(home + "/") !== 0) return;
-        var dest = enNotFound;
-        var destBare = dest.replace(/\/$/, "");
-        if (path === dest || path === destBare) return;
-        location.replace(dest);
-      })();
-    </script>
-  </Fragment>
   <Header />
 
   <main

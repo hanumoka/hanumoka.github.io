@@ -1,0 +1,112 @@
+---
+import { getLocalizedPosts } from "@/utils/getLocalizedPosts";
+import { getRelativeLocaleUrl } from "astro:i18n";
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Breadcrumb from "@/components/Breadcrumb.astro";
+import Main from "@/components/Main.astro";
+import Footer from "@/components/Footer.astro";
+import BrowseAxes from "@/components/BrowseAxes.astro";
+import Tag from "@/components/Tag.astro";
+import { TAXONOMIES, type Kind, type Taxonomy } from "@/catalog";
+import { getUniqueTags } from "@/utils/getUniqueTags";
+import { getUniqueKinds } from "@/utils/getUniqueKinds";
+import { getUniqueSeries } from "@/utils/getUniqueSeries";
+import { seriesLabel } from "@/series";
+import { useTranslations } from "@/i18n";
+import type { UIStrings } from "@/i18n/types";
+import { localePaths, resolveLocale } from "@/utils/locales";
+import config from "@/config";
+
+export function getStaticPaths() {
+  return localePaths().flatMap(({ params, props }) =>
+    TAXONOMIES.map(taxonomy => ({
+      params: { ...params, taxonomy },
+      props: { ...props, taxonomy },
+    }))
+  );
+}
+
+function copyFor(taxonomy: Taxonomy, t: UIStrings) {
+  if (taxonomy === "tags") {
+    return { title: t.pages.tagsTitle, desc: t.pages.tagsDesc };
+  }
+  if (taxonomy === "kinds") {
+    return { title: t.pages.kindsTitle, desc: t.pages.kindsDesc };
+  }
+  return { title: t.pages.seriesTitle, desc: t.pages.seriesDesc };
+}
+
+const { taxonomy } = Astro.props as { taxonomy: Taxonomy };
+
+const locale = resolveLocale(Astro.currentLocale);
+const posts = await getLocalizedPosts(locale);
+const t = useTranslations(locale);
+const copy = copyFor(taxonomy, t);
+
+const tags = taxonomy === "tags" ? getUniqueTags(posts) : [];
+const kinds = taxonomy === "kinds" ? getUniqueKinds(posts) : [];
+const series = taxonomy === "series" ? getUniqueSeries(posts) : [];
+const empty =
+  (taxonomy === "tags" && tags.length === 0) ||
+  (taxonomy === "kinds" && kinds.length === 0) ||
+  (taxonomy === "series" && series.length === 0);
+---
+
+<Layout title={`${copy.title} | ${config.site.title}`} noindex={empty}>
+  <Header />
+
+  <Breadcrumb />
+
+  <Main pageTitle={copy.title} pageDesc={copy.desc}>
+    {empty && <p class="text-muted-foreground">{t.pages.listEmpty}</p>}
+    {
+      taxonomy === "tags" && (
+        <ul class="flex flex-wrap gap-6">
+          {tags.map(({ tag, tagName }) => (
+            <Tag {tag} {tagName} />
+          ))}
+        </ul>
+      )
+    }
+    {
+      taxonomy === "kinds" && (
+        <ul class="flex flex-col gap-3">
+          {kinds.map(({ kind, count }) => (
+            <li>
+              <a
+                href={getRelativeLocaleUrl(locale, `kinds/${kind}/`)}
+                class="hover:text-accent inline-flex items-baseline gap-2 underline decoration-dashed underline-offset-4"
+              >
+                <span>{t.kinds[kind as Kind] ?? kind}</span>
+                <span class="text-sm opacity-70">{count}</span>
+              </a>
+              <span class="ms-1 text-sm opacity-50">{kind}</span>
+            </li>
+          ))}
+        </ul>
+      )
+    }
+    {
+      taxonomy === "series" && (
+        <ul class="flex flex-col gap-3">
+          {series.map(({ series: slug, count }) => (
+            <li>
+              <a
+                href={getRelativeLocaleUrl(locale, `series/${slug}/`)}
+                class="hover:text-accent inline-flex items-baseline gap-2 underline decoration-dashed underline-offset-4"
+              >
+                <span>{seriesLabel(slug, locale)}</span>
+                <span class="text-sm opacity-70">{count}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      )
+    }
+
+    <BrowseAxes current={taxonomy} />
+  </Main>
+
+  <Footer />
+</Layout>
