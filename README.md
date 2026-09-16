@@ -71,7 +71,7 @@ Node 22.12 이상이 필요하다. 배포 워크플로는 [`.nvmrc`](.nvmrc)의 
 `key`다. 지금 글은 키가 폴더 이름과 같아서 주소가 그대로다.
 
 ```
-src/content/posts/ko/2026-09-07-media-test/
+src/content/posts/ko/example-post-key/
   index.md          ← 본문
   contrast.png      ← 이 글에서만 쓰는 이미지
   frames.gif
