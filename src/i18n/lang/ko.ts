@@ -53,7 +53,9 @@ export default {
     socialLinks: "링크",
     featured: "골라 둔 글",
     recentPosts: "최근 글",
+    recentDrafts: "최근 초안",
     allPosts: "글 전체",
+    allDrafts: "초안 전체",
   },
   footer: {
     copyright: "저작권",
@@ -100,7 +102,7 @@ export default {
     seriesOneTitle: "연재",
     seriesOneDesc: "이 연재의 글",
 
-    alsoBrowseBy: "이렇게도 볼 수 있습니다 —",
+    alsoBrowseBy: "이렇게도 볼 수 있습니다:",
   },
   kinds: {
     til: "배운 것",

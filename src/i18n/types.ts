@@ -55,7 +55,9 @@ export interface UIStrings {
     socialLinks: string;
     featured: string;
     recentPosts: string;
+    recentDrafts: string;
     allPosts: string;
+    allDrafts: string;
   };
   footer: {
     copyright: string;

@@ -30,8 +30,98 @@
   @apply max-w-app mx-auto w-full px-4;
 }
 
+@utility app-layout-wide {
+  @apply mx-auto w-full max-w-6xl px-4;
+}
+
 @utility active-nav {
   @apply underline decoration-wavy decoration-2 underline-offset-8;
+}
+
+/* 작업대 홈: 왼쪽 소개, 오른쪽 글. 768px 미만은 한 줄. */
+.home-bench {
+  display: grid;
+  grid-template-columns: minmax(220px, 18rem) minmax(0, 1fr);
+  gap: 3rem 4rem;
+  align-items: start;
+}
+.home-who {
+  position: sticky;
+  top: 5.5rem;
+}
+.home-intro p {
+  margin-block: 0.5rem;
+  color: var(--muted-foreground);
+}
+.home-feed {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.home-feed-row {
+  display: grid;
+  grid-template-columns: 7.5rem minmax(0, 1fr);
+  gap: 1rem;
+  padding-block: 1.15rem;
+  border-top: 1px solid var(--border);
+  color: inherit;
+  text-decoration: none;
+}
+.home-feed li:last-child .home-feed-row {
+  border-bottom: 1px solid var(--border);
+}
+.home-feed-date {
+  padding-top: 0.2rem;
+}
+.home-feed-date svg {
+  display: none;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .home-feed-row {
+    transition: transform 0.22s cubic-bezier(0.32, 0.72, 0, 1);
+  }
+  .home-feed-row:hover {
+    transform: translateX(4px);
+  }
+}
+@media (width < 768px) {
+  .home-bench {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+  .home-who {
+    position: static;
+  }
+  .home-feed-row {
+    grid-template-columns: 1fr;
+    gap: 0.35rem;
+  }
+}
+
+/* 떠 있는 알약 내비게이션. 투명 효과를 줄이면 단색으로 둔다. */
+.nav-island {
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--foreground) 12%, transparent);
+  background: color-mix(in srgb, var(--background) 82%, transparent);
+  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--foreground) 10%, transparent);
+  backdrop-filter: blur(16px);
+}
+header .active-nav {
+  text-decoration: none;
+  background: var(--accent);
+  color: var(--accent-foreground);
+  border-radius: 999px;
+}
+@media (prefers-reduced-transparency: reduce) {
+  .nav-island {
+    background: var(--background);
+    backdrop-filter: none;
+  }
+}
+@media (width < 640px) {
+  .nav-island {
+    border-radius: 1.25rem;
+  }
 }
 
 :target {

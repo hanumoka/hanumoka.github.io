@@ -1,0 +1,48 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { getPostUrl } from "@/utils/getPostPaths";
+import { toTransitionName } from "@/utils/toTransitionName";
+import { resolveLocale } from "@/utils/locales";
+import { useTranslations } from "@/i18n";
+import Datetime from "./Datetime.astro";
+
+type Props = {
+  posts: CollectionEntry<"posts">[];
+};
+
+const { posts } = Astro.props;
+const t = useTranslations(resolveLocale(Astro.currentLocale));
+---
+
+<ul class="home-feed">
+  {
+    posts.map(({ id, data }) => (
+      <li>
+        <a class="home-feed-row" href={getPostUrl(data.key, Astro.currentLocale)}>
+          <Datetime
+            class="home-feed-date"
+            pubDatetime={data.pubDatetime}
+            modDatetime={data.modDatetime}
+            timezone={data.timezone}
+          />
+          <div>
+            <h3
+              class="text-foreground text-lg tracking-tight sm:text-xl"
+              transition:name={toTransitionName(id)}
+            >
+              {data.title}
+              {data.draft && (
+                <span class="text-accent ms-2 align-middle text-xs font-semibold">
+                  {t.post.draftBadge}
+                </span>
+              )}
+            </h3>
+            <p class="text-muted-foreground mt-1 max-w-[58ch] text-sm leading-relaxed sm:text-base">
+              {data.description}
+            </p>
+          </div>
+        </a>
+      </li>
+    ))
+  }
+</ul>

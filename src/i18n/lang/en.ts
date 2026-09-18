@@ -44,10 +44,12 @@ export default {
   },
   home: {
     rssFeed: "RSS Feed",
-    socialLinks: "Social Links",
+    socialLinks: "Links",
     featured: "Featured",
-    recentPosts: "Recent Posts",
-    allPosts: "All Posts",
+    recentPosts: "Recent posts",
+    recentDrafts: "Recent drafts",
+    allPosts: "All posts",
+    allDrafts: "All drafts",
   },
   footer: {
     copyright: "Copyright",
