@@ -18,7 +18,10 @@ const t = useTranslations(resolveLocale(Astro.currentLocale));
   {
     posts.map(({ id, data }) => (
       <li>
-        <a class="home-feed-row" href={getPostUrl(data.key, Astro.currentLocale)}>
+        <a
+          class="home-feed-row"
+          href={getPostUrl(data.key, Astro.currentLocale)}
+        >
           <Datetime
             class="home-feed-date"
             pubDatetime={data.pubDatetime}
