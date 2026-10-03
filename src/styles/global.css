@@ -34,6 +34,23 @@
   @apply mx-auto w-full max-w-6xl px-4;
 }
 
+/* 시각화만 넓게, 산문은 기존 읽기 폭을 유지한다. */
+.post-wide > :not(article) {
+  max-width: 48rem;
+  margin-inline: auto;
+}
+.post-wide > h1 {
+  display: block;
+}
+.article-wide {
+  max-width: none;
+  font-family: var(--font-noto-sans-kr), sans-serif;
+}
+.article-wide > :not([data-wide]) {
+  max-width: 48rem;
+  margin-inline: auto;
+}
+
 @utility active-nav {
   @apply underline decoration-wavy decoration-2 underline-offset-8;
 }

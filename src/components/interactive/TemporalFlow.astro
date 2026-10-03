@@ -1,0 +1,570 @@
+---
+import InteractiveFrame from "./InteractiveFrame.astro";
+import { scenarios } from "./temporal-model";
+const first = scenarios.success[0];
+---
+
+<InteractiveFrame
+  id="temporal-flow"
+  title="한 요청이 완료되기까지"
+  description="경로를 따라가며 서비스와 워커의 역할을 구분해 보세요."
+  caption="개념을 설명하기 위한 시뮬레이션입니다. 실제 Temporal 서버에 연결하지 않으며, 태스크 큐와 응답 왕복을 간략히 표현했습니다."
+>
+  <temporal-flow>
+    <div class="flow-toolbar" hidden data-controls>
+      <div class="scenario-buttons" role="group" aria-label="실행 시나리오">
+        <button type="button" data-scenario="success" aria-pressed="true"
+          >정상 실행</button
+        >
+        <button type="button" data-scenario="retry" aria-pressed="false"
+          >실패 후 재시도</button
+        >
+      </div>
+      <span class="flow-state" data-status>실행 전</span>
+    </div>
+
+    <div class="flow-workspace">
+      <div class="flow-visual">
+        <div
+          class="graph-scroll"
+          tabindex="0"
+          role="region"
+          aria-label="Temporal 구성도. 좁은 화면에서는 좌우로 스크롤할 수 있습니다."
+        >
+          <svg
+            viewBox="0 0 720 400"
+            class="flow-graph"
+            role="img"
+            aria-labelledby="temporal-svg-title temporal-svg-description"
+          >
+            <title id="temporal-svg-title">
+              Temporal의 서비스와 두 종류의 워커
+            </title>
+            <desc id="temporal-svg-description"
+              >클라이언트는 서비스에 요청합니다. 서비스는 워크플로 워커와
+              액티비티 워커에 태스크를 전달하고 실행 히스토리를 보관합니다.</desc
+            >
+            <defs>
+              <marker
+                id="temporal-arrow"
+                markerWidth="7"
+                markerHeight="7"
+                refX="6"
+                refY="3.5"
+                orient="auto"
+                ><path d="M0 0 L7 3.5 L0 7" fill="context-stroke"
+                ></path></marker
+              >
+            </defs>
+            <rect
+              class="service-boundary"
+              x="244"
+              y="42"
+              width="216"
+              height="316"
+              rx="16"></rect>
+            <text class="boundary-label" x="266" y="72">Temporal 서비스</text>
+            <g
+              class="connections"
+              fill="none"
+              marker-end="url(#temporal-arrow)"
+            >
+              <path data-edge="start" d="M178 172 H264"></path>
+              <path
+                data-edge="workflow"
+                d="M440 142 H482 Q496 142 496 128 V122 Q496 108 510 108 H552"
+              ></path>
+              <path
+                data-edge="schedule"
+                d="M552 151 H510 Q496 151 496 165 V186 Q496 200 482 200 H440"
+              ></path>
+              <path
+                data-edge="activity"
+                d="M440 226 H482 Q496 226 496 240 V263 Q496 277 510 277 H552"
+              ></path>
+              <path
+                data-edge="result"
+                d="M552 320 H486 Q472 320 472 306 V264 Q472 250 458 250 H440"
+              ></path>
+              <path class="internal-edge" d="M350 254 V273"></path>
+            </g>
+            <text class="edge-label" x="194" y="157">요청</text>
+            <text class="edge-label" x="475" y="92">Workflow Task</text>
+            <text class="edge-label" x="488" y="351">Activity Task / 결과</text>
+            <g data-node="client" class="graph-node">
+              <rect x="24" y="130" width="154" height="84" rx="10"></rect>
+              <text class="node-name" x="44" y="163">클라이언트</text>
+              <text class="node-detail" x="44" y="187">실행을 요청</text>
+            </g>
+            <g data-node="service" class="graph-node">
+              <rect x="264" y="104" width="176" height="150" rx="10"></rect>
+              <text class="node-name" x="284" y="139">태스크 관리</text>
+              <text class="node-detail" x="284" y="166"
+                >큐 · 타이머 · 재시도</text
+              >
+              <text class="node-caption" x="284" y="196"
+                >다음 일을 전달합니다</text
+              >
+            </g>
+            <g data-node="history" class="graph-node history-node">
+              <rect x="264" y="275" width="176" height="63" rx="10"></rect>
+              <text class="node-name" x="284" y="301">Event History</text>
+              <text class="node-detail" x="284" y="323">실행 진행을 보관</text>
+            </g>
+            <g data-node="workflow" class="graph-node">
+              <rect x="552" y="76" width="148" height="104" rx="10"></rect>
+              <text class="node-name" x="570" y="108">워크플로 워커</text>
+              <text class="node-detail" x="570" y="134">순서와 분기</text>
+              <text class="node-caption" x="570" y="159"
+                >워크플로 코드 실행</text
+              >
+            </g>
+            <g data-node="activity" class="graph-node">
+              <rect x="552" y="246" width="148" height="88" rx="10"></rect>
+              <text class="node-name" x="570" y="276">액티비티 워커</text>
+              <text class="node-detail" x="570" y="301">외부 작업 수행</text>
+              <text class="node-caption" x="570" y="321">예: 이미지 변환</text>
+            </g>
+          </svg>
+        </div>
+        <div class="graph-caption">
+          <span><i></i>현재 경로</span><span
+            >서비스가 기록하고, 워커가 실행합니다.</span
+          >
+        </div>
+        <p class="mobile-graph-hint">
+          구성도를 좌우로 움직여 전체를 볼 수 있습니다.
+        </p>
+      </div>
+      <aside class="flow-explanation" aria-label="현재 단계 설명">
+        <div class="step-meta">
+          <span data-step-count>1 / 6</span><span data-attempt
+            >액티비티 실행 전</span
+          >
+        </div>
+        <p class="step-title" data-step-title>{first.title}</p>
+        <p class="step-description" data-step-description>
+          {first.description}
+        </p>
+        <div class="event-log">
+          <span class="log-label">설명용 실행 기록</span>
+          <ol data-event-log><li>{first.event}</li></ol>
+        </div>
+      </aside>
+    </div>
+    <div class="playback" hidden data-controls>
+      <div class="playback-actions">
+        <button class="play-button" type="button" data-action="play"
+          >재생</button
+        >
+        <button type="button" data-action="previous" aria-label="이전 단계"
+          >이전</button
+        >
+        <button type="button" data-action="next" aria-label="다음 단계"
+          >다음</button
+        >
+        <button type="button" data-action="reset">처음으로</button>
+      </div>
+      <label class="speed-label"
+        >속도 <select aria-label="재생 속도" data-speed
+          ><option value="0.5">0.5×</option><option value="1" selected
+            >1×</option
+          ><option value="2">2×</option></select
+        ></label
+      >
+      <label class="seek-label"
+        ><span class="sr-only">실행 단계</span><input
+          data-seek
+          type="range"
+          min="0"
+          max="5"
+          value="0"
+          step="1"
+          aria-label="실행 단계"
+        /></label
+      >
+      <div
+        class="step-nav"
+        role="group"
+        aria-label="단계 바로가기"
+        data-step-nav
+      >
+      </div>
+      <p
+        class="sr-only"
+        aria-live="polite"
+        aria-atomic="true"
+        data-announcement
+      >
+      </p>
+    </div>
+    <noscript
+      ><p class="no-script">
+        JavaScript를 켜면 시나리오와 재생 기능을 사용할 수 있습니다. 아래
+        본문에서 전체 흐름을 읽을 수 있습니다.
+      </p></noscript
+    >
+  </temporal-flow>
+</InteractiveFrame>
+
+<script>
+  import "./temporal-player";
+</script>
+
+<style>
+  temporal-flow {
+    display: block;
+  }
+  [hidden] {
+    display: none !important;
+  }
+  button,
+  select {
+    font: inherit;
+  }
+  button {
+    cursor: pointer;
+  }
+  button:disabled {
+    opacity: 0.35;
+    cursor: default;
+  }
+  .flow-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem 1.75rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .scenario-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+    background: var(--muted);
+    border-radius: 8px;
+    padding: 4px;
+  }
+  .scenario-buttons button {
+    min-height: 40px;
+    border-radius: 5px;
+    padding: 0.5rem 0.9rem;
+    font-size: 0.85rem;
+    color: var(--muted-foreground);
+  }
+  .scenario-buttons button[aria-pressed="true"] {
+    background: var(--background);
+    color: var(--foreground);
+    box-shadow: 0 1px 3px color-mix(in srgb, var(--foreground) 10%, transparent);
+  }
+  .flow-state {
+    font-size: 0.8rem;
+    color: var(--accent);
+    white-space: nowrap;
+  }
+  .flow-workspace {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 300px;
+  }
+  .flow-visual {
+    min-width: 0;
+    align-self: center;
+    padding: 1rem 0.5rem;
+  }
+  .graph-scroll {
+    overflow-x: auto;
+  }
+  .flow-graph {
+    width: 100%;
+    min-width: 560px;
+    height: auto;
+  }
+  .service-boundary {
+    fill: color-mix(in srgb, var(--muted) 35%, var(--background));
+    stroke: var(--border);
+    stroke-dasharray: 4 5;
+  }
+  .boundary-label {
+    fill: var(--muted-foreground);
+    font-size: 14px;
+  }
+  .connections path {
+    stroke: var(--muted-foreground);
+    stroke-width: 1.5;
+    opacity: 0.4;
+  }
+  .connections path[data-active="true"] {
+    opacity: 1;
+    stroke: var(--accent);
+    stroke-width: 2.5;
+    stroke-dasharray: 5 5;
+  }
+  temporal-flow[data-playing="true"] .connections path[data-active="true"] {
+    animation: packet 1s linear infinite;
+  }
+  .connections .internal-edge {
+    stroke-dasharray: 3 4;
+  }
+  .graph-node rect {
+    fill: var(--background);
+    stroke: var(--border);
+    stroke-width: 1.5;
+  }
+  .graph-node[data-active="true"] rect {
+    stroke: var(--accent);
+    fill: color-mix(in srgb, var(--accent) 7%, var(--background));
+  }
+  .node-name {
+    fill: var(--foreground);
+    font-size: 16px;
+    font-weight: 650;
+  }
+  .node-detail {
+    fill: var(--muted-foreground);
+    font-size: 13px;
+  }
+  .node-caption,
+  .edge-label {
+    fill: var(--muted-foreground);
+    font-size: 11px;
+  }
+  .graph-caption {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin: 0.5rem 1.25rem;
+    font-size: 0.75rem;
+    color: var(--muted-foreground);
+  }
+  .graph-caption span:first-child {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    white-space: nowrap;
+  }
+  .graph-caption i {
+    width: 24px;
+    border-top: 2px dashed var(--accent);
+  }
+  .mobile-graph-hint {
+    display: none;
+  }
+  .flow-explanation {
+    border-left: 1px solid var(--border);
+    padding: 1.5rem;
+    background: color-mix(in srgb, var(--muted) 30%, var(--background));
+  }
+  .step-meta {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.5rem;
+    color: var(--muted-foreground);
+    font-size: 0.7rem;
+  }
+  .step-meta span:first-child {
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+  }
+  .step-title {
+    margin: 1rem 0 0.65rem;
+    font-size: 1.15rem;
+    line-height: 1.65;
+    font-weight: 650;
+    min-height: 3.8rem;
+  }
+  .step-description {
+    margin: 0;
+    color: var(--muted-foreground);
+    font-size: 0.85rem;
+    min-height: 8.5rem;
+    line-height: 1.9;
+  }
+  .event-log {
+    margin-top: 1.25rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+  }
+  .log-label {
+    font-size: 0.7rem;
+    color: var(--muted-foreground);
+  }
+  .event-log ol {
+    margin: 0.6rem 0 0;
+    padding: 0;
+    list-style: none;
+    min-height: 4.8rem;
+  }
+  .event-log :global(li) {
+    padding: 0.15rem 0;
+    font-size: 0.72rem;
+    color: var(--muted-foreground);
+  }
+  .event-log :global(li:last-child) {
+    color: var(--accent);
+  }
+  .playback {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.25rem 1.75rem;
+    border-top: 1px solid var(--border);
+  }
+  .playback-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+  }
+  .playback-actions button {
+    min-height: 40px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.45rem 0.8rem;
+    font-size: 0.8rem;
+  }
+  .playback-actions .play-button {
+    background: var(--accent);
+    color: var(--accent-foreground);
+    border-color: var(--accent);
+    min-width: 6rem;
+    font-weight: 650;
+  }
+  .speed-label {
+    font-size: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  select {
+    padding: 0.3rem;
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    background: var(--background);
+  }
+  .seek-label {
+    grid-column: 1 / -1;
+    display: flex;
+  }
+  input[type="range"] {
+    accent-color: var(--accent);
+    width: 100%;
+    cursor: pointer;
+  }
+  .step-nav {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+  .step-nav :global(button) {
+    cursor: pointer;
+    min-height: 36px;
+    font: inherit;
+    font-size: 0.72rem;
+    padding: 0.35rem 0.55rem;
+    border-radius: 5px;
+    border: 1px solid transparent;
+    color: var(--muted-foreground);
+  }
+  .step-nav :global(button[aria-current="step"]) {
+    color: var(--accent);
+    border-color: var(--border);
+    background: var(--muted);
+  }
+  .no-script {
+    padding: 1rem 1.75rem;
+    font-size: 0.85rem;
+  }
+  @keyframes packet {
+    to {
+      stroke-dashoffset: -20;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    temporal-flow[data-playing="true"] .connections path[data-active="true"] {
+      animation: none;
+    }
+  }
+  @media (max-width: 960px) {
+    .flow-workspace {
+      grid-template-columns: 1fr;
+    }
+    .flow-explanation {
+      border-left: 0;
+      border-top: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem 2rem;
+    }
+    .step-meta {
+      grid-column: 1 / -1;
+    }
+    .step-title {
+      grid-column: 1;
+      margin: 0.5rem 0;
+      min-height: 0;
+    }
+    .step-description {
+      grid-column: 1;
+      min-height: 0;
+    }
+    .event-log {
+      grid-column: 2;
+      grid-row: 2 / 4;
+      margin: 0.5rem 0;
+      border-top: 0;
+      border-left: 1px solid var(--border);
+      padding: 0 0 0 1.5rem;
+    }
+  }
+  @media (max-width: 640px) {
+    .flow-toolbar {
+      padding: 0.8rem 1rem;
+      gap: 0.4rem;
+    }
+    .scenario-buttons button {
+      padding: 0.45rem 0.55rem;
+      font-size: 0.75rem;
+    }
+    .flow-state {
+      font-size: 0.7rem;
+    }
+    .flow-explanation {
+      display: block;
+      padding: 1.2rem;
+    }
+    .step-title {
+      font-size: 1rem;
+    }
+    .step-description {
+      min-height: 7rem;
+    }
+    .event-log {
+      border: 0;
+      padding: 1rem 0 0;
+    }
+    .event-log ol {
+      min-height: 0;
+    }
+    .graph-caption {
+      margin-inline: 0.6rem;
+      font-size: 0.66rem;
+    }
+    .mobile-graph-hint {
+      display: block;
+      margin: 0.6rem 0.6rem 0;
+      font-size: 0.7rem;
+      color: var(--muted-foreground);
+    }
+    .playback {
+      padding: 1rem;
+      gap: 0.8rem;
+    }
+    .playback-actions {
+      grid-column: 1 / -1;
+    }
+    .speed-label {
+      grid-column: 1 / -1;
+    }
+  }
+</style>

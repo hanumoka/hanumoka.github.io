@@ -1,0 +1,249 @@
+---
+import InteractiveFrame from "./InteractiveFrame.astro";
+---
+
+<InteractiveFrame
+  id="retry-calculator"
+  title="재시도 간격을 바꿔보세요"
+  description="실패할 때마다 얼마나 기다려야 할까요? 입력값을 바꾸면 대기 시간이 다시 계산됩니다."
+  caption="모든 시도가 실패한다고 가정합니다. 작업 실행 시간·타임아웃·지터는 제외하며, Temporal의 전체 재시도 정책을 재현하는 도구는 아닙니다."
+>
+  <retry-calculator>
+    <div class="retry-inputs">
+      <label
+        >첫 대기 시간 <span><output data-value="initial">1</output>초</span
+        ><input
+          type="range"
+          data-param="initial"
+          aria-label="첫 대기 시간"
+          min="1"
+          max="10"
+          value="1"
+        /></label
+      >
+      <label
+        >증가 배수 <span><output data-value="coefficient">2</output>배</span
+        ><input
+          type="range"
+          data-param="coefficient"
+          aria-label="증가 배수"
+          min="1"
+          max="3"
+          step="0.5"
+          value="2"
+        /></label
+      >
+      <label
+        >최대 대기 시간 <span><output data-value="maximum">10</output>초</span
+        ><input
+          type="range"
+          data-param="maximum"
+          aria-label="최대 대기 시간"
+          min="10"
+          max="60"
+          step="5"
+          value="10"
+        /></label
+      >
+      <label
+        >총 시도 횟수 <span><output data-value="attempts">5</output>회</span
+        ><input
+          type="range"
+          data-param="attempts"
+          aria-label="총 시도 횟수. 최초 실행 포함"
+          min="2"
+          max="8"
+          value="5"
+        /></label
+      >
+    </div>
+    <div class="retry-result">
+      <p class="result-label">마지막 시도 전까지 누적 대기</p>
+      <p class="result-number"><output data-total>15</output><span>초</span></p>
+      <p class="result-context" data-context>
+        총 5회 시도 사이에 4번 기다립니다.
+      </p>
+      <ol
+        class="retry-intervals"
+        data-intervals
+        aria-label="각 재시도 전 대기 시간"
+      >
+        <li><span>시도 2 전</span><strong>1초</strong></li><li>
+          <span>시도 3 전</span><strong>2초</strong>
+        </li><li><span>시도 4 전</span><strong>4초</strong></li><li>
+          <span>시도 5 전</span><strong>8초</strong>
+        </li>
+      </ol>
+      <p class="retry-formula">
+        대기 = min(첫 대기 × 배수<sup>재시도 순번 − 1</sup>, 최대 대기)
+      </p>
+      <p class="sr-only" aria-live="polite" data-retry-announcement></p>
+    </div>
+  </retry-calculator>
+  <noscript
+    ><p>
+      계산기를 조작하려면 JavaScript가 필요합니다. 위 결과는 기본 설정인 1초,
+      2배, 최대 10초, 총 5회 기준입니다.
+    </p></noscript
+  >
+</InteractiveFrame>
+
+<script>
+  import { retryDelays } from "./temporal-model";
+  class RetryCalculator extends HTMLElement {
+    private controller: AbortController | undefined;
+    connectedCallback() {
+      this.controller?.abort();
+      this.controller = new AbortController();
+      const update = () => {
+        const values: Record<string, number> = {};
+        this.querySelectorAll<HTMLInputElement>("[data-param]").forEach(
+          input => {
+            const key = input.dataset.param!;
+            values[key] = Number(input.value);
+            const output = this.querySelector(`[data-value="${key}"]`);
+            if (output) output.textContent = input.value;
+          }
+        );
+        const delays = retryDelays(
+          values.initial,
+          values.coefficient,
+          values.maximum,
+          values.attempts
+        );
+        const format = (value: number) =>
+          Number(value.toFixed(2)).toLocaleString("ko-KR");
+        const total = format(delays.reduce((sum, delay) => sum + delay, 0));
+        this.querySelector("[data-total]")!.textContent = total;
+        this.querySelector("[data-context]")!.textContent =
+          `총 ${values.attempts}회 시도 사이에 ${delays.length}번 기다립니다.`;
+        this.querySelector("[data-intervals]")!.replaceChildren(
+          ...delays.map((delay, index) => {
+            const item = document.createElement("li");
+            const label = document.createElement("span");
+            const value = document.createElement("strong");
+            label.textContent = `시도 ${index + 2} 전`;
+            value.textContent = `${format(delay)}초`;
+            item.append(label, value);
+            return item;
+          })
+        );
+      };
+      this.addEventListener("input", update, {
+        signal: this.controller.signal,
+      });
+      this.addEventListener(
+        "change",
+        () => {
+          this.querySelector("[data-retry-announcement]")!.textContent =
+            `누적 대기 시간 ${this.querySelector("[data-total]")!.textContent}초`;
+        },
+        { signal: this.controller.signal }
+      );
+      update();
+    }
+    disconnectedCallback() {
+      this.controller?.abort();
+    }
+  }
+  if (!customElements.get("retry-calculator"))
+    customElements.define("retry-calculator", RetryCalculator);
+</script>
+
+<style>
+  retry-calculator {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+  }
+  .retry-inputs {
+    padding: 1.75rem;
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 1.4rem;
+  }
+  label {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0.65rem;
+    font-size: 0.85rem;
+  }
+  label span {
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+  }
+  input {
+    grid-column: 1 / -1;
+    width: 100%;
+    accent-color: var(--accent);
+    cursor: pointer;
+  }
+  .retry-result {
+    padding: 1.75rem 2rem;
+  }
+  .result-label {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--muted-foreground);
+  }
+  .result-number {
+    margin: 0.6rem 0;
+    font-size: 3.3rem;
+    font-weight: 600;
+    line-height: 1.2;
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+  }
+  .result-number span {
+    font-size: 1rem;
+    font-weight: 400;
+    margin-left: 0.5rem;
+  }
+  .result-context {
+    margin: 0 0 1.5rem;
+    font-size: 0.8rem;
+    color: var(--muted-foreground);
+  }
+  .retry-intervals {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem 1.5rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .retry-intervals :global(li) {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    padding-left: 0.8rem;
+    border-left: 2px solid var(--accent);
+  }
+  .retry-intervals :global(span) {
+    font-size: 0.7rem;
+    color: var(--muted-foreground);
+  }
+  .retry-intervals :global(strong) {
+    font-size: 1.1rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+  .retry-formula {
+    margin: 1.5rem 0 0;
+    font-size: 0.75rem;
+    color: var(--muted-foreground);
+  }
+  @media (max-width: 640px) {
+    retry-calculator {
+      grid-template-columns: 1fr;
+    }
+    .retry-inputs {
+      padding: 1.2rem;
+      border-right: 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .retry-result {
+      padding: 1.2rem;
+    }
+  }
+</style>

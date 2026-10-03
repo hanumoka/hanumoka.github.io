@@ -42,6 +42,8 @@ jobs:
         run: npm run lint
       - name: Astro check
         run: npm run astro -- check
+      - name: Interactive models
+        run: npm run test:interactive
       - name: Build
         run: npm run build
       - name: Check dist

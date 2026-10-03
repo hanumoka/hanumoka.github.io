@@ -133,7 +133,10 @@ const ogImage = ogImageUrl
 
   <main
     id="main-content"
-    class:list={["app-layout", { "mt-8": !config.features.showBackButton }]}
+    class:list={[
+      post.data.wide ? "app-layout-wide post-wide" : "app-layout",
+      { "mt-8": !config.features.showBackButton },
+    ]}
     data-pagefind-body={post.data.draft ? undefined : true}
   >
     <h1
@@ -174,7 +177,8 @@ const ogImage = ogImageUrl
       data-label-close={t.post.closeImagePreview}
       class:list={[
         "mt-8 w-full",
-        "app-prose max-w-app",
+        "app-prose",
+        post.data.wide ? "article-wide" : "max-w-app",
         "prose-pre:bg-(--shiki-light-bg) dark:prose-pre:bg-(--shiki-dark-bg)",
       ]}
     >
@@ -265,6 +269,7 @@ const ogImage = ogImageUrl
       document.querySelectorAll("h2, h3, h4, h5, h6")
     );
     for (const heading of headings) {
+      if (heading.closest("[data-interactive]")) continue;
       heading.classList.add("group");
       const link = document.createElement("a");
       link.className =
@@ -292,6 +297,7 @@ const ogImage = ogImageUrl
     );
 
     for (const codeBlock of codeBlocks) {
+      if (codeBlock.closest("[data-interactive]")) continue;
       const wrapper = document.createElement("div");
       wrapper.style.position = "relative";
 
@@ -352,6 +358,7 @@ const ogImage = ogImageUrl
     requestAnimationFrame(() => {
       const images = Array.from(article.querySelectorAll("img"));
       for (const image of images) {
+        if (image.closest("[data-interactive]")) continue;
         if (image.closest("a")) continue;
         image.setAttribute("role", "button");
         image.setAttribute("tabindex", "0");
@@ -570,7 +577,12 @@ const ogImage = ogImageUrl
 
     function triggerFromEvent(e) {
       const image = e.target.closest("img");
-      if (!image || !article.contains(image) || image.closest("a")) return null;
+      if (
+        !image ||
+        !article.contains(image) ||
+        image.closest("a, [data-interactive]")
+      )
+        return null;
       return image;
     }
 

@@ -27,6 +27,8 @@ const posts = defineCollection({
         ),
       featured: z.boolean().optional(),
       draft: z.boolean().optional(),
+      // 산문 폭은 유지하고 시각화 영역만 넓게 쓰는 MDX 글.
+      wide: z.boolean().default(false),
       tags: z.array(z.string()).default(["others"]),
       ogImage: image().or(z.string()).optional(),
       description: z.string(),

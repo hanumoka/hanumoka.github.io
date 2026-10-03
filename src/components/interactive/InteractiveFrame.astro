@@ -1,0 +1,86 @@
+---
+type Props = {
+  id: string;
+  title: string;
+  description: string;
+  caption: string;
+};
+const { id, title, description, caption } = Astro.props;
+---
+
+<figure
+  class="interactive-frame not-prose"
+  data-wide
+  data-interactive
+  aria-labelledby={`${id}-title`}
+>
+  <header class="frame-heading">
+    <div>
+      <h2 id={`${id}-title`}>{title}</h2>
+      <p>{description}</p>
+    </div>
+    <span class="frame-label">직접 해보기</span>
+  </header>
+  <slot />
+  <figcaption>{caption}</figcaption>
+</figure>
+
+<style>
+  .interactive-frame {
+    margin-block: 2.5rem;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    background: var(--background);
+    overflow: hidden;
+    color: var(--foreground);
+    font-family: var(--font-noto-sans-kr), sans-serif;
+    line-height: 1.65;
+  }
+  .frame-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1.5rem 1.75rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .frame-heading h2 {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 700;
+    line-height: 1.5;
+  }
+  .frame-heading p {
+    margin: 0.4rem 0 0;
+    font-size: 0.9rem;
+    color: var(--muted-foreground);
+  }
+  .frame-label {
+    white-space: nowrap;
+    color: var(--accent);
+    font-size: 0.75rem;
+    padding-top: 0.25rem;
+  }
+  figcaption {
+    padding: 1rem 1.75rem;
+    margin: 0;
+    border-top: 1px solid var(--border);
+    color: var(--muted-foreground);
+    font-size: 0.8rem;
+    opacity: 1;
+  }
+  @media (max-width: 640px) {
+    .frame-heading {
+      padding: 1.1rem;
+    }
+    .frame-heading h2 {
+      font-size: 1.05rem;
+    }
+    .frame-label {
+      display: none;
+    }
+    figcaption {
+      padding: 1rem 1.1rem;
+    }
+  }
+</style>

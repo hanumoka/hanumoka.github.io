@@ -66,7 +66,7 @@ Node 22.12 이상이 필요하다. 배포 워크플로는 [`.nvmrc`](.nvmrc)의 
 
 ## 글 쓰기
 
-**글 하나가 폴더 하나다.** 본문은 그 폴더의 `index.md`이고, 그 글에 쓰는
+**글 하나가 폴더 하나다.** 본문은 그 폴더의 `index.md` 또는 `index.mdx`이고, 그 글에 쓰는
 이미지·GIF는 **같은 폴더에 둔다.** 공개 주소는 폴더 이름이 아니라 frontmatter의
 `key`다. 지금 글은 키가 폴더 이름과 같아서 주소가 그대로다.
 
@@ -139,12 +139,52 @@ frontmatter는 Zod 스키마로 검사하며 **어기면 빌드가 실패한다.
 ★ **라벨에 슬래시가 있으면 큰따옴표로 감싼다** — `C["/posts/"]`. 감싸지 않으면
 `[/ … /]`가 평행사변형 도형 문법으로 읽혀 `Syntax error in text`가 난다.
 
-### 테마에 없는 필드 둘을 더했다
+### 인터랙티브 글 (MDX)
+
+일반 글은 Markdown으로 쓰고, 조작 가능한 그림이 필요한 글은 **`index.mdx`**로
+쓴다. MDX 본문에서 Astro 컴포넌트를 import하면 정적 HTML과 해당 컴포넌트의
+작은 스크립트를 함께 배포할 수 있다. GitHub Pages에서도 동작하며, 별도 서버나
+React 런타임은 필요하지 않다. 외부 API 조회에는 API의 공개 범위·CORS·인증을
+별도로 검토해야 하고, 비밀 키를 브라우저 코드에 넣으면 안 된다.
+
+실제 예시는
+[`temporal-workflow-playground/index.mdx`](src/content/posts/ko/temporal-workflow-playground/index.mdx)다.
+공통 틀은 [`InteractiveFrame.astro`](src/components/interactive/InteractiveFrame.astro)에
+있다. 기존 글의 URL·댓글 키·초안 규칙은 그대로 적용한다.
+
+```mdx
+import TemporalFlow from "@/components/interactive/TemporalFlow.astro";
+
+여기에 설명을 쓰고 필요한 위치에 시각화를 넣는다.
+
+<TemporalFlow />
+```
+
+- frontmatter에 **`wide: true`**를 넣으면 `data-wide`가 있는 블록만 넓어진다.
+  본문은 기존 읽기 폭을 유지한다. `InteractiveFrame`이 이 속성을 제공한다.
+- 공통 틀의 **`data-interactive`**는 본문 전용 제목 링크·이미지 확대·코드 복사
+  스크립트와 시각화 내부 UI가 충돌하지 않게 한다.
+- 글 전용 컴포넌트는 `src/components/interactive/`에 둔다. 스타일은 컴포넌트에
+  한정하고, 다크·라이트 색상은 사이트의 CSS 변수를 사용한다.
+- 자동 재생을 기본으로 켜지 않는다. 재생·정지·단계 이동과 키보드 조작을
+  제공하고 `prefers-reduced-motion`을 존중한다. JavaScript가 꺼져도 설명과
+  정적 그림이 남아야 한다.
+- Astro의 페이지 전환을 고려해 custom element의 `disconnectedCallback`에서
+  타이머와 이벤트 리스너를 정리한다. 화면을 떠났다 돌아와도 정상 동작해야 한다.
+- 실제 서비스와 설명용 시뮬레이션을 명시적으로 구분한다. 모델의 계산은
+  `npm run test:interactive`로, 배포 결과의 링크와 메타데이터는
+  `npm run check:dist`로 확인한다. 모바일 화면과 실제 버튼 조작도 확인한다.
+
+AI로 작성한 예시도 소유자의 내용 검토 전에는 `draft: true`를 유지한다.
+이 규칙은 공개 초안의 배포를 막는 규칙이 아니다.
+
+### 추가한 콘텐츠 필드
 
 | 필드         | 왜                                                                                                                       |
 | ------------ | ------------------------------------------------------------------------------------------------------------------------ |
 | `kind`       | 비공개 문서 허브의 지식 노트 `kind` 계약과 대응시킨다. `til` · `troubleshooting` · `concept` · `snippet` · `agent-issue` |
 | `sourceNote` | 이 글이 허브의 어느 노트에서 나왔는지 기록한다                                                                           |
+| `wide`       | 인터랙티브 그림만 넓은 폭으로 표시한다. 기본값 `false`                                                                   |
 
 ## 콘텐츠는 어디서 오는가
 
@@ -176,7 +216,7 @@ _"Pagefind doesn't support stemming for the language ko."_ 그래도 쓸 만한 
 ## 배포
 
 `main`에 푸시하면 [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml)이
-`npm ci`로 의존성을 맞춘 뒤, 형식(Prettier)·린트·`astro check`·생산 빌드·
+`npm ci`로 의존성을 맞춘 뒤, 형식(Prettier)·린트·`astro check`·인터랙티브 모델 검사·생산 빌드·
 `dist` 검사를 통과해야만 Pages로 올린다.
 
 ★ **Pages 설정의 빌드 소스가 「GitHub Actions」여야 한다.** 브랜치 빌드로 되어 있으면
