@@ -44,6 +44,8 @@ export interface UIStrings {
     draftBadge: string;
     /** 초안 본문 위 안내. */
     draftNotice: string;
+    readingEstimate: string;
+    seriesContents: string;
   };
   pagination: {
     prev: string;
@@ -85,12 +87,15 @@ export interface UIStrings {
 
     draftsTitle: string;
     draftsDesc: string;
+    draftSeriesTitle: string;
+    draftSeriesDesc: string;
 
     archivesTitle: string;
     archivesDesc: string;
 
     searchTitle: string;
     searchDesc: string;
+    searchEmpty: string;
 
     kindTitle: string;
     kindDesc: string;

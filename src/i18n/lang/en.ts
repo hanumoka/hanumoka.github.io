@@ -12,6 +12,8 @@ export default {
     drafts: "Drafts",
   },
   post: {
+    readingEstimate: "About {{minutes}} min read · practice time excluded",
+    seriesContents: "Full series contents",
     copyCode: "Copy",
     copied: "Copied",
     zoomImage: "Zoom image",
@@ -59,6 +61,11 @@ export default {
   siteDescription:
     "A backend developer's blog. Working through what I do not know and what I am curious about, and recording the technical debt that piles up on the job.",
   pages: {
+    searchEmpty:
+      "No published articles to search yet. Articles under review are available in Drafts.",
+    draftSeriesTitle: "Series under review",
+    draftSeriesDesc:
+      "Read and improve one draft at a time. Each article is published after review and refinement.",
     tagTitle: "Tag",
     tagDesc: "All the articles with the tag",
 

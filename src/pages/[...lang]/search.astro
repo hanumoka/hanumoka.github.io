@@ -10,6 +10,8 @@ import { getAssetPath } from "@/utils/withBase";
 import { useTranslations } from "@/i18n";
 import { localePaths, resolveLocale } from "@/utils/locales";
 import config from "@/config";
+import { getLocalizedPosts } from "@/utils/getLocalizedPosts";
+import { postFilter } from "@/utils/postFilter";
 
 export const getStaticPaths = localePaths;
 
@@ -28,6 +30,7 @@ const backUrl = config.features.showBackButton
 const pagefindBundlePath = getAssetPath("pagefind/");
 
 const t = useTranslations(locale);
+const hasPublished = (await getLocalizedPosts(locale)).some(postFilter);
 ---
 
 <Layout title={`${t.pages.searchTitle} | ${config.site.title}`}>
@@ -36,13 +39,26 @@ const t = useTranslations(locale);
   <Breadcrumb />
 
   <Main pageTitle={t.pages.searchTitle} pageDesc={t.pages.searchDesc}>
-    <div
-      id="pagefind-search"
-      transition:persist
-      data-backurl={backUrl}
-      data-bundle-path={pagefindBundlePath}
-    >
-    </div>
+    {
+      hasPublished ? (
+        <div
+          id="pagefind-search"
+          transition:persist
+          data-backurl={backUrl}
+          data-bundle-path={pagefindBundlePath}
+        />
+      ) : (
+        <p>
+          {t.pages.searchEmpty}{" "}
+          <a
+            class="text-accent underline"
+            href={getRelativeLocaleUrl(locale, "drafts/")}
+          >
+            {t.nav.drafts}
+          </a>
+        </p>
+      )
+    }
   </Main>
 
   <Footer />

@@ -73,6 +73,18 @@ export async function getTranslatedPath(
   }
 
   const leaf = rest[0]!;
+  if (section === "drafts" && leaf === "series" && rest.length === 2) {
+    const targetPosts = await getLocalizedPosts(target, {
+      includeDrafts: true,
+    });
+    const exists = getUniqueSeries(targetPosts, { includeDrafts: true }).some(
+      item => item.series === rest[1]
+    );
+    return {
+      path: exists ? `/drafts/series/${rest[1]}` : "/drafts",
+      exact: false,
+    };
+  }
 
   // 목록의 쪽 번호는 언어마다 글 수가 달라 같은 쪽이 없다. 목록 첫 쪽으로.
   // 초안 목록(`/drafts/2`)을 여기 안 두면 아래 최종 줄이 홈으로 보낸다.

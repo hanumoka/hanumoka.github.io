@@ -3,7 +3,7 @@ import { type CollectionEntry, render } from "astro:content";
 import { getLocalizedPosts } from "@/utils/getLocalizedPosts";
 import { localePaths, resolveLocale } from "@/utils/locales";
 import { getRelativeLocaleUrl } from "astro:i18n";
-import { useTranslations } from "@/i18n";
+import { useTranslations, tplStr } from "@/i18n";
 import PostLayout from "@/layouts/PostLayout.astro";
 import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
@@ -167,6 +167,15 @@ const ogImage = ogImageUrl
       </span>
       <EditPost {hideEditPost} {post} class="max-sm:hidden" />
     </div>
+    {
+      post.data.readingMinutes && (
+        <p class="text-muted-foreground text-sm">
+          {tplStr(t.post.readingEstimate, {
+            minutes: post.data.readingMinutes,
+          })}
+        </p>
+      )
+    }
 
     <article
       id="article"
@@ -219,7 +228,7 @@ const ogImage = ogImageUrl
 
     <SeriesNav {post} />
 
-    <AdjacentPostNav {prevPost} {nextPost} />
+    {!post.data.series && <AdjacentPostNav {prevPost} {nextPost} />}
 
     <Comments term={getCommentTerm(locale, post.data.key)} />
   </main>

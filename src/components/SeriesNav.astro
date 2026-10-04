@@ -20,10 +20,17 @@ const seriesName = seriesKey ? seriesLabel(seriesKey, locale) : null;
 
 // 연재가 아닌 글에서는 아무것도 내지 않는다.
 const parts = seriesKey
-  ? getSeriesPosts(await getLocalizedPosts(locale), seriesKey)
+  ? getSeriesPosts(
+      await getLocalizedPosts(locale, { includeDrafts: !!post.data.draft }),
+      seriesKey,
+      { includeDrafts: !!post.data.draft }
+    )
   : [];
 
 const currentIndex = parts.findIndex(part => part.data.key === post.data.key);
+const previous = parts[currentIndex - 1];
+const next = parts[currentIndex + 1];
+const seriesPath = post.data.draft ? "drafts/series" : "series";
 ---
 
 {
@@ -36,7 +43,7 @@ const currentIndex = parts.findIndex(part => part.data.key === post.data.key);
       <div class="mb-3 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
         <h2 id="series-heading" class="text-base font-semibold">
           <a
-            href={getRelativeLocaleUrl(locale, `series/${seriesKey}/`)}
+            href={getRelativeLocaleUrl(locale, `${seriesPath}/${seriesKey}/`)}
             class="hover:text-accent underline decoration-dashed underline-offset-4"
           >
             {tplStr(t.post.inSeries, { series: seriesName })}
@@ -50,36 +57,67 @@ const currentIndex = parts.findIndex(part => part.data.key === post.data.key);
         </span>
       </div>
 
-      <ol class="flex flex-col gap-1">
-        {parts.map((part, index) => {
-          const isCurrent = index === currentIndex;
-          return (
-            <li class="flex gap-2 text-sm">
-              <span
-                class:list={[
-                  "text-muted-foreground w-6 shrink-0 text-end tabular-nums",
-                  { "text-accent font-semibold": isCurrent },
-                ]}
-              >
-                {index + 1}.
-              </span>
-              {isCurrent ? (
-                <span class="text-foreground font-semibold" aria-current="true">
-                  {part.data.title}
-                  <span class="sr-only"> — {t.post.currentPost}</span>
-                </span>
-              ) : (
-                <a
-                  href={getPostUrl(part.data.key, locale)}
-                  class="hover:text-accent underline decoration-dashed underline-offset-4"
+      <nav
+        class="my-4 grid gap-3 sm:grid-cols-2"
+        aria-label={t.post.inSeries.replace("{{series}}", seriesName)}
+      >
+        {previous && (
+          <a
+            class="text-accent underline"
+            rel="prev"
+            href={getPostUrl(previous.data.key, locale)}
+          >
+            {t.post.previousPost}: {previous.data.title}
+          </a>
+        )}
+        {next && (
+          <a
+            class="text-accent underline sm:col-start-2"
+            rel="next"
+            href={getPostUrl(next.data.key, locale)}
+          >
+            {t.post.nextPost}: {next.data.title}
+          </a>
+        )}
+      </nav>
+      <details>
+        <summary class="mb-3 cursor-pointer font-semibold">
+          {t.post.seriesContents}
+        </summary>
+        <ol class="flex flex-col gap-1">
+          {parts.map((part, index) => {
+            const isCurrent = index === currentIndex;
+            return (
+              <li class="flex gap-2 text-sm">
+                <span
+                  class:list={[
+                    "text-muted-foreground w-6 shrink-0 text-end tabular-nums",
+                    { "text-accent font-semibold": isCurrent },
+                  ]}
                 >
-                  {part.data.title}
-                </a>
-              )}
-            </li>
-          );
-        })}
-      </ol>
+                  {index + 1}.
+                </span>
+                {isCurrent ? (
+                  <span
+                    class="text-foreground font-semibold"
+                    aria-current="true"
+                  >
+                    {part.data.title}
+                    <span class="sr-only"> — {t.post.currentPost}</span>
+                  </span>
+                ) : (
+                  <a
+                    href={getPostUrl(part.data.key, locale)}
+                    class="hover:text-accent underline decoration-dashed underline-offset-4"
+                  >
+                    {part.data.title}
+                  </a>
+                )}
+              </li>
+            );
+          })}
+        </ol>
+      </details>
     </aside>
   )
 }

@@ -29,6 +29,8 @@ const posts = defineCollection({
       draft: z.boolean().optional(),
       // 산문 폭은 유지하고 시각화 영역만 넓게 쓰는 MDX 글.
       wide: z.boolean().default(false),
+      // 편집 시 산정한 읽기 예상 시간. 실습 실행 시간은 제외한다.
+      readingMinutes: z.number().int().positive().optional(),
       tags: z.array(z.string()).default(["others"]),
       ogImage: image().or(z.string()).optional(),
       description: z.string(),

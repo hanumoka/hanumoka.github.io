@@ -1,0 +1,55 @@
+---
+import { getRelativeLocaleUrl } from "astro:i18n";
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Main from "@/components/Main.astro";
+import Footer from "@/components/Footer.astro";
+import Card from "@/components/Card.astro";
+import { getLocalizedPosts } from "@/utils/getLocalizedPosts";
+import { getUniqueSeries, getSeriesPosts } from "@/utils/getUniqueSeries";
+import { localePaths } from "@/utils/locales";
+import { seriesLabel } from "@/series";
+import { useTranslations } from "@/i18n";
+import config from "@/config";
+
+export async function getStaticPaths() {
+  const routes = [];
+  for (const { params, props } of localePaths()) {
+    const posts = await getLocalizedPosts(props.locale, {
+      includeDrafts: true,
+    });
+    for (const { series } of getUniqueSeries(posts, { includeDrafts: true })) {
+      routes.push({
+        params: { lang: params.lang, series },
+        props: {
+          locale: props.locale,
+          series,
+          parts: getSeriesPosts(posts, series, { includeDrafts: true }),
+        },
+      });
+    }
+  }
+  return routes;
+}
+
+const { locale, series, parts } = Astro.props;
+const t = useTranslations(locale);
+const name = seriesLabel(series, locale);
+---
+
+<Layout
+  title={`${name} · ${t.pages.draftSeriesTitle} | ${config.site.title}`}
+  noindex
+>
+  <Header />
+  <Main pageTitle={name} pageDesc={t.pages.draftSeriesDesc}>
+    <a
+      class="text-accent underline"
+      href={getRelativeLocaleUrl(locale, "drafts/")}>{t.nav.drafts}</a
+    >
+    <ol class="marker:text-accent mt-6 list-decimal ps-7">
+      {parts.map(post => <Card {...post} />)}
+    </ol>
+  </Main>
+  <Footer />
+</Layout>

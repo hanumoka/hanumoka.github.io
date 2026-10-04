@@ -31,6 +31,8 @@ Node 22.12 이상이 필요하다. 배포 워크플로는 [`.nvmrc`](.nvmrc)의 
 `package-lock.json`을 커밋해 두고, CI는 `npm ci`로 맞춘다.
 
 검색 색인은 `dist/` 안에만 만든다. 소스의 `public/`으로 되돌리지 않는다.
+`scripts/index-search.mjs`가 정식 글의 본문만 Pagefind에 전달한다. 정식 글이
+없으면 색인을 만들지 않고 검색 화면에 안내한다. 초안을 대신 색인하지 않는다.
 
 ## 설정
 
@@ -116,6 +118,21 @@ frontmatter는 Zod 스키마로 검사하며 **어기면 빌드가 실패한다.
 
 소유자가 검토하고 실습해 확인한 뒤에만 `draft: false`로 바꾼다.
 
+### Temporal 초안 연재와 휴지통
+
+Temporal 초안은 `/drafts/series/temporal/`에서 `seriesOrder` 순으로 읽는다.
+글 하단의 이전·다음 이동도 연재 순서를 따른다. 소유자가 한 편씩 검토하고
+고도화를 요청하며, 확인을 마친 해당 글만 `draft: false`로 바꾼다.
+정식 연재 `/series/temporal/`에는 정식 글만 포함한다.
+
+`readingMinutes`는 본문·핵심 코드의 읽기 예상 시간이다. 설치와 실습 실행 시간은
+포함하지 않는다. Temporal 글은 5~10분 읽기를 목표로 하고 실제 검토에서 조정한다.
+42편을 한 번에 발행하거나 학습 완료로 취급하지 않는다.
+
+이전 초안은 [휴지통](trash/README.md)에 보관한다. 본문과 자산을 삭제하지 않으며
+사이트 빌드·검색·RSS에는 포함하지 않는다. 복구 경로와 원본 해시는
+`trash/manifest.json`에 있다. 공개 저장소 파일의 열람 가능 여부는 변하지 않는다.
+
 ### 이미지와 GIF
 
 본문에서 **상대 경로**로 부른다. Astro가 WebP로 바꾸고 크기를 줄인다.
@@ -147,8 +164,8 @@ frontmatter는 Zod 스키마로 검사하며 **어기면 빌드가 실패한다.
 React 런타임은 필요하지 않다. 외부 API 조회에는 API의 공개 범위·CORS·인증을
 별도로 검토해야 하고, 비밀 키를 브라우저 코드에 넣으면 안 된다.
 
-실제 예시는
-[`temporal-workflow-playground/index.mdx`](src/content/posts/ko/temporal-workflow-playground/index.mdx)다.
+보관된 예시는
+[`temporal-workflow-playground/index.mdx`](trash/posts/ko/temporal-workflow-playground/index.mdx)다.
 공통 틀은 [`InteractiveFrame.astro`](src/components/interactive/InteractiveFrame.astro)에
 있다. 기존 글의 URL·댓글 키·초안 규칙은 그대로 적용한다.
 

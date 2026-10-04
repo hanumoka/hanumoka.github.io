@@ -12,6 +12,9 @@ import Pagination from "@/components/Pagination.astro";
 import { getSortedDrafts } from "@/utils/getSortedPosts";
 import { useTranslations } from "@/i18n";
 import config from "@/config";
+import { getUniqueSeries } from "@/utils/getUniqueSeries";
+import { seriesLabel } from "@/series";
+import { getRelativeLocaleUrl } from "astro:i18n";
 
 export const getStaticPaths = (async ({ paginate }) => {
   const routes = [];
@@ -62,17 +65,41 @@ const { page } = Astro.props;
 
 const locale = resolveLocale(Astro.currentLocale);
 const t = useTranslations(locale);
+const series = getUniqueSeries(
+  await getLocalizedPosts(locale, { includeDrafts: true }),
+  { includeDrafts: true }
+);
 ---
 
-<Layout
-  title={`${t.pages.draftsTitle} | ${config.site.title}`}
-  noindex={page.total === 0}
->
+<Layout title={`${t.pages.draftsTitle} | ${config.site.title}`} noindex>
   <Header />
 
   <Breadcrumb />
 
   <Main pageTitle={t.pages.draftsTitle} pageDesc={t.pages.draftsDesc}>
+    {
+      series.length > 0 && (
+        <nav
+          aria-label={t.pages.draftSeriesTitle}
+          class="border-border bg-muted/40 mb-8 rounded-md border p-4"
+        >
+          <h2 class="mb-2 font-semibold">{t.pages.draftSeriesTitle}</h2>
+          <p class="mb-3 text-sm">{t.pages.draftSeriesDesc}</p>
+          <ul class="flex flex-wrap gap-4">
+            {series.map(({ series: key, count }) => (
+              <li>
+                <a
+                  class="text-accent underline"
+                  href={getRelativeLocaleUrl(locale, `drafts/series/${key}/`)}
+                >
+                  {seriesLabel(key, locale)} ({count})
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      )
+    }
     {
       page.total === 0 && (
         <p class="text-muted-foreground">{t.pages.listEmpty}</p>

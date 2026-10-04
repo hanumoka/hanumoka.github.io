@@ -40,6 +40,8 @@ export default {
     seriesPosition: "{{total}}편 중 {{index}}번째",
     currentPost: "지금 읽는 글",
     draftBadge: "초안",
+    readingEstimate: "읽기 약 {{minutes}}분 · 실습 시간 별도",
+    seriesContents: "전체 연재 목차",
     draftNotice:
       "아직 소유자가 검토하고 실습해 확인하지 않은 글입니다. 학습 기록이 아니라, 확인 전의 글입니다.",
   },
@@ -77,6 +79,9 @@ export default {
     postsDesc: "소유자가 검토하고 실습해 확인한 글입니다.",
 
     draftsTitle: "초안",
+    draftSeriesTitle: "검토 중인 연재",
+    draftSeriesDesc:
+      "한 편씩 읽고 보완하는 초안입니다. 검토와 고도화를 마친 글부터 정식으로 발행합니다.",
     draftsDesc:
       "아직 소유자가 확인하지 않은 글입니다. 특히 AI가 먼저 쓴 글이 여기 있습니다.",
 
@@ -85,6 +90,8 @@ export default {
 
     searchTitle: "검색",
     searchDesc: "글을 검색합니다",
+    searchEmpty:
+      "아직 검색할 정식 글이 없습니다. 검토 중인 글은 초안 목록에서 읽을 수 있습니다.",
 
     kindTitle: "종류",
     kindDesc: "이 종류의 글",

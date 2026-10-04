@@ -1,6 +1,6 @@
 import type { CollectionEntry } from "astro:content";
 import { type SeriesKey } from "@/series";
-import { postFilter } from "./postFilter";
+import { draftFilter, postFilter } from "./postFilter";
 
 type Series = {
   /** URL 에 쓰는 고정 키 */
@@ -14,10 +14,15 @@ type Series = {
  * 쪽이 `seriesLabel` 로 고른다 — 같은 키가 언어마다 다른 이름을 갖기
  * 때문이다.
  */
-export function getUniqueSeries(posts: CollectionEntry<"posts">[]): Series[] {
+export function getUniqueSeries(
+  posts: CollectionEntry<"posts">[],
+  options: { includeDrafts?: boolean } = {}
+): Series[] {
   const counts = new Map<SeriesKey, number>();
 
-  for (const post of posts.filter(postFilter)) {
+  for (const post of posts.filter(
+    post => postFilter(post) || (options.includeDrafts && draftFilter(post))
+  )) {
     const key = post.data.series;
     if (!key) continue;
     counts.set(key, (counts.get(key) ?? 0) + 1);
@@ -37,10 +42,13 @@ export function getUniqueSeries(posts: CollectionEntry<"posts">[]): Series[] {
  */
 export function getSeriesPosts(
   posts: CollectionEntry<"posts">[],
-  seriesKey: string
+  seriesKey: string,
+  options: { includeDrafts?: boolean } = {}
 ): CollectionEntry<"posts">[] {
   return posts
-    .filter(postFilter)
+    .filter(
+      post => postFilter(post) || (options.includeDrafts && draftFilter(post))
+    )
     .filter(post => post.data.series === seriesKey)
     .sort((a, b) => {
       const orderA = a.data.seriesOrder ?? Number.MAX_SAFE_INTEGER;

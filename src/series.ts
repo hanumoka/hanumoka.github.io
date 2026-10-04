@@ -7,7 +7,11 @@ import type { Locale } from "@/catalog";
  * 화면에 보이는 이름은 `labels` 이고, 예전에 쓰이던 한글 주소는
  * `legacySlugs` 로 남겨 넘김 페이지를 만든다.
  */
-export const SERIES_KEYS = ["building-this-site", "must-know"] as const;
+export const SERIES_KEYS = [
+  "building-this-site",
+  "must-know",
+  "temporal",
+] as const;
 export type SeriesKey = (typeof SERIES_KEYS)[number];
 
 export const SERIES: Record<
@@ -18,6 +22,10 @@ export const SERIES: Record<
     legacySlugs: readonly string[];
   }
 > = {
+  temporal: {
+    labels: { ko: "Temporal", en: "Temporal" },
+    legacySlugs: [],
+  },
   "building-this-site": {
     labels: { ko: "이 사이트 만들기", en: "Building this site" },
     legacySlugs: ["이-사이트-만들기"],
