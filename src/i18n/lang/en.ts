@@ -1,7 +1,32 @@
 import type { UIStrings } from "../types";
 
 export default {
+  graph: {
+    description:
+      "Each point is one article. Lines represent links explicitly written in article bodies. Select a point to explore its connections.",
+    review: "Map including drafts",
+    published: "Published article map",
+    empty: "No articles in this scope yet.",
+    search: "Search title and description",
+    reset: "Clear search and selection",
+    open: "Read selected article",
+    outgoing: "Articles referenced here",
+    incoming: "Articles referencing this",
+    none: "No connections",
+    list: "All articles and connections",
+    select: "Select an article",
+    documents: "Articles",
+    references: "References",
+    legend:
+      "Only body links create connections. Shared tags or series do not. Point numbers match the list; size and position are not importance scores.",
+    zoomIn: "Zoom in",
+    zoomOut: "Zoom out",
+    resetView: "Reset zoom",
+    disconnected:
+      "Articles without direct links appear around the outside. All articles remain available in the list.",
+  },
   nav: {
+    graph: "Graph",
     tree: "Contents",
     home: "Home",
     posts: "Posts",

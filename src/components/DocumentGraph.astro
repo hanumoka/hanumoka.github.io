@@ -1,0 +1,453 @@
+---
+import {
+  documentPositions,
+  type GraphNode,
+  type GraphEdge,
+} from "@/utils/documentGraph";
+import { useTranslations } from "@/i18n";
+import type { Locale } from "@/utils/locales";
+type Props = { nodes: GraphNode[]; edges: GraphEdge[]; locale: Locale };
+const { nodes, edges, locale } = Astro.props;
+const t = useTranslations(locale);
+const positions = documentPositions(nodes, edges);
+const lookup = new Map(positions.map(node => [node.id, node]));
+const uniqueLines = [
+  ...new Map(
+    edges.map(edge => [[edge.source, edge.target].sort().join("/"), edge])
+  ).values(),
+];
+const related = (id: string, incoming = false) =>
+  edges
+    .filter(edge => (incoming ? edge.target === id : edge.source === id))
+    .map(edge => lookup.get(incoming ? edge.source : edge.target)!);
+const payload = JSON.stringify({
+  nodes,
+  edges,
+  labels: t.graph,
+  draftLabel: t.post.draftBadge,
+}).replace(/</g, "\\u003c");
+---
+
+<document-graph class="document-graph" data-interactive>
+  <script
+    is:inline
+    type="application/json"
+    data-graph-data
+    set:html={payload}
+  />
+  <p class="graph-rule">{t.graph.legend}</p>
+  <div class="graph-tools" data-enhanced hidden>
+    <label
+      >{t.graph.search}<input
+        type="search"
+        data-search
+        autocomplete="off"
+      /></label
+    >
+    <button type="button" data-reset>{t.graph.reset}</button>
+    <span class="graph-count" data-result-count aria-live="polite"
+      >{t.graph.documents}
+      {nodes.length} · {t.graph.references}
+      {edges.length}</span
+    >
+  </div>
+  {
+    nodes.length === 0 ? (
+      <p class="empty-map">{t.graph.empty}</p>
+    ) : (
+      <>
+        <div class="graph-layout" data-enhanced hidden>
+          <div class="map-column">
+            <div class="zoom-controls" role="group" aria-label={t.nav.graph}>
+              <button type="button" data-zoom="in" aria-label={t.graph.zoomIn}>
+                ＋
+              </button>
+              <button
+                type="button"
+                data-zoom="out"
+                aria-label={t.graph.zoomOut}
+              >
+                −
+              </button>
+              <button type="button" data-zoom="reset">
+                {t.graph.resetView}
+              </button>
+            </div>
+            <div
+              class="graph-scroll"
+              tabindex="0"
+              role="region"
+              aria-label={t.nav.graph}
+            >
+              <svg viewBox="0 0 920 760" role="group" aria-label={t.nav.graph}>
+                <g class="graph-lines" aria-hidden="true">
+                  {uniqueLines.map(edge => {
+                    const a = lookup.get(edge.source)!;
+                    const b = lookup.get(edge.target)!;
+                    return (
+                      <line
+                        x1={a.x}
+                        y1={a.y}
+                        x2={b.x}
+                        y2={b.y}
+                        data-source={edge.source}
+                        data-target={edge.target}
+                      />
+                    );
+                  })}
+                </g>
+                {positions.map(node => (
+                  <g
+                    class="graph-node"
+                    role="button"
+                    tabindex="0"
+                    aria-pressed="false"
+                    aria-label={`${node.number}. ${node.title}`}
+                    data-linked={edges.some(
+                      edge => edge.source === node.id || edge.target === node.id
+                    )}
+                    data-node={node.id}
+                    transform={`translate(${node.x} ${node.y})`}
+                  >
+                    <title>{node.title}</title>
+                    <circle r="22" />
+                    <text text-anchor="middle" dominant-baseline="central">
+                      {node.number}
+                    </text>
+                    <text class="node-title" text-anchor="middle" y="42">
+                      {node.title.slice(0, 10)}
+                      {node.title.length > 10 ? "…" : ""}
+                    </text>
+                  </g>
+                ))}
+              </svg>
+            </div>
+            <p class="graph-rule">{t.graph.disconnected}</p>
+          </div>
+          <section
+            class="selection-panel"
+            aria-labelledby="graph-selected-title"
+          >
+            <p class="selection-label">{t.nav.graph}</p>
+            <h2 id="graph-selected-title" data-selected-title>
+              {t.graph.select}
+            </h2>
+            <p data-selected-description />
+            <a class="read-link" data-selected-link hidden>
+              {t.graph.open}
+            </a>
+            <>
+              <h3>{t.graph.outgoing}</h3>
+              <ul data-outgoing>
+                <li>{t.graph.none}</li>
+              </ul>
+            </>
+            <>
+              <h3>{t.graph.incoming}</h3>
+              <ul data-incoming>
+                <li>{t.graph.none}</li>
+              </ul>
+            </>
+          </section>
+        </div>
+        <details class="document-list" open>
+          <summary>
+            {t.graph.list} ({nodes.length})
+          </summary>
+          <ol>
+            {nodes.map((node, index) => (
+              <li data-list-node={node.id}>
+                <div class="list-heading">
+                  <span class="list-number">{index + 1}</span>
+                  <a href={node.url}>{node.title}</a>
+                  {node.draft && (
+                    <span class="draft-badge">{t.post.draftBadge}</span>
+                  )}
+                  <button
+                    type="button"
+                    data-select={node.id}
+                    data-enhanced
+                    hidden
+                    aria-label={`${t.graph.select}: ${node.title}`}
+                  >
+                    ◎
+                  </button>
+                </div>
+                <div class="list-relations">
+                  <span>{t.graph.outgoing}: </span>
+                  {related(node.id).length
+                    ? related(node.id).map(item => (
+                        <a href={item.url}>{item.title}</a>
+                      ))
+                    : t.graph.none}
+                </div>
+                <div class="list-relations">
+                  <span>{t.graph.incoming}: </span>
+                  {related(node.id, true).length
+                    ? related(node.id, true).map(item => (
+                        <a href={item.url}>{item.title}</a>
+                      ))
+                    : t.graph.none}
+                </div>
+              </li>
+            ))}
+          </ol>
+        </details>
+      </>
+    )
+  }
+</document-graph>
+<script>
+  import "@/scripts/document-graph";
+</script>
+<style>
+  .document-graph {
+    display: block;
+    font-family: var(--font-noto-sans-kr), sans-serif;
+    line-height: 1.6;
+  }
+  [hidden] {
+    display: none !important;
+  }
+  .graph-rule {
+    font-size: 0.85rem;
+    color: var(--muted-foreground);
+    margin-block: 0.8rem;
+  }
+  .graph-tools {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7rem;
+    align-items: end;
+    padding: 1rem;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 1rem;
+  }
+  label {
+    display: grid;
+    gap: 0.3rem;
+    flex: 1 1 16rem;
+    font-size: 0.85rem;
+  }
+  input,
+  button {
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--foreground);
+    background: var(--background);
+    font: inherit;
+    min-height: 44px;
+    padding: 0.5rem 0.7rem;
+  }
+  button {
+    cursor: pointer;
+    font-size: 0.8rem;
+  }
+  input:focus-visible,
+  button:focus-visible,
+  a:focus-visible,
+  summary:focus-visible,
+  .graph-scroll:focus-visible {
+    outline: 3px solid var(--accent);
+    outline-offset: 3px;
+  }
+  .graph-count {
+    width: 100%;
+    font-size: 0.8rem;
+    color: var(--muted-foreground);
+  }
+  .graph-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(15rem, 0.43fr);
+    gap: 1rem;
+  }
+  .map-column {
+    min-width: 0;
+  }
+  .graph-scroll {
+    overflow: auto;
+    height: 550px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: radial-gradient(
+      ellipse at center,
+      color-mix(in srgb, var(--accent) 7%, var(--background)),
+      var(--background)
+    );
+  }
+  svg {
+    width: 100%;
+    min-width: 580px;
+    height: auto;
+    display: block;
+  }
+  .graph-lines line {
+    stroke: var(--muted-foreground);
+    stroke-width: 1.5;
+    opacity: 0.35;
+  }
+  .graph-lines line[data-connected="true"] {
+    stroke: var(--accent);
+    stroke-width: 3;
+    opacity: 0.95;
+  }
+  .graph-node {
+    cursor: pointer;
+  }
+  .graph-node circle {
+    fill: var(--background);
+    stroke: var(--accent);
+    stroke-width: 2;
+  }
+  .graph-node text {
+    fill: var(--foreground);
+    font-size: 14px;
+    font-weight: 600;
+    pointer-events: none;
+  }
+  .graph-node .node-title {
+    visibility: hidden;
+    font-size: 12px;
+    paint-order: stroke;
+    stroke: var(--background);
+    stroke-width: 4;
+  }
+  .graph-node[data-linked="true"] .node-title {
+    visibility: visible;
+  }
+  .graph-node:hover .node-title,
+  .graph-node:focus .node-title,
+  .graph-node[data-selected="true"] .node-title {
+    visibility: visible;
+  }
+  .graph-node[data-selected="true"] circle {
+    fill: var(--accent);
+    stroke-width: 4;
+  }
+  .graph-node[data-selected="true"] text {
+    fill: var(--accent-foreground);
+  }
+  .graph-node[data-selected="true"] .node-title {
+    fill: var(--foreground);
+  }
+  .graph-node:focus-visible {
+    outline: none;
+  }
+  .graph-node:focus-visible circle {
+    stroke-width: 5;
+    stroke-dasharray: 4 2;
+  }
+  .graph-node[data-dim="true"],
+  line[data-dim="true"] {
+    opacity: 0.16;
+  }
+  .graph-node[data-dim="true"]:focus-visible {
+    opacity: 1;
+  }
+  .zoom-controls {
+    display: flex;
+    gap: 0.4rem;
+    margin-bottom: 0.5rem;
+  }
+  .selection-panel {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.1rem;
+    overflow-wrap: anywhere;
+  }
+  .selection-label {
+    font-size: 0.75rem;
+    color: var(--accent);
+    margin: 0 0 0.75rem;
+  }
+  h2 {
+    font-size: 1.1rem;
+    margin: 0 0 1rem;
+  }
+  h3 {
+    font-size: 0.85rem;
+    margin: 1.3rem 0 0.5rem;
+  }
+  .selection-panel p,
+  .selection-panel li {
+    font-size: 0.82rem;
+  }
+  .selection-panel ul {
+    padding-left: 1rem;
+    display: grid;
+    gap: 0.5rem;
+  }
+  a {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .read-link {
+    display: inline-block;
+    color: var(--accent);
+    padding: 0.5rem 0;
+  }
+  .document-list {
+    margin-top: 1.5rem;
+    border: 1px solid var(--border);
+    padding: 1rem;
+    border-radius: 12px;
+  }
+  summary {
+    cursor: pointer;
+    font-weight: 600;
+  }
+  .document-list ol {
+    list-style: none;
+    padding: 0;
+  }
+  .document-list li {
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .list-heading {
+    display: flex;
+    gap: 0.6rem;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .list-number {
+    color: var(--accent);
+    font-size: 0.8rem;
+  }
+  .draft-badge {
+    color: var(--muted-foreground);
+    border: 1px solid var(--border);
+    padding: 0.1rem 0.3rem;
+    font-size: 0.7rem;
+    border-radius: 4px;
+  }
+  .list-relations {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 0.8rem;
+    margin-top: 0.5rem;
+    font-size: 0.75rem;
+    color: var(--muted-foreground);
+  }
+  .empty-map {
+    padding: 2rem 0;
+  }
+  @media (max-width: 800px) {
+    .graph-layout {
+      grid-template-columns: 1fr;
+    }
+    .graph-scroll {
+      height: 420px;
+    }
+  }
+  @media print {
+    [data-enhanced] {
+      display: none !important;
+    }
+    details::details-content {
+      content-visibility: visible;
+      display: block;
+    }
+  }
+</style>

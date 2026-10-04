@@ -1,11 +1,33 @@
 import type { Kind } from "@/catalog";
 
 export interface UIStrings {
+  graph: {
+    description: string;
+    review: string;
+    published: string;
+    empty: string;
+    search: string;
+    reset: string;
+    open: string;
+    outgoing: string;
+    incoming: string;
+    none: string;
+    list: string;
+    select: string;
+    documents: string;
+    references: string;
+    legend: string;
+    zoomIn: string;
+    zoomOut: string;
+    resetView: string;
+    disconnected: string;
+  };
   nav: {
     home: string;
     posts: string;
     /** 글·연재 전체 트리 */
     tree: string;
+    graph: string;
     tags: string;
     about: string;
     archives: string;

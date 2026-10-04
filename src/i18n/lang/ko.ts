@@ -7,7 +7,32 @@ import type { UIStrings } from "../types";
  * 잡힌다. 어느 것을 쓸지는 `astro-paper.config.ts`의 `site.lang`이 정한다.
  */
 export default {
+  graph: {
+    description:
+      "글 하나가 점 하나이고, 선은 본문에서 직접 참조한 다른 글을 뜻합니다. 점을 선택해 연결된 문서를 확인하세요.",
+    review: "초안 포함 연결 지도",
+    published: "정식 글 연결 지도",
+    empty: "이 범위에는 표시할 글이 없습니다.",
+    search: "제목·설명 검색",
+    reset: "검색·선택 초기화",
+    open: "선택한 글 읽기",
+    outgoing: "이 글이 참고한 글",
+    incoming: "이 글을 참고한 글",
+    none: "연결 없음",
+    list: "전체 문서와 연결 목록",
+    select: "글을 선택하세요",
+    documents: "문서",
+    references: "참조 링크",
+    legend:
+      "본문 링크만 연결합니다. 같은 태그·연재라는 이유로 연결하지 않습니다. 점의 번호는 아래 목록과 같고 크기·위치는 중요도 점수가 아닙니다.",
+    zoomIn: "확대",
+    zoomOut: "축소",
+    resetView: "원래 크기",
+    disconnected:
+      "직접 참조가 없는 글도 바깥쪽에 표시합니다. 목록에서 모든 글을 찾을 수 있습니다.",
+  },
   nav: {
+    graph: "연결 지도",
     tree: "글 구조",
     home: "홈",
     posts: "글",

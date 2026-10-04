@@ -1,0 +1,35 @@
+sequenceDiagram
+    accTitle: 티켓 예매 정상 흐름과 각 서비스의 상태 저장 시점
+    accDescr: 좌석 확보, 결제 승인, 확정 결정, 좌석 확정, 결제 확정, 티켓 발급, 예매 완료 저장, 사용자 수신을 구분한다.
+    actor U as 사용자
+    participant O as 예매 진행 서비스
+    participant S as 좌석 서비스
+    participant P as 결제 서비스
+    participant G as 결제사 API
+    participant T as 티켓 서비스
+    U->>O: BK1042 예매 요청
+    O->>O: 예매 DB에 PROCESSING 저장
+    O->>S: 좌석 Try / A12 임시 확보
+    S->>S: ① 좌석 DB: HELD 저장
+    S-->>O: 확보 성공
+    O->>P: 결제 Try / 50,000원 승인
+    P->>G: 수동 capture 설정으로 승인 요청
+    G->>G: ② 승인 성립 / requires_capture
+    G-->>P: 승인 상태와 결제 ID
+    P->>P: 결제 DB에 승인 결과 반영
+    P-->>O: 승인 성공
+    O->>O: ③ 예매 DB: decision=CONFIRM 저장
+    O->>S: 좌석 Confirm
+    S->>S: ④ 좌석 DB: CONFIRMED 저장
+    S-->>O: 좌석 확정 확인
+    O->>P: 결제 Confirm
+    P->>G: 기존 결제 ID에 capture 요청
+    G->>G: ⑤ capture 성공 / succeeded
+    G-->>P: 청구 확정 결과
+    P->>P: 결제 DB에 확정 결과 반영
+    P-->>O: 청구 확정 확인
+    O->>T: BK1042 티켓 발급
+    T->>T: ⑥ 티켓 DB: ISSUED 저장
+    T-->>O: 조회 가능한 티켓 ID
+    O->>O: ⑦ 예매 DB: COMPLETED 저장
+    O-->>U: ⑧ 예매 완료 응답 수신

@@ -21,6 +21,7 @@ import {
 } from "@shikijs/transformers";
 import { transformerFileName } from "./src/utils/transformers/fileName";
 import { remarkMermaid } from "./src/utils/remarkMermaid";
+import { remarkDocumentLinks } from "./src/utils/remarkDocumentLinks";
 import config from "./astro-paper.config";
 import { DEFAULT_LOCALE, LOCALES, sitemapLocales } from "./src/catalog";
 
@@ -81,6 +82,7 @@ export default defineConfig({
   markdown: {
     processor: unified({
       remarkPlugins: [
+        remarkDocumentLinks,
         // 목차를 꽂을 제목을 한국어로도 받는다. 테마 기본값은 영어 제목만 보므로
         // 한글 글에 `## Table of contents`라고 써야 목차가 생겼다.
         [remarkToc, { heading: "목차|table[ -]of[ -]contents?" }],

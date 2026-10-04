@@ -40,6 +40,7 @@ export const SECTIONS = [
   "about",
   "archives",
   "search",
+  "graph",
 ] as const;
 export type Section = (typeof SECTIONS)[number];
 
@@ -52,6 +53,7 @@ export const LISTING_SECTIONS = [
   "kinds",
   "series",
   "drafts",
+  "graph",
 ] as const satisfies readonly Section[];
 export type ListingSection = (typeof LISTING_SECTIONS)[number];
 
@@ -68,6 +70,7 @@ export const FILE_ROUTES = [
   "series",
   "archives",
   "search",
+  "graph",
 ] as const satisfies readonly Section[];
 export type FileRoute = (typeof FILE_ROUTES)[number];
 
@@ -96,6 +99,7 @@ export const BROWSE_AXES = [
   "kinds",
   "series",
   "tree",
+  "graph",
 ] as const satisfies readonly Section[];
 export type BrowseAxis = (typeof BROWSE_AXES)[number];
 
@@ -107,6 +111,7 @@ export const HEADER_NAV = [
   { section: "posts", appearance: "text" },
   { section: "drafts", appearance: "text" },
   { section: "tree", appearance: "text" },
+  { section: "graph", appearance: "text" },
   { section: "tags", appearance: "text" },
   { section: "about", appearance: "text" },
   { section: "archives", appearance: "icon" },

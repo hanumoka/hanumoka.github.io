@@ -1,25 +1,25 @@
 ---
 const responsibilities = [
   {
-    step: "01 · 04",
-    title: "허용량 관리",
-    action: "예약하고, 처리가 끝나면 확정",
-    record: "예약 · 확정 기록",
-    note: "변환 실패만으로 예약이 사라지지는 않는다.",
+    title: "좌석 서비스",
+    action: "좌석을 임시 확보하고 확정 또는 해제",
+    record: "예매 ID · 좌석 ID · HELD/CONFIRMED 상태",
+    location: "좌석 DB",
+    note: "다른 예매 ID의 같은 좌석 확보를 제한한다.",
   },
   {
-    step: "02",
-    title: "문서 변환",
-    action: "원문을 결과 파일로 변환",
-    record: "변환 결과 파일",
-    note: "파일이 생겼어도 저장과 확정은 남아 있다.",
+    title: "결제 서비스",
+    action: "승인으로 한도를 확보하고 청구 확정 또는 승인 취소",
+    record: "결제 ID · 승인/capture 결과 · 작업별 멱등키",
+    location: "결제 DB + 결제사의 결제 상태",
+    note: "승인과 청구 확정은 서로 다른 작업이다.",
   },
   {
-    step: "03",
-    title: "결과 보관",
-    action: "변환 결과를 읽을 수 있게 저장",
-    record: "조회 가능한 결과",
-    note: "결과 저장과 예약 확정은 따로 확인한다.",
+    title: "티켓 서비스",
+    action: "확정된 예매에 조회 가능한 티켓 발급",
+    record: "예매 ID · 티켓 ID · ISSUED 상태",
+    location: "티켓 DB",
+    note: "같은 예매의 발급 재시도는 기존 티켓을 반환한다.",
   },
 ];
 ---
@@ -32,16 +32,25 @@ const responsibilities = [
   aria-labelledby="boundary-title"
 >
   <header>
-    <p class="eyebrow">01 / 책임과 기록</p>
-    <h2 id="boundary-title">한 업무의 결과가 여러 곳에 남는다</h2>
+    <p class="eyebrow">예제 / 참여자·역할·기록</p>
+    <h2 id="boundary-title">공연 좌석 한 장을 예매하는 처리 구조</h2>
     <p>
-      같은 업무 식별자로 연결해도, 모든 변경이 자동으로 함께 성공하지는
-      않습니다.
+      공연 PF1의 A12 좌석 한 장을 50,000원에 예매합니다. 예매 ID BK1042로
+      좌석·결제·티켓 기록을 연결합니다. 금액과 식별자는 설명용입니다.
     </p>
   </header>
+  <div class="user">
+    <span>사용자</span><strong>공연·좌석을 선택하고 예매 요청</strong>
+    <small>예매 완료 뒤 내 티켓을 조회</small>
+  </div>
+  <p class="user-request">
+    <span aria-hidden="true">↓ ↑</span> 예매 요청 · 진행 상태와 티켓 안내
+  </p>
   <div class="caller">
-    <span>호출자</span><strong>각 책임에 요청하고 응답을 확인</strong><small
-      >연결선은 요청 관계입니다. 호출 순서는 아래의 1~4단계를 따릅니다.</small
+    <span>예매 진행 서비스 · 본문의 ‘호출자’</span>
+    <strong>Try 결과 확인 → Confirm 또는 Cancel 결정 → 결과 확인</strong>
+    <small
+      >관리 데이터: 예매 ID · 확정/취소 결정 · 진행 상태 / 저장소: 예매 DB</small
     >
   </div>
   <div class="request-lines" aria-hidden="true">
@@ -53,40 +62,39 @@ const responsibilities = [
     {
       responsibilities.map(item => (
         <section class="responsibility">
-          <span class="step-number">업무 단계 {item.step}</span>
           <>
             <h3>{item.title}</h3>
             <p>{item.action}</p>
           </>
-          <div class="record">
-            <>
-              <svg viewBox="0 0 36 40" aria-hidden="true">
-                <>
-                  <ellipse cx="18" cy="7" rx="14" ry="5" />
-                  <path d="M4 7v24c0 7 28 7 28 0V7 M4 19c0 7 28 7 28 0" />
-                </>
-              </svg>
-              <div>
-                <>
-                  <small>남기는 것</small>
-                  <strong>{item.record}</strong>
-                </>
-              </div>
-            </>
-          </div>
+          <dl class="record">
+            <div>
+              <>
+                <dt>관리 데이터</dt>
+                <dd>{item.record}</dd>
+              </>
+            </div>
+            <div>
+              <>
+                <dt>저장소</dt>
+                <dd>{item.location}</dd>
+              </>
+            </div>
+          </dl>
           <p class="record-note">{item.note}</p>
         </section>
       ))
     }
   </div>
-  <ol class="sequence" aria-label="업무 진행 순서">
-    <li><b>1</b> 예약</li><li><b>2</b> 변환</li><li><b>3</b> 저장</li><li>
-      <b>4</b> 확정
-    </li>
-  </ol>
+  <p class="completion">
+    완료 안내 전 확인: 좌석과 결제가 확정되고, 해당 예매의 티켓을 조회할 수
+    있는가?
+  </p>
   <figcaption>
-    설명용 책임 구분입니다. 실제 서비스·DB 개수나 배포 구조를 확정한 그림은
-    아닙니다. 예약과 확정은 같은 허용량 관리 책임에 속합니다.
+    연결선은 서비스 사이의 호출 관계입니다. 처리 순서와 상태 저장 시점은 아래
+    시퀀스 다이어그램에서 확인합니다. Confirm 결정 전 취소라면 임시 확보와 결제
+    승인을 각각 해제합니다. 서비스와 저장 책임을 구분한 설명용 설계입니다.
+    저장소를 물리적으로 몇 개 배포할지는 별도 결정입니다. Temporal 적용 구조는
+    후속 글에서 다룹니다.
   </figcaption>
 </figure>
 <style>
@@ -117,8 +125,9 @@ const responsibilities = [
     margin: 0.35rem 0 0;
     line-height: 1.4;
   }
+  .user,
   .caller {
-    margin: 1.8rem auto 0;
+    margin: 0 auto;
     padding: 1rem;
     max-width: 34rem;
     border: 1px solid var(--accent);
@@ -126,15 +135,34 @@ const responsibilities = [
     background: var(--background);
     text-align: center;
   }
+  .user {
+    margin-top: 1.6rem;
+    border-color: var(--border);
+  }
+  .user-request {
+    margin: 0.55rem auto;
+    text-align: center;
+    font-size: 0.78rem;
+    color: var(--muted-foreground);
+  }
+  .user-request span {
+    color: var(--accent);
+    padding-right: 0.4rem;
+  }
+  .user span,
+  .user strong,
+  .user small,
   .caller span,
   .caller strong,
   .caller small {
     display: block;
   }
+  .user span,
   .caller span {
     font-size: 0.75rem;
     color: var(--accent);
   }
+  .user small,
   .caller small {
     font-size: 0.75rem;
     margin-top: 0.4rem;
@@ -174,31 +202,20 @@ const responsibilities = [
     font-size: 0.85rem;
   }
   .record {
-    display: flex;
-    gap: 0.7rem;
-    align-items: center;
+    display: grid;
+    gap: 0.65rem;
     margin: 1.2rem 0;
     padding-top: 1rem;
     border-top: 1px dashed var(--border);
   }
-  .record svg {
-    width: 32px;
-    height: 36px;
-    fill: none;
-    stroke: var(--accent);
-    stroke-width: 1.5;
-    flex: none;
-  }
-  .record small,
-  .record strong {
-    display: block;
-  }
-  .record small {
+  .record dt {
     color: var(--muted-foreground);
     font-size: 0.72rem;
   }
-  .record strong {
+  .record dd {
+    margin: 0;
     font-size: 0.9rem;
+    font-weight: 650;
   }
   .record-note {
     color: var(--muted-foreground);
@@ -206,20 +223,40 @@ const responsibilities = [
   .sequence {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    margin: 1.5rem 0 0;
+    gap: 0.8rem;
+    margin: 0.75rem 0 0;
     padding: 0;
     list-style: none;
   }
   .sequence li {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 0.5rem;
-    justify-content: center;
-    border-right: 1px solid var(--border);
+    padding: 0.8rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--background);
     font-size: 0.9rem;
   }
-  .sequence li:last-child {
-    border: 0;
+  .sequence strong,
+  .sequence small {
+    display: block;
+  }
+  .sequence small {
+    margin-top: 0.35rem;
+    color: var(--muted-foreground);
+    font-size: 0.75rem;
+  }
+  .sequence-label {
+    margin: 1.5rem 0 0;
+    font-size: 0.85rem;
+    font-weight: 650;
+  }
+  .completion {
+    padding: 0.8rem 1rem;
+    border-left: 3px solid var(--accent);
+    font-size: 0.9rem;
+    background: var(--background);
   }
   .sequence b {
     color: var(--accent);
@@ -257,6 +294,9 @@ const responsibilities = [
     }
     .sequence li {
       font-size: 0.8rem;
+    }
+    .sequence {
+      grid-template-columns: 1fr;
     }
   }
 </style>

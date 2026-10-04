@@ -1,0 +1,81 @@
+---
+pubDatetime: 2026-10-04T09:00:00+09:00
+title: "Temporal 학습 용어사전: 분산 트랜잭션과 예매 예제"
+key: "temporal-glossary"
+description: "TCC·2PC·Saga·멱등키와 결제 승인·capture의 의미를 구분하고 Temporal 학습 글로 연결하는 용어사전."
+tags: ["temporal", "distributed-systems"]
+kind: "concept"
+readingMinutes: 6
+draft: true
+sourceNote: "docs/research/2026-10-04-temporal-series-plan.md"
+---
+
+이 글은 Temporal 연재를 읽다가 필요한 용어를 찾아보는 **별도 참고 초안**이다. 처음부터 외울 필요는 없다. 용어마다 공연 티켓 예매에서의 의미와 혼동하기 쉬운 경계를 적었다. 시리즈의 읽는 순서에는 번호를 추가하지 않는다. 마지막 검토: 2026-10-04.
+
+[Temporal 1편으로 돌아가기](/posts/temporal-01-distributed-business-consistency/) · [전체 학습 초안](/drafts/series/temporal/) · [초안 문서 연결 지도](/drafts/graph/)
+
+## 빠르게 찾기
+
+[로컬 트랜잭션](#local-transaction) · [분산 트랜잭션](#distributed-transaction) · [2PC](#two-phase-commit) · [TCC](#tcc) · [Saga와 보상](#saga) · [오케스트레이션](#orchestration) · [코레오그래피](#choreography) · [멱등성·멱등키](#idempotency) · [authorization](#authorization) · [capture](#capture) · [정산](#settlement) · [Temporal](#temporal)
+
+<h2 id="local-transaction">로컬 트랜잭션</h2>
+
+한 DB가 관리하는 변경들을 하나의 커밋 또는 롤백 단위로 묶는 것이다. 예를 들어 좌석 점유 기록과 그 좌석의 상태를 같은 DB 트랜잭션으로 갱신할 수 있다. 그 트랜잭션에 포함되지 않은 외부 결제사의 변경까지 함께 롤백되지는 않는다.
+
+<h2 id="distributed-transaction">분산 트랜잭션</h2>
+
+여러 시스템이 각자 관리하는 변경을 하나의 업무 조건에 맞게 처리해야 하는 문제다. 좌석 확정과 결제 확정을 서로 다른 시스템이 맡는 예매가 한 예다. 이 연재는 엄격한 분산 커밋뿐 아니라 중간 상태와 보상을 허용하는 업무 처리도 비교한다. **어떤 원자성·격리가 필요한지는 패턴을 고르기 전에 정한다.**
+
+<h2 id="two-phase-commit">2PC — Two-Phase Commit</h2>
+
+조정자가 참여자들에게 **커밋 준비(prepare)**를 요청하고, 준비 결과에 따라 **커밋 또는 중단**을 결정하는 프로토콜이다. 참여자 모두가 해당 프로토콜을 지원해야 한다. 준비 상태에서 결정을 기다리면 자원·잠금 유지와 복구가 문제가 될 수 있다. [PostgreSQL은 PREPARE TRANSACTION과 COMMIT/ROLLBACK PREPARED를 제공한다](https://www.postgresql.org/docs/current/two-phase.html).
+
+좌석 API와 결제 API를 차례로 호출한다고 2PC가 되는 것은 아니다. TCC의 Try도 DB의 prepare와 같은 작업이 아니다. [관련 학습: 2PC와 Saga 비교 초안](/posts/temporal-03-two-phase-commit-and-saga/).
+
+<h2 id="tcc">TCC — Try–Confirm–Cancel</h2>
+
+참여자가 업무 수준의 **준비(Try)**, **확정(Confirm)**, **준비 해제(Cancel)**를 제공하는 방식이다. 예매에서는 좌석 임시 확보 → 좌석 확정 또는 확보 해제로 설명한다. 각각은 개발자가 정의하는 업무 동작이다. [Seata TCC 문서](https://seata.apache.org/docs/dev/mode/tcc-mode/).
+
+Try가 성공해도 전체 예매가 완료된 것은 아니다. Confirm·Cancel 재시도, 자원 만료, Cancel 뒤 늦은 Try 같은 상황을 처리해야 한다. 이미 청구된 결제의 환불은 미청구 승인을 해제하는 Cancel과 구별한다. [예매 흐름에서 보기](/posts/temporal-01-distributed-business-consistency/#ticket-sequence-success).
+
+<h2 id="saga">Saga와 보상</h2>
+
+여러 로컬 트랜잭션을 순서와 조건에 따라 연결하고, 실패하면 재시도로 진행하거나 앞선 효과를 처리하는 **보상 작업**을 수행하는 방식이다. 보상은 이미 완료한 업무에 대한 새 작업이며 DB rollback과 같지 않다. 예를 들어 청구 이후 환불은 기록이 남는 별도 처리다. [AWS Saga 설명](https://docs.aws.amazon.com/prescriptive-guidance/latest/cloud-design-patterns/saga-patterns.html).
+
+보상은 실패할 수 있고, 외부에 전달된 알림처럼 없던 일로 만들기 어려운 효과도 있다. Saga를 선택했다고 ACID 격리나 자동 보상이 생기지는 않는다. [보상 실패 학습 초안](/posts/temporal-22-compensation-reservation-failures/).
+
+<h2 id="orchestration">오케스트레이션 — 중앙 조정</h2>
+
+한 조정 로직이 현재 상태와 결과를 보고 다음 작업·재시도·취소를 결정한다. 예매 진행 서비스가 좌석과 결제 서비스의 응답을 보고 다음 요청을 보내는 구조다. 논리적으로 중앙에서 결정한다는 뜻이며 프로세스 한 개로만 운영해야 한다는 뜻은 아니다. [중앙 조정 학습 초안](/posts/temporal-05-saga-orchestration-control/).
+
+<h2 id="choreography">코레오그래피 — 이벤트에 따른 참여자 조정</h2>
+
+각 참여자가 다른 참여자가 발행한 이벤트를 받아 자기 작업을 수행하면서 전체 흐름을 이룬다. 예를 들어 좌석 확보 이벤트를 받은 결제 서비스가 다음 처리를 시작한다. 이벤트 계약과 흐름의 추적·복구 책임은 여전히 필요하다. [AWS의 두 조정 방식](https://docs.aws.amazon.com/prescriptive-guidance/latest/cloud-design-patterns/saga-patterns.html), [이벤트 조정 학습 초안](/posts/temporal-04-saga-choreography-events/).
+
+<h2 id="idempotency">멱등성·멱등키</h2>
+
+**멱등성**은 같은 작업을 반복해도 한 번 수행한 것과 같은 효과를 내는 성질이다. **멱등키**는 수신자가 같은 작업의 반복을 식별하는 값이다. `BK1042/payment/confirm`을 같은 입력으로 재전송했을 때 기존 결과를 돌려주고 추가 청구를 만들지 않는 계약이 예다.
+
+키를 붙이는 것만으로 보장되지는 않는다. 수신자의 중복 판별·결과 저장·동시 요청 처리·보존 기간이 필요하다. 예매 ID는 전체 업무를 연결하고 작업별 키는 Try·Confirm·Cancel 등을 구별한다. 서로 다른 예매의 좌석 경쟁은 별도의 점유 제약으로 다룬다. [Stripe 멱등 요청](https://docs.stripe.com/api/idempotent_requests), [멱등 처리 학습 초안](/posts/temporal-16-idempotent-result-storage/).
+
+<h2 id="authorization">결제 승인 — authorization</h2>
+
+이 예제의 수동 capture 방식에서는 결제할 금액을 확보하는 단계다. 카드에서는 사용 가능한 한도를 일시 점유하는 방식으로 이해할 수 있다. 아직 별도의 capture를 성공시킨 상태가 아니다. 지원 결제 수단과 유효기간이 있으며 사용자에게 필요한 추가 인증을 완료해야 승인될 수 있다. [승인과 capture 분리](https://docs.stripe.com/payments/place-a-hold-on-a-payment-method).
+
+Stripe에서 `capture_method=manual`인 PaymentIntent의 승인 성공은 `requires_capture` 상태로 확인한다. **Stripe의 `/confirm`은 이 승인 흐름에 쓰인다. TCC의 결제 Confirm과 이름만 보고 대응시키면 안 된다.** [PaymentIntent confirm 문서](https://docs.stripe.com/api/payment_intents/confirm).
+
+<h2 id="capture">청구 확정 — capture</h2>
+
+이미 승인한 금액을 실제 청구로 진행하도록 결제사에 요청하는 단계다. 이 예제는 유효한 승인에 대한 전액 capture가 성공한 상황을 사용한다. Stripe의 capture 성공 응답은 PaymentIntent `succeeded` 상태를 반환한다. 이 시점이 예제의 **결제 TCC Confirm**에 대응한다. [PaymentIntent capture 문서](https://docs.stripe.com/api/payment_intents/capture).
+
+요청을 전송한 시점, 결제사가 성공 처리한 시점, 우리 서비스가 성공을 확인한 시점은 다르다. 응답 유실 시에는 기존 결제 ID의 결과를 조회하거나 같은 작업 키로 확인해야 한다. **결제 성공은 좌석 확정·티켓 발급·전체 예매 완료와도 별개다.**
+
+<h2 id="settlement">정산과 지급</h2>
+
+결제 거래의 자금을 처리하고 판매자가 받을 금액을 반영·지급하는 후속 과정이다. 결제 성공 응답을 받은 시점과 판매자의 은행 계좌에 자금이 입금되는 시점은 같지 않다. 이 예매 예제는 capture 성공까지 확인하며 정산·지급 완료를 모델링하지 않는다. [Stripe 지급 안내](https://docs.stripe.com/payouts).
+
+<h2 id="temporal">Temporal·Workflow·Activity</h2>
+
+**Temporal**은 작업 흐름의 실행 이력을 유지하며 재시도·대기·장애 뒤 이어서 실행하는 기능을 제공하는 플랫폼이다. **Workflow**는 흐름과 결정을 정의하고, **Activity**는 결제 API 호출처럼 외부 작업을 실행하는 단위다. 업무 규칙·멱등 처리·보상은 애플리케이션에서 설계한다. [Temporal Workflow](https://docs.temporal.io/workflows), [Activity](https://docs.temporal.io/activity-definition).
+
+Temporal 자체가 TCC나 2PC와 같은 참여자 커밋 프로토콜은 아니다. [Client·Service·Worker 학습 초안](/posts/temporal-10-client-service-worker/)과 [1편의 예매 예제](/posts/temporal-01-distributed-business-consistency/)를 연결해서 읽을 수 있다.

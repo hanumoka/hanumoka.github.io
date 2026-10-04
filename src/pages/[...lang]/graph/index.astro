@@ -1,0 +1,8 @@
+---
+import GraphPage from "@/components/GraphPage.astro";
+import { localePaths, resolveLocale } from "@/utils/locales";
+export const getStaticPaths = localePaths;
+const locale = resolveLocale(Astro.currentLocale);
+---
+
+<GraphPage locale={locale} />

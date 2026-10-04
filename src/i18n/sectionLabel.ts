@@ -12,6 +12,7 @@ export function sectionLabel(section: Section, t: UIStrings): string {
     posts: t.nav.posts,
     drafts: t.nav.drafts,
     tree: t.nav.tree,
+    graph: t.nav.graph,
     tags: t.nav.tags,
     kinds: t.pages.kindsTitle,
     series: t.pages.seriesTitle,

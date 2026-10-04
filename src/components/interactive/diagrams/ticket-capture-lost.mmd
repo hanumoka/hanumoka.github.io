@@ -1,0 +1,19 @@
+sequenceDiagram
+    accTitle: 결제사 capture 성공 이후 응답이 유실된 경우
+    accDescr: 결제사에서 청구는 확정되었지만 결제 서비스와 예매 진행 서비스는 모른다. 같은 결제 ID와 작업 키로 결과를 확인하고 진행한다.
+    participant O as 예매 진행 서비스
+    participant P as 결제 서비스
+    participant G as 결제사 API
+    Note over O,G: Confirm 결정 기록과 좌석 확정 확인 이후
+    O->>P: 결제 Confirm / BK1042
+    P->>G: 같은 결제 ID / capture 키 K
+    G->>G: ⑤ capture 성공 / succeeded
+    G--xP: 성공 응답 유실
+    P-->>O: 결과 미확인 / 타임아웃
+    Note over O,G: 청구 확정은 존재 / 티켓 발급과 예매 완료는 아직 없음
+    O->>P: 같은 작업 재시도
+    P->>G: 동일 결제 ID·입력·키 K 재전송
+    G-->>P: 저장된 기존 결과 / 추가 청구 없음
+    P->>P: 결제 DB에 확정 결과 반영
+    P-->>O: 청구 확정 확인
+    O->>O: 티켓 발급 확인 후 ⑦ 예매 완료 저장으로 진행

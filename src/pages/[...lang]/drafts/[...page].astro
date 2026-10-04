@@ -77,6 +77,12 @@ const series = getUniqueSeries(
   <Breadcrumb />
 
   <Main pageTitle={t.pages.draftsTitle} pageDesc={t.pages.draftsDesc}>
+    <p class="mb-6">
+      <a
+        class="text-accent underline"
+        href={getRelativeLocaleUrl(locale, "drafts/graph/")}>{t.graph.review}</a
+      >
+    </p>
     {
       series.length > 0 && (
         <nav

@@ -73,6 +73,8 @@ export async function getTranslatedPath(
   }
 
   const leaf = rest[0]!;
+  if (section === "drafts" && leaf === "graph" && rest.length === 1)
+    return { path: "/drafts/graph", exact: false };
   if (section === "drafts" && leaf === "series" && rest.length === 2) {
     const targetPosts = await getLocalizedPosts(target, {
       includeDrafts: true,

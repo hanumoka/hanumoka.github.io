@@ -2,14 +2,16 @@ import {
   scenarios,
   snapshot,
   eventText,
-  quotaLabel,
-  documentLabel,
+  seatLabel,
+  paymentLabel,
+  ticketLabel,
+  decisionLabel,
   statusLabel,
   type Scenario,
 } from "./business-consistency-model";
 
 class BusinessConsistencyLab extends HTMLElement {
-  private scenario: Scenario = "reserve-after";
+  private scenario: Scenario = "hold-after";
   private step = 0;
   private playing = false;
   private timer: ReturnType<typeof setTimeout> | undefined;
@@ -96,9 +98,19 @@ class BusinessConsistencyLab extends HTMLElement {
   private pause() {
     clearTimeout(this.timer);
     this.playing = false;
+    this.querySelector("[data-next-event-fill]")
+      ?.getAnimations()
+      .forEach(animation => animation.cancel());
   }
   private schedule() {
     clearTimeout(this.timer);
+    const fill = this.querySelector<HTMLElement>("[data-next-event-fill]");
+    fill?.getAnimations().forEach(animation => animation.cancel());
+    if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches)
+      fill?.animate([{ transform: "scaleX(0)" }, { transform: "scaleX(1)" }], {
+        duration: 2200,
+        fill: "forwards",
+      });
     this.timer = setTimeout(() => {
       if (!this.isConnected || !this.playing) return;
       this.step = Math.min(this.length, this.step + 1);
@@ -117,24 +129,56 @@ class BusinessConsistencyLab extends HTMLElement {
     this.dataset.scenario = this.scenario;
     this.dataset.playing = String(this.playing);
     this.dataset.status = state.status;
-    set("actual-quota", quotaLabel[state.quota]);
-    set("known-quota", quotaLabel[state.knownQuota]);
-    set("actual-document", documentLabel[state.document]);
-    set("known-document", documentLabel[state.knownDocument]);
+    const ended = this.step === this.length;
+    this.dataset.ended = String(ended);
+    const playback = ended
+      ? "시나리오 재생 종료"
+      : this.playing
+        ? "자동 진행 중 · 다음 사건 대기"
+        : this.step === 0
+          ? "재생 전"
+          : "일시정지 · 수동 진행 가능";
+    set("playback-state", playback);
+    set("progress-text", `${Math.round((this.step / this.length) * 100)}%`);
+    const progress = this.querySelector<HTMLProgressElement>(
+      "[data-event-progress]"
+    );
+    if (progress) {
+      progress.max = this.length;
+      progress.value = this.step;
+      progress.textContent = `${this.step} / ${this.length}`;
+    }
+    set("actual-seat", seatLabel[state.seat]);
+    set("known-seat", seatLabel[state.knownSeat]);
+    set("actual-payment", paymentLabel[state.payment]);
+    set("known-payment", paymentLabel[state.knownPayment]);
+    set("actual-ticket", ticketLabel[state.ticket]);
+    set("known-ticket", ticketLabel[state.knownTicket]);
+    set("decision", decisionLabel[state.decision]);
+    set("booking-status", state.bookingStatus);
+    set(
+      "user-status",
+      state.userReceivedCompletion ? "완료 응답 수신" : "완료 응답 미수신"
+    );
+    set(
+      "capture-count",
+      `결제 확정 요청 ${state.captureRequests}회 / 실제 청구 ${state.captureKeys.length}회`
+    );
     set("business-status", statusLabel[state.status]);
     set("step-count", `${this.step} / ${this.length} 사건`);
     const current = state.events.at(-1);
     const description = current
       ? eventText[current]
-      : "시나리오를 고른 뒤 ‘다음 사건’을 눌러 보세요. 아직 외부 기록은 없습니다.";
+      : "시나리오를 고른 뒤 ‘다음 사건’을 눌러 보세요. 아직 좌석·결제·티켓 작업은 시작하지 않았습니다.";
     set("event-title", description);
     set(
       "lesson",
       this.step === this.length
         ? scenarios[this.scenario].lesson
-        : "외부 기록이 반영되는 순간과 호출자가 응답을 받는 순간을 따로 보세요."
+        : "서비스가 상태를 저장한 시점과 예매 진행 서비스가 성공 응답을 받은 시점을 비교해 보세요."
     );
-    if (announce) set("announcement", `${this.step}번째 사건. ${description}`);
+    if (announce)
+      set("announcement", `${playback}. ${this.step}번째 사건. ${description}`);
     const play = this.querySelector<HTMLButtonElement>('[data-action="play"]');
     if (play) {
       play.textContent = this.playing
@@ -156,16 +200,32 @@ class BusinessConsistencyLab extends HTMLElement {
       const label = el.querySelector("[data-phase-label]");
       if (label)
         label.textContent =
-          phase < state.phase
-            ? "응답 확인"
-            : phase === state.phase
-              ? state.status === "complete"
+          state.decision === "cancel"
+            ? phase < 2
+              ? state.status === "cancelled"
+                ? "Cancel 확인"
+                : "Cancel 진행"
+              : "진행하지 않음"
+            : ended && state.status !== "complete"
+              ? phase < state.phase
                 ? "응답 확인"
-                : "현재 단계"
-              : "대기";
+                : phase > state.phase
+                  ? state.status === "failed"
+                    ? "실행하지 않음"
+                    : "진행 보류"
+                  : state.status === "failed"
+                    ? "승인 거절로 중단"
+                    : "결과 확인 필요"
+              : phase < state.phase
+                ? "응답 확인"
+                : phase === state.phase
+                  ? state.status === "complete"
+                    ? "응답 확인"
+                    : "현재 단계"
+                  : "대기";
     });
     this.querySelectorAll<HTMLElement>(
-      "[data-known-quota], [data-known-document]"
+      "[data-known-seat], [data-known-payment], [data-known-ticket]"
     ).forEach(
       el => (el.dataset.uncertain = String(el.textContent === "결과 미확인"))
     );
