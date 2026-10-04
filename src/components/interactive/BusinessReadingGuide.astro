@@ -1,0 +1,200 @@
+---
+type Props = { mode?: "intro" | "questions" };
+const { mode = "intro" } = Astro.props;
+---
+
+{
+  mode === "intro" ? (
+    <aside
+      class="reading-guide not-prose"
+      data-interactive
+      aria-label="이 글에서 확인할 세 가지"
+    >
+      <p class="eyebrow">Temporal · 01 / 도구를 고르기 전의 질문</p>
+      <p class="lead">
+        API는 성공했는데,
+        <>
+          <br />
+          <strong>업무는 왜 끝나지 않았을까?</strong>
+        </>
+      </p>
+      <nav aria-label="시각화 바로가기">
+        <>
+          <a href="#business-boundaries">
+            <span>01</span> 무엇이 어디에 남는가 <b aria-hidden="true">↗</b>
+          </a>
+          <a href="#failure-lab-title">
+            <span>02</span> 호출자는 무엇을 아는가 <b aria-hidden="true">↗</b>
+          </a>
+          <a href="#check-understanding">
+            <span>03</span> 완료 조건을 설명할 수 있는가{" "}
+            <b aria-hidden="true">↗</b>
+          </a>
+        </>
+      </nav>
+      <p class="note">
+        본문과 대표 시나리오 읽기 약 8분. 모든 상황을 조작하거나 DB 실습을 하는
+        시간은 별도입니다.
+      </p>
+    </aside>
+  ) : (
+    <section
+      id="check-understanding"
+      class="questions not-prose"
+      data-interactive
+      aria-labelledby="understanding-title"
+    >
+      <>
+        <p class="eyebrow">03 / 먼저 답하고, 해설 열기</p>
+        <h3 id="understanding-title">업무 상태로 설명해 보세요</h3>
+      </>
+      <details>
+        <>
+          <summary>예약 API가 타임아웃됐다. 예약은 없는가?</summary>
+          <p>
+            아직 모릅니다. 요청이 도착하지 않았을 수도 있고, 예약이 기록된 뒤
+            응답만 유실됐을 수도 있습니다. 같은 업무 식별자의 상태 확인과 중복
+            처리 방지 계약이 필요합니다.
+          </p>
+        </>
+      </details>
+      <details>
+        <>
+          <summary>변환이 실패했다. 무엇을 확인해야 하는가?</summary>
+          <p>
+            남은 예약과 임시 결과를 확인해야 합니다. 이 모형은 파일 생성 전에
+            실패한다고 가정합니다. 실제 변환은 일부 파일을 남길 수도 있으므로
+            정리 조건을 따로 검증합니다.
+          </p>
+        </>
+      </details>
+      <details>
+        <>
+          <summary>이 예제에서 언제 완료를 알려도 되는가?</summary>
+          <p>
+            결과를 읽을 수 있고 예약 확정을 확인했을 때입니다. 확인한 완료
+            응답을 잃었다면 기존 업무 결과를 다시 제공할 방법도 필요합니다.
+            ‘모든 API가 응답했다’보다 구체적인 업무 조건으로 설명해 보세요.
+          </p>
+        </>
+      </details>
+      <p class="note">
+        다음 글에서는 이 변경들을 같은 서비스와 로컬 트랜잭션으로 묶을 수 있는지
+        검토합니다.
+      </p>
+    </section>
+  )
+}
+<style>
+  .reading-guide,
+  .questions {
+    scroll-margin-top: 6rem;
+    font-family: var(--font-noto-sans-kr), sans-serif;
+    color: var(--foreground);
+    line-height: 1.7;
+    margin-block: 2rem;
+  }
+  .reading-guide {
+    border-block: 1px solid var(--border);
+    padding: 1.7rem 0;
+  }
+  .eyebrow {
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    color: var(--accent);
+    font-weight: 700;
+    margin: 0 0 0.8rem;
+  }
+  .lead {
+    font-size: 1.65rem;
+    line-height: 1.5;
+    margin: 0 0 1.4rem;
+    font-weight: 400;
+  }
+  .lead strong {
+    font-weight: 750;
+  }
+  nav {
+    display: grid;
+    gap: 0.5rem;
+  }
+  nav a {
+    display: flex;
+    gap: 0.8rem;
+    align-items: center;
+    text-decoration: none;
+    font-size: 0.9rem;
+    padding: 0.6rem 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: 5px;
+  }
+  nav a:hover {
+    border-color: var(--accent);
+  }
+  nav span {
+    font-size: 0.72rem;
+    color: var(--accent);
+  }
+  nav b {
+    margin-left: auto;
+    color: var(--accent);
+  }
+  .note {
+    font-size: 0.8rem;
+    color: var(--muted-foreground);
+    margin: 1rem 0 0;
+  }
+  .questions {
+    background: color-mix(in srgb, var(--accent) 5%, var(--background));
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.4rem;
+  }
+  h3 {
+    font-style: normal;
+    font-size: 1.2rem;
+    margin: 0 0 1rem;
+  }
+  details {
+    display: block;
+    border-top: 1px solid var(--border);
+    padding: 0.9rem 0;
+  }
+  summary {
+    cursor: pointer;
+    font-size: 0.95rem;
+    font-weight: 600;
+  }
+  details p {
+    display: block;
+    font-size: 0.9rem;
+    margin: 0.8rem 0 0;
+  }
+  summary:focus-visible {
+    outline: 3px solid var(--accent);
+    outline-offset: 4px;
+  }
+  @media (max-width: 640px) {
+    .lead {
+      font-size: 1.35rem;
+    }
+    .questions {
+      padding: 1.1rem;
+    }
+    nav a {
+      font-size: 0.85rem;
+    }
+  }
+  @media print {
+    details::details-content {
+      content-visibility: visible;
+      display: block;
+    }
+    details > p {
+      display: block !important;
+    }
+    nav {
+      display: none;
+    }
+  }
+</style>
