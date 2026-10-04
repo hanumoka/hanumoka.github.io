@@ -279,11 +279,19 @@ const ogImage = ogImageUrl
     );
     for (const heading of headings) {
       if (heading.closest("[data-interactive]")) continue;
+      if (!heading.id || heading.querySelector(".heading-link")) continue;
       heading.classList.add("group");
       const link = document.createElement("a");
       link.className =
         "heading-link ms-2 no-underline opacity-75 md:opacity-0 md:group-hover:opacity-100 md:focus:opacity-100";
       link.href = "#" + heading.id;
+      const title = heading.textContent?.trim() ?? heading.id;
+      link.setAttribute(
+        "aria-label",
+        document.documentElement.lang.startsWith("ko")
+          ? `${title} 절로 이동`
+          : `Link to ${title}`
+      );
 
       const span = document.createElement("span");
       span.ariaHidden = "true";

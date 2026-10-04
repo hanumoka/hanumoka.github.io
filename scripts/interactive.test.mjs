@@ -15,6 +15,17 @@ import {
 const finalBusinessState = scenario =>
   snapshot(scenario, businessScenarios[scenario].events.length);
 
+test("타임아웃 뒤 늦게 도착한 Try가 좌석을 확보해도 호출자는 모른다", () => {
+  const timedOut = snapshot("hold-late", 2);
+  const late = finalBusinessState("hold-late");
+  assert.equal(timedOut.seat, "none");
+  assert.equal(late.seat, "held");
+  assert.equal(late.knownSeat, "unknown");
+  assert.equal(late.status, "uncertain");
+  assert.equal(late.bookingStatus, "PROCESSING");
+  assert.equal(late.decision, "none");
+});
+
 test("같은 좌석 타임아웃 뒤에 실제 확보는 있을 수도 없을 수도 있다", () => {
   const before = finalBusinessState("hold-before");
   const after = finalBusinessState("hold-after");

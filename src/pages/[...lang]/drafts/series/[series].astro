@@ -48,7 +48,7 @@ const name = seriesLabel(series, locale);
       href={getRelativeLocaleUrl(locale, "drafts/")}>{t.nav.drafts}</a
     >
     <ol class="marker:text-accent mt-6 list-decimal ps-7">
-      {parts.map(post => <Card {...post} />)}
+      {parts.map(post => <Card {...post} showEditorialState />)}
     </ol>
   </Main>
   <Footer />

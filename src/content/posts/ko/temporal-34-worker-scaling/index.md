@@ -7,7 +7,7 @@ tags: ["temporal", "distributed-systems"]
 kind: "concept"
 series: "temporal"
 seriesOrder: 34
-readingMinutes: 6
+readingMinutes: 7
 sourceNote: "docs/research/2026-10-04-temporal-series-plan.md"
 draft: true
 ---
@@ -63,6 +63,12 @@ Worker를 늘리는 실험만 하고 줄이는 과정은 생략하기 쉽다. �
 이 글의 산출물은 추천 replica 숫자가 아니라 실험 조건과 결과를 연결한 표다. “이 입력과 이 자원에서 Worker 증가가 대기를 줄였지만 저장소 제한 이후에는 실패가 늘었다”처럼 적용 범위가 드러나는 결론이어야 한다.
 
 검증 질문은 “slot을 늘린 뒤 CPU는 그대로인데 저장 지연만 늘었다면 무엇이 제한일까?”다. 또 “처리 시도 수가 증가했다는 사실을 성공 처리량 증가로 볼 수 있을까?”를 생각해 보자. 확장 효과를 평가하려면 시작한 양보다 올바르게 끝낸 양을 봐야 한다.
+
+## replica 실험에서 함께 늘어나는 값
+
+Worker별 slot 수가 같으면 replica를 늘릴 때 전체 slot·poller도 늘어난다. 이것은 유효한 scale-out 실험이지만 프로세스 수만의 효과로 해석하지 않는다. `1 replica × 20 slots`와 `2 replicas × 10 slots`처럼 총 slot을 맞춘 대조군도 둔다. 고정 slot과 자원 기반 supplier는 별도 실험으로 비교한다.
+
+Worker별 `setMaxConcurrentActivityExecutionSize`는 동시 실행 수, `setMaxWorkerActivitiesPerSecond`는 시작률, `setMaxTaskQueueActivitiesPerSecond`는 큐 전체 배정 속도다. 배정 속도 제한으로 생긴 대기를 곧바로 Worker 부족으로 단정하지 않는다. Java의 `shutdown()`은 종료 대기를 완료하는 호출이 아니므로 `awaitTermination()`과 컨테이너 종료 유예도 맞춘다. [Worker 튜닝](https://docs.temporal.io/develop/worker-performance/runtime-tuning).
 
 ## 공식 자료
 

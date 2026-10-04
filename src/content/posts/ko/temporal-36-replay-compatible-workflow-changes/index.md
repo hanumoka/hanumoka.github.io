@@ -7,12 +7,12 @@ tags: ["temporal", "distributed-systems"]
 kind: "concept"
 series: "temporal"
 seriesOrder: 36
-readingMinutes: 6
+readingMinutes: 7
 sourceNote: "docs/research/2026-10-04-temporal-series-plan.md"
 draft: true
 ---
 
-새 코드로 시작한 문서 처리가 성공해도, 이미 실행 중이던 문서 처리가 그 코드를 안전하게 사용할 수 있다는 뜻은 아니다. Temporal Workflow는 Event History를 바탕으로 코드를 재생한다. 과거 기록과 새 코드가 만드는 결정의 순서가 맞지 않으면 배포 후에야 문제가 드러날 수 있다. 이번 초안은 replay 검사를 배포 전 질문으로 옮기는 방법을 다룬다.
+새 코드로 시작한 문서 처리가 성공해도, 이미 실행 중이던 문서 처리가 그 코드를 안전하게 사용할 수 있다는 뜻은 아니다. Temporal Workflow는 Event History를 바탕으로 코드를 재생한다. 과거 기록과 새 코드가 만드는 명령(Command)의 순서가 맞지 않으면 배포 후에야 문제가 드러날 수 있다. 이번 초안은 replay 검사를 배포 전 질문으로 옮기는 방법을 다룬다.
 
 예제의 기존 순서는 허용량 예약, 가상 변환, 결과 저장, 예약 확정이다. 여기에 변환 결과를 검증하는 Activity를 저장 직전에 추가한다고 가정하자. 아직 실행하지 않은 변경 실험이며, 아래 코드는 개념을 보여 주는 일부다. 전체 실행·오류 처리 코드는 선택 SDK와 예제에 맞춰 준비해야 한다.
 
@@ -30,7 +30,7 @@ replay에서는 완료된 Activity의 결과를 History에서 읽어 Workflow �
 
 검사의 목적은 과거 실행 기록을 현재 Workflow 구현이 이해할 수 있는지 확인하는 것이다. Java의 테스트 도구는 `WorkflowReplayer`를 제공한다. 테스트용 History를 파일로 보관할 때는 생성 문서만 사용하고 payload에 자격증명이나 실제 데이터가 섞이지 않게 한다. 암호화된 payload가 있다면 재생에 필요한 데이터 변환 설정도 검토해야 한다.
 
-History는 성공 사례 하나만 고르면 부족하다. 예약 직후, 가상 변환 완료 뒤, 결과 저장 뒤, 보상 경로, 메시지를 받은 상태처럼 변경 지점을 통과한 사례를 선택한다. 보관할 표본의 수보다 변경의 영향을 받는 경로를 포함하는지가 중요하다.
+History는 성공 사례 하나만 고르면 부족하다. 결과 저장 ActivityTaskScheduled 이벤트가 기록된 뒤, 가상 변환 완료 뒤, 결과 저장 뒤, 보상 경로, 메시지를 받은 상태처럼 변경 지점을 통과한 사례를 선택한다. 보관할 표본의 수보다 변경의 영향을 받는 경로를 포함하는지가 중요하다.
 
 ## 변경 지점에 버전을 기록한다
 
@@ -71,6 +71,14 @@ activities.store(convertedDocumentId);
 배포 방식에 따라 과거 실행을 이전 Worker 버전에 계속 맡기는 선택도 있다. 이것이 다음 글의 Worker Versioning이다. patching과 Worker Versioning은 문제를 다루는 위치가 다르며, 둘 중 하나의 이름만 도입했다고 테스트 책임이 없어지는 것은 아니다.
 
 검증 질문은 “새 Workflow 테스트는 성공하는데 과거 History replay가 실패할 수 있는 이유는 무엇일까?”다. 또 “replay가 통과했다면 결과 저장 API의 중복 처리까지 안전하다고 말할 수 있을까?”를 생각해 보자. 이 구분이 코드 호환성과 업무 정확성을 함께 검증하는 출발점이다.
+
+## 변경 지점을 지난 History로 실패를 검증한다
+
+저장 직전에 검증 Activity를 추가했다면 **기존 저장 Activity를 예약한 이벤트가 포함된 History**가 필요하다. 그보다 앞에서 끝난 History는 아직 비교할 기존 명령이 없어 비호환 코드를 통과시킬 수 있다. 변경 전 코드로 표본을 통과시키고, 비호환 코드로 실패시키고, 버전 분기 코드로 다시 통과시키는 세 결과를 비교한다.
+
+기본 `getVersion(changeId, DEFAULT_VERSION, 1)`에서 과거 표식 없는 부분을 replay하면 DEFAULT_VERSION, 새 실행에서 처음 호출하면 최신 지원값을 기록하며, 표식이 있으면 그 값을 재사용한다. Java 1.40.0의 PreferredVersionProvider 같은 별도 설정을 사용하지 않는 예제다. 해당 changeId의 기존 이력이 더는 필요 없다는 근거 없이 옛 분기를 삭제하지 않는다.
+
+Activity 예약 명령에서는 ID·타입 등의 일치를 검사하지만 **Activity 입력 전체의 동일성까지 검사하지 않는다**. 따라서 replay 통과는 업무 의미·외부 계약·모든 결정성이 안전하다는 증명이 아니다. 비결정성은 보통 Workflow Task 실패와 재시도로 드러나며 실행 자체는 Running으로 남을 수 있다.
 
 ## 공식 자료
 

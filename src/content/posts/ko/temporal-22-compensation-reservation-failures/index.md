@@ -2,12 +2,12 @@
 pubDatetime: 2026-10-04T09:00:00+09:00
 title: "보상을 등록했는데 예약이 남는 이유"
 key: "temporal-22-compensation-reservation-failures"
-description: "문서 처리에서 허용량을 예약한 뒤 변환이 실패하면 예약을 해제하기로 했다고 하자."
+description: "응답 유실 전에 보상을 등록하고 실제 실행하며, 늦은 예약과 보상 실패까지 계약으로 다룬다."
 tags: ["temporal", "distributed-systems"]
 kind: "concept"
 series: "temporal"
 seriesOrder: 22
-readingMinutes: 5
+readingMinutes: 7
 sourceNote: "docs/research/2026-10-04-temporal-series-plan.md"
 draft: true
 ---
@@ -29,17 +29,22 @@ draft: true
 응답이 오지 않아도 예약을 찾으려면 호출 전에 알고 있는 operation ID가 유용하다. 예약 서비스가 같은 operation ID의 요청에 같은 예약을 반환하고, 해제도 이 ID로 처리할 수 있는 계약을 제공한다고 가정한다.
 
 ```java
-// 순서를 설명하는 개념 코드: API 계약과 옵션은 별도 구현한다.
-saga.addCompensation(activities::releaseIfReserved, operationId);
-activities.reserve(operationId, documentId);
-activities.convert(documentId);
-activities.save(documentId);
-activities.confirm(operationId);
+// Workflow 메서드의 입력 operationId는 요청마다 고정한다.
+// reservations는 reserve(String), releaseIfReserved(String)를 가진 Activity stub이다.
+Saga saga = new Saga(new Saga.Options.Builder()
+    .setContinueWithError(true).build());
+saga.addCompensation(reservations::releaseIfReserved, operationId);
+try {
+    reservations.reserve(operationId);
+} catch (RuntimeException failure) {
+    Workflow.newDetachedCancellationScope(saga::compensate).run();
+    throw failure;
+}
 ```
 
-이 코드만으로 안전한 Saga가 완성되지는 않는다. `releaseIfReserved`는 예약이 없는 경우, 이미 해제된 경우, 이미 확정된 경우를 구별해야 한다. 확정된 예약을 무조건 해제하면 정상 처리된 문서의 사용량까지 되돌릴 수 있다. 예약 서비스가 허용하는 상태 전이부터 정해야 한다.
+이 골격은 예약의 최종 실패에 보상을 실행하는 경로만 보여 준다. Java SDK 1.40.0 메모리 테스트 서버에서 컴파일하고 예약 기록 후 실패 → 해제 1회를 확인했다. `Saga`는 `io.temporal.workflow.Saga`이며, 보상 등록만으로 실행되지 않는다. catch에서 `compensate()`를 호출해야 한다. 이 코드만으로 안전한 Saga가 완성되지는 않는다. `releaseIfReserved`는 예약이 없는 경우, 이미 해제된 경우, 이미 확정된 경우를 구별해야 한다. 확정된 예약을 무조건 해제하면 정상 처리된 문서의 사용량까지 되돌릴 수 있다. 예약 서비스가 허용하는 상태 전이부터 정해야 한다.
 
-operation ID는 문서 ID와 반드시 같을 필요가 없다. 같은 문서를 다른 버전으로 다시 변환할 수 있다면 각각 독립적인 처리 요청을 구별할 식별자가 필요하다. 단, 동일 요청의 재시도에서는 값이 유지돼야 한다.
+operation ID는 문서 ID와 반드시 같을 필요가 없다. 같은 문서를 다른 버전으로 다시 변환할 수 있다면 각각 독립적인 처리 요청을 구별할 식별자가 필요하다. 단, 동일 요청의 재시도에서는 값이 유지돼야 한다. 입력에서 받거나 Workflow 안에서 `Workflow.randomUUID()`로 만들고 Activity에 전달한다. `UUID.randomUUID()`를 Workflow에서 사용하면 replay 때 값이 달라질 수 있으며 Activity 인자 비교로 반드시 감지되는 것도 아니다.
 
 ## 보상은 과거 DB 상태를 복원하지 않는다
 
@@ -60,6 +65,16 @@ operation ID는 문서 ID와 반드시 같을 필요가 없다. 같은 문서를
 이 글의 완료 기준은 “Saga helper를 썼다”가 아니다. 응답이 없을 때도 처리 대상을 찾을 수 있고, 조건부 보상이 반복돼도 안전하며, 끝내 정리하지 못한 대상을 식별할 수 있는지다. 업무 일관성은 함수 등록 목록보다 최종 외부 상태로 검증한다.
 
 **확인 질문:** 예약 ID를 응답으로만 받을 수 있다면 응답 유실 뒤 어떻게 예약을 찾을까? 이미 확정된 예약에 해제 요청이 왔을 때 어떤 결과가 맞을까?
+
+## 보상이 먼저 끝난 뒤 늦은 예약이 오면?
+
+예약 없음에 대한 해제가 단순 no-op이면 다음 경쟁이 가능하다. 예약 요청 지연 → Activity timeout → 보상에서 예약 없음 확인 → 늦은 요청의 예약 commit. 이 순서는 설계상 가능한 실패이며 이 글의 메모리 테스트가 동시성을 검증한 것은 아니다.
+
+참여자는 `operationId`별 취소 표시를 보존하고, 그 뒤 같은 ID의 예약을 거절해야 한다. 예약 생성과 취소 표시 확인은 같은 로컬 트랜잭션에서 경쟁을 제어한다. 멱등성은 같은 동작의 반복을 막고 이 계약은 **다른 동작인 예약과 취소의 역전**을 다룬다.
+
+보상 Activity에도 유한한 timeout·재시도 조건이 필요하다. Saga의 기본 순차 보상은 하나가 실패하면 뒤 보상을 건너뛸 수 있다. `continueWithError`·병렬 보상 옵션은 실행 순서와 오류 처리 의미가 다르다. 보상 실패를 일반 RuntimeException으로만 넘겨 Workflow Task가 반복 실패하는 상태를 숨기지 말고, 외부 원장에 정리 필요 상태와 복구 담당 경로를 남긴다. Terminate·실행 timeout에서는 이 catch가 실행되지 않는다.
+
+응답 유실 실험은 첫 실패를 retry로 복구하는 경우와 최종 실패로 보상까지 가는 경우를 구별한다. Activity 기본 재시도는 무제한이므로 실험에는 최대 시도 수 또는 Schedule-to-Close를 명시한다. [실패 분류 보충 글](/posts/temporal-failure-classification/)을 먼저 확인한다.
 
 ## 참고 자료
 

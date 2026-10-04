@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { join, resolve, relative, sep } from "node:path";
+import { checkSeriesNavigation, checkPublication } from "./editorial-rules.mjs";
 
 const root = resolve(".");
 function inside(path) {
@@ -17,7 +18,19 @@ function* files(dir) {
   }
 }
 const manifest = JSON.parse(readFileSync("trash/manifest.json", "utf8"));
+const archivedKeys = new Set(manifest.entries.map(entry => entry.key));
 for (const entry of manifest.entries) {
+  assert(Array.isArray(entry.restoreWith), `동반 복구 목록 누락: ${entry.key}`);
+  for (const dependency of entry.restoreWith) {
+    assert(
+      archivedKeys.has(dependency),
+      `알 수 없는 동반 복구 글: ${dependency}`
+    );
+    assert(
+      dependency !== entry.key,
+      `자기 자신을 동반 복구로 지정: ${entry.key}`
+    );
+  }
   assert(
     !existsSync(inside(entry.original)),
     `휴지통과 현재 글이 중복: ${entry.key}`
@@ -58,6 +71,12 @@ for (const path of files("src/content/posts")) {
   const draft = scalar("draft") === "true";
   const order = Number(scalar("seriesOrder"));
   const minutes = Number(scalar("readingMinutes"));
+  checkPublication({
+    key,
+    draft,
+    publishedAt: scalar("pubDatetime"),
+    body: raw.slice(raw.indexOf(front) + front.length),
+  });
   assert(Number.isInteger(order) && order > 0, `연재 순서 오류: ${key}`);
   assert(minutes >= 5 && minutes <= 10, `읽기 분량 재검토 필요: ${key}`);
   assert(
@@ -96,21 +115,13 @@ for (const post of temporal) {
   const offset = review.indexOf(`/posts/${post.key}/`);
   assert(offset > last, `검토 목차 순서 누락/역전: ${post.key}`);
   last = offset;
-  if (post.draft) {
-    const index = temporal.indexOf(post);
-    const next = temporal[index + 1];
-    const previous = temporal[index - 1];
-    if (next)
-      assert(
-        post.html.includes(`href="/posts/${next.key}/"`),
-        `다음 편 누락: ${post.key}`
-      );
-    if (previous)
-      assert(
-        post.html.includes(`href="/posts/${previous.key}/"`),
-        `이전 편 누락: ${post.key}`
-      );
-  }
+  const parts = post.draft ? temporal : temporal.filter(p => !p.draft);
+  const index = parts.indexOf(post);
+  checkSeriesNavigation(post.html, {
+    key: post.key,
+    previous: parts[index - 1]?.key,
+    next: parts[index + 1]?.key,
+  });
 }
 const feeds = [...files("dist")].filter(p =>
   /(?:rss|sitemap[^/\\]*)\.xml$/.test(p)

@@ -2,15 +2,17 @@
 pubDatetime: 2026-10-04T09:00:00+09:00
 title: "메시지 handler가 끝나기 전에 종료하면"
 key: "temporal-19-handler-completion"
-description: "승인 Update를 받은 Workflow가 허용량 예약 Activity를 기다리고 있다고 하자."
+description: "메시지 handler의 대기·동시 변경·완료를 Workflow 종료와 함께 관리한다."
 tags: ["temporal", "distributed-systems"]
 kind: "concept"
 series: "temporal"
 seriesOrder: 19
-readingMinutes: 5
+readingMinutes: 6
 sourceNote: "docs/research/2026-10-04-temporal-series-plan.md"
 draft: true
 ---
+
+[18편](/posts/temporal-18-signal-query-update/)에서는 승인 의사를 보내는 것만 필요하면 Signal을 선택했다. 이 글은 **호출자가 승인 처리 결과까지 기다려야 하는 경우**라 Update를 사용한다. 요청을 목록에 넣고 바로 반환하면 결과는 처리 완료가 아니라 접수 완료다.
 
 승인 Update를 받은 Workflow가 허용량 예약 Activity를 기다리고 있다고 하자. 그 사이 Workflow의 본문이 종료 조건을 만족해 반환하면 어떻게 될까? 요청을 받았다는 사실만으로 핸들러 안의 모든 작업이 끝났다고 볼 수 없다. 메인 로직과 핸들러의 종료 시점을 함께 설계해야 한다.
 
@@ -22,7 +24,7 @@ Temporal Workflow가 결정적으로 실행된다는 말은 여러 메시지 처
 
 일반 서버의 요청 동시성 문제와 비슷한 질문을 해야 하지만, 해결 수단은 Workflow 실행 환경에 맞춰야 한다. 임의의 Java 스레드를 만들거나 일반 blocking 락을 도입하기보다 SDK가 제공하는 Workflow 대기·동기화 방법을 확인한다. 외부 I/O는 계속 Activity 안에 둔다.
 
-가장 단순한 설계는 핸들러가 요청을 내부 대기 목록에 추가하고 실제 업무 처리는 메인 로직이 순서대로 맡는 것이다. 반대로 핸들러 안에서 결과까지 기다려 반환하는 방식도 가능하다. 어느 쪽이든 대기 중 누가 상태를 바꿀 수 있는지 설명할 수 있어야 한다.
+한 가지 설계는 핸들러가 요청을 내부 대기 목록에 추가하고 실제 업무 처리는 메인 로직이 순서대로 맡는 것이다. 반대로 핸들러 안에서 결과까지 기다려 반환하는 방식도 가능하다. 어느 쪽이든 대기 중 누가 상태를 바꿀 수 있는지 설명할 수 있어야 한다.
 
 ## 메인 함수의 반환도 상태 전이다
 
@@ -57,6 +59,12 @@ Continue-As-New에도 같은 질문이 적용된다. 새 Run으로 넘어가기 
 동시성 검증은 운 좋게 한 번 순서가 맞은 결과로 끝내지 않는다. 테스트에서 Activity 완료 시점을 제어하고 승인·옵션 변경·종료 요청 순서를 바꿔 본다. 어떤 순서에서도 지켜야 할 조건을 기준으로 검증하면 로그의 우연한 순서에 덜 의존한다.
 
 **확인 질문:** 핸들러 완료를 기다리는 코드를 넣었는데 영원히 종료하지 않는다면 어떤 조건을 확인할까? 승인 처리 중 옵션 변경을 허용할지 결정하지 않은 채 락부터 넣으면 무엇이 남을까?
+
+## 종료 정책과 공유 상태 제어를 구별한다
+
+기본 `WARN_AND_ABANDON`은 Workflow 종료 때 미완료 handler를 경고하고 포기한다. `ABANDON`은 경고를 끌 뿐 완료를 기다리지 않는다. 메인 로직에서 `Workflow.await(() -> Workflow.isEveryHandlerFinished())`로 필요한 handler 완료를 기다린다. 이 await는 조건이 참이 될 때까지 Workflow 진행을 멈추는 API다.
+
+공유 상태는 `Workflow.newWorkflowLock()` 또는 `Workflow.await` 조건으로 제어한다. 일반 Java thread·lock과 혼용하지 않는다. `@WorkflowInit`은 Java 1.40.0에서 Experimental이며 메인 메서드보다 먼저 handler가 실행될 수 있는 상태 초기화에 쓰인다. Continue-As-New는 현재 Run을 닫고 입력을 넘겨 새 Run을 시작하는 동작이며 [24편](/posts/temporal-24-continue-as-new-state/)에서 이어 다룬다.
 
 ## 참고 자료
 

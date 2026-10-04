@@ -2,12 +2,12 @@
 pubDatetime: 2026-10-04T09:00:00+09:00
 title: "Worker를 재시작하면 왜 이어지는가"
 key: "temporal-12-worker-restart-replay"
-description: "Worker가 종료되면 그 프로세스의 메모리도 사라진다."
+description: "Worker 재시작에서 History 재생과 Activity 재시도가 어떻게 다른지 비교하고 캐시의 역할을 확인한다."
 tags: ["temporal", "distributed-systems"]
 kind: "concept"
 series: "temporal"
 seriesOrder: 12
-readingMinutes: 5
+readingMinutes: 6
 sourceNote: "docs/research/2026-10-04-temporal-series-plan.md"
 draft: true
 ---
@@ -52,6 +52,18 @@ Event History에는 Workflow 시작, Activity 예약과 완료, Timer의 시작�
 이 실험의 완료 조건은 “재시작 후 성공했다” 한 줄이 아니다. 중단 지점에 어떤 이력이 있었는지, 외부 Activity가 몇 번 실행됐는지, 새 Worker가 어떤 코드로 재생했는지 설명할 수 있어야 한다. Service 자체를 재시작하는 실험은 저장소 설정과 이력 보존을 확인한 다음 별도로 수행한다.
 
 **확인 질문:** 변환 Activity가 두 번 호출됐다면 완료 기록 이후 replay였는지, 완료 보고 전 실패 뒤 retry였는지 어떻게 구분할까? 같은 이력이 있어도 새 코드가 진행하지 못하는 이유는 무엇일까?
+
+## 캐시와 실행 식별자를 구별한다
+
+Worker는 replay를 줄이려고 Workflow 상태를 메모리에 캐시하고 후속 Task를 같은 Worker로 보내는 sticky 실행을 사용한다. 이것은 내구 저장소가 아니다. 캐시 축출·프로세스 재시작 뒤에는 History에서 다시 구성한다. Worker가 사라지면 sticky 대기 시간 이후 일반 큐로 돌아갈 수 있어 재시작 직후 즉시 재개만 기대하지 않는다.
+
+Service로 보내는 다음 작업 지시를 **명령(Command)**이라고 부른다. 이미 완료한 Activity의 결과를 History에서 읽는 것과 외부 효과를 다시 실행하는 Activity 재시도는 다르다. 완료 보고 직전 중단의 멱등 저장은 [16편](/posts/temporal-16-idempotent-result-storage/)에서 검증한다.
+
+## 관찰할 이력과 로그를 구별한다
+
+첫 Activity 완료 뒤 `Workflow.sleep`으로 대기하는 동안 Worker 프로세스만 종료한다. Service를 유지하고 `ActivityTaskCompleted`, `TimerStarted`, `TimerFired`와 외부 호출 횟수를 대조한다. Activity 재시도는 매 시도마다 Started 이벤트를 남기지 않으므로 Pending Activities의 Attempt·LastFailure도 확인한다.
+
+`Workflow.getLogger`는 기본적으로 replay 로그를 생략한다. 일반 로그 반복만으로 재생 여부를 판정하지 않는다. 확인용으로 replay 로깅을 켰다면 그 설정도 적는다. 외부 commit 뒤 예외를 던지는 시험과 완료 보고 전 프로세스를 강제로 끝내는 시험은 실패를 감지하는 방식과 재시도 시각이 다르다. 후자는 commit 뒤 정지 지점을 마련해 프로세스를 종료한다. [이벤트 기록](https://docs.temporal.io/references/events), [Java 테스트](https://docs.temporal.io/develop/java/best-practices/testing-suite).
 
 ## 참고 자료
 

@@ -2,12 +2,12 @@
 pubDatetime: 2026-10-04T09:00:00+09:00
 title: "Activity의 어느 시간을 제한할까"
 key: "temporal-14-activity-timeout-boundaries"
-description: "문서 변환이 오래 걸릴 때 “타임아웃을 1분으로 설정한다”는 말만으로는 충분하지 않다."
+description: "Activity 배정 대기·한 시도·전체 시도의 시간 제한을 나누고 시간 초과 뒤 외부 효과를 확인한다."
 tags: ["temporal", "distributed-systems"]
 kind: "concept"
 series: "temporal"
 seriesOrder: 14
-readingMinutes: 5
+readingMinutes: 7
 sourceNote: "docs/research/2026-10-04-temporal-series-plan.md"
 draft: true
 ---
@@ -57,6 +57,18 @@ Activity에는 Start-to-Close나 Schedule-to-Close 중 적어도 하나가 필�
 각 실험에서 예약, 시작, 실패, 다음 시도, 최종 종료 시각을 기록한다. 시간이 예상과 다르면 먼저 어떤 제한이 발동했는지 확인하고, 이후 값을 조정한다. 결과가 늦다고 모든 timeout을 늘리면 큐 설정 오류와 외부 API 지연을 구별하기 어려워진다.
 
 **확인 질문:** 한 시도 제한이 10초인데 실행이 30초 넘게 보이는 것은 언제 가능한가? 시간 초과 이벤트만으로 외부 변환이 실행되지 않았다고 말할 수 있을까?
+
+## 시간 제한과 재시도 종료 조건을 함께 적는다
+
+Java ActivityOptions는 Start-to-Close 또는 Schedule-to-Close 중 적어도 하나가 필요하다. Schedule-to-Start 초과는 실행 Worker를 기다리다 실패한 것이므로 일반 Activity 재시도로 같은 큐에서 해결할 조건이 아니다. Start-to-Close는 한 시도, Schedule-to-Close는 대기·재시도를 포함한 전체 예산이다.
+
+timeout은 Worker의 Activity 스레드를 강제로 interrupt하거나 외부 요청을 취소하는 기능이 아니다. 이전 시도가 계속 실행되는 동안 다음 시도가 시작할 수 있다. [실패 분류](/posts/temporal-failure-classification/)에서 유한한 실험 재시도와 비재시도 오류를 설정하고, [16편](/posts/temporal-16-idempotent-result-storage/)에서 늦은 commit의 중복 효과를 확인한다.
+
+## 시도 수와 관측 위치를 함께 고정한다
+
+Activity Execution은 하나의 논리적 호출이며 그 안에 여러 Activity Task Execution, 즉 실행 시도가 생길 수 있다. 기본 재시도는 초기 1초·2배 증가·최대 간격 100초·시도 수 무제한이다. 실패 분류와 제한된 실습 설정은 [실패 분류 초안](/posts/temporal-failure-classification/)을 따른다.
+
+배정 대기 시험에서는 Workflow Worker를 유지하고 Activity Worker만 중단한다. Pending Activities와 시도별 로그, `TimeoutFailure`의 timeout 종류를 비교한다. Schedule-To-Start 제한은 같은 큐 재시도로 해결되지 않는 배정 지연을 시험하기 위한 설정이며 일반 운영의 기본 처방은 아니다. 다음 편은 네 번째 제한인 Heartbeat Timeout을 다룬다.
 
 ## 참고 자료
 

@@ -2,12 +2,12 @@
 pubDatetime: 2026-10-04T09:00:00+09:00
 title: "DB에는 있는데 다음 작업이 시작되지 않는다"
 key: "temporal-07-outbox-and-start-request-loss"
-description: "DB 커밋과 다음 요청 사이의 유실을 재현하고, outbox가 남기는 전송 의도와 중복 처리 책임을 구별한다."
+description: "DB 커밋과 다음 요청 사이의 유실을 재현할 실험을 설계하고, outbox가 남기는 전송 의도와 중복 처리 책임을 구별한다."
 tags: ["temporal", "distributed-systems"]
 kind: "concept"
 series: "temporal"
 seriesOrder: 7
-readingMinutes: 6
+readingMinutes: 7
 sourceNote: "docs/research/2026-10-04-temporal-series-plan.md"
 draft: true
 ---
@@ -70,6 +70,14 @@ Workflow ID를 정했다는 이유만으로 업무의 모든 중복이 해결되
 ## 이해 확인
 
 전송 완료 표시를 메시지 전달보다 먼저 쓰면 어떤 종류의 실패가 생길까? outbox가 전송 의도를 보존하더라도 예약 API에 멱등성이 필요한 이유는 무엇일까? 유실과 중복을 각각 다른 상황으로 설명해 보자.
+
+## 전달자의 중복과 시작 정책은 별도로 남는다
+
+전달자는 주기적으로 미전송 행을 읽는 polling 또는 DB 변경 로그를 읽는 CDC로 구현할 수 있다. 여러 전달자가 있으면 행 선점·중복·같은 업무의 순서를 설계한다. 전송 성공 뒤 완료 표시 전에 중단될 수 있으므로 outbox의 보장은 전송 의도의 원자적 저장이며 전송·완료 표시 전체의 원자성은 아니다.
+
+이 예제에서는 요청 생성과 `RequestAccepted` outbox를 commit한 뒤 예약 참여자가 예약을 만든다. `ReservationCreated`는 그 다음 사건이다. 트랜잭션 안에서 원격 전송하면 rollback 문제 외에도 수신자의 commit 전 조회와 DB 연결 점유가 발생할 수 있다.
+
+실험은 ① commit 뒤 전송 전 종료, ② 수신자가 처리한 뒤 전달 완료 표시 전 종료를 각각 주입하고 요청 행·outbox·수신 원장을 대조한다. Temporal 시작 요청도 실행 중 ID 충돌과 종료 뒤 ID 재사용 정책이 다르다. 기본 재사용 허용과 retention 이후 업무 원장 책임은 [23편](/posts/temporal-23-outbox-workflow-start/)에서 다룬다. Workflow를 먼저 시작하고 DB 쓰기를 Activity로 옮기는 대안은 ‘DB 접수가 먼저’라는 전제를 바꾸는 설계이므로 조회·중복 계약도 함께 바꿔야 한다.
 
 ## 참고 자료
 

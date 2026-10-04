@@ -2,12 +2,12 @@
 pubDatetime: 2026-10-04T09:00:00+09:00
 title: "정기 실행이 겹치면 어떻게 할까"
 key: "temporal-26-schedule-overlap-policy"
-description: "매분 변환 대기 문서를 찾아 처리하는 Workflow를 시작한다고 하자."
+description: "Schedule의 겹침·지연·일시정지 정책을 업무 중복 방지와 분리해 검증한다."
 tags: ["temporal", "distributed-systems"]
 kind: "concept"
 series: "temporal"
 seriesOrder: 26
-readingMinutes: 5
+readingMinutes: 6
 sourceNote: "docs/research/2026-10-04-temporal-series-plan.md"
 draft: true
 ---
@@ -55,6 +55,14 @@ Service가 일시적으로 요청을 처리하지 못한 뒤 얼마나 늦은 �
 공식 Java 문서는 기존 Cron 옵션보다 Schedules 사용을 권한다. 하지만 새 API를 썼다는 사실보다 pause·update·overlap·누락 처리의 의미를 운영자가 설명할 수 있는지가 중요하다. 실습 결과에는 정책과 실행 시각뿐 아니라 각 실행이 처리한 업무 구간을 함께 남긴다.
 
 **확인 질문:** 매 실행이 현재 미처리 문서를 조회한다면 Skip이 업무 누락으로 이어지는 조건은 무엇일까? Schedule을 pause했는데 변환이 계속되는 것은 왜 정상일 수 있을까?
+
+## 예정 시각과 실행 시각을 구별한다
+
+Overlap 기본 Skip에서는 앞 실행이 끝나지 않으면 새 예정 실행을 건너뛴다. BufferOne·BufferAll·AllowAll·CancelOther·TerminateOther의 결과를 같은 표본에서 섞지 않는다. CancelOther도 외부 Activity가 실제 종료됐다는 보장은 별도다.
+
+자동 Action의 Catchup Window 기본값은 1년, 최소값은 10초다. 수동 trigger와 backfill은 Catchup Window 제한을 받지 않지만 overlap 정책은 따른다. pause 동안 지나간 예정 시각은 unpause만으로 자동 복구되지 않는다. 과거 구간 재처리를 허용한다면 예정 시각과 업무 키를 결합해 중복을 막는다.
+
+실험은 처리 90초·주기 1분 같은 가상 조건으로 한 정책씩 실행하고 `TemporalScheduledStartTime`과 실제 시작·종료 시각을 대조한다. 이 값은 아직 측정 결과가 아닌 실험 조건이다. [Schedule 정책](https://docs.temporal.io/schedule).
 
 ## 참고 자료
 

@@ -8,9 +8,15 @@ import Datetime from "./Datetime.astro";
 
 type Props = {
   variant?: "h2" | "h3";
+  showEditorialState?: boolean;
 } & CollectionEntry<"posts">;
 
-const { variant: Heading = "h2", id, data } = Astro.props;
+const {
+  variant: Heading = "h2",
+  showEditorialState = false,
+  id,
+  data,
+} = Astro.props;
 
 const { title, description, ...props } = data;
 const t = useTranslations(resolveLocale(Astro.currentLocale));
@@ -33,6 +39,13 @@ const t = useTranslations(resolveLocale(Astro.currentLocale));
     data.draft && (
       <p class="text-muted-foreground mt-1 text-sm font-semibold">
         {t.post.draftBadge}
+      </p>
+    )
+  }
+  {
+    showEditorialState && !data.draft && (
+      <p class="text-muted-foreground mt-1 text-sm font-semibold">
+        {resolveLocale(Astro.currentLocale) === "ko" ? "정식 글" : "Published"}
       </p>
     )
   }

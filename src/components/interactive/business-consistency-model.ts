@@ -5,6 +5,7 @@ export type Scenario =
   | "cancel"
   | "hold-before"
   | "hold-after"
+  | "hold-late"
   | "capture-after"
   | "capture-retry";
 export type Seat = "none" | "held" | "confirmed" | "released";
@@ -134,6 +135,12 @@ export const scenarios: Record<
     events: ["hold-request", "hold-write", "hold-timeout"],
     lesson:
       "좌석 DB에는 임시 확보가 저장됐지만, 예매 진행 서비스는 응답을 받지 못해 결과를 모릅니다. Cancel을 선택하더라도 기존·늦은 Try를 처리할 계약과 해제 결과 확인이 필요합니다.",
+  },
+  "hold-late": {
+    label: "요청 지연 · 타임아웃 뒤 좌석 확보",
+    events: ["hold-request", "hold-timeout", "hold-write"],
+    lesson:
+      "응답 대기가 끝난 뒤 지연된 요청이 도착해 좌석이 확보됐습니다. 타임아웃은 요청 취소가 아닙니다. Cancel을 먼저 처리했다면 같은 예매의 늦은 Try를 거절하는 계약이 필요합니다. 이 상황은 아직 Cancel하지 않은 경로입니다.",
   },
   "capture-after": {
     label: "결제 확정 후 응답 유실",

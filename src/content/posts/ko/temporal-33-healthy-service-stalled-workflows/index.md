@@ -7,7 +7,7 @@ tags: ["temporal", "distributed-systems"]
 kind: "concept"
 series: "temporal"
 seriesOrder: 33
-readingMinutes: 6
+readingMinutes: 8
 sourceNote: "docs/research/2026-10-04-temporal-series-plan.md"
 draft: true
 ---
@@ -41,7 +41,7 @@ Java에서는 SDK 지표를 Micrometer와 연동하는 방식이 공식 문서�
 1. 정상 상태에서 문서 하나의 전체 처리 시간과 마지막 이벤트를 기록한다.
 2. 대상 Worker를 중단한 뒤 같은 계약의 새 문서 처리를 시작한다.
 3. Service health와 해당 Task Queue의 poller 정보를 각각 확인한다.
-4. Event History에서 예정된 작업과 실제 시작 여부를 확인한다.
+4. History의 ActivityTaskScheduled와 `temporal workflow describe`의 Pending Activities(State·Attempt·LastStartedTime·LastFailure)를 대조해 배정 대기인지 실행·재시도 중인지 확인한다.
 5. Worker를 복구하고 작업 대기와 완료 결과가 어떻게 바뀌는지 본다.
 
 예상 결과는 Service health가 정상이어도 해당 작업을 수행할 Worker가 없으면 진행이 기다릴 수 있다는 것이다. 실제 재개 시간은 작업 종류와 Timeout, 재시도 정책, 재연결에 따라 달라진다. 중단 직후 모든 지표가 동시에 변할 것이라고 가정하지 않는다.
@@ -63,6 +63,20 @@ Workflow 로그는 replay를 고려해야 한다. Java의 `Workflow.getLogger`�
 trace도 별도 설정이 필요하다. OpenTelemetry Collector를 설치했다고 Client, Workflow, Activity의 호출 관계가 자동으로 모두 기록되지는 않는다. Java SDK의 interceptor와 context 전달 방식, 외부 HTTP 계측을 선택한 버전에 맞춰 확인해야 한다.
 
 검증 질문은 “health는 정상이고 오류율도 낮은데 완료 건수가 0이라면 무엇을 더 봐야 할까?”다. 또 “Worker가 종료돼 지표가 사라진 상태와 부하가 없는 상태를 어떻게 구분할까?”를 생각해 보자. 이 질문에 답할 수 있는 관측 구성이 있어야 다음 글의 확장 실험도 해석할 수 있다.
+
+## 시작 여부와 실패를 어디서 확인할까?
+
+ActivityTaskStarted는 Activity의 최종 종료 이벤트와 함께 History에 기록되는 경로이므로, 실행·재시도 중 History에 Started가 없다고 아직 시작하지 않았다고 판단하면 안 된다. [이벤트 기록 시점](https://docs.temporal.io/references/events).
+
+| 질문                                    | 확인 위치                                                |
+| --------------------------------------- | -------------------------------------------------------- |
+| Workflow 코드를 처리할 Worker가 있는가? | Workflow Task Queue의 최근 poller                        |
+| Activity가 대기·실행·재시도 중인가?     | Describe의 Pending Activities와 시도 횟수·최근 실패      |
+| Workflow Task가 반복 실패하는가?        | History의 WorkflowTaskFailed와 Worker의 결정성·예외 로그 |
+| 앱 HTTP health만 정상인가?              | 앱의 Worker 등록·시작 결과와 실제 polling을 별도 확인    |
+| 외부 업무가 완료됐는가?                 | 업무 키로 예약 원장·결과 저장소 조회                     |
+
+앱이 Worker 시작 예외를 잡고 HTTP 서버만 계속 실행하면 앱 health는 정상인데 poller는 없을 수 있다. 오류율 0이나 낮은 완료 지연은 처리 자체가 없을 때도 나타나므로 완료 건수·수집 대상 생존·대기량을 함께 본다. 기본 Worker 부재 실험 명령은 [10편](/posts/temporal-10-client-service-worker/)을 사용한다.
 
 ## 공식 자료
 

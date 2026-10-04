@@ -7,7 +7,7 @@ tags: ["temporal", "distributed-systems"]
 kind: "concept"
 series: "temporal"
 seriesOrder: 31
-readingMinutes: 6
+readingMinutes: 7
 sourceNote: "docs/research/2026-10-04-temporal-series-plan.md"
 draft: true
 ---
@@ -59,7 +59,7 @@ Temporal의 ClaimMapper는 전달된 인증 정보에서 권한 판단에 필요
 4. 신뢰하지 않는 자격으로 연결 자체가 거절되는지 확인한다.
 5. 다른 Namespace를 대상으로 같은 요청을 보내 범위 제한을 확인한다.
 
-예상 결과는 인증 실패와 인가 실패가 구분되어 나타나는 것이다. 실패가 모두 단순 연결 오류로만 보인다면 어떤 단계까지 진행했는지 확인할 로그와 시험 방법을 보완해야 한다. 실험 결과에는 토큰이나 개인키를 넣지 않고 요청 종류, 대상 범위, 결과만 남긴다.
+기본 JWT ClaimMapper·Authorizer 경로에서는 인증 정보 검증 실패와 권한 거절이 모두 `PermissionDenied: Request unauthorized.`로 보일 수 있다. mTLS handshake 실패와 달리 클라이언트 오류만으로 두 원인을 구별할 수 없다. 서버의 ClaimMapper·Authorizer 로그, 요청 시각·API와 `service_errors_unauthorized` 지표를 함께 대조한다. 지표 하나로 세부 원인을 단정하지 않는다. 사용자 정의 Authorizer와 오류 노출 설정에 따라 상세 메시지는 달라질 수 있다. 실패가 모두 단순 연결 오류로만 보인다면 어떤 단계까지 진행했는지 확인할 로그와 시험 방법을 보완해야 한다. 실험 결과에는 토큰이나 개인키를 넣지 않고 요청 종류, 대상 범위, 결과만 남긴다.
 
 ## 실행 데이터의 노출은 한 번 더 생각한다
 
@@ -68,6 +68,12 @@ API 접근을 통제해도 접근이 허용된 운영자가 무엇을 보는지�
 인증서 교체도 단순 파일 교체로 끝났다고 가정하지 않는다. 이미 유지 중인 연결, 새 연결, 실패 재연결에서 어떤 인증서가 사용되는지 확인해야 한다. 교체 시험은 실행 중인 가상 Workflow를 두고 진행하며, 일시적인 연결 실패가 업무 실패로 이어지는지 별도 관찰한다.
 
 검증 질문은 “유효한 인증서로 연결에 성공한 사용자가 모든 API를 호출할 수 있다면 무엇이 빠졌는가?”다. 또 “두 Namespace의 데이터 접근을 막았다는 증거가 두 Namespace의 처리 용량까지 격리됐다는 증거가 될까?”를 생각해 보자. 이 두 질문을 구분해야 운영에서 보안 설정의 범위를 과장하지 않을 수 있다.
+
+## 기본값이 접근 차단을 뜻하지 않는다
+
+자체 운영에서 기본 no-op Authorizer는 접근을 차단하는 보안 정책이 아니다. TLS와 Namespace만 만들고 인증·인가 구현을 선택하지 않으면 기대한 권한 분리가 생기지 않는다. 기본 JWT ClaimMapper·Authorizer를 쓸지 사용자 정의 구현을 쓸지 명시하고 공식 역할과 API 대응을 확인한다. health API 같은 예외도 포함해 필요한 API별 허용·거절을 시험한다. [기본 보안 구성](https://docs.temporal.io/self-hosted-guide/security).
+
+UI 로그인 세션과 Service로 전달하는 bearer token은 별개다. UI에 로그인됐어도 API 토큰 전달과 그 토큰의 권한이 맞는지 확인한다. 로그에는 자격 원문 대신 실패 단계·요청 종류·시각을 남긴다.
 
 ## 공식 자료
 

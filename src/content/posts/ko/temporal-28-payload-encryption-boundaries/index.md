@@ -2,12 +2,12 @@
 pubDatetime: 2026-10-04T09:00:00+09:00
 title: "암호화하면 History의 무엇이 가려질까"
 key: "temporal-28-payload-encryption-boundaries"
-description: "문서 본문이 Activity 입력과 결과에 들어간다면 실행 이력에서 어떤 데이터가 보이는지 확인해야 한다."
+description: "Codec의 payload와 실패 속성 보호 범위를 구별하고 평문 메타데이터·로그를 확인한다."
 tags: ["temporal", "distributed-systems"]
 kind: "concept"
 series: "temporal"
 seriesOrder: 28
-readingMinutes: 5
+readingMinutes: 6
 sourceNote: "docs/research/2026-10-04-temporal-series-plan.md"
 draft: true
 ---
@@ -55,6 +55,22 @@ Workflow ID도 사용자 정의 식별자이며 Payload Codec의 처리 대상�
 실행 이력은 장애 분석과 복구에 중요하다. 보호를 강화하면서도 필요한 사람이 원인을 진단할 수 있는 절차가 있어야 한다. 민감한 본문 대신 오류 분류와 안전한 식별자, 처리 단계만으로도 설명 가능한 로그를 설계하면 복구와 보호를 함께 다루기 쉬워진다.
 
 **확인 질문:** payload를 암호화했는데 이메일을 Workflow ID에 넣으면 무엇이 노출될까? 이전 키를 삭제해도 되는 시점은 새 키로 전환한 시점과 왜 다를까?
+
+## 실패 메시지와 스택도 따로 설정한다
+
+Java SDK **1.40.0의 2인자 `CodecDataConverter` 생성자는 실패의 message와 stackTrace를 기본 평문 필드로 남긴다.** 실패 속성까지 payload로 옮기려면 세 번째 인자를 `true`로 지정한다.
+
+```java
+DataConverter converter = new CodecDataConverter(
+    DefaultDataConverter.newDefaultInstance(),
+    List.of(encryptingCodec),
+    true // failure message·stackTrace를 Codec이 처리할 payload로 옮긴다.
+);
+```
+
+`encryptingCodec`은 인증된 암호화와 키 관리를 구현한 PayloadCodec이다. 이 옵션 자체가 암호화 알고리즘은 아니며 빈 Codec 목록으로는 암호화되지 않는다. [고정 SDK 소스](https://github.com/temporalio/sdk-java/blob/v1.40.0/temporal-sdk/src/main/java/io/temporal/common/converter/CodecDataConverter.java).
+
+실패 **유형**, Workflow·Activity·Signal 이름, Task Queue, Workflow ID, Search Attributes와 Codec이 평문 metadata에 넣은 key ID는 이 설정의 보호 대상이 아니다. SDK 경고 로그와 애플리케이션 로그도 별도로 점검한다. 안전한 가짜 표식으로 2인자/3인자 변환 결과와 원시 History의 failure를 비교하고 message·stackTrace·encodedAttributes·type을 각각 관찰한다. 새 Search Attribute를 쓰는 실험은 30편의 사전 등록을 먼저 수행한다.
 
 ## 참고 자료
 

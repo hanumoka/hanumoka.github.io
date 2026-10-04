@@ -2,12 +2,12 @@
 pubDatetime: 2026-10-04T09:00:00+09:00
 title: "Workflow와 Activity Worker를 분리한다"
 key: "temporal-20-separate-workflow-activity-workers"
-description: "처음 만든 Java 예제에서는 하나의 Worker 프로세스가 Workflow와 Activity를 모두 실행했다."
+description: "Workflow와 Activity의 목적 큐·등록 타입을 맞추고 프로세스별 용량과 큐 제한을 구별한다."
 tags: ["temporal", "distributed-systems"]
 kind: "concept"
 series: "temporal"
 seriesOrder: 20
-readingMinutes: 5
+readingMinutes: 6
 sourceNote: "docs/research/2026-10-04-temporal-series-plan.md"
 draft: true
 ---
@@ -51,6 +51,21 @@ Worker마다 동시 실행 수를 제한했다고 전체 외부 API 호출 수�
 분리 실습이 끝나면 프로세스별 등록 타입, 큐, 필요한 외부 연결을 정리한다. 두 Worker의 배포 버전이 잠시 다를 때도 동작하는지 확인하는 것은 다음 계약·버전 관리 과제로 남긴다. 정상 실행 하나는 분리 가능성을 확인할 뿐 안전한 무중단 배포의 증거는 아니다.
 
 **확인 질문:** Worker 프로세스가 정상인데 Activity가 시작되지 않으면 어떤 설정을 비교할까? Worker별 동시성 제한이 외부 서비스 전체의 상한과 다른 이유는 무엇일까?
+
+## Activity 목적 큐와 등록 타입을 맞춘다
+
+ActivityOptions의 `setTaskQueue`를 생략하면 Workflow의 Task Queue를 사용한다. 예약·저장·확정은 기본 Activity Worker에 등록하고 변환 Activity만 분리한다면 변환 stub에 목적 큐를 명시한다.
+
+```java
+ActivityOptions conversionOptions = ActivityOptions.newBuilder()
+    .setTaskQueue("document-conversion")
+    .setStartToCloseTimeout(Duration.ofSeconds(30))
+    .build();
+```
+
+같은 이름의 큐를 Workflow-only Worker와 Activity-only Worker가 함께 사용해도 된다. 일관된 등록이 필요한 범위는 **같은 Task 종류를 polling하는 Worker들**이다. Activity 구현 0개이면 Activity poller도 시작하지 않는다. 잘못된 큐 이름은 자동 생성되어 오류 없이 대기할 수 있다.
+
+Java의 `setMaxTaskQueueActivitiesPerSecond`는 큐 전체의 Activity 배정 **속도** 제한이며 외부 API의 동시 연결 상한이 아니다. Worker별 `setMaxWorkerActivitiesPerSecond`와 구별한다. 기본 진단 명령은 [10편](/posts/temporal-10-client-service-worker/)을 따르고 이 편에서는 두 큐의 Pending Activities·poller 차이를 본다. [Worker 옵션](https://github.com/temporalio/sdk-java/blob/v1.40.0/temporal-sdk/src/main/java/io/temporal/worker/WorkerOptions.java).
 
 ## 참고 자료
 

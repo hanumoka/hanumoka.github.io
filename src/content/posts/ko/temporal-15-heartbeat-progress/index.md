@@ -2,12 +2,12 @@
 pubDatetime: 2026-10-04T09:00:00+09:00
 title: "Heartbeat가 와도 작업이 멈춰 있을 수 있다"
 key: "temporal-15-heartbeat-progress"
-description: "오래 걸리는 문서 변환 Activity가 주기적으로 Heartbeat를 보낸다고 하자."
+description: "Heartbeat의 생존·진행 보고와 취소 전달을 구별하고 정체를 감지할 조건을 정한다."
 tags: ["temporal", "distributed-systems"]
 kind: "concept"
 series: "temporal"
 seriesOrder: 15
-readingMinutes: 5
+readingMinutes: 7
 sourceNote: "docs/research/2026-10-04-temporal-series-plan.md"
 draft: true
 ---
@@ -59,6 +59,20 @@ SDK 발신 조절은 취소 감지 시점에도 영향을 줄 수 있다. 따라
 Heartbeat를 사용할 때는 먼저 보낼 상태의 의미를 정하고, 다음 시도에서 읽었을 때 안전하게 다시 실행할 범위를 정한다. 마지막으로 Worker 종료와 진행 정지, 취소를 각각 시험한다. 하나의 “정상” 표시로 세 상황을 모두 대신하지 않는다.
 
 **확인 질문:** 진행률이 바뀌지 않는 Heartbeat가 계속 오면 어떤 제한이나 관측이 더 필요할까? 마지막 Heartbeat details가 실제 저장보다 뒤처져도 안전하려면 무엇이 필요할까?
+
+## 설정 변경과 발신 코드의 순서도 시험한다
+
+Heartbeat Timeout은 첫 보고 전에는 시도 시작 시각부터 잰다. 첫 조각 처리 시간이 제한보다 길면 정상 작업도 실패할 수 있다. 진행마다 보고할지 별도 주기로 생존을 보고할지 정하고, 계속 살아 있지만 진척이 없는 상태는 별도 진행 시각이나 Start-to-Close로 제한한다.
+
+Heartbeat Timeout을 먼저 켜고 아직 보고하지 않는 구버전 Worker가 작업을 받으면 반복 timeout이 생길 수 있다. 가상 배포에서는 발신 코드 배포·등록 확인 뒤 제한을 적용하는 순서와 반대 순서를 비교한다. Heartbeat로 취소를 받은 Activity는 정리 뒤 관련 취소 예외를 전파해야 한다. Java 1.40.0의 실험적 cancellation token은 별도 지원 조건이 있으므로 본문 heartbeat 실습과 구분한다.
+
+## 다시 시작할 위치와 실제 전송 주기를 확인한다
+
+Activity 시작 때 `context.getHeartbeatDetails(Integer.class).orElse(0)`으로 이전 시도가 보고한 처리 위치를 읽을 수 있다. 현재 메서드의 지역 변수는 복구되지 않는다. 업무 효과와 진행 위치 기록 사이 중단도 가능하므로 조각별 멱등 처리가 필요하다.
+
+Java SDK 1.40.0은 heartbeat 전송을 조절한다. 기본 상한 60초와 timeout의 80% 중 작은 값을 사용하며 heartbeat timeout이 없을 때의 기본 throttle은 30초다. `heartbeat()` 호출 횟수와 Service 수신 횟수를 같게 세지 않는다. context는 Activity 실행 스레드에서 얻고, 별도 타이머를 쓴다면 취소 통지와 실제 진행 details를 작업 스레드에 연결해야 한다. 취소 관련 `ActivityCompletionException`을 catch해 자원을 정리했다면 다시 던져 SDK에 알린다.
+
+취소 후 정리 순서까지 보려면 기본 `TRY_CANCEL`과 `WAIT_CANCELLATION_COMPLETED`를 구별한다. 후자도 Activity의 협력 취소와 기한이 필요하다. 이 글은 Local Activity가 아닌 일반 Activity의 heartbeat 경로를 다룬다. [SDK 1.40 WorkerOptions](https://github.com/temporalio/sdk-java/blob/v1.40.0/temporal-sdk/src/main/java/io/temporal/worker/WorkerOptions.java), [ActivityExecutionContext](https://github.com/temporalio/sdk-java/blob/v1.40.0/temporal-sdk/src/main/java/io/temporal/activity/ActivityExecutionContext.java).
 
 ## 참고 자료
 

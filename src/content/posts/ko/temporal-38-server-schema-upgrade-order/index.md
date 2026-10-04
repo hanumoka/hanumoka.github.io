@@ -7,7 +7,7 @@ tags: ["temporal", "distributed-systems"]
 kind: "concept"
 series: "temporal"
 seriesOrder: 38
-readingMinutes: 6
+readingMinutes: 7
 sourceNote: "docs/research/2026-10-04-temporal-series-plan.md"
 draft: true
 ---
@@ -64,6 +64,16 @@ Helm release나 컨테이너 이미지를 이전 버전으로 돌려도 이미 �
 Worker 배포와 Server 업그레이드는 책임도 분리한다. Server를 올렸다고 비결정적 Workflow 코드가 고쳐지지 않고, replay 테스트가 통과했다고 DB schema 적용이 검증되지 않는다. 두 검증을 연결하되 서로 대신하게 만들지 않는다.
 
 검증 질문은 “SDK 숫자가 Server보다 크면 호환된다는 판단은 왜 성립하지 않을까?”다. 또 “새 Server 시작에 실패해 이전 이미지를 올렸다면 데이터까지 되돌렸다고 말할 수 있을까?”를 생각해 보자. 버전표와 실제 복구 시험이 있어야 답을 근거 있게 할 수 있다.
+
+## chart 변경이 Server 버전도 바꿀 수 있다
+
+Helm chart의 버전을 크게 올리면 기본 appVersion과 Server·admin-tools 이미지가 함께 바뀔 수 있다. 렌더링 결과에서 현재·목표 Server minor와 schema 도구를 대조한다. 공식 지침대로 minor 버전을 순서대로 올리고 각 단계의 metadata 갱신과 진척을 확인한다. chart 업그레이드 성공을 임의 minor 건너뛰기 지원으로 해석하지 않는다.
+
+schema를 먼저 올린 뒤 이전 바이너리로 관찰하는 절차와 새 바이너리 배포를 나눈다. 이미지 rollback이 schema downgrade를 뜻하지 않으며 부분 DB 변경은 Helm rollback만으로 취소되지 않는다. GitOps 부분 동기화에서 schema hook이 제외되면 같은 선행 보장이 사라진다. [Server 업그레이드](https://docs.temporal.io/self-hosted-guide/upgrade-server), [Helm chart](https://github.com/temporalio/helm-charts).
+
+## 초기 설치 명령과 업그레이드 명령을 섞지 않는다
+
+사용 중인 persistence·Visibility DB에는 목표 릴리스의 `temporal-sql-tool update-schema`를 각각 적용한다. 새 DB의 `create-database`·`setup-schema -v 0.0` 절차를 반복하거나 `--overwrite`로 오류를 없애지 않는다. PostgreSQL은 Server 1.32.0의 플러그인 `postgres12` 또는 `postgres12_pgx`와 `schema/postgresql/v12` 경로를 기준으로 도구·설정·파일을 함께 확인한다. SQL 도구와 DB 사이 연결 권한·백업·복원 가능성은 실행 전에 별도로 준비한다. [새 환경과의 차이는 30편](/posts/temporal-30-postgresql-persistence/), [고정 버전 SQL 도구](https://github.com/temporalio/temporal/blob/v1.32.0/tools/sql/main.go).
 
 ## 공식 자료
 

@@ -7,7 +7,7 @@ tags: ["temporal", "distributed-systems"]
 kind: "concept"
 series: "temporal"
 seriesOrder: 40
-readingMinutes: 6
+readingMinutes: 7
 sourceNote: "docs/research/2026-10-04-temporal-series-plan.md"
 draft: true
 ---
@@ -62,6 +62,14 @@ Multi-Cluster Replication은 다른 Cluster로 실행 정보를 복제하고 fai
 검증 계획에는 성공 조건뿐 아니라 남는 한계도 적는다. 종료 이력을 읽었다면 진행 중 실행의 복구는 아직 미검증이다. 한 번 failover했다면 장기간의 복제 지연과 네트워크 분할은 아직 미검증일 수 있다. 확인한 범위를 정확히 적는 것이 기능 이름을 많이 나열하는 것보다 유용하다.
 
 검증 질문은 “종료 History가 모두 보관돼 있으면 진행 중이던 예약을 그대로 이어 갈 수 있을까?”다. 또 “비동기 복제에서 외부 저장 요청의 멱등성이 여전히 필요한 이유는 무엇일까?”를 생각해 보자. 복구 수단의 이름보다 복구할 상태와 남는 손실을 설명할 수 있어야 한다.
+
+## 보존 변경과 복제 전환의 적용 범위
+
+retention은 종료한 실행의 보존 기간이다. 이미 종료한 실행의 정리 타이머에 나중의 변경이 소급 적용된다고 가정하지 않는다. Cloud는 종료 History 1~90일 범위를 안내하며 장기 보관에는 History Export를 검토한다. 자체 운영의 최소값·기본값은 사용하는 Namespace 생성 경로와 버전을 확인한다. [Cloud limits](https://docs.temporal.io/evaluate/cloud/limits), [History Export](https://docs.temporal.io/cloud/export).
+
+자체 운영 Archival과 Multi-Cluster Replication은 2026-10-04 공식 문서에서 실험적 기능으로 안내된다. Archival 문서는 Docker 제한 문구와 Helm 설정 안내를 함께 제공하므로 선택한 배포 형태의 지원을 확인한다. 모든 컨테이너가 실행 불가능하다는 의미로 확대하지 않는다.
+
+복제에서는 Temporal Service를 Cluster 단위로 구별한다. planned handover와 forced failover는 다른 전환이며, 강제 전환에서는 아직 복제되지 않은 진행이 유실될 수 있다. Activity 완료 응답이 새 Cluster로 자동 전달되지 않는 것과 완료 History가 전혀 복제되지 않는 것은 다르다. [복제와 전환](https://docs.temporal.io/self-hosted-guide/multi-cluster-replication). 외부 효과의 멱등성과 업무 원장 대조는 계속 필요하다.
 
 ## 공식 자료
 

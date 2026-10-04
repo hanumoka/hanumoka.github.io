@@ -2,12 +2,12 @@
 pubDatetime: 2026-10-04T09:00:00+09:00
 title: "DB 저장과 Workflow 시작을 연결한다"
 key: "temporal-23-outbox-workflow-start"
-description: "문서 처리 API가 요청을 DB에 저장한 다음 Temporal Workflow를 시작한다고 하자."
+description: "Outbox 재전송을 Workflow ID 충돌·재사용 정책과 업무 원장으로 중복 없이 연결한다."
 tags: ["temporal", "distributed-systems"]
 kind: "concept"
 series: "temporal"
 seriesOrder: 23
-readingMinutes: 5
+readingMinutes: 8
 sourceNote: "docs/research/2026-10-04-temporal-series-plan.md"
 draft: true
 ---
@@ -64,6 +64,33 @@ Workflow 시작을 안정적으로 연결해도 내부 Activity의 외부 저장
 전달자가 장기간 실패하면 요청이 DB에만 머무를 수 있다. 미전달 수와 오래된 항목을 관찰하고, 재시도 불가능한 입력은 별도 실패로 드러내는 정책도 필요하다. 실패를 무한히 숨기는 재시도는 접수된 요청을 사용자에게 설명할 수 있게 만들지 못한다.
 
 **확인 질문:** 시작 요청이 성공한 뒤 전달 완료 기록이 실패하면 재전송은 왜 필요한가? 같은 Workflow ID가 존재한다는 사실만으로 동일 업무의 전달 성공을 확정할 수 있을까?
+
+## 재전송 시점과 ID 정책을 함께 고른다
+
+Java 1.40.0의 `WorkflowClient.start` 기준으로 실행 중 충돌과 종료 후 재사용은 다른 정책이다. 종료 후 기본 정책은 **ALLOW_DUPLICATE**이므로 첫 실행이 빨리 끝난 뒤 Outbox가 재전송하면 새 Run이 시작될 수 있다.
+
+| 재전송 시점         | 정책                                | 결과                                                       |
+| ------------------- | ----------------------------------- | ---------------------------------------------------------- |
+| 동일 ID 실행 중     | 기본 충돌 FAIL                      | AlreadyStarted 오류                                        |
+| 동일 ID 실행 중     | USE_EXISTING                        | 기존 실행과 연결; 새 입력이 기존 실행에 전달되는 것은 아님 |
+| 종료 실행이 보존 중 | 기본 재사용 ALLOW_DUPLICATE         | 새 Run 시작 가능                                           |
+| 종료 실행이 보존 중 | REJECT_DUPLICATE                    | 새 시작 거절                                               |
+| retention 이후      | REJECT_DUPLICATE여도 이전 기록 없음 | 업무 원장 없이는 중복을 막지 못함                          |
+
+```java
+WorkflowOptions options = WorkflowOptions.newBuilder()
+    .setTaskQueue("document-workflow")
+    .setWorkflowId("document/" + operationId)
+    .setWorkflowIdConflictPolicy(
+        WorkflowIdConflictPolicy.WORKFLOW_ID_CONFLICT_POLICY_USE_EXISTING)
+    .setWorkflowIdReusePolicy(
+        WorkflowIdReusePolicy.WORKFLOW_ID_REUSE_POLICY_REJECT_DUPLICATE)
+    .build();
+```
+
+두 enum은 `io.temporal.api.enums.v1`, 옵션은 `io.temporal.client`에 있다. 입력 지문과 업무 ID의 연결은 앱 DB에서 검증한다. `WorkflowClient.start`의 중복 거절과 타입드 동기 Workflow 호출의 기존 결과 조회 동작을 혼동하지 않는다. 전달 완료는 업무 완료가 아니라 시작 접수 확인이다. [Workflow ID 정책](https://docs.temporal.io/workflow-execution/workflowid-runid).
+
+대안은 Workflow를 먼저 시작하고 DB 기록을 Activity로 옮기는 것이다. 접수 원장의 정본과 API 응답 의미가 달라지므로 모든 시스템에 Outbox가 필수라는 결론 대신 두 설계를 비교한다.
 
 ## 참고 자료
 

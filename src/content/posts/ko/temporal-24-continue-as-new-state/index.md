@@ -2,12 +2,12 @@
 pubDatetime: 2026-10-04T09:00:00+09:00
 title: "Continue-As-New로 무엇을 넘겨야 할까"
 key: "temporal-24-continue-as-new-state"
-description: "문서 처리 요청을 계속 받아 같은 Workflow에서 반복 처리하면 이력이 커질 수 있다."
+description: "새 Run에 넘길 상태와 처리 중 작업을 정하고 Continue-As-New의 이력·버전 경계를 확인한다."
 tags: ["temporal", "distributed-systems"]
 kind: "concept"
 series: "temporal"
 seriesOrder: 24
-readingMinutes: 5
+readingMinutes: 6
 sourceNote: "docs/research/2026-10-04-temporal-series-plan.md"
 draft: true
 ---
@@ -57,11 +57,19 @@ Signal이나 Update 핸들러가 Activity를 기다리는 동안 새 Run으로 �
 
 ## 전환을 배포 수단과 혼동하지 않는다
 
-새 Run이 생긴다는 사실이 모든 새 코드와 자동 호환된다는 뜻은 아니다. 전달 DTO가 바뀌거나 처리 규칙의 의미가 달라지면 새 Run 입력을 어떻게 해석할지 필요하다. Worker Versioning과 결합하는 방법은 별도 배포 설계에서 다룬다.
+새 Run이 생긴다는 사실이 모든 새 코드와 자동 호환된다는 뜻은 아니다. 전달 DTO가 바뀌거나 처리 규칙의 의미가 달라지면 새 Run 입력을 어떻게 해석할지 필요하다. Worker Versioning과 결합하는 방법은 [37편](/posts/temporal-37-pinned-worker-version-rollout/)에서 다룬다.
 
 검증 자료에는 전환 전후 Workflow ID와 Run ID, 전달 입력, 처리한 문서 목록, 외부 결과 건수를 남긴다. 빠뜨린 필드를 추가한 뒤 같은 테스트를 반복해 이전의 중복·누락이 사라지는지 본다. 단순히 이력이 짧아졌다는 사실보다 업무 상태가 이어졌는지가 완료 기준이다.
 
 **확인 질문:** 같은 Workflow ID인데 Run ID가 바뀌면 중복 판단 키는 그대로 써도 될까? 새 Run에 넘길 데이터가 계속 커진다면 무엇을 다시 설계해야 할까?
+
+## 새 Run으로 자동 전달되지 않는 것
+
+Continue-As-New는 현재 Run을 닫는다. 인스턴스 변수나 진행 중 Activity의 결과가 새 Run으로 자동 이전되지 않는다. 승인 상태, 처리 cursor, 미처리 요청, 정책 버전, 체인 전체의 중복 제거 상태를 입력 계약으로 정한다. Activity의 외부 효과는 남을 수 있으므로 필요한 결과를 받은 뒤 전환한다.
+
+History 기본 한도는 경고 10,240 이벤트·10MB, 오류 51,200 이벤트·50MB다. 자체 운영은 설정을 대조하고 한도에 닿기 전에 Continue-As-New 조건을 정한다. **Update·Signal 요청 수 한도 초과의 요청 거절과 History 한도 초과의 실행 종료를 같은 결과로 설명하지 않는다.** [실행 한도](https://docs.temporal.io/workflow-execution/limits).
+
+Pinned 버전은 기본적으로 CAN 체인에 상속된다. 새 Run이라는 이유만으로 최신 Worker로 이동하지 않는다. Upgrade on Continue-As-New는 2026-10-04 기준 Public Preview이며 [37편의 배포 조건](/posts/temporal-37-pinned-worker-version-rollout/)과 함께 검토한다. replay 호환 검사는 [36편](/posts/temporal-36-replay-compatible-workflow-changes/)을 이 시점에 먼저 읽어도 된다.
 
 ## 참고 자료
 

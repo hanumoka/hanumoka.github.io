@@ -7,7 +7,7 @@ tags: ["temporal", "distributed-systems"]
 kind: "concept"
 series: "temporal"
 seriesOrder: 35
-readingMinutes: 6
+readingMinutes: 7
 sourceNote: "docs/research/2026-10-04-temporal-series-plan.md"
 draft: true
 ---
@@ -62,6 +62,14 @@ Visibility는 실행 목록과 검색을 위한 저장소다. 기본 persistence
 복구 뒤에는 지표가 정상화됐다는 것만 보지 않는다. 중단 기간에 시작한 실행 중 누락되거나 계속 대기하는 것이 있는지, 예약 확정이 끝나지 않은 문서가 있는지 본다. 인프라가 정상으로 돌아온 시점과 업무가 모두 따라잡은 시점은 다를 수 있다.
 
 검증 질문은 “Worker의 CPU가 낮다는 사실이 Worker 수를 늘려야 한다는 근거가 될까?”다. 또 “검색 목록이 늦게 보이는 현상과 실행 상태 기록이 느린 현상을 어떤 증거로 나눌까?”를 생각해 보자. 병목을 나눠 설명할 수 있어야 확장도 이유 있는 변경이 된다.
+
+## 어떤 지표가 가설을 지지하는가?
+
+`persistence_latency`와 DB 지표가 함께 상승하면 DB 경로를 조사한다. DB에 여유가 있는데 `ResourceExhausted`가 생기면 RPS·QPS·연결 제한을 확인한다. `lock_latency`와 `service_latency_userlatency`는 Shard·Workflow 경합의 단서다. 이 신호들은 가설을 좁히며 단일 지표로 원인을 확정하지 않는다.
+
+Shard 수는 최초 기동 뒤 고정이다. History replica를 늘려도 한 Workflow의 직렬 처리 조건이 없어지는 것은 아니다. Visibility는 목록 조회뿐 아니라 실행 상태의 비동기 쓰기도 담당하므로 `visibility_persistence_latency`와 기본 저장소 경로를 구별한다. [Service 지표](https://docs.temporal.io/references/service-metrics).
+
+DB 장애 전환은 이 부하 실험의 성공만으로 검증되지 않는다. 별도의 격리 환경에서 주 DB 연결 차단·대기·복구 후 History와 외부 원장을 대조해야 하며, 실제 failover는 아직 미실험이다.
 
 ## 공식 자료
 

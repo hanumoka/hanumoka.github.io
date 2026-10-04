@@ -2,7 +2,7 @@
 pubDatetime: 2026-10-04T09:00:00+09:00
 title: "저장 성공 뒤 재시도돼도 한 번만 반영하려면"
 key: "temporal-16-idempotent-result-storage"
-description: "문서 변환 결과를 DB에 저장하는 Activity가 있다고 하자."
+description: "업무 키·DB 제약·입력 비교로 저장 응답 유실 뒤의 재시도를 안전하게 처리한다."
 tags: ["temporal", "distributed-systems"]
 kind: "concept"
 series: "temporal"
@@ -59,6 +59,12 @@ Workflow ID의 중복 시작 정책과 외부 DB 저장의 멱등성은 다른 �
 허용량 예약과 확정·취소에도 같은 질문을 적용한다. 예약 요청이 두 번 오면 같은 예약을 돌려주는지, 확정된 예약의 재확정은 무엇을 반환하는지, 취소된 예약을 다시 취소해도 안전한지 정의한다. “모두 멱등”이라는 한 줄 대신 각 상태에서의 응답과 효과를 확인해야 한다.
 
 **확인 질문:** 동일한 업무 키로 다른 문서 내용이 들어오면 어떤 응답이 맞을까? Workflow를 한 번만 시작했는데도 DB 멱등성이 필요한 이유는 무엇일까?
+
+## 키가 같은 범위를 먼저 정한다
+
+**Run ID**는 Workflow의 한 번의 실행을 구별하고 **Activity ID**는 그 Run 안의 Activity를 구별한다. Workflow 재시도·Reset·Continue-As-New는 새 Run을 만들 수 있다. Run ID와 Activity ID를 합친 키는 같은 Run의 Activity 재시도에는 유용하지만 업무 전체의 영구 중복 방지는 아니다.
+
+업무 키는 요청 입력 또는 결정적 Workflow API로 정하고 Activity에 넘긴다. Activity 안에서 매 시도 새 UUID를 만들지 않는다. 결과 저장 실험은 **DB commit 뒤 첫 시도에서만** 응답 실패를 넣어야 한다. commit 전 rollback되는 예외와 비교하면 다른 문제를 시험하게 된다. unique 위반 뒤에는 DB별 트랜잭션 상태를 확인하고 같은 키의 입력 지문·기존 결과를 별도 조회해 일치할 때만 재사용한다.
 
 ## 참고 자료
 

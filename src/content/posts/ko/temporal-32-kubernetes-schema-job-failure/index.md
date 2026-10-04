@@ -7,7 +7,7 @@ tags: ["temporal", "distributed-systems"]
 kind: "concept"
 series: "temporal"
 seriesOrder: 32
-readingMinutes: 6
+readingMinutes: 7
 sourceNote: "docs/research/2026-10-04-temporal-series-plan.md"
 draft: true
 ---
@@ -34,18 +34,18 @@ Kubernetes에서는 이 준비를 Job으로 실행할 수 있다. 다만 정확�
 
 ## 실패를 한 가지로 제한한다
 
-첫 실패 시험에서는 schema Job에만 DB 접속 오류를 의도적으로 준다. 예를 들어 존재하지 않는 시험 DB 이름을 사용하되 운영 자격이나 실제 데이터에는 손대지 않는다. 동시에 네트워크 정책과 인증서까지 바꾸면 어떤 오류가 먼저인지 설명하기 어려워진다.
+첫 실패 시험은 **새 설치에서 schema hook 실패가 후속 Deployment 생성을 막는가**를 확인한다. Helm chart 1.7.0은 `createDatabase: true`가 기본이므로 없는 DB 이름만 주면 DB를 생성해 성공할 수 있다. 격리된 시험 DB 이름과 `createDatabase: false`를 함께 사용한다. Job과 Server는 같은 datastore 설정을 사용하므로 이것을 Job에만 잘못된 접속 정보를 주는 시험이라고 부르지 않는다. 동시에 네트워크 정책과 인증서까지 바꾸면 어떤 오류가 먼저인지 설명하기 어려워진다.
 
 시험 순서는 다음과 같다.
 
 1. 정상 manifest에서 DB와 schema 대상의 관계를 확인한다.
-2. 격리된 환경에서 schema Job의 접속 대상 하나만 잘못 지정한다.
-3. Job의 종료 상태와 로그에서 최초 실패 이유를 확인한다.
-4. 배포 절차가 다음 Server 단계의 진행을 막는지 확인한다.
+2. 신규 설치 전용 values에서 존재하지 않는 시험 DB와 `createDatabase: false`를 지정하고 manifest를 다시 확인한다.
+3. Job의 상태·재시도 횟수·로그와 Helm timeout을 확인한다. Helm이 먼저 실패해도 Job이 계속 재시도할 수 있다.
+4. 신규 install 실패 뒤 새 Server Deployment가 생성되지 않았는지 확인한다. upgrade에서는 기존 Deployment가 남으므로 같은 판정을 쓰지 않는다.
 5. 설정을 바로잡고 선택 chart가 안내하는 방식으로 Job을 다시 실행한다.
 6. schema 버전과 Service API를 확인한 뒤 문서 처리 실행을 시작한다.
 
-예상하는 바람직한 결과는 schema 실패가 배포 실패로 드러나고 새 실행을 받기 전에 멈추는 것이다. 실제 chart나 배포 도구가 이를 자동으로 보장하는지는 확인 대상이다. 보장하지 않는다면 파이프라인에 명시적인 완료 확인과 진행 조건이 필요하다.
+예상하는 바람직한 결과는 schema 실패가 배포 실패로 드러나고 새 실행을 받기 전에 멈추는 것이다. chart 1.7.0의 기본 `schema.useHelmHooks: true`는 pre-install/pre-upgrade Job 완료를 기다리는 Helm 경로다. `schema.backoffLimit`와 `schema.activeDeadlineSeconds`, Helm `--timeout`도 기록한다. GitOps의 부분 동기화나 hook 제외 배포가 이 순서를 동일하게 수행하는지는 따로 확인해야 한다. 보장하지 않는다면 파이프라인에 명시적인 완료 확인과 진행 조건이 필요하다.
 
 ## 반복 재시도는 원인 해결과 다르다
 

@@ -2,12 +2,12 @@
 pubDatetime: 2026-10-04T09:00:00+09:00
 title: "Child Workflow는 함수 분리와 무엇이 다른가"
 key: "temporal-25-child-workflow-lifecycle"
-description: "문서 처리 코드가 길어지면 메서드로 나누고 싶어진다."
+description: "Child의 시작 확인·부모 종료 정책·취소 전파를 구별해 독립 실행의 수명을 설계한다."
 tags: ["temporal", "distributed-systems"]
 kind: "concept"
 series: "temporal"
 seriesOrder: 25
-readingMinutes: 5
+readingMinutes: 6
 sourceNote: "docs/research/2026-10-04-temporal-series-plan.md"
 draft: true
 ---
@@ -55,6 +55,16 @@ Java에서는 자식 stub에 대한 Workflow 실행 정보를 기다려 시작�
 처음에는 하나의 Workflow와 Activities로 업무 조건을 이해하고, 개별 실행의 독립성이 필요해졌을 때 Child Workflow를 추가하는 편이 설계 이유를 설명하기 쉽다. 분리 전후 코드 줄 수보다 실패·취소·결과 조회의 책임이 명확해졌는지를 평가한다.
 
 **확인 질문:** 부모가 Completed인데 자식이 Terminated라면 모순일까? 자식을 부모와 독립적으로 유지할 때 결과와 실패를 추적할 책임은 어디에 둘까?
+
+## 부모 종료 정책과 취소 전파는 별개다
+
+Parent Close Policy의 기본값은 Terminate다. ABANDON을 지정해도 부모 CancellationScope의 취소 전파까지 막는 것은 아니다. 부모 Cancel을 전달하지 않을 의도라면 ChildWorkflowCancellationType도 별도로 선택해야 한다. 부모 정상 반환·Cancel·Terminate·Continue-As-New를 서로 다른 실험 조건으로 나눈다.
+
+비동기 Child 호출을 만든 뒤 바로 부모가 반환하면 자식 시작이 확정되기 전에 종료될 수 있다. 자식을 독립적으로 남기는 경로에서는 `Workflow.getWorkflowExecution(child).get()`으로 **시작 확인**을 기다린다. 자식 결과 전체를 기다리는 것과는 다르다. 자식 종료 후에도 이미 시작된 Activity의 외부 효과는 따로 확인한다.
+
+Java SDK 1.40.0·CLI 1.9.1·Server 1.32.0의 가상 Child 재현에서는 ABANDON 부모가 자식 결과를 기다릴 때 Cancel이 자식까지 전달됐지만, 별도 대기 중 곧바로 닫힐 때 자식이 Running으로 남았다. 부모에 취소 명령이 기록된 것과 자식 취소 완료는 다르다. 취소 완료가 필요하면 부모가 닫히기 전에 확인하고, 독립 자식은 별도 감시 책임을 둔다.
+
+같은 재현에서 기본 Parent Close Policy는 정상 반환·Continue-As-New 뒤 자식을 Terminated로 만들었다. 시작 확인 없이 바로 부모가 끝난 경우에는 자식이 만들어지지 않았다. 메모리 테스트 서버와 실제 개발 서버의 결과가 달랐으므로 개발 서버 결과를 따로 확인했다. 이는 가상 재현 결과이며 이 글의 문서 처리 전체 업무를 검증한 것은 아니다. [Java Child](https://docs.temporal.io/develop/java/workflows/child-workflows), [Child 취소 옵션](https://github.com/temporalio/sdk-java/blob/v1.40.0/temporal-sdk/src/main/java/io/temporal/workflow/ChildWorkflowCancellationType.java).
 
 ## 참고 자료
 

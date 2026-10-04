@@ -7,7 +7,7 @@ tags: ["temporal", "distributed-systems"]
 kind: "concept"
 series: "temporal"
 seriesOrder: 4
-readingMinutes: 5
+readingMinutes: 6
 sourceNote: "docs/research/2026-10-04-temporal-series-plan.md"
 draft: true
 ---
@@ -33,8 +33,11 @@ draft: true
 
 ```text
 on ReservationCreated(event):
-  result = convert(event.documentId, event.revision)
-  emit ConversionCompleted(event.requestId, result.reference)
+  try:
+    result = convert(event.documentId, event.revision)
+    emit ConversionCompleted(event.requestId, result.reference)
+  catch PermanentConversionFailure:
+    emit ConversionFailed(event.requestId, event.revision)
 ```
 
 변환이 실패했을 때는 어떻게 될까? 예외를 로그에 남기는 것으로 충분하지 않다. 예약을 해제할 담당자가 실패 사실을 알 수 있어야 한다. 재시도할 수 있는 일시 장애인지 잘못된 문서처럼 중단해야 하는 오류인지도 구분한다. 어떤 실패를 최종 실패 이벤트로 바꿀지는 변환 참여자와 전체 업무의 계약으로 정한다.
@@ -51,7 +54,7 @@ on ReservationCreated(event):
 
 이 글에서 제안하는 실험은 메시지 브로커의 성능 시험이 아니다. 동일 업무 식별자로 예약부터 실패 처리까지 이어지는지 확인한다. 각 참여자는 받은 이벤트 식별자, 업무 식별자, 변경 전후 상태를 기록한다. 고유 메시지 식별자와 업무 식별자는 목적이 다르다. 전자는 같은 전달의 중복을, 후자는 하나의 업무에 속한 여러 전달을 구별하는 데 사용한다.
 
-1. 예약 완료 이벤트를 전달해 변환 handler를 실행한다.
+1. 같은 업무 ID로 예약 원장을 먼저 생성·commit하고 `ReservationCreated`(예약 생성)를 전달해 변환 handler를 실행한다.
 2. 변환 함수에서 처리 불가능한 문서 오류를 발생시킨다.
 3. 최종 실패 이벤트를 받아 예약을 해제하도록 연결한다.
 4. 이벤트 목록과 예약 원장을 대조한다.
@@ -63,6 +66,14 @@ on ReservationCreated(event):
 ## 이해 확인
 
 변환 실패가 로그에는 있지만 예약은 그대로라면 어느 계약과 handler부터 살펴봐야 할까? 또 생산자와 소비자가 서로의 HTTP 주소를 몰라도 이벤트 필드를 마음대로 바꾸면 안 되는 이유는 무엇일까?
+
+## 중복과 아무 응답도 없는 상황을 계약에 포함한다
+
+`requestId`는 전체 문서 처리 업무를, `documentId + revision`은 변하지 않는 입력 문서 버전을 식별한다. `operationId`는 예약·저장 등 개별 작업의 재시도에 사용한다. 다음 편의 중앙 조정판도 같은 참여자 계약을 사용한다. 예제의 메서드가 뒤에서 확장되더라도 이 식별자의 역할은 유지한다.
+
+적어도 한 번 전달에서는 처리 뒤 ACK(수신 확인)를 보내기 전에 소비자가 종료되면 같은 메시지를 다시 받을 수 있다. 메시지 ID 중복 제거와 함께 업무 ID·현재 상태의 조건부 전이를 검사한다. 이미 해제된 업무에 늦게 온 변환 완료가 예약을 확정하지 못하게 한다.
+
+실패 이벤트조차 오지 않으면 예약 관리 측이 기한이 지난 미완료 예약을 찾아 상태를 조회하고 재시도·해제·수동 확인을 결정한다. 조정 코드가 분산돼도 전체 진행을 보는 관측 주체는 둘 수 있다. ‘변경 시 함께 검토할 계약 범위’를 비교 기준으로 삼은 것은 이 글의 설계 판단이며 AWS의 측정 결과는 아니다.
 
 ## 참고 자료
 

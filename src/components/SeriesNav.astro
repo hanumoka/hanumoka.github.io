@@ -34,7 +34,7 @@ const seriesPath = post.data.draft ? "drafts/series" : "series";
 ---
 
 {
-  parts.length > 1 && seriesName && seriesKey && (
+  parts.length > 0 && seriesName && seriesKey && (
     <aside
       data-pagefind-ignore
       class="border-border bg-muted/40 my-8 border p-4 sm:p-5"
@@ -56,8 +56,23 @@ const seriesPath = post.data.draft ? "drafts/series" : "series";
           })}
         </span>
       </div>
+      <p class="text-muted-foreground text-sm">
+        {post.data.seriesOrder &&
+          (locale === "ko"
+            ? `전체 연재 계획의 ${post.data.seriesOrder}편. `
+            : `Planned part ${post.data.seriesOrder}. `)}
+        <a
+          class="text-accent underline"
+          href={getRelativeLocaleUrl(locale, `drafts/series/${seriesKey}/`)}
+        >
+          {locale === "ko"
+            ? "초안을 포함한 전체 목차"
+            : "All parts, including drafts"}
+        </a>
+      </p>
 
       <nav
+        data-series-navigation
         class="my-4 grid gap-3 sm:grid-cols-2"
         aria-label={t.post.inSeries.replace("{{series}}", seriesName)}
       >
@@ -91,7 +106,7 @@ const seriesPath = post.data.draft ? "drafts/series" : "series";
               <li class="flex gap-2 text-sm">
                 <span
                   class:list={[
-                    "text-muted-foreground w-6 shrink-0 text-end tabular-nums",
+                    "text-muted-foreground w-8 shrink-0 text-end whitespace-nowrap tabular-nums",
                     { "text-accent font-semibold": isCurrent },
                   ]}
                 >

@@ -2,12 +2,12 @@
 pubDatetime: 2026-10-04T09:00:00+09:00
 title: "Signal·Query·Update 중 무엇을 선택할까"
 key: "temporal-18-signal-query-update"
-description: "문서 변환 전에 사용자의 승인을 기다리는 Workflow를 만든다고 하자."
+description: "Signal의 기록, Query의 조회, Update의 수락·완료를 Worker 가용성과 함께 비교한다."
 tags: ["temporal", "distributed-systems"]
 kind: "concept"
 series: "temporal"
 seriesOrder: 18
-readingMinutes: 5
+readingMinutes: 6
 sourceNote: "docs/research/2026-10-04-temporal-series-plan.md"
 draft: true
 ---
@@ -30,13 +30,13 @@ Signal은 실행 중인 Workflow에 비동기적으로 상태 변경을 전달�
 
 Service가 Signal을 수락한 것과 Worker가 승인 로직을 끝낸 것은 다르다. Worker가 잠시 꺼져 있으면 메시지가 수락됐더라도 업무 진행이 기다릴 수 있다. API가 Signal 전송 후 “문서 처리가 완료됐다”고 응답하면 잘못된 의미를 사용자에게 전달한다.
 
-수락만 확인하면 충분한 API라면 요청 접수 상태와 추적할 Workflow ID를 응답할 수 있다. 이후 Query나 별도 상태 조회로 진행을 확인한다. 이것은 API 설계의 선택이며 Signal 자체가 모든 UX를 정해 주는 것은 아니다.
+수락만 확인하면 충분한 API라면 요청 접수 상태와 추적할 Workflow ID를 응답할 수 있다. Worker가 가동 중이면 Query로 진행을 확인하고, Worker가 없는 동안은 별도 앱 원장·Service 조회로 접수 상태를 확인한다. 이것은 API 설계의 선택이며 Signal 자체가 모든 UX를 정해 주는 것은 아니다.
 
 ## Update는 검증과 결과가 필요할 때 검토한다
 
 Update는 Workflow 상태를 바꿀 수 있고 처리 결과를 돌려줄 수 있다. 예를 들어 변환 옵션을 바꾸려는데 이미 변환이 시작됐으면 거절해야 하는 요청에 어울릴 수 있다. 선택적으로 validator를 두어 수락 전에 요청을 거절할 수도 있다.
 
-validator는 상태를 바꾸지 않아야 한다. 검증 중 외부 API를 호출해 오래 기다리는 기능을 넣는 것도 적절하지 않다. 외부 작업이 필요한 검증은 핸들러의 처리 과정에서 어떻게 실패를 보고할지 별도로 설계한다. 수락 전 거절과 수락 뒤 처리 실패는 같은 사건이 아니다.
+validator는 상태를 바꾸지 않아야 한다. validator에서 Activity를 호출하거나 blocking 대기를 할 수 없다. 외부 HTTP 직접 호출은 결정성 계약에도 어긋난다. 외부 작업이 필요한 검증은 핸들러의 처리 과정에서 어떻게 실패를 보고할지 별도로 설계한다. 수락 전 거절과 수락 뒤 처리 실패는 같은 사건이 아니다.
 
 | 호출자가 원하는 것              | 후보   | 응답에서 주의할 점                  |
 | ------------------------------- | ------ | ----------------------------------- |
@@ -57,6 +57,14 @@ Update를 사용한다고 일반 HTTP 호출처럼 무조건 짧게 끝나는 �
 핸들러 구현을 늘리기 전에 승인 상태의 전이를 적어 보자. 대기 중 승인, 승인 후 재승인, 취소 후 승인, 기한 만료 직전 승인은 각각 어떤 결과가 맞는가? 이 답이 정해져야 세 API 중 하나를 선택한 이유도 분명해진다.
 
 **확인 질문:** Signal 전송이 성공했는데 화면 상태가 바뀌지 않았다면 어떤 단계가 남아 있을까? 옵션 변경을 수락 전에 거절하는 것과 수락 뒤 실패로 돌려주는 것은 왜 다를까?
+
+## Worker가 없을 때 세 요청의 차이
+
+Query는 Worker가 Workflow 코드를 실행해 답하며 Query 자체는 History에 저장되지 않는다. Worker가 없는 동안 Query로 업무 진행을 확인할 수 있다고 가정하지 않는다. 접수 확인은 Service의 Describe나 앱 원장과 구별한다.
+
+Signal의 전송 성공은 Service에 내구성 있게 기록됐다는 뜻이다. Update의 **Accepted**는 Worker가 validator를 통과시키거나 validator 없이 수락한 단계다. Service가 요청을 받은 것과 다르다. validator는 대기·Activity 호출·상태 변경을 할 수 없고, 거절은 Accepted 이벤트를 남기지 않는다. 수락 뒤 handler 실패는 이미 수행한 상태 변경·Activity 효과를 자동 rollback하지 않는다.
+
+Client timeout은 Update 취소가 아니다. Worker가 돌아온 뒤 이미 접수된 요청이 처리될 수 있다. 안정된 Update ID를 사용하고 기존 결과를 조회한다. Update ID 중복 제거는 같은 Run 범위이며 Signal의 업무 중복 제거는 handler의 입력 계약으로 별도 구현한다. [메시지 전송](https://docs.temporal.io/sending-messages), [handler 계약](https://docs.temporal.io/handling-messages).
 
 ## 참고 자료
 

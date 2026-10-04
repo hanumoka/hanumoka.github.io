@@ -2,7 +2,7 @@
 pubDatetime: 2026-10-04T09:00:00+09:00
 title: "재생되는 코드에서 HTTP를 호출하면 안 되는 이유"
 key: "temporal-13-workflow-http-determinism"
-description: "문서를 변환하기 전에 허용량을 확인해야 한다고 해 보자."
+description: "Workflow의 직접 I/O가 재생을 깨뜨리는 이유와 SDK가 감지하는 불일치 범위를 구별한다."
 tags: ["temporal", "distributed-systems"]
 kind: "concept"
 series: "temporal"
@@ -56,6 +56,12 @@ activities.confirm(reservation.getId());
 수정 후에도 외부 API 장애를 넣어 본다. Activity 안의 호출이 실패하는 것과 Workflow 재생이 호환되지 않는 것은 별개의 문제다. 전자는 시간 제한·재시도·업무 실패 처리로 다루고, 후자는 Workflow 코드 변경과 이력의 관계를 검토한다.
 
 **확인 질문:** 읽기 전용 HTTP 호출도 Workflow에 직접 넣으면 위험한 이유는 무엇일까? Activity로 옮긴 뒤에도 애플리케이션이 해결해야 하는 예약 중복 문제는 무엇일까?
+
+## 감지되지 않았다고 결정적인 코드는 아니다
+
+Java 1.40.0의 Activity 예약 명령 검증은 Activity ID·타입 등을 비교하며 입력값 전체를 비교하지 않는다. 직접 HTTP 결과나 `UUID.randomUUID()`가 바뀌어도 같은 명령 모양을 내면 오류가 즉시 나지 않을 수 있다. 따라서 “실행됐으니 허용되는 I/O”라고 판단하지 않는다. `Workflow.randomUUID()`·`Workflow.currentTimeMillis()`처럼 replay를 고려한 API를 사용한다.
+
+불일치가 감지되면 보통 Workflow Task가 실패·재시도되고 실행은 Running으로 남는다. 실행 자체의 실패와 구별하는 기준은 [실패 분류](/posts/temporal-failure-classification/)에서 다룬다. [고정 SDK 검증 코드](https://github.com/temporalio/sdk-java/blob/v1.40.0/temporal-sdk/src/main/java/io/temporal/internal/statemachines/WorkflowStateMachines.java).
 
 ## 참고 자료
 

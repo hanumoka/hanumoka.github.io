@@ -30,7 +30,9 @@ export function getSortedDrafts(posts: CollectionEntry<"posts">[]) {
       );
     }
     // 연재별로 묶어 비교의 일관성을 유지한다.
-    const group = (a.data.series ?? "~").localeCompare(b.data.series ?? "~");
+    const group =
+      Number(!a.data.series) - Number(!b.data.series) ||
+      (a.data.series ?? "").localeCompare(b.data.series ?? "");
     return group || byUpdatedDesc(a, b);
   });
 }

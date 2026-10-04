@@ -66,7 +66,9 @@ const { page } = Astro.props;
 const locale = resolveLocale(Astro.currentLocale);
 const t = useTranslations(locale);
 const series = getUniqueSeries(
-  await getLocalizedPosts(locale, { includeDrafts: true }),
+  (await getLocalizedPosts(locale, { includeDrafts: true })).filter(
+    post => post.data.draft
+  ),
   { includeDrafts: true }
 );
 ---

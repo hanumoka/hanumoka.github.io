@@ -2,7 +2,7 @@
 pubDatetime: 2026-10-04T09:00:00+09:00
 title: "첫 Java Workflow를 실행한다"
 key: "temporal-11-first-java-workflow"
-description: "첫 실습의 목적은 실제 문서 변환 기능을 만드는 것이 아니다."
+description: "Java Workflow·Activity 계약과 Worker·Client 등록을 연결하고 Activity 등록 누락을 진단한다."
 tags: ["temporal", "distributed-systems"]
 kind: "concept"
 series: "temporal"
@@ -19,6 +19,8 @@ draft: true
 ## 인터페이스가 호출 계약이 된다
 
 Java SDK에서는 Workflow 인터페이스에 진입점을 정의한다. 이 예제의 입력은 문서 ID이고 출력은 변환 결과를 나타내는 문자열이다. 실제 시스템에서는 입력 DTO를 사용하면 필드를 추가할 때 메서드 인자를 계속 늘리지 않아도 된다. 첫 실습에서는 역할을 보려고 단순한 타입을 쓴다.
+
+아래 두 public 인터페이스는 각각 `DocumentWorkflow.java`, `DocumentActivities.java`에 저장한다.
 
 ```java
 @WorkflowInterface
@@ -61,23 +63,45 @@ Worker에서는 Workflow 구현 타입과 Activity 구현 객체를 등록해야
 
 실행 순서는 로컬 Service 시작, Worker 시작, Client에서 Workflow 시작 요청이다. 결과가 반환되면 UI에서 동일한 Workflow ID를 찾아 Activity가 예약되고 완료된 기록을 확인한다. 콘솔에 원하는 문자열이 나왔다는 사실과 실행 이력에서 그 경로를 설명할 수 있다는 사실을 구별하자.
 
-## 첫 테스트에서 확인할 것은 한 가지면 된다
+## Worker와 Client를 연결한다
 
-Java SDK의 TestWorkflowEnvironment를 사용하면 테스트용 Service와 Worker를 함께 구성할 수 있다. 여기에 Workflow 구현과 고정 결과를 반환하는 Activity를 등록하고, Workflow를 호출해 예상 결과를 검사한다. 첫 테스트는 “문서 ID가 전달되고 Activity 결과가 Workflow 결과가 된다”는 계약에 집중한다.
+개발 서버는 [10편의 실행·관찰 명령](/posts/temporal-10-client-service-worker/)으로 시작한다. 다음은 위 인터페이스와 구현을 등록하는 실행 골격이다. Java SDK 의존성과 `io.temporal.serviceclient`, `io.temporal.worker`, `io.temporal.client`의 타입을 import한다.
 
-일반 단위 테스트처럼 Workflow 구현 객체를 직접 만들고 메서드만 호출하는 방식은 SDK가 제공하는 실행 환경을 대신하지 못한다. Activity stub과 Workflow API는 실행 맥락을 필요로 한다. 순수한 문자열 처리 함수라면 별도 단위 테스트로 검증하고, Workflow 순서는 Temporal 테스트 환경에서 검증하는 편이 역할을 분명하게 만든다.
+```java
+WorkflowServiceStubs service = WorkflowServiceStubs.newLocalServiceStubs();
+WorkflowClient client = WorkflowClient.newInstance(service);
+WorkerFactory factory = WorkerFactory.newInstance(client);
+Worker worker = factory.newWorker("document-workflow");
+worker.registerWorkflowImplementationTypes(DocumentWorkflowImpl.class);
+worker.registerActivitiesImplementations(
+    (DocumentActivities) documentId -> "converted:" + documentId);
+factory.start();
+DocumentWorkflow workflow = client.newWorkflowStub(
+    DocumentWorkflow.class, WorkflowOptions.newBuilder()
+        .setWorkflowId("first-document")
+        .setTaskQueue("document-workflow").build());
+System.out.println(workflow.process("document-1042"));
+factory.shutdown();
+service.shutdown();
+```
 
-테스트가 통과해도 로컬 Service 연결과 실제 Worker 실행까지 검증한 것은 아니다. 테스트 환경 결과와 실제 프로세스 실행 결과를 각각 남긴다. JUnit 하나는 빠른 회귀 확인을, 로컬 실행은 연결·등록·큐 설정 확인을 담당한다.
+기대 출력은 `converted:document-1042`다. `first-document`의 History에서 Activity 예약·완료를 대조한다. 이 연결 골격과 운영용 종료 대기는 구분한다. 테스트 환경·Activity mock·시간 건너뛰기는 [별도 테스트 글](/posts/temporal-testing-workflows/)에서 다룬다.
 
 ## 등록 하나를 빼면 어디서 멈출까
 
-대표 실패는 Activity 등록 누락이다. Workflow와 Client 설정을 그대로 두고 Worker에서 Activity 구현 등록만 제거한 구성을 비교한다. 예상은 Workflow의 Activity 요청이 정상적인 업무 완료로 이어지지 않는다는 것이다. 구체 오류와 재시도 동작은 선택한 SDK와 Worker 구성의 로그·이력으로 확인한다.
+대표 실패는 Activity 등록 누락이다. Workflow와 Client 설정을 그대로 두고 Worker에서 Activity 구현 등록만 제거한 구성을 비교한다. 예상은 Workflow의 Activity 요청이 정상적인 업무 완료로 이어지지 않는다는 것이다. 구체 오류와 재시도 동작은 아래의 Pending Activities·poller 진단으로 구별한다.
 
-문자열 반환이 없다는 이유로 Client timeout부터 늘리는 것은 원인 해결이 아니다. Worker 로그에서 어떤 Activity 타입을 처리하려 했는지, 해당 타입을 등록했는지, 올바른 큐에 작업을 보냈는지 확인한다. 한 번에 여러 설정을 바꾸지 않아야 어떤 변경이 문제를 해결했는지 알 수 있다.
+문자열 반환이 없다는 이유로 Client timeout부터 늘리는 것은 원인 해결이 아니다. `temporal workflow describe`의 Pending Activities와 Task Queue poller 정보에서 어떤 Activity 타입을 처리하려 했는지, 해당 타입을 등록했는지, 올바른 큐에 작업을 보냈는지 확인한다. 한 번에 여러 설정을 바꾸지 않아야 어떤 변경이 문제를 해결했는지 알 수 있다.
 
 첫 실행이 끝나면 코드 ref, 의존성 버전, 실행 명령, Workflow ID, 결과와 테스트 결과를 기록한다. 성공 화면 하나보다 이 자료가 재현에 더 도움이 된다. 이후 예약이나 DB 저장을 붙일 때도 최소 예제가 여전히 통과하는지 비교할 수 있다.
 
 **확인 질문:** Workflow 코드에서 Activity 구현 객체를 직접 호출하면 어떤 실행 관리가 빠질까? 테스트 환경에서 통과했는데 로컬 실행만 멈춘다면 어떤 설정부터 확인할까?
+
+## 등록 누락은 로그만으로 찾지 않는다
+
+Java SDK 1.40.0에서 Activity 구현을 하나도 등록하지 않은 Worker는 Activity Task를 polling하지 않는다. Activity는 Scheduled 상태에서 기다리며 오류나 재시도가 없을 수 있다. 다른 Activity만 등록한 Worker가 해당 Task를 받으면 미등록 타입 실패로 재시도할 수 있다. 이 실패의 문구가 Worker 로그나 History에 반드시 나타나는 것은 아니다.
+
+`temporal workflow describe --workflow-id first-document`에서 Pending Activities의 State·Attempt·LastFailure를 확인한다. `temporal task-queue describe --task-queue document-workflow --task-queue-type activity`로 Activity poller도 확인한다. Workflow poller의 존재가 Activity poller의 존재를 뜻하지 않는다. [Activity Worker 시작 조건](https://github.com/temporalio/sdk-java/blob/v1.40.0/temporal-sdk/src/main/java/io/temporal/internal/worker/ActivityWorker.java).
 
 ## 참고 자료
 

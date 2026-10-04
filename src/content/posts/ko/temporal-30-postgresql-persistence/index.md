@@ -7,7 +7,7 @@ tags: ["temporal", "distributed-systems"]
 kind: "concept"
 series: "temporal"
 seriesOrder: 30
-readingMinutes: 6
+readingMinutes: 8
 sourceNote: "docs/research/2026-10-04-temporal-series-plan.md"
 draft: true
 ---
@@ -63,6 +63,20 @@ Service 복구 후 Workflow가 완료됐다는 사실과 예약 원장이 올바
 남길 결과물은 버전표, 설정에서 역할을 드러내는 부분, 재시작 전후 실행 ID, Event History, 예약과 결과의 건수다. 비밀번호나 개인 데이터는 필요 없다. 이 정도가 있어야 다른 독자가 같은 조건을 구성하고 결과를 비교할 수 있다.
 
 검증 질문은 “DB 프로세스가 살아 있다는 사실과 실행 데이터가 보존됐다는 사실을 어떤 증거로 구분할까?”다. 이어서 “Visibility가 검색을 담당한다면, 실행 복구를 검색 결과만으로 판단해도 될까?”를 생각해 보자. 두 저장 역할을 구분하면 다음 보안과 운영 실험의 대상도 분명해진다.
+
+## 개발 서버·영속 volume·검색 속성을 준비한다
+
+`start-dev`는 기본 휘발 저장이며 파일 SQLite를 지정할 수도 있다. 여기서 PostgreSQL을 사용하는 목적은 단순 재시작 보존을 넘어 별도 DB의 schema·백업·운영 수명을 학습하는 것이다. [PostgreSQL compose 예제](https://github.com/temporalio/samples-server/blob/main/compose/docker-compose-postgres.yml)는 실행 전 ref·이미지와 volume을 확인한다. 익명 volume은 `down` 후 `up`에 같은 volume이 다시 연결된다고 보장되지 않는다. named volume 또는 동일 컨테이너 restart로 시험하고 삭제 명령을 섞지 않는다.
+
+Namespace 등록·조회 후 사용자 정의 Search Attribute를 사전 등록한다. SQL Visibility에서는 Namespace별 속성이다. 예제에서는 `DocumentKey`라는 가짜 Keyword 속성을 만들고 목록에 보이는지 확인한 뒤 값을 설정한다. 아직 등록되지 않은 속성은 정상 업무 입력이어도 실패 원인이 된다. [Search Attributes](https://docs.temporal.io/search-attribute).
+
+PostgreSQL Visibility 지원과 모든 운영 규모에서의 적합성은 다른 판단이다. 기본 persistence와 Visibility의 schema 버전·연결·부하를 따로 기록한다.
+
+## 스키마 도구도 고정 릴리스와 맞춘다
+
+Server 1.32.0 소스에서 PostgreSQL 플러그인 이름은 `postgres12` 또는 `postgres12_pgx`다. `temporal-sql-tool`을 사용하며 목표 릴리스의 `schema/postgresql/v12/temporal/versioned`와 `schema/postgresql/v12/visibility/versioned`를 구별한다. 옛 글의 `postgres`·`v96` 경로를 그대로 복사하지 않는다.
+
+새 빈 시험 DB의 준비 순서는 DB 생성 → `setup-schema -v 0.0`으로 버전 관리 준비 → 해당 DB의 `update-schema`다. 이미 사용 중인 DB의 업그레이드는 이 초기화 절차와 다르다. `setup-schema --overwrite`는 기존 테이블을 삭제하므로 재시도 방법으로 사용하지 않는다. 접속 정보·도구 이미지·그 이미지 안 schema 경로를 고정한 뒤 격리 DB에서 실행한다. 이 문단은 고정 소스 확인이며 DB 명령 실행 결과는 아니다. [PostgreSQL 플러그인](https://github.com/temporalio/temporal/blob/v1.32.0/common/persistence/sql/sqlplugin/postgresql/plugin.go), [SQL 도구](https://github.com/temporalio/temporal/blob/v1.32.0/tools/sql/main.go).
 
 ## 공식 자료
 

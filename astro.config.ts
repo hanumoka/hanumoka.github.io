@@ -98,6 +98,16 @@ export default defineConfig({
       defaultColor: false,
       wrap: false,
       transformers: [
+        {
+          name: "accessible-comment-colors",
+          span(node) {
+            if (typeof node.properties.style === "string") {
+              node.properties.style = node.properties.style
+                .replace(/#c2c3c5/gi, "#5f6368")
+                .replace(/#637777/gi, "#9aa9b2");
+            }
+          },
+        },
         transformerFileName({ style: "v2", hideDot: false }),
         transformerNotationHighlight(),
         transformerNotationWordHighlight(),

@@ -2,12 +2,12 @@
 pubDatetime: 2026-10-04T09:00:00+09:00
 title: "Cancel과 Terminate는 정리 결과가 다르다"
 key: "temporal-17-cancel-versus-terminate"
-description: "사용자가 문서 처리를 취소했다."
+description: "Java의 Cancel·Terminate·실행 시간 초과에서 정리 기회와 Activity 종료 여부를 구별한다."
 tags: ["temporal", "distributed-systems"]
 kind: "concept"
 series: "temporal"
 seriesOrder: 17
-readingMinutes: 6
+readingMinutes: 7
 sourceNote: "docs/research/2026-10-04-temporal-series-plan.md"
 draft: true
 ---
@@ -22,11 +22,11 @@ Client가 Cancel을 요청하면 Service에 취소 요청이 기록되고 Workfl
 
 Workflow에서는 취소 가능한 작업을 Cancellation Scope로 묶을 수 있다. 취소가 전달되면 해당 범위의 Activity·Timer 등으로 전파된다. 다만 외부 HTTP 서버나 별도 변환 프로세스까지 자동으로 강제 종료되는 것은 아니다. 외부 작업을 중단하는 실제 API와 애플리케이션 코드가 있어야 한다.
 
-원격 Activity가 취소를 전달받으려면 Heartbeat가 필요하다. 오래 걸리는 호출이 끝날 때까지 아무 보고도 하지 않는다면 사용자의 취소 요청을 적시에 감지하지 못할 수 있다. Workflow의 상태, Activity의 상태, 외부 변환의 상태를 각각 확인해야 한다.
+이 글은 Heartbeat로 취소를 전달받는 일반 Activity 경로를 사용한다. Java의 실험적 cancellation token 경로는 SDK·Server 버전과 설정이 별도이므로 이 실습에 섞지 않는다. 오래 걸리는 호출이 끝날 때까지 아무 보고도 하지 않는다면 사용자의 취소 요청을 적시에 감지하지 못할 수 있다. Workflow의 상태, Activity의 상태, 외부 변환의 상태를 각각 확인해야 한다.
 
 ## 정리 작업은 취소된 범위 밖에서 실행할 수 있다
 
-이미 취소된 범위 안에서 예약 해제 Activity를 새로 실행하려 하면 정리 작업도 취소 영향을 받을 수 있다. Java SDK는 취소와 분리된 Cancellation Scope에서 정리하는 방법을 제공한다. 이 기능은 “취소 중에도 반드시 무한정 성공시킨다”는 보장이 아니라 정리 작업을 실행할 수 있는 제어 수단이다.
+이미 취소된 범위 안에서 예약 해제 Activity를 새로 실행하려 하면 즉시 CanceledFailure가 발생해 정리 작업을 예약할 수 없다. Java SDK는 취소와 분리된 Cancellation Scope에서 정리하는 방법을 제공한다. 이 기능은 “취소 중에도 반드시 무한정 성공시킨다”는 보장이 아니라 정리 작업을 실행할 수 있는 제어 수단이다.
 
 ```java
 // 예약이 확보된 뒤 Timer를 기다리다가 취소되는 경로만 설명한다.
@@ -42,7 +42,7 @@ try {
 
 위 코드는 Timer 대기 중 전달되는 CanceledFailure만 처리한다. Activity 호출을 기다리던 경로에서는 ActivityFailure의 원인이 CanceledFailure인지도 확인해야 하므로 그대로 대체해서 쓰면 안 된다. 실제 코드는 선택한 SDK의 취소 예외 전달 방식과 Activity 취소 옵션을 확인해 별도로 작성한다. 예약이 실제 존재하는지, 이미 확정됐는지에 따라 `releaseReservation`의 결과도 달라져야 한다.
 
-정리가 끝난 뒤 취소 예외를 삼켜 정상 반환하면 실행이 Completed로 보일 수 있다. “정리를 했으니 성공으로 끝낸다”와 “업무 취소로 끝낸다”는 다른 정책이다. 운영 화면과 사용자 응답에 어떤 상태가 맞는지 결정하고 그 상태를 의도적으로 표현한다.
+Java SDK **1.40.0에서는 Workflow Cancel 요청을 처리한 뒤 정상 반환해도 Canceled로 닫히며 반환값은 Client에 전달되지 않는다.** 실행을 끝내는 ApplicationFailure를 던져도 이 경로에서는 취소가 우선한다. 반면 일반 RuntimeException은 기본 설정에서 Workflow Task만 실패시키고 실행을 Running으로 남길 수 있다. [고정 버전 종료 처리](https://github.com/temporalio/sdk-java/blob/v1.40.0/temporal-sdk/src/main/java/io/temporal/internal/replay/ReplayWorkflowExecutor.java)를 기준으로 구별한다. Completed로 끝낼 업무 취소라면 Cancel 대신 Signal·Update로 의사를 받고 내부 CancellationScope를 취소하는 설계를 검토한다. “정리를 했으니 성공으로 끝낸다”와 “업무 취소로 끝낸다”는 다른 정책이다. 운영 화면과 사용자 응답에 어떤 상태가 맞는지 결정하고 그 상태를 의도적으로 표현한다.
 
 ## Terminate 뒤에는 보상이 자동으로 실행되지 않는다
 
@@ -60,7 +60,15 @@ try {
 
 취소를 정상 흐름의 예외적인 덧붙임으로만 보면 정리 로직이 빠지기 쉽다. 예약·확정·취소 각각의 상태 전이를 먼저 적고, 사용자가 어느 지점에서 취소해도 어떤 상태가 남을지 설명하는 것이 코드보다 앞선 작업이다.
 
-**확인 질문:** Terminate된 Workflow에서 예약이 남았다면 어떤 근거로 해제 여부를 결정할까? 취소 예외를 잡고 정상 값을 반환하면 사용자가 기대한 상태와 어떻게 달라질까?
+**확인 질문:** Terminate된 Workflow에서 예약이 남았다면 어떤 근거로 해제 여부를 결정할까? Java에서 Cancel 요청 후 정상 반환해도 Canceled가 되는 이유는 무엇이며, 업무 취소를 Completed 결과로 돌려주려면 어떤 요청 계약이 필요할까?
+
+## Activity가 끝났다는 확인은 별도다
+
+Java의 기본 `ActivityCancellationType.TRY_CANCEL`은 취소를 요청한 뒤 Activity의 종료 확인을 기다리지 않는다. 따라서 해제 Activity가 먼저 실행되고 기존 변환 코드가 뒤늦게 계속 작업할 수 있다. `WAIT_CANCELLATION_COMPLETED`는 Activity 취소 처리를 기다리는 선택이지만, 외부 프로세스 종료까지 자동으로 보증하지는 않는다. `ABANDON`은 Activity에 취소 요청을 보내지 않는다.
+
+Terminate 또는 Workflow Execution/Run Timeout은 Workflow 정리 코드를 실행할 기회 없이 실행을 닫을 수 있다. Worker 안의 Activity 스레드나 외부 API가 동시에 강제 중단되는 것은 아니다. 별도 중단 계약과 늦은 완료 처리, 외부 원장 대조가 필요하다. `operationId`는 이 업무 요청을 식별하는 안정된 ID다.
+
+시험용 Workflow ID에만 `temporal workflow cancel --workflow-id cancel-lab`과 `temporal workflow terminate --workflow-id terminate-lab --reason lab`을 각각 적용한다. History의 CancelRequested/Canceled 또는 Terminated와 해제 원장을 함께 확인한다. API 응답만으로 정리 성공을 판정하지 않는다.
 
 ## 참고 자료
 

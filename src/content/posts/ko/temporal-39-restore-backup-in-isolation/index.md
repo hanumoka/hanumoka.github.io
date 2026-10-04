@@ -1,13 +1,13 @@
 ---
 pubDatetime: 2026-10-04T09:00:00+09:00
-title: "백업을 별도 환경에 복원해 본다"
+title: "백업을 격리 환경에 복원할 절차와 확인 항목"
 key: "temporal-39-restore-backup-in-isolation"
-description: "백업을 분리된 환경에 복원하고 실행 재개와 외부 예약·결과의 정합성을 확인한다."
+description: "백업 복원의 격리 순서와 실행·외부 원장 대조 방법을 설계한다. 실제 복원 결과는 아직 없다."
 tags: ["temporal", "distributed-systems"]
 kind: "concept"
 series: "temporal"
 seriesOrder: 39
-readingMinutes: 6
+readingMinutes: 7
 sourceNote: "docs/research/2026-10-04-temporal-series-plan.md"
 draft: true
 ---
@@ -28,7 +28,7 @@ Temporal persistence에는 실행 상태와 History, Task, Namespace 정보 등�
 
 복원된 Worker가 원래 예약 API와 결과 저장소를 호출하면 시험이 실제 업무에 영향을 줄 수 있다. 별도 환경을 만드는 이유는 복원 자체를 확인하면서 원래 환경의 상태를 바꾸지 않기 위해서다. 생성 문서와 가상 원장을 복제하고, 시험 endpoint와 자격만 연결한다.
 
-네트워크와 설정에서 이 경계를 확인한 다음 Worker를 시작한다. DB만 별도로 만들고 Worker의 접속 설정은 원래 환경을 쓰면 충분히 분리한 것이 아니다. 공개 실험에는 개인 데이터, 내부 주소, 운영 인증서를 넣을 필요가 없다.
+**네트워크 송신 차단과 설정 점검은 Worker뿐 아니라 Server를 시작하기 전에 끝내야 한다.** 복원 Server는 Worker 없이도 밀린 Timer·Schedule 처리와 서비스 자체의 외부 통신을 진행할 수 있다. DB만 별도로 만들고 Worker의 접속 설정은 원래 환경을 쓰면 충분히 분리한 것이 아니다. 공개 실험에는 개인 데이터, 내부 주소, 운영 인증서를 넣을 필요가 없다.
 
 동일한 Workflow ID가 별도 Service에 존재할 수 있으므로 로그에는 환경 구분도 필요하다. 다만 환경 이름을 바꿨다는 사실만으로 모든 외부 연결이 바뀌었다고 가정하지 않는다. 실제 실행 전에 연결 대상과 쓰기 경로를 검토한다.
 
@@ -38,11 +38,12 @@ Temporal persistence에는 실행 상태와 History, Task, Namespace 정보 등�
 
 1. 정상 실행을 만들고 현재 업무 상태와 실행 ID를 기록한다.
 2. DB가 지원하는 방식으로 시험 백업을 만든다.
-3. 분리된 DB와 호환되는 Server 환경을 준비한다.
-4. 백업을 복원하고 schema와 Namespace를 확인한다.
-5. 시험 외부 API를 가리키는 Worker를 시작한다.
-6. 기존 실행의 진행과 결과, 예약 원장의 일관성을 대조한다.
-7. 복원 착수부터 업무 확인까지 걸린 시간을 단계별로 기록한다.
+3. Server와 Worker를 멈춘 격리 환경의 DB에 백업을 복원한다.
+4. schema와 설정, 복원되는 Namespace·Schedule·외부 연결 정보를 점검한다.
+5. 운영망으로의 송신을 먼저 차단하고 시험용 DB·Visibility 등 필요한 목적지만 허용한다.
+6. 호환 Server를 시작해 Namespace·실행·Schedule 상태를 확인한다. 운영 목적지로 송신되지 않았는지 확인한다.
+7. 시험 API만 호출하는 Worker를 시작하고 실행 결과와 외부 원장을 대조한다.
+8. 복원 착수부터 업무 확인까지 걸린 시간을 단계별로 기록한다.
 
 예상 결과는 필요한 데이터와 코드, 설정이 맞으면 복원한 실행을 계속 처리할 수 있다는 것이다. 실제 성공 여부는 실험 후에 판단한다. UI가 열렸다는 시점과 가상 문서가 올바르게 끝난 시점을 구분해 기록해야 복구 시간을 과장하지 않는다.
 
@@ -63,6 +64,17 @@ Temporal persistence에는 실행 상태와 History, Task, Namespace 정보 등�
 복원 후 검색 목록과 실행 ID 조회가 다른 모습을 보이면 저장 역할과 복구 범위를 확인한다. 특정 저장소를 어떻게 복구하거나 다시 구성할지는 선택 릴리스와 DB 절차의 문제다. 검색 결과가 보이지 않는다고 내부 데이터를 임의로 수정해 맞추지 않는다.
 
 검증 질문은 “Temporal DB 복원이 성공했는데 예약 원장이 틀릴 수 있는 이유는 무엇일까?”다. 또 “복구 시간을 API 응답 재개까지만 재면 어떤 업무 지연을 놓칠까?”를 생각해 보자. 백업은 저장 작업이고 복구는 업무를 다시 성립시키는 검증이라는 차이가 드러난다.
+
+## Server 기동 전에 차단할 연결
+
+- 복사된 Visibility 저장소 주소와 자격: 시험 DB로 바꾸고 운영 DB 쓰기를 차단한다.
+- Namespace에 저장된 History·Visibility Archival URI: 기존 URI의 변경 제약을 확인하고 운영 저장소 쓰기를 네트워크·자격에서 차단한다.
+- Nexus endpoint·callback, 클러스터 간 복제 경로: 운영 endpoint로 송신하지 못하게 한다.
+- Schedule·Timer: 복원 시점 이후 밀린 실행이 생길 수 있으므로 실제 업무 Worker 연결 전에 점검한다.
+
+프로세스가 살아난 뒤 설정을 고치는 순서로 시험하지 않는다. 운영 자격을 그대로 복사해 “Worker만 안 띄웠다”는 이유로 안전하다고 판단하지 않는다. [Archival 설정](https://docs.temporal.io/self-hosted-guide/archival), [persistence](https://docs.temporal.io/temporal-service/persistence).
+
+반대 방향의 손실도 있다. 백업 **이후 새로 시작한 실행**은 복원 DB에 없지만 외부 원장의 예약은 남을 수 있다. 백업 이전 실행의 중복 효과뿐 아니라 사라진 시작 요청을 찾아 재접수·정리할 대조 절차도 필요하다. 복구 시험의 성공은 HTTP 응답이 아니라 이 두 방향의 업무 상태 확인으로 판정한다.
 
 ## 공식 자료
 

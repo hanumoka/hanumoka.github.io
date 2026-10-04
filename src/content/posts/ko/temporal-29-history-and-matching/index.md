@@ -7,7 +7,7 @@ tags: ["temporal", "distributed-systems"]
 kind: "concept"
 series: "temporal"
 seriesOrder: 29
-readingMinutes: 6
+readingMinutes: 7
 sourceNote: "docs/research/2026-10-04-temporal-series-plan.md"
 draft: true
 ---
@@ -55,6 +55,12 @@ Server 구성에는 Worker Service라는 이름도 나온다. 이것은 개발�
 실패 예제로 Worker가 잘못된 Task Queue를 기다리게 만들어 보자. 정상 상태인 Frontend에 연결되더라도 필요한 작업을 가져가지 못할 수 있다. 이 상황에서 History replica를 늘려도 계약이 다른 큐를 기다리는 문제는 해결되지 않는다. Client가 시작한 실행의 Queue와 Worker가 실제 등록한 Queue를 먼저 대조해야 한다.
 
 이 글의 검증 질문은 두 가지다. “Worker가 한 대도 없는데 시작 요청은 기록될 수 있는가?” 그리고 “History replica를 늘리는 것과 Shard 수를 바꾸는 것은 왜 같은 조작이 아닌가?” 두 질문을 설명할 수 있다면 다음 글에서 DB를 분리해도 실행 구조를 놓치지 않을 것이다.
+
+## Shard와 큐 partition의 수명
+
+`numHistoryShards`는 DB 최초 기동 때 정하고 이후 설정 변경은 반영되지 않는다. Server v1.32.0 기본 템플릿의 4와 Helm chart 1.7.0의 512는 배포 경로별 기본값이며 보편적인 운영 권장값이 아니다. replica 증설은 고정된 Shard를 맡는 프로세스 수를 바꾼다. [Service 설정](https://docs.temporal.io/references/service-configuration).
+
+Matching의 Task Queue partition은 History Shard와 다른 확장 단위이며 기본값은 4다. 읽기·쓰기 partition 설정을 맞추고 큐 전체의 엄격한 FIFO를 전제로 업무를 설계하지 않는다. [Task Queue](https://docs.temporal.io/task-queue). Worker 중단의 기본 절차는 [10편](/posts/temporal-10-client-service-worker/)을 따르되 이 편에서는 History 상태와 Matching의 backlog·최근 poll 시각을 대조한다.
 
 ## 공식 자료
 

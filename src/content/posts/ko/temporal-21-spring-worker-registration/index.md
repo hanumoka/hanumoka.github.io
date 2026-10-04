@@ -2,12 +2,12 @@
 pubDatetime: 2026-10-04T09:00:00+09:00
 title: "Spring 자동 설정 뒤에도 확인할 것은"
 key: "temporal-21-spring-worker-registration"
-description: "Java 기본 예제로 Worker와 Client의 역할을 이해했다면 Spring Boot 통합을 붙일 수 있다."
+description: "Spring 자동 검색과 명시 등록의 경계를 확인하고 설정 키·Worker 시작 실패를 진단한다."
 tags: ["temporal", "distributed-systems"]
 kind: "concept"
 series: "temporal"
 seriesOrder: 21
-readingMinutes: 5
+readingMinutes: 6
 sourceNote: "docs/research/2026-10-04-temporal-series-plan.md"
 draft: true
 ---
@@ -55,6 +55,12 @@ Spring 통합 후에는 같은 문서 입력에 대해 호출할 Activity 순서
 실습 기록에는 의존성 버전, 활성화한 설정, Worker 등록 목록, 정상 경로와 등록 누락 경로의 결과를 남긴다. 문서에 적힌 예시 버전을 무조건 최신으로 간주하지 말고 실제 사용하는 버전과 일치시킨다. 자동 설정을 사용할수록 설정이 만들어 낸 객체와 역할을 말로 설명할 수 있어야 한다.
 
 **확인 질문:** Activity Bean이 존재하는데 실행되지 않는다면 Bean 생성 다음에 무엇을 확인할까? Spring이 주입한 객체라도 Workflow에서 직접 DB를 조회하면 안 되는 이유는 무엇일까?
+
+## 자동 검색의 설정 키와 테스트 서버를 분리한다
+
+Java 1.40.0 기준 `spring.temporal.workers-auto-discovery.packages`는 deprecated다. Workflow 탐색용 `workflow-packages`와 Activity Bean 등록용 `register-activity-beans` 등 해당 버전의 속성을 구별하고 옛 속성과 새 속성을 섞지 않는다. `@WorkflowImpl`·`@ActivityImpl`의 큐 지정과 실제 Bean 생성 여부도 확인한다. [자동 검색 속성](https://github.com/temporalio/sdk-java/blob/v1.40.0/temporal-spring-boot-autoconfigure/src/main/java/io/temporal/spring/boot/autoconfigure/properties/WorkersAutoDiscoveryProperties.java).
+
+`spring.temporal.test-server.enabled=true`는 메모리 테스트 서버를 사용한다. 이 테스트의 통과는 실제 Service의 connection·TLS·API key 설정이 맞다는 증거가 아니다. 순수 SDK판과 Spring판을 비교할 때는 한 번에 하나만 실행하거나 큐를 분리해 다른 Worker가 등록 누락을 가리지 않도록 한다. Activity 타입 이름이 충돌하면 클래스가 서로 달라도 등록에 실패할 수 있으므로 명시적인 이름·접두사와 등록 결과를 확인한다.
 
 ## 참고 자료
 

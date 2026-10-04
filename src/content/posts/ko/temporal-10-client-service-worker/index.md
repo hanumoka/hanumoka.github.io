@@ -2,12 +2,12 @@
 pubDatetime: 2026-10-04T09:00:00+09:00
 title: "Client·Service·Worker는 어디서 실행되는가"
 key: "temporal-10-client-service-worker"
-description: "문서 처리 요청을 Temporal에 보냈다고 해서 Temporal Service가 문서를 변환하는 것은 아니다."
+description: "Client의 시작 요청, Service의 이력 관리, Worker의 코드 실행을 구별하고 큐와 poller로 대기 원인을 찾는다."
 tags: ["temporal", "distributed-systems"]
 kind: "concept"
 series: "temporal"
 seriesOrder: 10
-readingMinutes: 5
+readingMinutes: 7
 sourceNote: "docs/research/2026-10-04-temporal-series-plan.md"
 draft: true
 ---
@@ -57,6 +57,22 @@ Worker는 특정 Namespace의 Task Queue에서 작업을 가져온다. Task Queu
 실습 전에는 Java SDK와 CLI 버전, 로컬 개발 서버의 실행 방식, 사용할 Namespace와 큐 이름을 기록한다. 다른 시스템의 운영 설정을 그대로 가져올 필요는 없다. 개인 예제에서 역할을 설명할 수 있을 정도의 최소 환경이면 충분하다.
 
 **확인 질문:** Worker를 모두 껐는데 시작 요청이 성공했다면 무엇이 성공한 것일까? Service의 health 응답만 보고 문서 처리 기능이 정상이라고 판단할 수 있을까?
+
+## 개발 서버와 관찰 명령
+
+`temporal server start-dev`는 로컬 학습용 Service다. 운영 배포 구성이 아니며 기본 임시 저장과 파일 DB 지정 여부를 구별한다. 별도 터미널에서 다음처럼 시작한다. 기존 DB 파일을 덮어쓰지 않는 실습 폴더를 사용한다.
+
+```shell
+temporal server start-dev --ip 127.0.0.1 --db-filename temporal-lab.db
+temporal workflow describe --workflow-id first-document
+temporal workflow show --workflow-id first-document
+temporal task-queue describe --task-queue document-workflow --task-queue-type workflow
+temporal task-queue describe --task-queue document-workflow --task-queue-type activity
+```
+
+**Namespace**는 실행과 Task Queue 등을 구분하는 논리 영역이다. 위 예제는 기본 `default`를 사용한다. **poller**는 Task를 받아 가려고 Service에 요청하는 Worker의 동작·주체다. **Workflow Task**는 이력을 바탕으로 다음 명령을 결정할 기회이고, **Activity Task**는 외부 작업 코드를 실행할 요청이다.
+
+Worker 부재 시험에서는 충분한 대기 시간을 주고 Worker만 중단한다. Describe의 실행 상태·Pending Activities와 두 종류의 poller를 비교한다. 큐 이름이 틀려도 큐가 자동으로 생겨 연결 오류 없이 기다릴 수 있다. 같은 종류의 Task Queue를 받는 Worker에는 그 큐의 타입을 일관되게 등록한다. 각자의 일부 Activity만 등록하면 타입에 따라 임의 Worker에서 실패할 수 있다. [Task Queues](https://docs.temporal.io/task-queue), [CLI](https://docs.temporal.io/cli/server#start-dev).
 
 ## 참고 자료
 

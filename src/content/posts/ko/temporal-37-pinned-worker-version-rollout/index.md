@@ -7,7 +7,7 @@ tags: ["temporal", "distributed-systems"]
 kind: "concept"
 series: "temporal"
 seriesOrder: 37
-readingMinutes: 6
+readingMinutes: 7
 sourceNote: "docs/research/2026-10-04-temporal-series-plan.md"
 draft: true
 ---
@@ -37,7 +37,7 @@ Auto-Upgrade 같은 다른 동작을 사용하는 경우에는 이후 Task가 �
 실험용 버전 식별자는 같은 코드 빌드가 무엇인지 추적할 수 있게 정한다. 같은 식별자를 내용이 다른 이미지에 재사용하면 결과를 해석하기 어렵다. 이미지 digest와 애플리케이션 버전의 대응을 기록하되 공개 글에는 생성 예제의 정보만 사용한다.
 
 1. v1 Worker로 문서 실행을 시작하고 예약 뒤 승인 대기에 둔다.
-2. v2 Worker를 별도 Deployment Version으로 준비한다.
+2. v1 Kubernetes Deployment를 유지하고 **별도의 v2 Deployment**를 만든다. 각각 다른 Temporal Deployment Version을 등록한다. 같은 Deployment의 이미지 교체로 v1 Pod를 모두 종료하지 않는다.
 3. 선택한 기능의 절차에 따라 신규 유입을 v2로 보내도록 설정한다.
 4. 새 문서가 v2의 검증 단계를 거치는지 확인한다.
 5. 기존 문서에 승인을 보내 v1 경로로 진행하는지 확인한다.
@@ -62,6 +62,12 @@ v2에 문제가 있어 신규 유입을 v1으로 돌리는 것과 이미 v2에 �
 Worker Versioning은 과거 실험 API와 현재 API가 섞여 있는 자료가 많다. 검색한 코드가 어떤 세대의 API인지 확인하고 선택 Server·SDK의 문서를 기준으로 구현해야 한다. 버전 번호의 크기만 비교하거나 오래된 명령을 섞으면 배포 설계와 다른 동작을 만들 수 있다.
 
 검증 질문은 “신규 실행이 모두 v2로 가는데 v1을 계속 유지해야 하는 이유는 무엇일까?”다. 또 “유입을 v1으로 되돌렸다면 이미 v2가 처리한 실행도 자동으로 되돌아갈까?”를 생각해 보자. 실행의 수명을 배포보다 길게 보는 관점이 이 기능의 핵심이다.
+
+## 이전 Worker가 남는 배포와 Run 전환
+
+이 글의 Pinned Worker Versioning에는 v1과 v2가 공존하는 rainbow 배포가 필요하다. Temporal의 같은 Worker Deployment 이름 안에서 서로 다른 Build ID를 사용하고, Kubernetes에서는 별도 Deployment 리소스로 두 버전을 유지한다. 두 제품에서 쓰는 Deployment라는 이름을 구별한다. 일반 rolling update로 한 Kubernetes Deployment의 이미지만 교체하면 구버전 Pod가 사라져 기존 실행이 기다릴 수 있다. “배포 중 두 버전이 잠깐 공존한다”와 “이전 실행이 끝날 때까지 v1을 유지한다”는 다르다. [Worker Versioning 배포 조건](https://docs.temporal.io/production-deployment/worker-deployments/worker-versioning).
+
+Pinned 실행은 기본적으로 Continue-As-New 체인에서도 원래 버전을 유지한다. 새 Run에서 자동으로 최신 코드로 바뀐다고 가정하지 않는다. 2026-10-04 확인한 Upgrade on Continue-As-New는 Public Preview이며 SDK·Server 지원과 명시적 옵션을 확인해야 한다. 기존 Run에서 진행 중인 handler·Activity를 정리하고 넘길 상태를 정한 뒤 전환한다. [상태 이전은 24편](/posts/temporal-24-continue-as-new-state/)과 함께 확인한다.
 
 ## 공식 자료
 

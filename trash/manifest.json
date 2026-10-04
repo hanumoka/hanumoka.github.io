@@ -10,7 +10,8 @@
           "path": "index.md"
         }
       ],
-      "key": "2026-09-16-kotlin-spring-multimodule"
+      "key": "2026-09-16-kotlin-spring-multimodule",
+      "restoreWith": []
     },
     {
       "original": "src/content/posts/ko/2026-09-16-langfuse",
@@ -21,7 +22,8 @@
           "path": "index.md"
         }
       ],
-      "key": "2026-09-16-langfuse"
+      "key": "2026-09-16-langfuse",
+      "restoreWith": []
     },
     {
       "original": "src/content/posts/ko/2026-09-16-nvidia-triton",
@@ -32,7 +34,8 @@
           "path": "index.md"
         }
       ],
-      "key": "2026-09-16-nvidia-triton"
+      "key": "2026-09-16-nvidia-triton",
+      "restoreWith": []
     },
     {
       "original": "src/content/posts/ko/2026-09-16-saas-gpu-llm-ops",
@@ -43,7 +46,11 @@
           "path": "index.md"
         }
       ],
-      "key": "2026-09-16-saas-gpu-llm-ops"
+      "key": "2026-09-16-saas-gpu-llm-ops",
+      "restoreWith": [
+        "2026-09-16-nvidia-triton",
+        "2026-09-16-langfuse"
+      ]
     },
     {
       "original": "src/content/posts/ko/2026-09-16-temporal-basics",
@@ -54,7 +61,8 @@
           "path": "index.md"
         }
       ],
-      "key": "2026-09-16-temporal-basics"
+      "key": "2026-09-16-temporal-basics",
+      "restoreWith": []
     },
     {
       "original": "src/content/posts/ko/temporal-workflow-playground",
@@ -65,7 +73,10 @@
           "path": "index.mdx"
         }
       ],
-      "key": "temporal-workflow-playground"
+      "key": "temporal-workflow-playground",
+      "restoreWith": [
+        "2026-09-16-temporal-basics"
+      ]
     }
   ],
   "reason": "Temporal 학습 시리즈로 초안 목록 교체. 기존 본문과 자산은 복구 가능하도록 보존.",

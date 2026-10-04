@@ -2,12 +2,12 @@
 pubDatetime: 2026-10-04T09:00:00+09:00
 title: "본문 대신 ID만 넘기면 충분할까"
 key: "temporal-27-document-reference-retention"
-description: "문서 본문을 Workflow 입력과 Activity 결과에 계속 넣으면 실행 이력에도 큰 데이터가 남을 수 있다."
+description: "payload 한도와 외부 참조의 버전·보존·접근 권한을 함께 설계한다."
 tags: ["temporal", "distributed-systems"]
 kind: "concept"
 series: "temporal"
 seriesOrder: 27
-readingMinutes: 5
+readingMinutes: 6
 sourceNote: "docs/research/2026-10-04-temporal-series-plan.md"
 draft: true
 ---
@@ -62,6 +62,14 @@ Activity 완료 결과가 이력에 남았다면 Workflow replay는 그 기록�
 반대로 모든 원본을 영원히 보관하는 것도 자동 정답은 아니다. 삭제 요구가 있는 데이터라면 어떤 실행을 더 이상 재처리할 수 없는지 표시하고, 참조가 남은 경우 어떤 실패를 반환할지 정의해야 한다. “ID만 저장했으니 민감정보가 없다”는 결론도 별도 검토가 필요하다.
 
 **확인 질문:** 체크섬은 맞지만 원본이 삭제됐다면 어떤 복구가 가능한가? Activity가 반환한 결과 위치를 다른 Worker도 읽을 수 있어야 하는 이유는 무엇일까?
+
+## 크기 제한과 SDK 외부 저장 기능
+
+2026-10-04 공식 기준 payload blob은 2MB 오류 한도이며 요청 전체에는 별도 gRPC 크기 제한이 있다. 자체 운영의 설정과 Cloud 한도를 구분한다. 1.9MB 본문 여러 개를 모은 요청이 안전하다고 추정하지 않는다. [Cloud 한도](https://docs.temporal.io/evaluate/cloud/limits).
+
+SDK의 **External Storage**는 큰 payload를 외부에 저장하고 참조 토큰을 전달하는 기능이다. 공식 문서상 Public Preview이며 Java 지원은 Pre-release로 안내된다. 본문에서 직접 업무 ID·버전을 넘기는 설계와 별개다. 이 기능에서는 replay 때에도 외부 객체가 필요할 수 있다. 최대 Run Timeout과 retention을 합친 기간보다 긴 보존을 계획하고, 실행 상한이 없다면 유한 TTL만으로 안전하다고 주장하지 않는다. [External Storage](https://docs.temporal.io/external-storage), [Java 설정](https://docs.temporal.io/develop/java/data-handling/external-storage).
+
+만료되는 서명 URL·접근 토큰을 History에 넣기보다 안정된 업무 ID와 버전을 넘기고 Activity가 실행 시 권한을 얻도록 설계한다. 영구 삭제와 일시 네트워크·권한 장애를 다른 실패로 분류한다.
 
 ## 참고 자료
 
