@@ -24,6 +24,7 @@ async function render(): Promise<void> {
 
   loading ??= import("mermaid");
   const mermaid = (await loading).default;
+  await document.fonts.ready;
 
   for (const node of nodes) {
     // 처음 본 순간의 텍스트가 원본이다. 한 번 그리면 `<pre>` 안이 SVG 로
@@ -41,6 +42,10 @@ async function render(): Promise<void> {
     theme: mermaidTheme(),
     // 다이어그램 정의는 글에서 온다. 스크립트 실행을 허용할 이유가 없다.
     securityLevel: "strict",
+    // HTML 라벨은 본문 스타일의 영향을 받아 측정한 폭과 실제 폭이 달라질 수 있다.
+    // 내보내기와 동일하게 SVG 텍스트를 사용한다.
+    htmlLabels: false,
+    flowchart: { htmlLabels: false },
   });
 
   await mermaid.run({ nodes });
