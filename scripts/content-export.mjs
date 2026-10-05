@@ -200,7 +200,7 @@ export async function packageArticle(file) {
         "Mermaid 내보내기에는 코드와 일치하는 원본·정적 그림을 visual-assets.json에 등록하세요."
       );
     const alt = matched.alt.replace(/[\[\]\r\n]/g, " ");
-    const replacement = `![${alt}](${matched.file})\n\n[Mermaid 편집 원본](${matched.source})`;
+    const replacement = `![${alt}](${matched.file})`;
     content =
       content.slice(0, node.position.start.offset) +
       replacement +

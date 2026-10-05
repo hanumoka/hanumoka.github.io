@@ -95,8 +95,6 @@ flowchart TB
 
 그림 1. Temporal Service는 실행 이력과 작업 배분을 관리하고 Worker가 업무 코드를 실행한다. 양방향 연결은 Worker의 작업 요청과 Temporal Service의 응답, 명령·결과 보고를 뜻한다. Workflow와 Activity를 같은 Worker에 둘 수도, 여러 Worker로 나눌 수도 있다. 그림은 일반적인 배포 관계이며 물리 서버 수를 지정하지 않는다.
 
-[Mermaid 편집 원본 다운로드](./assets/temporal-roles.mmd)
-
 **Temporal Service는 Temporal Server와 실행 이력을 보관하는 저장소를 합쳐 부르는 이름이다.** 예매·결제 같은 업무 서비스와 구분하기 위해 이 글에서는 줄여 쓰지 않는다. Task Queue는 Worker가 받아 갈 작업을 구분하는 대기열이다. 기본 흐름을 단순화하면 다음과 같다.
 
 1. 애플리케이션이 Client로 Workflow 시작을 요청한다.
@@ -151,8 +149,6 @@ sequenceDiagram
 ```
 
 그림 2. 서로 다른 언어가 Temporal Service를 통해 작업과 결과를 주고받는 정상 흐름이다. Workflow·Activity는 역할에 맞는 별도 Task Queue를 사용하며 같은 Namespace 접근·인증·타입 이름·입력과 결과 형식을 맞춰야 한다. 시작 응답은 업무 완료가 아니다. 결과 대기 요청은 완료 전에 보낼 수도 있다. 재시도·타임아웃·보상은 이 그림에서 생략했다.
-
-[Mermaid 편집 원본 다운로드](./assets/temporal-polyglot.mmd)
 
 여기서 Node.js가 Java Worker에 직접 HTTP 요청을 보내는 것은 아니다. **Worker가 Temporal Service에서 작업을 가져오고 결과를 보고한다.** 공식 다언어 샘플도 Java Workflow에서 Go·Node.js Activity를 호출하는 구성을 제공한다. 언어마다 별도 처리 큐를 두면 실행할 타입을 모르는 Worker가 작업을 받는 문제를 피하기 쉽다. ([공식 다언어 샘플](https://github.com/temporalio/temporal-polyglot), [Task Queue](https://docs.temporal.io/task-queue))
 
