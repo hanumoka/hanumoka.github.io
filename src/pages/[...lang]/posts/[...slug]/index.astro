@@ -22,6 +22,13 @@ import AdjacentPostNav from "./_components/AdjacentPostNav.astro";
 import Comments from "@/components/Comments.astro";
 import SeriesNav from "@/components/SeriesNav.astro";
 import config from "@/config";
+import { existsSync, readFileSync } from "node:fs";
+
+const exportManifestPath = "public/exports/manifest.json";
+const exportManifest: Record<string, { markdown: string; bundle: string }> =
+  existsSync(exportManifestPath)
+    ? JSON.parse(readFileSync(exportManifestPath, "utf8"))
+    : {};
 
 export async function getStaticPaths() {
   // ★ 이전/다음 글은 같은 언어 안에서만 잇는다. 언어를 섞으면 한국어 글을
@@ -94,6 +101,7 @@ const {
   hideEditPost,
 } = post.data;
 
+const downloads = exportManifest[`${locale}/${post.data.key}`];
 const t = useTranslations(locale);
 const kindListed = kind ? await hasOfficialTerm("kinds", locale, kind) : false;
 const kindLabel = kind ? (t.kinds[kind as keyof typeof t.kinds] ?? kind) : "";
@@ -173,6 +181,34 @@ const ogImage = ogImageUrl
           {tplStr(t.post.readingEstimate, {
             minutes: post.data.readingMinutes,
           })}
+        </p>
+      )
+    }
+
+    {
+      downloads && (
+        <p class="text-muted-foreground mt-3 text-sm">
+          <a
+            href={downloads.markdown}
+            download={`${post.data.key}.md`}
+            class="underline"
+          >
+            {locale === "ko" ? "Markdown 다운로드" : "Download Markdown"}
+          </a>
+          {" · "}
+          <a
+            href={downloads.bundle}
+            download={`${post.data.key}.zip`}
+            class="underline"
+          >
+            {locale === "ko"
+              ? "본문 + 이미지 + 원본 ZIP"
+              : "Article + images + sources ZIP"}
+          </a>
+          <br />
+          {locale === "ko"
+            ? "그림까지 오프라인에서 보려면 ZIP을 내려받아 압축을 풀어 주세요."
+            : "Extract the ZIP to read the article and images offline."}
         </p>
       )
     }

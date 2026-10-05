@@ -125,20 +125,11 @@ frontmatter는 Zod 스키마로 검사하며 **어기면 빌드가 실패한다.
 부분 발행 뒤에는 본문의 앞·뒤 편 참조도 확인한다. 정식 연재에서의 순번과
 전체 계획의 편 번호는 다르며, 미발행 편은 초안임을 알고 이동할 수 있어야 한다.
 
-### Temporal 초안 연재와 휴지통
+### 글과 초안 초기화
 
-Temporal 초안은 `/drafts/series/temporal/`에서 `seriesOrder` 순으로 읽는다.
-글 하단의 이전·다음 이동도 연재 순서를 따른다. 소유자가 한 편씩 검토하고
-고도화를 요청하며, 확인을 마친 해당 글만 `draft: false`로 바꾼다.
-정식 연재 `/series/temporal/`에는 정식 글만 포함한다.
-
-`readingMinutes`는 본문·핵심 코드의 읽기 예상 시간이다. 설치와 실습 실행 시간은
-포함하지 않는다. Temporal 글은 5~10분 읽기를 목표로 하고 실제 검토에서 조정한다.
-42편을 한 번에 발행하거나 학습 완료로 취급하지 않는다.
-
-이전 초안은 [휴지통](trash/README.md)에 보관한다. 본문과 자산을 삭제하지 않으며
-사이트 빌드·검색·RSS에는 포함하지 않는다. 복구 경로와 원본 해시는
-`trash/manifest.json`에 있다. 공개 저장소 파일의 열람 가능 여부는 변하지 않는다.
+2026-10-05 소유자 요청으로 모든 글·초안과 휴지통의 원고·첨부를 제거했다.
+Notion 편집 원고는 유지하며 소유자가 직접 수정한 뒤 다시 전달한다.
+글이 없는 상태에서도 목록·검색·RSS·내보내기 빌드가 동작한다.
 
 ### 이미지와 GIF
 
@@ -171,8 +162,7 @@ Temporal 초안은 `/drafts/series/temporal/`에서 `seriesOrder` 순으로 읽�
 React 런타임은 필요하지 않다. 외부 API 조회에는 API의 공개 범위·CORS·인증을
 별도로 검토해야 하고, 비밀 키를 브라우저 코드에 넣으면 안 된다.
 
-보관된 예시는
-[`temporal-workflow-playground/index.mdx`](trash/posts/ko/temporal-workflow-playground/index.mdx)다.
+기존 보관 예시는 소유자 요청으로 제거했다. 새 글은 정적 Markdown 작성 절차를 따른다.
 공통 틀은 [`InteractiveFrame.astro`](src/components/interactive/InteractiveFrame.astro)에
 있다. 기존 글의 URL·댓글 키·초안 규칙은 그대로 적용한다.
 
@@ -250,3 +240,7 @@ _"Pagefind doesn't support stemming for the language ko."_ 그래도 쓸 만한 
 
 - **글(산문)의 라이선스.** `LICENSE`는 코드에 대한 것이다. 글을 어떤 조건으로 열지는
   아직 정하지 않았다.
+
+## Markdown과 정적 시각화
+
+새 글은 Markdown과 로컬 이미지·정적 다이어그램으로 작성한다. GIF는 정적 대체 그림을 함께 둔다. [작성·렌더링·Notion 원고 내보내기 절차](docs/static-blog-authoring.md)를 따른다. 빌드가 외부 이미지 직접 참조와 누락 자산을 검사하고 글별 Markdown/ZIP 다운로드를 생성한다. 기존 MDX는 완전한 `_export.md`가 있을 때만 다운로드를 제공한다.

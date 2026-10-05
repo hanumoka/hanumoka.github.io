@@ -99,17 +99,20 @@ for (const path of files("src/content/posts")) {
   temporal.push({ key, order, draft, html });
 }
 temporal.sort((a, b) => a.order - b.order);
-assert(temporal.length > 0, "Temporal 글이 없습니다");
 assert.equal(
   new Set(temporal.map(p => p.order)).size,
   temporal.length,
   "연재 순서 중복"
 );
-const review = readFileSync("dist/drafts/series/temporal/index.html", "utf8");
-assert(
-  /<meta name="robots" content="noindex/.test(review),
-  "검토 목차 noindex 누락"
-);
+const reviewPath = "dist/drafts/series/temporal/index.html";
+const review = temporal.length ? readFileSync(reviewPath, "utf8") : "";
+if (temporal.length)
+  assert(
+    /<meta name="robots" content="noindex/.test(review),
+    "검토 목차 noindex 누락"
+  );
+else
+  assert(!existsSync(reviewPath), "글 없는 Temporal 검토 목차가 남아 있습니다");
 let last = -1;
 for (const post of temporal) {
   const offset = review.indexOf(`/posts/${post.key}/`);

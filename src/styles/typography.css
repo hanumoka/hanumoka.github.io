@@ -1,5 +1,15 @@
 @plugin "@tailwindcss/typography";
 
+/* Keep diagram labels readable instead of shrinking a whole sequence to a phone. */
+.app-prose pre.mermaid {
+  overflow-x: auto;
+}
+@media (max-width: 640px) {
+  .app-prose pre.mermaid > svg {
+    min-width: 800px;
+  }
+}
+
 @layer base {
   /* ===== Override default Tailwind Typography styles ===== */
   .app-prose {
@@ -60,6 +70,10 @@
     }
 
     table {
+      display: block;
+      max-width: 100%;
+      overflow-x: auto;
+
       th,
       td {
         @apply border-border border p-2;

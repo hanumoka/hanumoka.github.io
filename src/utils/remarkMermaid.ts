@@ -31,7 +31,7 @@ function transform(node: MdNode): void {
       // 같았다. 그래서 정의는 요소의 텍스트로만 둔다.
       children[index] = {
         type: "html",
-        value: `<pre class="mermaid">${escapeHtml(child.value ?? "")}</pre>`,
+        value: `<pre class="mermaid" tabindex="0" aria-label="다이어그램. 좁은 화면에서는 좌우로 스크롤할 수 있습니다.">${escapeHtml(child.value ?? "")}</pre>`,
       };
       continue;
     }

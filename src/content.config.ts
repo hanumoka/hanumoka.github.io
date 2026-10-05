@@ -1,14 +1,26 @@
 import { defineCollection } from "astro:content";
 import { z } from "astro/zod";
 import { glob } from "astro/loaders";
+import { globSync } from "node:fs";
 import config from "@/config";
 import { KINDS } from "@/catalog";
 import { SERIES_KEYS } from "@/series";
 
 export const BLOG_PATH = "src/content/posts";
+const postPattern = "**/[^_]*.{md,mdx}";
+const postLoader = glob({ pattern: postPattern, base: `./${BLOG_PATH}` });
 
 const posts = defineCollection({
-  loader: glob({ pattern: "**/[^_]*.{md,mdx}", base: `./${BLOG_PATH}` }),
+  loader: {
+    ...postLoader,
+    async load(context) {
+      // The glob loader returns early for an empty folder. Clear cached articles
+      // explicitly so deleting the final post cannot leave published content.
+      if (globSync(postPattern, { cwd: BLOG_PATH }).length === 0)
+        context.store.clear();
+      await postLoader.load(context);
+    },
+  },
   schema: ({ image }) =>
     z.object({
       author: z.string().default(config.site.author),

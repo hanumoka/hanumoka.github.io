@@ -13,6 +13,11 @@
 !README.md
 !astro-paper.config.ts
 !/scripts
+!/docs
 
 # Ignore MDX files
 *.mdx
+# Generated downloads and diagram source formats.
+/public/exports/
+**/*.drawio
+**/*.excalidraw

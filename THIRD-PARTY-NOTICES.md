@@ -425,10 +425,14 @@ SOFTWARE.
 ## 락파일 라이선스 목록
 
 `hanumoka-site@0.2.0`의 `package-lock.json`(lockfileVersion 3)에서
-고른 패키지 787개입니다. 이 목록의 패키지가 모두 사이트에
+고른 패키지 864개입니다. 이 목록의 패키지가 모두 사이트에
 실리는 것은 아닙니다. 실리는 것은 위 절에 적었습니다. 빌드 기계에서만 쓰는
 것(이미지 변환용 libvips, CSS 변환기, 형식 검사기 등)의 바이너리는 저장소에도
 사이트에도 실리지 않습니다.
+
+### (CC-BY-4.0 AND OFL-1.1 AND MIT)
+
+- `@fortawesome/fontawesome-free@7.3.1`
 
 ### (MPL-2.0 OR Apache-2.0)
 
@@ -440,7 +444,12 @@ SOFTWARE.
 
 ### Apache-2.0
 
+- `@chevrotain/cst-dts-gen@13.2.0`
+- `@chevrotain/gast@13.2.0`
+- `@chevrotain/regexp-to-ast@13.2.0`
 - `@chevrotain/types@11.1.2`
+- `@chevrotain/types@13.2.0`
+- `@chevrotain/utils@13.2.0`
 - `@eslint/config-array@0.23.5`
 - `@eslint/config-helpers@0.7.0`
 - `@eslint/core@1.2.1`
@@ -463,13 +472,29 @@ SOFTWARE.
 - `@img/sharp-linuxmusl-arm64@0.35.4`
 - `@img/sharp-linuxmusl-x64@0.35.4`
 - `@img/sharp-webcontainers-wasm32@0.35.4`
+- `@internationalized/date@3.12.4`
+- `@internationalized/number@3.6.8`
+- `@internationalized/string@3.2.10`
+- `@puppeteer/browsers@3.2.3`
+- `@react-aria/focus@3.22.1`
+- `@react-aria/interactions@3.28.1`
+- `@react-types/shared@3.36.1`
+- `@swc/helpers@0.5.23`
 - `aria-query@5.3.2`
 - `axobject-query@4.1.0`
+- `chevrotain@13.2.0`
+- `chromium-bidi@17.0.2`
+- `class-variance-authority@0.7.1`
 - `detect-libc@2.1.2`
 - `eslint-visitor-keys@3.4.3`
 - `eslint-visitor-keys@5.0.1`
+- `puppeteer@25.12.0`
+- `puppeteer-core@25.12.0`
+- `react-aria@3.52.1`
+- `react-stately@3.50.0`
 - `sharp@0.35.4`
 - `typescript@6.0.3`
+- `webdriver-bidi-protocol@0.4.3`
 
 ### Apache-2.0 AND LGPL-3.0-or-later
 
@@ -509,14 +534,17 @@ SOFTWARE.
 
 ### BSD-3-Clause
 
+- `antlr4@4.11.0`
 - `d3-array@2.12.1`
 - `d3-ease@3.0.1`
 - `d3-path@1.0.9`
 - `d3-sankey@0.12.3`
 - `d3-shape@1.3.7`
+- `devtools-protocol@0.0.1687809`
 - `diff@9.0.0`
 - `esquery@1.7.0`
 - `fast-uri@3.1.7`
+- `highlight.js@11.12.0`
 - `rw@1.3.3`
 - `smol-toml@1.8.0`
 - `source-map@0.7.6`
@@ -526,6 +554,10 @@ SOFTWARE.
 
 - `mdn-data@2.0.28`
 - `mdn-data@2.27.1`
+
+### EPL-2.0
+
+- `elkjs@0.9.3`
 
 ### ISC
 
@@ -580,7 +612,7 @@ SOFTWARE.
 - `which@2.0.2`
 - `y18n@5.0.8`
 - `yaml@2.8.3`
-- `yaml@2.9.0`
+- `yaml@2.9.1`
 - `yargs-parser@22.0.0`
 
 ### LGPL-3.0-or-later
@@ -684,6 +716,14 @@ SOFTWARE.
 - `@esbuild/win32-x64@0.28.2`
 - `@eslint-community/eslint-utils@4.10.1`
 - `@eslint-community/regexpp@4.12.2`
+- `@floating-ui/core@1.8.0`
+- `@floating-ui/dom@1.8.0`
+- `@floating-ui/react@0.26.28`
+- `@floating-ui/react@0.27.20`
+- `@floating-ui/react-dom@2.1.9`
+- `@floating-ui/utils@0.2.12`
+- `@headlessui/react@2.2.10`
+- `@headlessui/tailwindcss@0.2.2`
 - `@iconify/types@2.0.0`
 - `@iconify/utils@3.1.7`
 - `@img/colour@1.1.0`
@@ -695,7 +735,23 @@ SOFTWARE.
 - `@keyv/bigmap@1.3.1`
 - `@keyv/serialize@1.1.1`
 - `@mdx-js/mdx@3.1.1`
+- `@mermaid-js/layout-tidy-tree@1.0.1`
+- `@mermaid-js/mermaid-cli@12.0.0`
+- `@mermaid-js/mermaid-zenuml@1.0.1`
 - `@mermaid-js/parser@1.2.1`
+- `@mermaid-js/parser@2.0.1`
+- `@napi-rs/canvas@0.1.100`
+- `@napi-rs/canvas-android-arm64@0.1.100`
+- `@napi-rs/canvas-darwin-arm64@0.1.100`
+- `@napi-rs/canvas-darwin-x64@0.1.100`
+- `@napi-rs/canvas-linux-arm-gnueabihf@0.1.100`
+- `@napi-rs/canvas-linux-arm64-gnu@0.1.100`
+- `@napi-rs/canvas-linux-arm64-musl@0.1.100`
+- `@napi-rs/canvas-linux-riscv64-gnu@0.1.100`
+- `@napi-rs/canvas-linux-x64-gnu@0.1.100`
+- `@napi-rs/canvas-linux-x64-musl@0.1.100`
+- `@napi-rs/canvas-win32-arm64-msvc@0.1.100`
+- `@napi-rs/canvas-win32-x64-msvc@0.1.100`
 - `@napi-rs/wasm-runtime@1.2.3`
 - `@nodable/entities@3.0.0`
 - `@oslojs/encoding@1.1.0`
@@ -751,6 +807,8 @@ SOFTWARE.
 - `@tailwindcss/oxide-win32-x64-msvc@4.3.3`
 - `@tailwindcss/typography@0.5.20`
 - `@tailwindcss/vite@4.3.3`
+- `@tanstack/react-virtual@3.14.13`
+- `@tanstack/virtual-core@3.17.11`
 - `@tybys/wasm-util@0.10.3`
 - `@types/d3@7.4.3`
 - `@types/d3-array@3.2.2`
@@ -818,6 +876,7 @@ SOFTWARE.
 - `@volar/typescript@2.4.28`
 - `@vscode/emmet-helper@2.11.0`
 - `@vscode/l10n@0.0.18`
+- `@zenuml/core@3.50.1`
 - `acorn@8.18.0`
 - `acorn-jsx@5.3.2`
 - `ajv@6.15.0`
@@ -829,6 +888,7 @@ SOFTWARE.
 - `ansi-styles@6.2.3`
 - `anynum@1.0.1`
 - `arg@5.0.2`
+- `aria-hidden@1.2.6`
 - `array-iterate@2.0.1`
 - `astring@1.9.0`
 - `astro@7.3.1`
@@ -841,6 +901,7 @@ SOFTWARE.
 - `cacheable@2.5.0`
 - `camelize@1.0.1`
 - `ccount@2.0.1`
+- `chalk@6.0.1`
 - `character-entities@2.0.2`
 - `character-entities-html4@2.1.0`
 - `character-entities-legacy@3.0.0`
@@ -851,8 +912,11 @@ SOFTWARE.
 - `clsx@2.1.1`
 - `collapse-white-space@2.1.0`
 - `color-name@1.1.4`
+- `color-name@2.1.1`
+- `color-string@2.1.4`
 - `comma-separated-tokens@2.0.3`
 - `commander@11.1.0`
+- `commander@15.0.0`
 - `commander@7.2.0`
 - `commander@8.3.0`
 - `cookie@2.0.1`
@@ -919,6 +983,7 @@ SOFTWARE.
 - `fastdom@1.0.12`
 - `fdir@6.5.0`
 - `fflate@0.7.5`
+- `fflate@0.8.3`
 - `file-entry-cache@11.1.5`
 - `find-proc@0.1.0`
 - `find-up@5.0.0`
@@ -949,6 +1014,7 @@ SOFTWARE.
 - `hookified@1.15.1`
 - `hookified@2.2.0`
 - `html-escaper@3.0.3`
+- `html-to-image@1.11.13`
 - `html-void-elements@3.0.0`
 - `iconv-lite@0.6.3`
 - `ignore@5.3.2`
@@ -966,6 +1032,7 @@ SOFTWARE.
 - `is-plain-obj@4.1.0`
 - `is-unsafe@2.0.2`
 - `jiti@2.7.0`
+- `jotai@2.20.3`
 - `js-yaml@4.3.2`
 - `json-schema-traverse@0.4.1`
 - `json-schema-traverse@1.0.0`
@@ -979,6 +1046,7 @@ SOFTWARE.
 - `layout-base@1.0.2`
 - `layout-base@2.0.1`
 - `levn@0.4.1`
+- `lilconfig@3.1.3`
 - `linebreak@1.1.0`
 - `locate-path@6.0.0`
 - `lodash-es@4.18.1`
@@ -990,6 +1058,7 @@ SOFTWARE.
 - `markdown-extensions@2.0.0`
 - `markdown-table@3.0.4`
 - `marked@16.4.2`
+- `marked@4.3.0`
 - `mdast-util-definitions@6.0.0`
 - `mdast-util-find-and-replace@3.0.2`
 - `mdast-util-from-markdown@2.0.3`
@@ -1011,6 +1080,7 @@ SOFTWARE.
 - `mdast-util-to-string@4.0.0`
 - `mdast-util-toc@7.1.0`
 - `mermaid@11.17.2`
+- `mermaid@12.1.0`
 - `micromark@4.0.2`
 - `micromark-core-commonmark@2.0.3`
 - `micromark-extension-gfm@3.0.0`
@@ -1046,6 +1116,8 @@ SOFTWARE.
 - `micromark-util-subtokenize@2.1.0`
 - `micromark-util-symbol@2.0.1`
 - `micromark-util-types@2.0.2`
+- `mitt@3.0.1`
+- `modern-tar@0.8.5`
 - `mrmime@2.0.1`
 - `ms@2.1.3`
 - `muggle-string@0.4.1`
@@ -1098,6 +1170,8 @@ SOFTWARE.
 - `punycode@2.3.1`
 - `qified@0.10.1`
 - `radix3@1.1.2`
+- `react@19.3.0`
+- `react-dom@19.3.0`
 - `readdirp@4.1.2`
 - `readdirp@5.1.1`
 - `recma-build-jsx@1.0.0`
@@ -1133,6 +1207,7 @@ SOFTWARE.
 - `safer-buffer@2.1.2`
 - `sass-formatter@0.7.9`
 - `satteri@0.10.5`
+- `scheduler@0.28.0`
 - `shebang-command@2.0.0`
 - `shebang-regex@3.0.0`
 - `shiki@4.4.3`
@@ -1153,6 +1228,8 @@ SOFTWARE.
 - `suf-log@2.5.3`
 - `svgo@4.1.0`
 - `synckit@0.11.13`
+- `tabbable@6.5.0`
+- `tailwind-merge@3.7.0`
 - `tailwindcss@4.3.3`
 - `tapable@2.3.3`
 - `tiny-inflate@1.0.3`
@@ -1164,6 +1241,7 @@ SOFTWARE.
 - `ts-api-utils@2.5.0`
 - `ts-dedent@2.3.0`
 - `type-check@0.4.0`
+- `typed-query-selector@2.12.3`
 - `typesafe-path@0.2.2`
 - `typescript-auto-import-cache@0.3.6`
 - `ufo@1.6.4`
@@ -1185,6 +1263,7 @@ SOFTWARE.
 - `unist-util-visit-children@3.0.0`
 - `unist-util-visit-parents@6.0.2`
 - `unstorage@1.17.5`
+- `use-sync-external-store@1.7.0`
 - `util-deprecate@1.0.2`
 - `uuid@14.0.2`
 - `vfile@6.0.3`
@@ -1215,6 +1294,7 @@ SOFTWARE.
 - `web-namespaces@2.0.1`
 - `word-wrap@1.2.5`
 - `wrap-ansi@9.0.2`
+- `ws@8.22.0`
 - `xml-naming@0.3.0`
 - `xxhash-wasm@1.1.0`
 - `yaml-language-server@1.23.0`
@@ -1222,6 +1302,7 @@ SOFTWARE.
 - `yocto-queue@0.1.0`
 - `yocto-queue@1.2.2`
 - `yoga-layout@3.2.1`
+- `zod@3.25.76`
 - `zod@4.5.4`
 - `zwitch@2.0.4`
 
@@ -1255,7 +1336,9 @@ SOFTWARE.
 
 ### OFL-1.1
 
+- `@fontsource-variable/recursive@5.3.0`
 - `@fontsource/noto-sans-kr@5.3.0`
+- `@fontsource/open-sans@5.3.0`
 
 ### Python-2.0
 

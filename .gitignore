@@ -5,3 +5,6 @@ node_modules/
 # 예전에 빌드가 색인을 public/pagefind 로 복사하던 자리가 남아 있으면
 # 커밋되지 않게 막는다. 지금은 `pagefind --site dist` 가 dist 에만 만든다.
 public/pagefind/
+
+# Generated portable Markdown and assets, rebuilt before dev/build.
+public/exports/

@@ -1,0 +1,14 @@
+flowchart TB
+    accTitle: Temporal Service와 Worker의 역할
+    accDescr: Client가 시작을 요청하고 Worker는 Service에서 작업을 받아 코드를 실행한다. 외부 API와 업무 DB는 Activity가 접근한다.
+    C["서버 애플리케이션<br/>Temporal Client"]
+    subgraph S["Temporal Service: 자체 운영 또는 Cloud"]
+        T["Temporal Server<br/>작업 배분 · 실행 이력"]
+        H[("영속 저장소")]
+        T --- H
+    end
+    W["애플리케이션 측 Worker<br/>Workflow: 순서와 대기<br/>Activity: 외부 작업"]
+    E["외부 API · 업무 DB"]
+    C -->|"시작 요청"| S
+    T <-->|"작업 요청·응답 / 명령·결과"| W
+    W -->|"Activity의 외부 호출"| E
