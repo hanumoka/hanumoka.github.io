@@ -32,7 +32,7 @@ jobs:
           node-version-file: .nvmrc
           cache: npm
       - name: Setup Pages
-        uses: actions/configure-pages@v5
+        uses: actions/configure-pages@v6
       - name: Install
         # 락파일과 어긋나면 실패한다. npm install 은 쓰지 않는다.
         run: npm ci
