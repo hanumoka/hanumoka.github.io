@@ -51,9 +51,127 @@ Temporal이 설명하는 핵심 개념은 **Durable Execution**이다. 이 글�
 
 이때 보존하는 것은 실행 중인 컴퓨터의 메모리 전체가 아니다. Temporal은 실행에 필요한 사건을 Event History에 기록한다. Workflow 시작, Activity 완료, 타이머 만료 같은 사건이 복구의 근거가 된다. 이 기록은 장애 분석에도 사용할 수 있다. ([Event History](https://docs.temporal.io/workflow-execution/event))
 
-## 내가 만든 코드는 Worker가 실행하고, Temporal은 진행 이력을 저장한다
+## Worker는 내가 만든 Spring Boot 앱에서 실행한다
 
-처음에는 Workflow와 Activity를 나누어 이해하는 것이 좋다. **Workflow는 업무 순서·조건·대기를 표현하는 코드**, **Activity는 외부 API 호출이나 DB 변경처럼 실제 외부 작업을 수행하는 코드**다. 예매에서는 “결제를 확인한 다음 티켓을 발급한다”는 순서를 Workflow에, 결제 조회와 티켓 발급 요청을 Activity에 둘 수 있다.
+**이번 예제의 Worker는 우리가 만든 Spring Boot 프로젝트 안에서 실행한다.** 프로젝트에 Temporal Java SDK를 추가하고, Worker에 Workflow·Activity 구현을 등록한 뒤 시작하는 구성이다. Temporal Service는 별도로 실행한다. Service만 켰다고 우리가 작성한 코드가 실행되는 것은 아니다. Worker가 꺼져 있으면 시작 요청이 접수돼도 인사 코드를 실행할 수 없다. ([Worker의 실행 위치](https://docs.temporal.io/workers), [Spring Boot 통합](https://docs.temporal.io/develop/java/integrations/spring-boot-integration))
+
+먼저 예매보다 작은 예제를 생각해 보자. HTTP 요청에 이름 `민수`를 넣으면 `안녕하세요, 민수님`을 돌려준다. 여기서는 구성 요소를 보기 위해 문자열을 만드는 일도 Activity에 넣는다. 이 기능 자체에 Temporal이 필요하다는 뜻은 아니다. 아래는 **실행 원리를 설명하는 예제 설계**이며, 실행 코드와 실제 확인은 다음 편에서 다룬다.
+
+### 먼저 실행 위치를 구분한다
+
+로컬 PC 한 대에서 다음 두 프로그램을 띄운다고 가정한다. 같은 PC에 있어도 서로 다른 프로그램이며 네트워크로 통신한다.
+
+| 실행 위치                | 들어 있는 것                           | 이 예제에서 하는 일                                                                                             |
+| ------------------------ | -------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| A. 우리 Spring Boot 앱   | Controller + Temporal Client           | HTTP 요청을 받고 Workflow 시작을 요청한다. 최종 결과를 받아 HTTP로 응답한다.                                    |
+| A. 같은 Spring Boot 앱   | Worker + 등록한 Workflow·Activity 코드 | 작업을 가져와 코드를 실행한다. Workflow는 Activity를 요청하고 결과를 반환한다. Activity는 인사 문자열을 만든다. |
+| B. 별도 Temporal Service | Temporal Server + 영속 저장소          | 실행 이력과 결과를 기록하고 Worker가 받을 작업을 관리한다.                                                      |
+
+**HTTP 호출자와 Temporal Client는 다르다.** HTTP 호출자는 브라우저나 curl처럼 우리 API를 호출하는 쪽이다. Temporal Client는 Controller가 사용하는 **SDK 객체**다. 이 예제에서는 Client 전용 서버를 하나 더 띄우지 않는다. Worker 역시 별도 제품을 설치하는 것이 아니라 SDK로 앱 안에 구성한다. Client와 Worker를 같은 앱에 둔 것은 이번 예제의 선택이며, 운영에서는 서로 다른 앱으로 배포할 수도 있다. ([Spring Boot의 Client·Worker 설정](https://docs.temporal.io/develop/java/integrations/spring-boot-integration))
+
+```mermaid
+flowchart TB
+    accTitle: 이번 예제에서 각 구성 요소가 실행되는 위치
+    accDescr: 우리 Spring Boot 앱 안에 Controller와 Temporal Client, Worker가 있다. Worker가 Workflow와 Activity 코드를 실행한다. Temporal Service는 별도 실행한다. 이 그림에는 통신 순서를 표시하지 않는다.
+    subgraph APP["A. 우리가 만든 Spring Boot 앱"]
+        C["Controller + Temporal Client SDK
+HTTP 접수 · Workflow 시작 요청"]
+        subgraph WORKER["Worker: 코드를 실행하는 SDK 구성 요소"]
+            W["Workflow 코드
+Activity 요청 → 결과 반환"]
+            A["Activity 코드
+인사 문자열 생성"]
+        end
+    end
+    subgraph SERVICE["B. 별도로 실행한 Temporal Service"]
+        T["Temporal Server
+작업 관리 · 이력 기록"]
+        H[("실행 이력 저장소")]
+    end
+```
+
+그림 1. 상자 안에 있는 요소는 그 프로그램에서 실행한다. 우리 앱 A 안에 Client와 Worker가 함께 있고, Temporal Service B는 별도다. 이 그림은 **실행 위치만** 보여 준다. 통신 방향과 순서는 다음 두 그림에서 읽는다.
+
+### 요청 한 건이 작업으로 바뀌고 끝나는 과정
+
+예제에서 Workflow의 역할은 `GreetingActivity에 이름 전달 → 결과 대기 → 결과 반환`이다. Activity의 역할은 인사 문자열 생성이다. 실제 업무에서는 Workflow에 순서·조건·대기를, Activity에 외부 API 호출·DB 변경 등을 둔다.
+
+작업 전달에는 `greeting-tasks`라는 Task Queue 이름을 사용한다고 정하자. Client가 지정한 이름과 Worker가 작업을 요청하는 이름을 맞춘다. **Task Queue는 Temporal Service가 관리**하며, Workflow용 작업과 Activity용 작업은 구분한다. Worker는 시작된 상태에서 작업을 요청하고 응답을 기다린다. 이를 polling이라 부르며 SDK가 처리한다. Service가 우리 Controller에 HTTP 요청을 보내 Worker를 실행하는 구조는 아니다. ([Task의 종류](https://docs.temporal.io/tasks), [Worker](https://docs.temporal.io/workers))
+
+아래 그림은 위에서 아래로 읽는다. 실선 화살표에는 요청·명령·보고를, 점선 화살표에는 응답을 적었다. 같은 `앱 A`라고 표시한 두 열은 **한 Spring Boot 앱 내부의 서로 다른 역할**이다. Worker의 작업 요청은 미리 대기하고 있을 수도 있으며, 그림은 이해를 위해 요청과 응답을 나란히 배치했다.
+
+```mermaid
+sequenceDiagram
+    accTitle: 인사 요청이 Workflow와 Activity 작업으로 바뀌는 순서
+    accDescr: HTTP 호출자가 Spring Boot Controller에 요청한다. Client가 Temporal Service에 Workflow 시작을 요청하고 Worker가 작업을 가져온다. Workflow 실행 결과로 Activity 예약 명령을 보내면 Service가 Activity Task를 준비한다.
+    participant U as HTTP 호출자
+    participant C as 앱 A<br/>Controller + Client
+    participant S as 별도 실행 B<br/>Temporal Service
+    participant W as 앱 A<br/>Worker
+    U->>C: 1. POST /greetings (민수)
+    C->>S: 2. GreetingWorkflow 시작 요청
+    Note over S: 시작 기록 · Workflow Task 준비
+    S-->>C: 시작 접수 응답 (완료 아님)
+    W->>S: 3. Workflow Task 요청 (poll)
+    S-->>W: 작업 + 실행 이력 + 입력
+    Note over W: GreetingWorkflow 코드 실행
+    W->>S: 4. GreetingActivity 예약 명령
+    Note over S: Activity 예약 기록 · Activity Task 준비
+```
+
+그림 2. HTTP 요청이 Workflow 실행으로 이어지고, Workflow가 Activity 작업을 요청하는 단계다. Temporal Service의 시작 응답은 “실행을 접수했다”는 뜻이다.
+
+1. **출발점은 HTTP 호출자다.** `POST /greetings`로 이름을 보내면 Spring Boot의 Controller가 받는다.
+2. **Client가 시작을 요청하고 Temporal Service가 첫 작업을 준비한다.** Controller는 Client로 Workflow 종류, 입력, 실행 ID와 Task Queue 이름을 지정해 요청한다. Temporal Service는 시작 사실을 기록하고 Workflow Task를 준비한다. Workflow Task는 “현재 이력을 바탕으로 Workflow 코드를 진행하라”는 작업이다.
+3. **Worker가 Workflow 코드를 실행한다.** 등록한 `GreetingWorkflow`는 인사 Activity의 실행을 요청하고 그 결과를 기다린다.
+4. **Activity 요청은 Temporal Service를 거친다.** Worker의 SDK가 Activity 예약 명령을 보내고, Service가 Activity Task를 준비한다. 같은 앱 안에 구현이 있어도 Workflow가 Activity 구현 메서드를 직접 호출하는 흐름은 아니다.
+
+```mermaid
+sequenceDiagram
+    accTitle: Activity 실행부터 HTTP 응답까지의 순서
+    accDescr: Worker가 Activity Task를 가져와 인사 문자열을 만들고 결과를 Service에 보고한다. 다음 Workflow Task에서 그 결과로 Workflow를 끝낸다. Client는 Service에서 최종 결과를 받아 HTTP 응답한다.
+    participant U as HTTP 호출자
+    participant C as 앱 A<br/>Controller + Client
+    participant S as 별도 실행 B<br/>Temporal Service
+    participant W as 앱 A<br/>Worker
+    W->>S: 5. Activity Task 요청 (poll)
+    S-->>W: 작업 + 입력 민수
+    Note over W: GreetingActivity 실행<br/>안녕하세요, 민수님 생성
+    W->>S: 6. Activity 완료 결과 보고
+    Note over S: 결과 기록 · 다음 Workflow Task 준비
+    W->>S: 7. 다음 Workflow Task 요청 (poll)
+    S-->>W: Activity 결과가 포함된 이력
+    Note over W: Workflow가 결과를 받아 반환
+    W->>S: 8. Workflow 완료 명령 + 최종 결과
+    Note over S: Workflow 완료 기록
+    C->>S: 9. 최종 결과 요청
+    S-->>C: 안녕하세요, 민수님
+    C-->>U: 10. HTTP 200 + 인사 문자열
+```
+
+그림 3. 그림 2에 이어 같은 요청을 마무리한다. **Activity 완료와 Workflow 완료는 별개**다. 결과 요청은 완료 전에 보내고 기다릴 수도 있다. 이 그림에서는 순서를 읽기 쉽도록 마지막에 표시했다.
+
+5. **Worker가 Activity Task를 받는다.** `GreetingActivity` 코드가 `민수`를 받아 인사 문자열을 만든다.
+6. **Worker가 Activity 결과를 보고한다.** Temporal Service가 결과를 기록하고 Workflow를 다시 진행할 작업을 준비한다.
+7. **Worker가 다음 Workflow Task를 받는다.** SDK가 기록된 Activity 결과를 Workflow에 전달한다. Workflow는 기다리던 문자열을 받아 반환한다.
+8. **Temporal Service에 Workflow 완료를 기록한다.** Worker가 보낸 완료 명령과 최종 결과를 반영한다.
+9. **Client가 최종 결과를 받는다.** 결과를 받는 곳도 Temporal Service다. Controller가 Worker에 직접 결과를 요청하지 않는다.
+10. **Controller가 HTTP 응답을 보낸다.** 이 예제에서는 짧은 작업의 완료를 기다려 `200`과 인사 문자열을 반환한다. 오래 걸리는 업무라면 실행 ID를 먼저 반환하고 별도로 진행 상태를 확인하는 API를 설계할 수 있다.
+
+실패·재시도는 생략한 정상 흐름이다. 핵심은 **Workflow Task → Activity Task → 다음 Workflow Task**로 작업 종류가 바뀌면서 같은 업무 실행이 진행된다는 것이다. ([공식 실행 과정](https://docs.temporal.io/encyclopedia/architecture/how-temporal-works))
+
+### 여기서 이벤트는 무엇인가
+
+HTTP 요청은 이번 예제의 **시작 계기**다. Temporal의 **Event**는 Service가 실행 이력에 남기는 “일어난 사실”이다. Worker가 받을 **Task**나, Worker가 다음 행동을 요청하는 **Command**와 구분한다. 별도의 이벤트 브로커를 추가해야 이 예제가 동작하는 것은 아니다. ([Event History](https://docs.temporal.io/workflow-execution/event))
+
+| 시점                  | 이력에 남는 대표 이벤트      | 뜻                                 |
+| --------------------- | ---------------------------- | ---------------------------------- |
+| 시작 접수             | `WorkflowExecutionStarted`   | 이 업무 실행이 시작됐다.           |
+| Activity 예약         | `ActivityTaskScheduled`      | 인사 Activity 실행을 예약했다.     |
+| Activity 결과 보고 후 | `ActivityTaskCompleted`      | Activity가 끝났고 결과가 기록됐다. |
+| Workflow 완료 처리 후 | `WorkflowExecutionCompleted` | 전체 업무 실행이 끝났다.           |
+
+표는 주요 사건만 추렸다. 실제 이력에는 Workflow Task의 예약·시작·완료 등도 들어간다. 다음 편에서는 Web UI에서 이 기록을 확인하고, Spring Boot 로그에서 코드가 실행된 위치를 대조한다.
 
 ### DDD 관점에서 보는 서비스 간 조정 — 나의 설계 관점
 
@@ -62,49 +180,6 @@ DDD에서는 도메인의 규칙과 모델을 명확한 경계 안에 두고, �
 내가 DDD를 적용하면서 고민한 것도 이 조정 코드를 어디에 둘 것인가였다. 예매에서는 좌석 확보 가능 여부와 결제 취소 가능 여부를 각각 담당 서비스가 판단하고, Workflow는 어떤 순서로 요청하고 기다리며 실패에 대응할지를 관리하도록 나눌 수 있다. 나는 이런 서비스 간 조정을 업무별 Workflow에 모으면 흐름을 파악하고 변경하기 쉬울 것으로 본다. 이는 이 글에서 검토하려는 설계 방향이며, Temporal이 도메인 경계를 자동으로 지켜 준다는 뜻은 아니다.
 
 Facade가 여러 기능을 단순한 인터페이스로 제공한다면, 여기서 필요한 조정은 실행 순서·대기·실패 후 진행까지 다룬다. 따라서 Facade와 동일한 패턴으로 단정하지 않고, 서비스 간 업무 흐름을 조정하는 역할로 설명하겠다. 각 서비스의 내부 규칙까지 하나의 Workflow에 몰아넣지 않는 것이 중요하다. 이 조정 코드는 Temporal Server 내부가 아니라 우리가 운영하는 Worker에서 실행된다. ([Temporal의 실행 구조](https://docs.temporal.io/encyclopedia/architecture/how-temporal-works))
-
-### Worker는 코드를 실행하고, Temporal Service는 이력과 작업 전달을 관리한다
-
-그 코드가 실행되는 곳은 Worker다. 전체 구성은 다음과 같다. ([플랫폼 구성](https://docs.temporal.io/temporal), [실행 구조](https://docs.temporal.io/encyclopedia/architecture/how-temporal-works))
-
-| 구성 요소        | 역할                                                                           |
-| ---------------- | ------------------------------------------------------------------------------ |
-| Client           | 애플리케이션이 Workflow 시작·취소·메시지 전달 등을 요청하는 SDK 객체           |
-| Workflow         | 업무의 순서, 분기, 대기 조건을 정의하는 코드                                   |
-| Activity         | 외부 API 호출·DB 변경 등 외부 작업을 수행하는 코드                             |
-| Worker           | Task Queue에서 작업을 받아 Workflow·Activity 코드를 실행하는 프로세스          |
-| Temporal Service | 실행 이력과 작업 배분을 관리하는 서비스. Temporal Server와 영속 저장소로 구성  |
-| SDK              | Client와 Worker를 구현하고 Workflow·Activity를 작성하는 데 사용하는 라이브러리 |
-
-```mermaid
-flowchart TB
-    accTitle: Temporal Service와 Worker의 역할
-    accDescr: Client가 시작을 요청하고 Worker는 Service에서 작업을 받아 코드를 실행한다. 외부 API와 업무 DB는 Activity가 접근한다.
-    C["서버 애플리케이션<br/>Temporal Client"]
-    subgraph S["Temporal Service: 자체 운영 또는 Cloud"]
-        T["Temporal Server<br/>작업 배분 · 실행 이력"]
-        H[("영속 저장소")]
-        T --- H
-    end
-    W["애플리케이션 측 Worker<br/>Workflow: 순서와 대기<br/>Activity: 외부 작업"]
-    E["외부 API · 업무 DB"]
-    C -->|"시작 요청"| S
-    T <-->|"작업 요청·응답 / 명령·결과"| W
-    W -->|"Activity의 외부 호출"| E
-```
-
-그림 1. Temporal Service는 실행 이력과 작업 배분을 관리하고 Worker가 업무 코드를 실행한다. 양방향 연결은 Worker의 작업 요청과 Temporal Service의 응답, 명령·결과 보고를 뜻한다. Workflow와 Activity를 같은 Worker에 둘 수도, 여러 Worker로 나눌 수도 있다. 그림은 일반적인 배포 관계이며 물리 서버 수를 지정하지 않는다.
-
-**Temporal Service는 Temporal Server와 실행 이력을 보관하는 저장소를 합쳐 부르는 이름이다.** 예매·결제 같은 업무 서비스와 구분하기 위해 이 글에서는 줄여 쓰지 않는다. Task Queue는 Worker가 받아 갈 작업을 구분하는 대기열이다. 기본 흐름을 단순화하면 다음과 같다.
-
-1. 애플리케이션이 Client로 Workflow 시작을 요청한다.
-2. Temporal Service가 Workflow 시작 요청을 실행 이력에 기록하고, Worker가 가져갈 Workflow Task를 Task Queue에 넣는다.
-3. Worker가 작업을 받아 Workflow 코드를 실행한다.
-4. Workflow가 Activity 실행을 요청하면 Temporal Service가 해당 작업을 배분한다.
-5. Worker가 Activity를 실행하고 결과를 Temporal Service에 보고한다.
-6. 기록된 결과를 바탕으로 Workflow가 다음 행동을 결정한다.
-
-따라서 Temporal Server에 업무 코드를 올리면 서버가 그 코드를 직접 실행하는 구조로 이해하면 안 된다. Workflow와 Activity 코드는 Worker가 실행한다. Temporal Service는 기록과 작업 배분을 담당한다. ([실행 과정](https://docs.temporal.io/encyclopedia/architecture/how-temporal-works))
 
 ## Node.js·Python 서버도 함께 참여할 수 있다
 
@@ -148,7 +223,7 @@ sequenceDiagram
     S-->>N: 완료 결과
 ```
 
-그림 2. 서로 다른 언어가 Temporal Service를 통해 작업과 결과를 주고받는 정상 흐름이다. Workflow·Activity는 역할에 맞는 별도 Task Queue를 사용하며 같은 Namespace 접근·인증·타입 이름·입력과 결과 형식을 맞춰야 한다. 시작 응답은 업무 완료가 아니다. 결과 대기 요청은 완료 전에 보낼 수도 있다. 재시도·타임아웃·보상은 이 그림에서 생략했다.
+그림 4. 서로 다른 언어가 Temporal Service를 통해 작업과 결과를 주고받는 정상 흐름이다. Workflow·Activity는 역할에 맞는 별도 Task Queue를 사용하며 같은 Namespace 접근·인증·타입 이름·입력과 결과 형식을 맞춰야 한다. 시작 응답은 업무 완료가 아니다. 결과 대기 요청은 완료 전에 보낼 수도 있다. 재시도·타임아웃·보상은 이 그림에서 생략했다.
 
 여기서 Node.js가 Java Worker에 직접 HTTP 요청을 보내는 것은 아니다. **Worker가 Temporal Service에서 작업을 가져오고 결과를 보고한다.** 공식 다언어 샘플도 Java Workflow에서 Go·Node.js Activity를 호출하는 구성을 제공한다. 언어마다 별도 처리 큐를 두면 실행할 타입을 모르는 Worker가 작업을 받는 문제를 피하기 쉽다. ([공식 다언어 샘플](https://github.com/temporalio/temporal-polyglot), [Task Queue](https://docs.temporal.io/task-queue))
 

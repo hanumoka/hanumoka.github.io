@@ -3,12 +3,22 @@
     {
       "file": "./assets/temporal-roles.png",
       "source": "./assets/temporal-roles.mmd",
-      "alt": "Temporal Service와 Worker의 역할"
+      "alt": "우리 Spring Boot 앱의 Client·Worker와 별도 Temporal Service의 실행 위치"
     },
     {
       "file": "./assets/temporal-polyglot.png",
       "source": "./assets/temporal-polyglot.mmd",
       "alt": "Node.js·Java·Python의 실행 순서"
+    },
+    {
+      "file": "./assets/temporal-greeting-start.png",
+      "source": "./assets/temporal-greeting-start.mmd",
+      "alt": "HTTP 요청부터 Workflow 실행과 Activity 예약까지"
+    },
+    {
+      "file": "./assets/temporal-greeting-finish.png",
+      "source": "./assets/temporal-greeting-finish.mmd",
+      "alt": "Activity 실행부터 Workflow 완료와 HTTP 응답까지"
     }
   ]
 }

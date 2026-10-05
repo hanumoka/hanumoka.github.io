@@ -1,0 +1,20 @@
+sequenceDiagram
+    accTitle: Activity 실행부터 HTTP 응답까지의 순서
+    accDescr: Worker가 Activity Task를 가져와 인사 문자열을 만들고 결과를 Service에 보고한다. 다음 Workflow Task에서 그 결과로 Workflow를 끝낸다. Client는 Service에서 최종 결과를 받아 HTTP 응답한다.
+    participant U as HTTP 호출자
+    participant C as 앱 A<br/>Controller + Client
+    participant S as 별도 실행 B<br/>Temporal Service
+    participant W as 앱 A<br/>Worker
+    W->>S: 5. Activity Task 요청 (poll)
+    S-->>W: 작업 + 입력 민수
+    Note over W: GreetingActivity 실행<br/>안녕하세요, 민수님 생성
+    W->>S: 6. Activity 완료 결과 보고
+    Note over S: 결과 기록 · 다음 Workflow Task 준비
+    W->>S: 7. 다음 Workflow Task 요청 (poll)
+    S-->>W: Activity 결과가 포함된 이력
+    Note over W: Workflow가 결과를 받아 반환
+    W->>S: 8. Workflow 완료 명령 + 최종 결과
+    Note over S: Workflow 완료 기록
+    C->>S: 9. 최종 결과 요청
+    S-->>C: 안녕하세요, 민수님
+    C-->>U: 10. HTTP 200 + 인사 문자열
