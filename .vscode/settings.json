@@ -1,0 +1,9 @@
+{
+  "[markdown]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true,
+    "editor.wordWrap": "on"
+  },
+  "files.eol": "\n",
+  "workbench.browser.newTabPlacement": "sideGroup"
+}
