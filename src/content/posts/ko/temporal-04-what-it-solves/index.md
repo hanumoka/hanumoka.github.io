@@ -7,7 +7,7 @@ draft: true
 kind: concept
 series: temporal
 seriesOrder: 4
-readingMinutes: 9
+readingMinutes: 10
 tags:
   - temporal
   - distributed-systems
@@ -27,7 +27,7 @@ tags:
 
 1. 1편에서 직접 구현하려면 만들어야 한다고 적은 다섯 가지를 Temporal이 맡는 것과 개발자에게 남는 것으로 나누고, 1편의 세 멈춤 지점에 적용해 본다. 재시도 정책과 기다리는 업무를 표현하는 방법(타이머·Signal)도 이 안에서 본다.
 2. 여러 서비스를 조정하는 코드를 어디에 둘지에 대한 나의 설계 관점을 적는다.
-3. 도입할 때 함께 맡게 되는 운영 책임과 도입 판단 기준을 본다.
+3. 도입할 때 함께 맡게 되는 운영 책임(Worker를 여러 대 띄울 때의 주의점 포함)과 도입 판단 기준을 본다.
 
 ### 이 글의 전제와 용어
 
@@ -102,6 +102,12 @@ Facade가 여러 기능을 단순한 인터페이스로 제공한다면, 여기�
 
 먼저 운영 주체를 정해야 한다. Temporal Service를 직접 운영할 수도 있고 Temporal Cloud를 사용할 수도 있다. Cloud를 이용하면 Service 운영을 맡길 수 있지만, 일반적인 구성에서 업무 코드를 실행하는 Worker와 그 코드의 배포·외부 시스템 접근은 여전히 사용자가 관리한다. ([자체 운영과 Cloud](https://docs.temporal.io/temporal))
 
+Worker는 보통 여러 대를 띄운다. 같은 Task Queue를 보는 Worker들은 할 일을 나눠 가져가고, 할 일 하나는 한 Worker만 실행한다. 이때 챙길 것이 세 가지다.
+
+1. **같은 Activity가 다시, 때로는 겹쳐 실행된다.** Worker가 일을 마치고 보고하기 직전에 죽으면 다른 Worker가 다시 실행한다. Start-To-Close 타임아웃이 지나 재시도가 시작될 때 첫 시도가 아직 돌고 있을 수도 있다. 취소는 Activity가 Heartbeat를 보낼 때만 전달되기 때문이다. 앞의 멱등 키가 이 경우에도 중복 처리를 막는다. ([Activity 실패 감지](https://docs.temporal.io/encyclopedia/detecting-activity-failures))
+2. **모든 Worker가 같은 종류를 등록하고, 배포 중의 코드 버전을 관리한다.** Task Queue는 종류별로 나눠 보내지 않으므로, 등록하지 않은 종류의 일을 받은 Worker는 그 일을 실패시킨다. 한 대씩 바꾸는 배포 중에는 옛 코드와 새 코드의 Worker가 섞인다. 실행 중인 Workflow가 Activity 순서를 바꾼 새 코드로 재생되면 기록과 맞지 않아 실패한다(비결정성 오류). 코드 안의 버전 분기(패치)나 Worker Versioning으로 대비한다. ([Worker Versioning](https://docs.temporal.io/production-deployment/worker-deployments/worker-versioning))
+3. **Worker끼리 메모리를 공유하지 않는다.** 한 Worker의 메모리에 둔 값은 다른 Worker에 없으므로 업무 상태는 Workflow 변수나 각 서비스 DB에 둔다. Activity 구현 객체 하나를 여러 실행이 함께 쓰므로 스레드 안전해야 한다. ([Worker 등록](https://docs.temporal.io/develop/java/workers/run-worker-process))
+
 기록이 영속적으로 남는다는 점은 저장할 데이터를 검토해야 한다는 뜻이기도 하다. Activity 입력·결과 등 이력에 남는 자료의 크기와 민감정보를 고려해야 한다. 실행 이력에도 제한이 있으므로 아주 오래 실행되는 업무는 이력을 나누는 방법까지 검토하게 된다. ([이력과 제한](https://docs.temporal.io/workflow-execution/event))
 
 이런 특성을 기준으로 보면, 긴 대기와 여러 외부 작업의 재시작 복구를 반복 구현하는 시스템에서 Temporal을 검토할 이유가 생긴다. 반대로 짧은 단일 DB 트랜잭션이나 기존 작업 큐로 요구를 충족한다면 추가 구성과 학습·운영 비용이 더 클 수 있다. 이는 이 글의 도입 판단 기준이며, 특정 규모부터 반드시 유리하다는 성능 측정 결과는 아니다.
@@ -112,4 +118,4 @@ Facade가 여러 기능을 단순한 인터페이스로 제공한다면, 여기�
 
 ---
 
-공식 자료 확인일: 2026-10-05(재시도 기본값·Workflow ID 정책·멱등 키 권장은 2026-10-09). 이 글은 개념 소개 초안이며, 본문의 예매 상황은 실측 보고가 아닌 설명용 가정이다.
+공식 자료 확인일: 2026-10-05(재시도 기본값·Workflow ID 정책·멱등 키 권장은 2026-10-09, 여러 Worker 운영의 주의점은 2026-10-10). 이 글은 개념 소개 초안이며, 본문의 예매 상황은 실측 보고가 아닌 설명용 가정이다.
