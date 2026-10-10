@@ -1,0 +1,42 @@
+---
+title: "3. approve 호출 → 결과 보고·기록"
+---
+flowchart LR
+    accTitle: 예매 한 건의 진행 장면 5
+    accDescr: 예매 서비스는 우리가 실행하는 앱이며 같은 코드의 프로세스 1과 2가 있다. 프로세스 1의 Client가 관람객의 예매 요청을 받아 Temporal Service에 Workflow 시작을 요청한다. 각 프로세스의 Worker는 예매 Workflow와 Activity 코드를 실행하며, Temporal Service의 Task Queue에서 할 일을 가져가고 결과를 보고한다. 보고된 결과는 Event History에 기록된다. 좌석·결제·티켓 서비스는 Worker의 Activity가 호출한다. Temporal Service에서 앱이나 기존 서비스로 먼저 향하는 화살표는 없다.
+    U(["관람객"])
+    subgraph P1["예매 서비스 · 프로세스 1"]
+        C1["Client
+시작 요청"]
+        W1["Worker
+예매 Workflow
++ Activity 4개"]
+    end
+    subgraph P2["예매 서비스 · 프로세스 2 (같은 코드)"]
+        W2["Worker
+예매 Workflow
++ Activity 4개"]
+    end
+    subgraph TS["Temporal Service · 별도 실행"]
+        TQ["Task Queue
+가져갈 작업"]
+        EH[("Event History
+시작: 기록
+hold: 기록
+approve: 기록
+confirm: 아직
+issue: 아직
+완료: 아직")]
+    end
+    EXT["좌석 · 결제 · 티켓
+서비스"]
+    U -->|"예매 요청"| C1
+    C1 -->|"Workflow 시작 요청"| TS
+    W1 -->|"할 일 가져가기"| TQ
+    W1 -->|"결과 보고"| EH
+    W1 -->|"API 호출"| EXT
+    W2 -->|"할 일 가져가기"| TQ
+    W2 -->|"결과 보고"| EH
+    W2 -->|"API 호출"| EXT
+    linkStyle 4,3 stroke:#1d4ed8,stroke-width:4px
+    style W1 stroke:#1d4ed8,stroke-width:3px

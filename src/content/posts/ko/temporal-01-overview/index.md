@@ -1,9 +1,9 @@
 ---
 key: temporal-01-overview
 title: "Temporal 1편: Temporal이란 무엇인가 — 중간에 멈춘 업무를 이어가는 방법"
-pubDatetime: 2026-10-05T00:00:00Z
-description: "Temporal의 실행 구조, 도입 책임, DDD 관점의 서비스 간 조정과 공개 활용 사례를 살펴본다."
-draft: true
+pubDatetime: 2026-10-10T13:00:00+09:00
+description: "공연 예매 예제로 여러 서비스에 걸친 업무가 중간에 멈추는 문제를 보고, Temporal이 진행을 기록해 멈춘 곳부터 이어 가는 방식을 살펴본다."
+draft: false
 kind: concept
 series: temporal
 seriesOrder: 1
@@ -14,358 +14,279 @@ tags:
   - backend
 ---
 
-공연 예매 서비스에서 결제는 승인됐는데 티켓 발급 직전에 서버가 종료됐다고 가정해 보자. 서버를 다시 켜는 것만으로 처리가 끝날까? 결제가 끝났다는 사실을 확인하고, 티켓이 이미 발급됐는지 살펴보고, 아직 하지 못한 일을 이어서 실행해야 한다. 같은 요청이 다시 들어왔다고 결제부터 반복해서도 안 된다.
+## 개요
 
-이런 문제는 예매에만 생기지 않는다. 파일을 변환한 뒤 업로드하는 작업, 여러 서비스에 걸친 회원 가입, 외부 승인을 기다리는 신청 처리에서도 중간 결과와 다음 행동을 기억해야 한다. 정상 흐름은 몇 번의 함수 호출로 표현할 수 있지만, 장애 뒤에도 그 흐름을 유지하려면 별도의 설계가 필요하다.
+대규모 시스템 관련 인프런 강의를 보다가 Temporal이라는 플랫폼을 알게 되었다.
+이 글은 Temporal이 무엇인지, 그리고 어떤 상황에서 어떻게 적용하여 활용할 수 있을지 고민하고 학습하기 위한 글이다.
 
-특히 하나의 업무가 네트워크로 연결된 여러 서비스를 거치는 MSA 환경에서는 일부 작업만 완료된 채 중단되는 상황을 고려해야 한다. 다만 멀티모듈은 코드를 나누는 방식이므로, 그 자체가 분산 실행이나 분산 트랜잭션을 뜻하지는 않는다. 여러 모듈이 하나의 프로세스와 같은 DB 트랜잭션 안에서 동작하는지, 별도 서비스나 외부 API를 호출하는지에 따라 필요한 실패 처리가 달라진다.
+일단 다음과 같은 공연 예매 서비스가 있다고 가정해 보자.
 
-Temporal은 이처럼 **중간에 멈출 수 있는 업무의 진행을 기록하고, 장애 뒤에도 이어갈 수 있도록 돕는 실행 플랫폼**이다. 이 글에서는 Temporal의 구성과 동작을 살펴보고, **실행 이력 저장, 설정한 정책에 따른 실패 작업의 재시도, 타이머·외부 응답 대기, Worker 장애 후 실행 복구**를 Temporal이 어떻게 지원하는지 설명한다. 이어서 개발자가 정해야 하는 **업무 처리 순서와 성공·실패 조건, 재시도 횟수·간격과 타임아웃, 중복 결제 방지, 실패 시 결제 취소 같은 보상 규칙**을 구분한다. 예매 상황은 이 역할 차이를 설명하기 위한 가상 예시다. ([Temporal 소개](https://docs.temporal.io/temporal))
+### 가상의 예제: 공연 예매 서비스
+
+이 절의 서비스 구성, API 경로, 이벤트 이름은 설명을 위해 정한 가정이다. 실제 예매 시스템을 조사해 옮긴 구조는 아니다.
+
+- **사용자**: 인기 공연의 좌석을 골라 예매하는 관람객
+- **목적**: 관람객이 고른 좌석을 결제와 함께 확정하고 모바일 티켓을 발급한다. 한 좌석을 두 사람에게 팔면 안 되고, 결제한 관람객은 티켓을 받거나 환불을 받아야 한다.
+
+**구성하는 서비스와 기능, 서비스별 제공하는 API**
+
+예매는 서비스 네 개가 나눠 처리한다. 예매 서비스가 나머지 세 서비스의 API를 차례로 호출해 예매 한 건을 끝낸다.
+
+| 서비스      | 맡는 기능                                                  | 제공하는 API                                                                           |
+| ----------- | ---------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| 예매 서비스 | 예매 요청 접수, 예매 상태 관리, 다른 서비스 호출 순서 진행 | `POST /bookings`, `GET /bookings/{bookingId}`                                          |
+| 좌석 서비스 | 좌석 임시 확보(10분 유지), 확정, 해제                      | `POST /seat-holds`, `POST /seat-holds/{holdId}/confirm`, `DELETE /seat-holds/{holdId}` |
+| 결제 서비스 | 외부 결제 대행사(PG)를 통한 결제 승인과 취소               | `POST /payments`, `POST /payments/{paymentId}/cancel`                                  |
+| 티켓 서비스 | 입장에 쓰는 모바일 티켓 발급                               | `POST /tickets`                                                                        |
+
+**주요 이벤트의 종류와 서비스 흐름**
+
+여기서 이벤트는 예매 업무에서 여러 서비스에 걸쳐 발생하는 Action을 뜻한다. 이 예제는 이벤트를 메시지로 주고받지 않고, 예매 서비스의 HTTP 호출로 다음 단계를 진행한다.
+
+| 순서 | 이벤트           | 일어나는 곳 | 뜻                                               |
+| ---- | ---------------- | ----------- | ------------------------------------------------ |
+| 1    | 예매 요청됨      | 예매 서비스 | 관람객이 좌석과 결제 수단을 골라 예매를 요청했다 |
+| 2    | 좌석 임시 확보됨 | 좌석 서비스 | 10분 동안 다른 관람객이 그 좌석을 고를 수 없다   |
+| 3    | 결제 승인됨      | 결제 서비스 | 관람객의 돈이 결제됐다                           |
+| 4    | 좌석 확정됨      | 좌석 서비스 | 그 좌석이 이 관람객에게 팔렸다                   |
+| 5    | 티켓 발급됨      | 티켓 서비스 | 입장에 쓸 모바일 티켓이 생겼다                   |
+| 6    | 예매 완료됨      | 예매 서비스 | 예매가 끝났고 관람객에게 알렸다                  |
+
+실패하면 다른 이벤트가 생긴다. 결제가 거절되면 「결제 실패됨」 뒤에 「좌석 해제됨」이 온다. 결제 뒤의 단계가 끝내 실패하면 「결제 취소됨」으로 돈을 돌려주고, 확보했던 좌석도 다시 팔 수 있게 되돌린다.
+
+위 서비스가 정상적으로 동작할 때의 흐름은 다음과 같다.
+
+```mermaid
+sequenceDiagram
+    accTitle: 공연 예매가 정상적으로 끝나는 순서
+    accDescr: 관람객이 예매를 요청하면 예매 서비스가 좌석 임시 확보, 결제 승인, 좌석 확정, 티켓 발급을 차례로 다른 서비스에 요청한다. 모든 응답을 받으면 관람객에게 예매 완료를 알린다.
+    actor U as 관람객
+    participant B as 예매 서비스
+    participant S as 좌석 서비스
+    participant P as 결제 서비스
+    participant T as 티켓 서비스
+    U->>B: 1. 예매 요청 (POST /bookings)
+    B->>S: 2. 좌석 임시 확보 (POST /seat-holds)
+    S-->>B: holdId · 10분 유지
+    B->>P: 3. 결제 승인 (POST /payments)
+    P-->>B: 승인 완료
+    B->>S: 4. 좌석 확정 (POST /seat-holds/{holdId}/confirm)
+    S-->>B: 확정 완료
+    B->>T: 5. 티켓 발급 (POST /tickets)
+    T-->>B: ticketId
+    B-->>U: 6. 예매 완료
+```
+
+그림 1. 예매 서비스가 다른 세 서비스를 차례로 호출하는 정상 흐름이다. 화살표 앞의 번호(단계)는 위 이벤트 표의 순서와 같다. 실패는 그리지 않았다.
+
+하지만 중요한 것은 위처럼 여러 서비스로(예: MSA) 동작하는 서비스의 경우 여러 지점에서 예외 상황과 장애 등이 발생할 수 있다는 점이다. 그리고 그 결과는 서비스 장애 및 데이터 정합성 불일치 등 서비스에 치명적인 문제가 될 것이다.
+
+그림 1의 흐름에서 처리가 멈출 수 있는 지점 세 곳만 골라 보면 다음과 같다.
+
+| 멈춘 지점                                | 남는 상태                                            | 생기는 문제                                                  |
+| ---------------------------------------- | ---------------------------------------------------- | ------------------------------------------------------------ |
+| 2단계 뒤, 결제 전 (그림 1-1)             | 좌석이 임시 확보된 채 남는다                         | 10분이 지나 풀릴 때까지 다른 관람객이 그 좌석을 고를 수 없다 |
+| 3단계에서 결제 응답을 받기 전 (그림 1-2) | 결제 서비스는 승인했지만 예매 서비스는 결과를 모른다 | 예매 서비스가 결제 요청을 다시 보내면 두 번 결제될 수 있다   |
+| 4단계 뒤, 5단계 전 (그림 1-3)            | 결제와 좌석 확정은 끝났지만 티켓이 없다              | 관람객이 결제하고도 입장할 수 없다                           |
+
+아래 세 그림은 각 지점에서 예매 서비스 프로세스가 종료(crash)됐다고 가정한다. 「CRASH」 메모가 종료 위치이고, 끝이 X인 화살표는 보내지 못했거나 받지 못한 메시지다.
+
+```mermaid
+sequenceDiagram
+    accTitle: 멈춘 지점 1 — 좌석 임시 확보 뒤 결제 요청 전에 예매 서비스가 종료된다
+    accDescr: 예매 서비스가 좌석 서비스에서 좌석 임시 확보 응답을 받은 직후 프로세스가 종료된다. 결제 승인 요청은 보내지 못한다. 좌석은 10분 동안 임시 확보된 채 남는다.
+    actor U as 관람객
+    participant B as 예매 서비스
+    participant S as 좌석 서비스
+    participant P as 결제 서비스
+    U->>B: 1. 예매 요청
+    B->>S: 2. 좌석 임시 확보
+    S-->>B: holdId · 10분 유지
+    rect rgba(220, 38, 38, 0.15)
+    Note over B: CRASH<br/>예매 서비스 프로세스 종료
+    B-xP: 3. 결제 승인 (보내지 못함)
+    end
+    Note over S: 좌석이 임시 확보된 채 남음
+```
+
+그림 1-1. 2단계의 응답을 받은 직후 예매 서비스가 종료됐다. 결제 요청은 결제 서비스에 도착하지 않았고 결제는 시작되지 않았다.
+
+```mermaid
+sequenceDiagram
+    accTitle: 멈춘 지점 2 — 결제는 승인됐지만 승인 응답을 받기 전에 예매 서비스가 종료된다
+    accDescr: 예매 서비스가 결제 서비스에 결제 승인을 요청한다. 결제 서비스는 승인을 끝내지만, 그 응답이 도착하기 전에 예매 서비스 프로세스가 종료된다. 결제 서비스는 승인했고 예매 서비스는 결과를 모른다.
+    actor U as 관람객
+    participant B as 예매 서비스
+    participant S as 좌석 서비스
+    participant P as 결제 서비스
+    U->>B: 1. 예매 요청
+    B->>S: 2. 좌석 임시 확보
+    S-->>B: holdId · 10분 유지
+    B->>P: 3. 결제 승인
+    Note over P: 승인 처리 완료<br/>관람객의 돈이 결제됨
+    rect rgba(220, 38, 38, 0.15)
+    Note over B: CRASH<br/>예매 서비스 프로세스 종료
+    P--xB: 승인 완료 (받지 못함)
+    end
+    Note over B,P: 결제 서비스는 승인했지만<br/>예매 서비스는 결과를 모름
+```
+
+그림 1-2. 결제 서비스는 승인을 끝냈지만 예매 서비스는 그 응답을 받기 전에 종료됐다.
+
+```mermaid
+sequenceDiagram
+    accTitle: 멈춘 지점 3 — 좌석 확정 뒤 티켓 발급 요청 전에 예매 서비스가 종료된다
+    accDescr: 예매 서비스가 좌석 임시 확보, 결제 승인, 좌석 확정까지 마친 뒤 프로세스가 종료된다. 티켓 발급 요청은 보내지 못한다. 결제와 좌석 확정은 끝났지만 티켓이 없다.
+    actor U as 관람객
+    participant B as 예매 서비스
+    participant S as 좌석 서비스
+    participant P as 결제 서비스
+    participant T as 티켓 서비스
+    U->>B: 1. 예매 요청
+    B->>S: 2. 좌석 임시 확보
+    S-->>B: holdId · 10분 유지
+    B->>P: 3. 결제 승인
+    P-->>B: 승인 완료
+    B->>S: 4. 좌석 확정
+    S-->>B: 확정 완료
+    rect rgba(220, 38, 38, 0.15)
+    Note over B: CRASH<br/>예매 서비스 프로세스 종료
+    B-xT: 5. 티켓 발급 (보내지 못함)
+    end
+    Note over S,P: 결제와 좌석 확정은 끝났지만<br/>티켓이 없음
+```
+
+그림 1-3. 결제와 좌석 확정까지 끝난 뒤, 티켓 발급을 요청하기 전에 예매 서비스가 종료됐다. 아래 문단에서 이 경우를 자세히 본다.
+
+세 경우 모두 각 서비스는 자기 일을 했다. 예매 결과는 DB에 남기지만, 몇 단계까지 끝났고 다음에 무엇을 할지는 그 요청을 처리하는 프로세스의 메모리에만 있다고 가정한다. 그래서 프로세스가 멈추면 어디서부터 이어갈지 알 수 없다.
+
+그림 1-3의 상태에서 서버를 다시 켜는 것만으로 처리가 끝날까? 결제가 끝났다는 사실을 확인하고, 티켓이 이미 발급됐는지 살펴보고, 아직 하지 못한 일을 이어서 실행해야 한다. 같은 요청이 다시 들어왔다고 결제부터 반복해서도 안 된다.
+
+모든 단계가 한 프로세스 안에서 하나의 DB 트랜잭션으로 끝난다면, 중간에 실패해도 트랜잭션을 되돌리면(롤백) 된다. 이 예제는 그렇게 할 수 없다. 좌석과 티켓은 다른 서비스가 각자의 DB에 저장하고, 결제는 외부 결제 대행사(PG)가 처리한다. 예매 서비스의 트랜잭션을 되돌려도 이미 끝난 결제는 취소되지 않는다. 그래서 어디까지 끝났는지 확인하고, 남은 일을 이어서 하거나 끝난 일을 따로 취소하는 처리가 필요하다.
+
+Temporal은 이처럼 **중간에 멈출 수 있는 업무의 진행을 기록하고, 장애 뒤에도 이어갈 수 있도록 돕는 실행 플랫폼**이다. 이 글에서는 Temporal이 무엇을 해 주는지 개요를 살펴본다. 구성 요소의 세부 동작, Temporal이 해결하는 것과 개발자에게 남는 것은 이어지는 글에서 다룬다. ([Temporal 소개](https://docs.temporal.io/temporal))
 
 ## 정상 흐름보다 어려운 것은 중단 이후다
 
-간단한 예매 처리라면 좌석을 확보하고, 결제를 승인하고, 티켓을 발급하는 순서를 떠올릴 수 있다. 그런데 각 작업을 서로 다른 서비스가 처리하면 한 번의 함수 호출이 끝났다는 사실만으로 전체 업무가 끝나지는 않는다.
+각 작업을 서로 다른 서비스가 처리하면 한 번의 호출이 끝났다는 사실만으로 전체 업무가 끝나지는 않는다.
 
-다음과 같은 상황을 생각해 보자.
+재시도만 추가해서는 해결되지 않는다. 이미 끝난 작업, 결과를 모르는 작업, 아직 시작하지 않은 작업을 구별해야 하기 때문이다.
 
-1. 결제 서비스가 승인했지만 응답을 보내던 중 네트워크 연결이 끊겼다.
-2. 우리 서버는 결제가 됐는지 알 수 없는 상태가 됐다.
-3. 사용자가 다시 요청했거나 서버가 재시작됐다.
-4. 서버는 기존 결과를 확인한 뒤 예매를 계속할지, 결제를 취소할지 결정해야 한다.
+직접 구현한다면 다음 다섯 가지를 만들어야 한다.
 
-여기서 재시도만 추가하면 해결될 것 같지만, 언제 무엇을 다시 실행해야 하는지가 남는다. 이미 끝난 작업, 결과를 모르는 작업, 아직 시작하지 않은 작업을 구별해야 하기 때문이다. 일정 시간 뒤 다시 확인할 일도 저장해야 하고, 자동으로 처리하지 못한 건은 사람이 확인할 수 있어야 한다.
+1. 진행 상태를 DB에 저장한다.
+2. 멈춘 요청을 주기적으로 찾아 남은 일을 이어 가는 복구 배치를 만든다.
+3. 재시도 간격과 종료 조건을 관리한다.
+4. 같은 요청이 다시 와도 결제나 발급이 반복되지 않도록 멱등성을 설계한다. 멱등성은 같은 작업을 다시 요청해도 업무 효과가 한 번만 생기는 성질이다.
+5. 일부 작업만 끝났을 때 결과 확인·재시도·보상으로 업무를 마무리하는 규칙을 정한다.
 
-직접 구현한다면 진행 상태를 DB에 저장하고, 남은 일을 찾는 작업자를 만들고, 재시도 간격과 종료 조건을 관리할 수 있다. 여러 서비스가 참여한다면 중복 요청으로 같은 결제나 발급이 반복되지 않도록 멱등성을 설계하고, 일부 작업만 끝났을 때 재시도·결과 확인·보상으로 업무를 마무리하는 규칙도 정해야 한다. 이 책임은 Temporal을 도입해도 남는다. ([Activity와 멱등성](https://docs.temporal.io/activity-definition))
+Temporal을 도입하면 진행 상태 저장, 멈춘 업무 이어 가기, 재시도 실행은 Temporal이 맡는다. 외부 서비스의 중복 처리 방지와 업무를 마무리하는 규칙은 개발자에게 남는다. 왜 이렇게 나뉘는지는 4편(초안) [Temporal이 해결하는 것과 해결하지 못하는 것](/posts/temporal-04-what-it-solves/#temporal이-해결하는-것과-해결하지-못하는-것)에서 정리한다.
 
-Temporal을 검토하는 이유는 이런 실행 관리가 여러 업무에서 반복될 때 공통 기능을 활용할 수 있기 때문이다. 어떤 업무 상태를 성공으로 볼지는 여전히 애플리케이션이 정한다.
+## Temporal은 업무의 진행을 기록하고 멈춘 곳부터 이어 간다
 
-## Temporal의 출발점과 Durable Execution
+Temporal을 한 문장으로 말하면 **여러 단계로 된 업무를 코드로 작성하면, 단계가 끝날 때마다 결과를 기록해 두고, 프로세스가 멈추면 그 기록을 바탕으로 멈춘 다음 단계부터 이어 실행해 주는 플랫폼**이다.
 
-Temporal의 공동 창업자는 Maxim Fateev와 Samar Abbas다. 두 사람은 Uber에서 Cadence를 만들었고, 2019년 독립해 Temporal을 시작했다. Temporal은 Cadence에서 갈라져 발전한 프로젝트이며 Temporal Technologies가 개발을 이끈다. ([공식 역사](https://temporal.io/blog/temporal-raises-usd550m-series-e-at-usd12-55b-valuation-ai), [Cadence와의 관계](https://temporal.io/temporal-versus/cadence))
+Temporal은 이것을 **Durable Execution**이라고 부른다. 하나의 업무 실행을 Workflow Execution이라고 부른다. ([Workflow Execution](https://docs.temporal.io/workflow-execution))
 
-서버와 SDK 소스는 GitHub의 temporalio 조직에서 공개한다. 구성 요소별 라이선스는 구분해서 확인해야 한다. Temporal Server는 MIT, 이 연재에서 Kotlin과 함께 사용할 Java SDK는 Apache-2.0이다. ([Server 라이선스](https://github.com/temporalio/temporal/blob/main/LICENSE), [Java SDK 라이선스](https://github.com/temporalio/sdk-java/blob/master/LICENSE))
+이때 보존하는 것은 실행 중인 컴퓨터의 메모리 전체가 아니다. Temporal은 실행에 필요한 사건을 Event History에 기록한다. 업무 시작, 각 단계의 완료, 타이머 만료 같은 사건이 복구의 근거가 된다. ([Event History](https://docs.temporal.io/workflow-execution/event))
 
-Temporal의 현재 개발 주체와 서비스 운영 주체도 구별하자. **Temporal Technologies Inc.가 플랫폼 개발을 이끌고 Temporal Cloud를 제공한다.** Uber는 앞서 설명한 Cadence의 출발점이다. 직접 설치하면 우리 팀이 Temporal Service와 저장소를 운영하고, Cloud를 선택하면 해당 운영을 맡길 수 있다. 일반적인 구성에서 업무 코드를 실행하는 Worker의 배포와 외부 시스템 접근은 우리 팀이 관리한다. 소스 코드와 변경 이력은 GitHub의 temporalio 조직에서 확인할 수 있다. ([Cloud 제공 법인과 약관](https://temporal.io/terms-of-service), [플랫폼 구성](https://docs.temporal.io/temporal), [공식 Server 저장소](https://github.com/temporalio/temporal))
+### 예매 업무를 Workflow와 Activity로 나눠 본다
 
-Temporal이 설명하는 핵심 개념은 **Durable Execution**이다. 이 글에서는 이를 “프로세스가 종료돼도 기록된 진행을 바탕으로 이어갈 수 있는 실행”으로 이해하면 된다. 하나의 업무 실행을 Workflow Execution이라고 부른다. 몇 초 만에 끝나는 처리도, 외부 응답을 오래 기다리는 처리도 같은 실행 안에서 표현할 수 있다. ([Workflow Execution](https://docs.temporal.io/workflow-execution))
+Temporal을 쓰면 예매 서비스의 코드는 두 종류로 나뉜다.
 
-이때 보존하는 것은 실행 중인 컴퓨터의 메모리 전체가 아니다. Temporal은 실행에 필요한 사건을 Event History에 기록한다. Workflow 시작, Activity 완료, 타이머 만료 같은 사건이 복구의 근거가 된다. 이 기록은 장애 분석에도 사용할 수 있다. ([Event History](https://docs.temporal.io/workflow-execution/event))
+1. **Workflow**는 업무의 순서를 적은 코드다. “좌석을 임시 확보하고, 결제를 승인받고, 좌석을 확정하고, 티켓을 발급한다”는 흐름과 실패했을 때 무엇을 할지가 여기에 들어간다.
+2. **Activity**는 그 순서 안의 한 단계를 실제로 수행하는 코드다. 좌석·결제·티켓 서비스를 호출하는 일처럼 바깥 시스템과 통신하는 작업을 Activity로 만든다.
 
-## Worker는 내가 만든 Spring Boot 앱에서 실행한다
+예매 Workflow를 코드 모양으로 적으면 다음과 같다. Temporal Java SDK를 Kotlin에서 쓸 때의 모양을 줄인 것으로, 설정과 어노테이션은 뺐다. 주석의 단계 번호는 그림 1과 같다.
 
-**이번 예제의 Worker는 우리가 만든 Spring Boot 프로젝트 안에서 실행한다.** 프로젝트에 Temporal Java SDK를 추가하고, Worker에 Workflow·Activity 구현을 등록한 뒤 시작하는 구성이다. Temporal Service는 별도로 실행한다. Service만 켰다고 우리가 작성한 코드가 실행되는 것은 아니다. Worker가 꺼져 있으면 시작 요청이 접수돼도 인사 코드를 실행할 수 없다. ([Worker의 실행 위치](https://docs.temporal.io/workers), [Spring Boot 통합](https://docs.temporal.io/develop/java/integrations/spring-boot-integration))
+```kotlin
+// 예매 Workflow: 업무의 순서만 적는다. seatActivity처럼 Activity 객체를 부르는 줄이 Activity 실행이다.
+fun reserve(request: BookingRequest): BookingResult {
+    val hold = seatActivity.hold(request.seatId)         // 2. 좌석 임시 확보
+    val payment = paymentActivity.approve(request, hold) // 3. 결제 승인
+    seatActivity.confirm(hold)                           // 4. 좌석 확정
+    val ticket = ticketActivity.issue(request, payment)  // 5. 티켓 발급
+    return BookingResult(ticket)                         // 6. 예매 완료
+}
+```
 
-먼저 예매보다 작은 예제를 생각해 보자. HTTP 요청에 이름 `민수`를 넣으면 `안녕하세요, 민수님`을 돌려준다. 여기서는 구성 요소를 보기 위해 문자열을 만드는 일도 Activity에 넣는다. 이 기능 자체에 Temporal이 필요하다는 뜻은 아니다. 아래는 **실행 원리를 설명하는 예제 설계**이며, 실행 코드와 실제 확인은 다음 편에서 다룬다.
+### 예매 서비스와 Temporal Service는 따로 실행된다
 
-### 먼저 실행 위치를 구분한다
+위 코드는 우리 예매 서비스 안에서 실행된다. Temporal Service는 따로 실행하는 서버이고, 좌석·결제·티켓 서비스는 바꾸지 않는다. 그림 2의 상자는 다음과 같다.
 
-로컬 PC 한 대에서 다음 두 프로그램을 띄운다고 가정한다. 같은 PC에 있어도 서로 다른 프로그램이며 네트워크로 통신한다.
-
-| 실행 위치                | 들어 있는 것                           | 이 예제에서 하는 일                                                                                             |
-| ------------------------ | -------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
-| A. 우리 Spring Boot 앱   | Controller + Temporal Client           | HTTP 요청을 받고 Workflow 시작을 요청한다. 최종 결과를 받아 HTTP로 응답한다.                                    |
-| A. 같은 Spring Boot 앱   | Worker + 등록한 Workflow·Activity 코드 | 작업을 가져와 코드를 실행한다. Workflow는 Activity를 요청하고 결과를 반환한다. Activity는 인사 문자열을 만든다. |
-| B. 별도 Temporal Service | Temporal Server + 영속 저장소          | 실행 이력과 결과를 기록하고 Worker가 받을 작업을 관리한다.                                                      |
-
-**HTTP 호출자와 Temporal Client는 다르다.** HTTP 호출자는 브라우저나 curl처럼 우리 API를 호출하는 쪽이다. Temporal Client는 Controller가 사용하는 **SDK 객체**다. 이 예제에서는 Client 전용 서버를 하나 더 띄우지 않는다. Worker 역시 별도 제품을 설치하는 것이 아니라 SDK로 앱 안에 구성한다. Client와 Worker를 같은 앱에 둔 것은 이번 예제의 선택이며, 운영에서는 서로 다른 앱으로 배포할 수도 있다. ([Spring Boot의 Client·Worker 설정](https://docs.temporal.io/develop/java/integrations/spring-boot-integration))
+1. **Client**: 예매 요청을 받으면 Temporal Service에 예매 Workflow를 시작해 달라고 요청한다.
+2. **Worker**: 예매 Workflow와 Activity 코드를 실제로 실행하는 부분이다. Temporal Service에서 할 일을 가져가 실행하고 결과를 보고한다. 좌석·결제·티켓 서비스는 Activity가 호출한다.
+3. **Temporal Service**: 우리 코드를 실행하지 않는다. 할 일을 Task Queue(작업이 Worker를 기다리는 대기열)에 쌓아 두고, 보고받은 결과를 Event History에 기록한다.
 
 ```mermaid
-flowchart TB
-    accTitle: 이번 예제에서 각 구성 요소가 실행되는 위치
-    accDescr: 우리 Spring Boot 앱 안에 Controller와 Temporal Client, Worker가 있다. Worker가 Workflow와 Activity 코드를 실행한다. Temporal Service는 별도 실행한다. 이 그림에는 통신 순서를 표시하지 않는다.
-    subgraph APP["A. 우리가 만든 Spring Boot 앱"]
-        C["Controller + Temporal Client SDK
-HTTP 접수 · Workflow 시작 요청"]
-        subgraph WORKER["Worker: 코드를 실행하는 SDK 구성 요소"]
-            W["Workflow 코드
-Activity 요청 → 결과 반환"]
-            A["Activity 코드
-인사 문자열 생성"]
-        end
+flowchart LR
+    accTitle: Temporal을 쓴 예매 서비스의 구성 요소
+    accDescr: 예매 서비스는 우리가 실행하는 앱이며 같은 코드의 프로세스 1과 2가 있다. 프로세스 1의 Client가 관람객의 예매 요청을 받아 Temporal Service에 Workflow 시작을 요청한다. 각 프로세스의 Worker는 예매 Workflow와 Activity 코드를 실행하며, Temporal Service의 Task Queue에서 할 일을 가져가고 결과를 보고한다. 보고된 결과는 Event History에 기록된다. 좌석·결제·티켓 서비스는 Worker의 Activity가 호출한다. Temporal Service에서 앱이나 기존 서비스로 먼저 향하는 화살표는 없다.
+    U(["관람객"])
+    subgraph P1["예매 서비스 · 프로세스 1"]
+        C1["Client
+시작 요청"]
+        W1["Worker
+예매 Workflow
++ Activity 4개"]
     end
-    subgraph SERVICE["B. 별도로 실행한 Temporal Service"]
-        T["Temporal Server
-작업 관리 · 이력 기록"]
-        H[("실행 이력 저장소")]
+    subgraph P2["예매 서비스 · 프로세스 2 (같은 코드)"]
+        W2["Worker
+예매 Workflow
++ Activity 4개"]
     end
+    subgraph TS["Temporal Service · 별도 실행"]
+        TQ["Task Queue
+가져갈 작업"]
+        EH[("Event History
+실행별 진행 기록")]
+    end
+    EXT["좌석 · 결제 · 티켓
+서비스"]
+    U -->|"예매 요청"| C1
+    C1 -->|"Workflow 시작 요청"| TS
+    W1 -->|"할 일 가져가기"| TQ
+    W1 -->|"결과 보고"| EH
+    W1 -->|"API 호출"| EXT
+    W2 -->|"할 일 가져가기"| TQ
+    W2 -->|"결과 보고"| EH
+    W2 -->|"API 호출"| EXT
 ```
 
-그림 1. 상자 안에 있는 요소는 그 프로그램에서 실행한다. 우리 앱 A 안에 Client와 Worker가 함께 있고, Temporal Service B는 별도다. 이 그림은 **실행 위치만** 보여 준다. 통신 방향과 순서는 다음 두 그림에서 읽는다.
+그림 2. Temporal을 쓴 예매 서비스의 구성이다. 같은 코드로 띄운 프로세스가 둘 있다. 화살표는 요청을 먼저 보내는 쪽에서 나가며, Temporal Service가 앱을 먼저 부르지 않고 Worker가 할 일을 가져간다. 이 그림은 예매 서비스 하나가 Client와 Worker를 함께 실행한다고 단순화했다. 2편에서는 이를 `booking-api`(Client)와 `booking-worker`(Worker) 서버로 나누고 작업 종류와 순서를 본다.
 
-### 요청 한 건이 작업으로 바뀌고 끝나는 과정
+### 프로세스가 멈추면 기록된 다음 단계부터 이어 간다
 
-예제에서 Workflow의 역할은 `GreetingActivity에 이름 전달 → 결과 대기 → 결과 반환`이다. Activity의 역할은 인사 문자열 생성이다. 실제 업무에서는 Workflow에 순서·조건·대기를, Activity에 외부 API 호출·DB 변경 등을 둔다.
+겉으로는 평범한 함수 호출이지만 실행 방식이 다르다. 결제 승인 결과가 기록된 뒤에 프로세스 1이 종료됐다고 하자. 그림 3은 그림 2의 구성 위에서 이 예매 한 건이 어떻게 이어지는지 한 단계씩 보여 준다.
 
-작업 전달에는 `greeting-tasks`라는 Task Queue 이름을 사용한다고 정하자. Client가 지정한 이름과 Worker가 작업을 요청하는 이름을 맞춘다. **Task Queue는 Temporal Service가 관리**하며, Workflow용 작업과 Activity용 작업은 구분한다. Worker는 시작된 상태에서 작업을 요청하고 응답을 기다린다. 이를 polling이라 부르며 SDK가 처리한다. Service가 우리 Controller에 HTTP 요청을 보내 Worker를 실행하는 구조는 아니다. ([Task의 종류](https://docs.temporal.io/tasks), [Worker](https://docs.temporal.io/workers))
+[![그림 2의 구성 위에서 예매 한 건의 진행을 한 단계씩 강조하는 애니메이션. 시작 요청, 프로세스 1의 hold·approve 실행과 기록, 프로세스 1 종료, 프로세스 2의 재생, confirm·issue 실행과 완료 기록 순서](./assets/booking-temporal-flow.gif)](./assets/booking-temporal-flow.gif)
 
-아래 그림은 위에서 아래로 읽는다. 실선 화살표에는 요청·명령·보고를, 점선 화살표에는 응답을 적었다. 같은 `앱 A`라고 표시한 두 열은 **한 Spring Boot 앱 내부의 서로 다른 역할**이다. Worker의 작업 요청은 미리 대기하고 있을 수도 있으며, 그림은 이해를 위해 요청과 응답을 나란히 배치했다.
+그림 3. 결제 승인 결과가 기록된 뒤 프로세스 1이 종료된 예매 한 건이 프로세스 2에서 이어지는 순서다. 굵은 파란 선은 그 장면에서 오가는 요청, 빨간 점선 영역은 종료된 프로세스다. 그림을 누르면 원래 크기로 볼 수 있고, 같은 순서를 아래 목록으로도 적었다.
 
-```mermaid
-sequenceDiagram
-    accTitle: 인사 요청이 Workflow와 Activity 작업으로 바뀌는 순서
-    accDescr: HTTP 호출자가 Spring Boot Controller에 요청한다. Client가 Temporal Service에 Workflow 시작을 요청하고 Worker가 작업을 가져온다. Workflow 실행 결과로 Activity 예약 명령을 보내면 Service가 Activity Task를 준비한다.
-    participant U as HTTP 호출자
-    participant C as 앱 A<br/>Controller + Client
-    participant S as 별도 실행 B<br/>Temporal Service
-    participant W as 앱 A<br/>Worker
-    U->>C: 1. POST /greetings (민수)
-    C->>S: 2. GreetingWorkflow 시작 요청
-    Note over S: 시작 기록 · Workflow Task 준비
-    S-->>C: 시작 접수 응답 (완료 아님)
-    W->>S: 3. Workflow Task 요청 (poll)
-    S-->>W: 작업 + 실행 이력 + 입력
-    Note over W: GreetingWorkflow 코드 실행
-    W->>S: 4. GreetingActivity 예약 명령
-    Note over S: Activity 예약 기록 · Activity Task 준비
-```
+1. 관람객이 예매를 요청하면 프로세스 1의 Client가 Temporal Service에 예매 Workflow 시작을 요청한다. Event History에 시작이 기록된다.
+2. 프로세스 1의 Worker가 Task Queue에서 할 일을 가져가 `reserve()`를 실행한다.
+3. `hold`와 `approve`에서 Activity가 좌석·결제 서비스를 호출하고 Worker가 결과를 보고한다. Temporal Service는 각 결과를 Event History에 기록한다.
+4. 결제 승인 결과까지 기록된 뒤 프로세스 1이 종료된다. 일정 시간이 지나면 Temporal Service는 다음 할 일을 다른 Worker가 가져갈 수 있게 다시 준비한다. 가져갈 Worker가 없으면 다시 뜰 때까지 진행이 멈춘다.
+5. 프로세스 2의 Worker가 그 할 일을 Event History와 함께 받아 `reserve()`를 처음부터 다시 실행한다.
+6. `hold`·`approve` 줄도 다시 지나가지만 좌석·결제 서비스를 부르지 않고 기록된 결과를 돌려받는다.
+7. 서비스 호출은 `confirm`부터 이어진다. `issue`의 결과까지 기록되면 예매 Workflow의 완료가 기록된다.
 
-그림 2. HTTP 요청이 Workflow 실행으로 이어지고, Workflow가 Activity 작업을 요청하는 단계다. Temporal Service의 시작 응답은 “실행을 접수했다”는 뜻이다.
+이 과정을 이력 재생(replay)이라고 한다. 직접 구현하려면 만들어야 한다고 적은 진행 상태 테이블은 Event History가, 복구 배치는 위 4~6번이 대신한다. ([Worker 장애 뒤의 재생](https://docs.temporal.io/encyclopedia/event-history/event-history-java))
 
-1. **출발점은 HTTP 호출자다.** `POST /greetings`로 이름을 보내면 Spring Boot의 Controller가 받는다.
-2. **Client가 시작을 요청하고 Temporal Service가 첫 작업을 준비한다.** Controller는 Client로 Workflow 종류, 입력, 실행 ID와 Task Queue 이름을 지정해 요청한다. Temporal Service는 시작 사실을 기록하고 Workflow Task를 준비한다. Workflow Task는 “현재 이력을 바탕으로 Workflow 코드를 진행하라”는 작업이다.
-3. **Worker가 Workflow 코드를 실행한다.** 등록한 `GreetingWorkflow`는 인사 Activity의 실행을 요청하고 그 결과를 기다린다.
-4. **Activity 요청은 Temporal Service를 거친다.** Worker의 SDK가 Activity 예약 명령을 보내고, Service가 Activity Task를 준비한다. 같은 앱 안에 구현이 있어도 Workflow가 Activity 구현 메서드를 직접 호출하는 흐름은 아니다.
+단, 3번에서 결과를 보고하기 전에 프로세스가 멈추면 이력에 완료 기록이 없다. 그러면 그 Activity는 다시 실행된다. 이 경우와 재생이 되기 위한 조건은 2편(초안) [재생의 조건과 Activity가 다시 실행되는 경우](/posts/temporal-02-execution-model/#재생의-조건과-activity가-다시-실행되는-경우)에서 다룬다.
 
-```mermaid
-sequenceDiagram
-    accTitle: Activity 실행부터 HTTP 응답까지의 순서
-    accDescr: Worker가 Activity Task를 가져와 인사 문자열을 만들고 결과를 Service에 보고한다. 다음 Workflow Task에서 그 결과로 Workflow를 끝낸다. Client는 Service에서 최종 결과를 받아 HTTP 응답한다.
-    participant U as HTTP 호출자
-    participant C as 앱 A<br/>Controller + Client
-    participant S as 별도 실행 B<br/>Temporal Service
-    participant W as 앱 A<br/>Worker
-    W->>S: 5. Activity Task 요청 (poll)
-    S-->>W: 작업 + 입력 민수
-    Note over W: GreetingActivity 실행<br/>안녕하세요, 민수님 생성
-    W->>S: 6. Activity 완료 결과 보고
-    Note over S: 결과 기록 · 다음 Workflow Task 준비
-    W->>S: 7. 다음 Workflow Task 요청 (poll)
-    S-->>W: Activity 결과가 포함된 이력
-    Note over W: Workflow가 결과를 받아 반환
-    W->>S: 8. Workflow 완료 명령 + 최종 결과
-    Note over S: Workflow 완료 기록
-    C->>S: 9. 최종 결과 요청
-    S-->>C: 안녕하세요, 민수님
-    C-->>U: 10. HTTP 200 + 인사 문자열
-```
+## 이어지는 글에서 구성 요소와 Temporal의 경계를 다룬다
 
-그림 3. 그림 2에 이어 같은 요청을 마무리한다. **Activity 완료와 Workflow 완료는 별개**다. 결과 요청은 완료 전에 보내고 기다릴 수도 있다. 이 그림에서는 순서를 읽기 쉽도록 마지막에 표시했다.
+Temporal을 소개하는 앞부분은 다음 순서로 이어진다. 2·4·5편은 아직 검토 중인 초안이고, 3편은 준비 중이다.
 
-5. **Worker가 Activity Task를 받는다.** `GreetingActivity` 코드가 `민수`를 받아 인사 문자열을 만든다.
-6. **Worker가 Activity 결과를 보고한다.** Temporal Service가 결과를 기록하고 Workflow를 다시 진행할 작업을 준비한다.
-7. **Worker가 다음 Workflow Task를 받는다.** SDK가 기록된 Activity 결과를 Workflow에 전달한다. Workflow는 기다리던 문자열을 받아 반환한다.
-8. **Temporal Service에 Workflow 완료를 기록한다.** Worker가 보낸 완료 명령과 최종 결과를 반영한다.
-9. **Client가 최종 결과를 받는다.** 결과를 받는 곳도 Temporal Service다. Controller가 Worker에 직접 결과를 요청하지 않는다.
-10. **Controller가 HTTP 응답을 보낸다.** 이 예제에서는 짧은 작업의 완료를 기다려 `200`과 인사 문자열을 반환한다. 오래 걸리는 업무라면 실행 ID를 먼저 반환하고 별도로 진행 상태를 확인하는 API를 설계할 수 있다.
+1. 1편(이 글): 중간에 멈춘 업무를 Temporal이 어떻게 이어 가는가
+2. [2편](/posts/temporal-02-execution-model/)(초안): 구성 요소와 실행 순서, 재생의 조건
+3. 3편: 2편의 예매 서버 중 `booking-api`·`booking-worker`·`seat-api`를 로컬에서 띄워 구성 요소를 확인한다(준비 중)
+4. [4편](/posts/temporal-04-what-it-solves/)(초안): Temporal이 해결하는 것(재시도·대기 포함)과 개발자에게 남는 것
+5. [5편](/posts/temporal-05-ecosystem/)(초안): 개발 주체와 라이선스, 다른 언어 연동, 공개 사례, 비슷한 도구 비교
 
-실패·재시도는 생략한 정상 흐름이다. 핵심은 **Workflow Task → Activity Task → 다음 Workflow Task**로 작업 종류가 바뀌면서 같은 업무 실행이 진행된다는 것이다. ([공식 실행 과정](https://docs.temporal.io/encyclopedia/architecture/how-temporal-works))
-
-### 여기서 이벤트는 무엇인가
-
-HTTP 요청은 이번 예제의 **시작 계기**다. Temporal의 **Event**는 Service가 실행 이력에 남기는 “일어난 사실”이다. Worker가 받을 **Task**나, Worker가 다음 행동을 요청하는 **Command**와 구분한다. 별도의 이벤트 브로커를 추가해야 이 예제가 동작하는 것은 아니다. ([Event History](https://docs.temporal.io/workflow-execution/event))
-
-| 시점                  | 이력에 남는 대표 이벤트      | 뜻                                 |
-| --------------------- | ---------------------------- | ---------------------------------- |
-| 시작 접수             | `WorkflowExecutionStarted`   | 이 업무 실행이 시작됐다.           |
-| Activity 예약         | `ActivityTaskScheduled`      | 인사 Activity 실행을 예약했다.     |
-| Activity 결과 보고 후 | `ActivityTaskCompleted`      | Activity가 끝났고 결과가 기록됐다. |
-| Workflow 완료 처리 후 | `WorkflowExecutionCompleted` | 전체 업무 실행이 끝났다.           |
-
-표는 주요 사건만 추렸다. 실제 이력에는 Workflow Task의 예약·시작·완료 등도 들어간다. 다음 편에서는 Web UI에서 이 기록을 확인하고, Spring Boot 로그에서 코드가 실행된 위치를 대조한다.
-
-### DDD 관점에서 보는 서비스 간 조정 — 나의 설계 관점
-
-DDD에서는 도메인의 규칙과 모델을 명확한 경계 안에 두고, 외부 시스템의 기술적인 세부 사항이 도메인 모델에 직접 섞이지 않도록 설계한다. 그렇다고 서비스 간 협력 자체가 잘못된 것은 아니다. 여러 서비스가 함께 수행하는 업무에는 호출 순서와 대기·실패 처리를 조정하는 코드가 필요하다. ([도메인 계층과 애플리케이션 계층의 책임](https://learn.microsoft.com/en-us/dotnet/architecture/microservices/microservice-ddd-cqrs-patterns/ddd-oriented-microservice))
-
-내가 DDD를 적용하면서 고민한 것도 이 조정 코드를 어디에 둘 것인가였다. 예매에서는 좌석 확보 가능 여부와 결제 취소 가능 여부를 각각 담당 서비스가 판단하고, Workflow는 어떤 순서로 요청하고 기다리며 실패에 대응할지를 관리하도록 나눌 수 있다. 나는 이런 서비스 간 조정을 업무별 Workflow에 모으면 흐름을 파악하고 변경하기 쉬울 것으로 본다. 이는 이 글에서 검토하려는 설계 방향이며, Temporal이 도메인 경계를 자동으로 지켜 준다는 뜻은 아니다.
-
-Facade가 여러 기능을 단순한 인터페이스로 제공한다면, 여기서 필요한 조정은 실행 순서·대기·실패 후 진행까지 다룬다. 따라서 Facade와 동일한 패턴으로 단정하지 않고, 서비스 간 업무 흐름을 조정하는 역할로 설명하겠다. 각 서비스의 내부 규칙까지 하나의 Workflow에 몰아넣지 않는 것이 중요하다. 이 조정 코드는 Temporal Server 내부가 아니라 우리가 운영하는 Worker에서 실행된다. ([Temporal의 실행 구조](https://docs.temporal.io/encyclopedia/architecture/how-temporal-works))
-
-## Node.js·Python 서버도 함께 참여할 수 있다
-
-Temporal은 Java·Kotlin 전용 도구가 아니다. **2026-10-05 기준 공식 SDK는 .NET, Go, Java, PHP, Python, Ruby, Rust, TypeScript의 8종**이다. Rust SDK도 2026-09-23 정식 지원인 GA를 발표했다. Kotlin은 Java SDK를 사용하고 Kotlin 보조 모듈을 추가할 수 있다. 각 SDK의 최신 기능과 실행 환경 조건은 별도로 확인해야 한다. ([SDK 목록](https://docs.temporal.io/develop), [Rust GA 발표](https://temporal.io/blog/build-durable-applications-rust-temporal-rust-sdk-now-generally-available), [Kotlin 지원 모듈](https://github.com/temporalio/sdk-java/blob/main/temporal-kotlin/README.md))
-
-Node.js에서는 TypeScript SDK로 TypeScript·JavaScript 코드를 작성할 수 있고, Python SDK도 Client·Workflow·Activity·Worker를 제공한다. TypeScript Worker는 Node.js의 실행 기능에 의존하므로 브라우저나 모든 JavaScript 런타임에서 그대로 실행된다고 보면 안 된다. ([TypeScript SDK](https://github.com/temporalio/sdk-typescript), [Python SDK](https://python.temporal.io/))
-
-### SDK로 서로 다른 언어의 작업을 연결한다
-
-서버마다 언어가 달라도 역할별 Worker와 데이터 계약을 정하면 함께 사용할 수 있다. 아래는 문서에 근거한 구성 예시이며, 이 글에서 실행한 실습 결과는 아니다.
-
-1. Node.js API 서버의 Client가 Workflow 타입 이름과 ID, 처리할 Task Queue, 입력을 지정해 Temporal Service에 시작을 요청한다.
-2. Java·Kotlin Worker가 해당 큐에서 작업을 받아 Workflow 코드를 실행한다.
-3. Workflow가 Python Activity의 타입 이름과 처리 큐를 지정해 실행을 요청한다.
-4. Python Worker가 그 큐에서 작업을 받아 실행하고 결과를 Temporal Service에 보고한다.
-5. Temporal Service에 기록된 결과를 Java·Kotlin Workflow가 다음 작업을 통해 받아 후속 단계를 진행한다.
-
-```mermaid
-sequenceDiagram
-    accTitle: Node.js, Java, Python의 Temporal 연동
-    accDescr: Node.js가 시작하고 Java가 Workflow를 실행한다. Python이 별도 큐의 Activity를 실행하면 Java가 기록된 결과로 진행한다.
-    participant N as Node.js 서버<br/>TypeScript Client
-    participant S as Temporal<br/>Service
-    participant J as Java Worker<br/>Workflow
-    participant P as Python Worker<br/>Activity
-    N->>S: Workflow 시작 요청
-    S-->>N: 시작 요청 응답
-    J->>S: Workflow Task 요청
-    S-->>J: 작업과 실행 이력
-    J->>S: Python Activity 예약 명령
-    Note over J,S: Activity 타입 · 큐 · 입력 지정
-    P->>S: Activity Task 요청
-    S-->>P: 작업과 입력
-    Note over P: Activity 코드 실행
-    P->>S: 완료 결과 보고
-    J->>S: 다음 Workflow Task 요청
-    S-->>J: Activity 결과가 포함된 이력
-    Note over J: 결과를 사용해 다음 행동 결정
-    J->>S: Workflow 완료 명령
-    N->>S: 결과 요청
-    S-->>N: 완료 결과
-```
-
-그림 4. 서로 다른 언어가 Temporal Service를 통해 작업과 결과를 주고받는 정상 흐름이다. Workflow·Activity는 역할에 맞는 별도 Task Queue를 사용하며 같은 Namespace 접근·인증·타입 이름·입력과 결과 형식을 맞춰야 한다. 시작 응답은 업무 완료가 아니다. 결과 대기 요청은 완료 전에 보낼 수도 있다. 재시도·타임아웃·보상은 이 그림에서 생략했다.
-
-여기서 Node.js가 Java Worker에 직접 HTTP 요청을 보내는 것은 아니다. **Worker가 Temporal Service에서 작업을 가져오고 결과를 보고한다.** 공식 다언어 샘플도 Java Workflow에서 Go·Node.js Activity를 호출하는 구성을 제공한다. 언어마다 별도 처리 큐를 두면 실행할 타입을 모르는 Worker가 작업을 받는 문제를 피하기 쉽다. ([공식 다언어 샘플](https://github.com/temporalio/temporal-polyglot), [Task Queue](https://docs.temporal.io/task-queue))
-
-입력·결과의 필드명, 숫자·날짜·null 표현, 오류와 재시도 정책을 맞춰야 한다. 암호화·압축을 적용하면 데이터 변환 설정도 호환되어야 한다. Java 객체가 Python 객체로 자동 공유되는 것은 아니다. 또한 서로 다른 언어의 작업을 호출할 수 있다는 설명은 Python Worker가 Java Workflow 구현을 그대로 이어받는다는 뜻이 아니다. ([데이터 변환](https://docs.temporal.io/dataconversion), [Workflow 정의와 재생](https://docs.temporal.io/workflow-definition))
-
-### 기존 HTTP 서버를 그대로 호출할 수도 있다
-
-기존 Node.js·Python 서버를 모두 Worker로 바꿀 필요는 없다. Activity가 기존 HTTP API를 호출하는 방법도 있다.
-
-1. Workflow가 Activity 실행을 요청한다.
-2. Activity Worker가 기존 서버의 HTTP API를 호출한다.
-3. Activity가 API 결과를 보고하고 Workflow가 다음 단계를 결정한다.
-
-이 방식에서는 호출받는 서버에 Temporal SDK가 없어도 된다. 다만 기존 API 내부의 진행까지 Temporal이 자동으로 기록하는 것은 아니다. API가 처리에 성공했는데 응답이 끊기면 Activity가 호출을 다시 시도할 수 있으므로 요청 ID와 멱등성 계약은 계속 필요하다. ([Activity의 역할](https://docs.temporal.io/activities))
-
-## Worker가 종료되면 어떻게 이어가는가
-
-결제 확인 Activity가 끝났고, 그 성공 결과가 Temporal에 기록됐다고 가정해 보자. 다음 Activity를 요청하기 전에 Worker가 종료되더라도 새 Worker는 저장된 이력을 바탕으로 Workflow 상태를 재구성할 수 있다. 이를 **replay, 이력 재생**이라고 부른다.
-
-Workflow 코드는 재생 과정에서 다시 실행될 수 있다. 하지만 이미 완료 결과가 이력에 남은 Activity를 만났을 때는 그 결과를 이용한다. 이력 재생 자체가 완료된 결제 API를 다시 호출한다는 뜻은 아니다. ([Workflow 정의와 재생](https://docs.temporal.io/workflow-definition))
-
-반면 **결제사에서는 승인이 끝났지만 Worker가 완료를 보고하기 전에 종료된 상황**은 다르다. Temporal에 완료가 기록되지 않았으므로 설정된 타임아웃과 재시도 정책에 따라 Activity가 다시 실행될 수 있다. 이때 외부 결제가 중복되지 않도록 같은 작업 식별자와 멱등성을 설계해야 한다. 멱등성이란 같은 작업을 다시 요청해도 업무 효과가 중복되지 않도록 하는 성질이다. ([Activity와 멱등성](https://docs.temporal.io/activity-definition))
-
-이 차이가 중요하다. Temporal의 실행 기록과 외부 결제사의 거래 기록은 서로 다른 시스템에 있다. 외부에서 무슨 일이 일어났는지 모르는 상황까지 실행 플랫폼이 자동으로 판정해 주지는 않는다.
-
-재생이 가능하려면 Workflow 코드에도 제약이 있다. 같은 이력으로 재생했을 때 실행 명령의 흐름이 일관돼야 한다. 그래서 Workflow 안에서 외부 HTTP 요청을 직접 보내거나 일반 시간·난수 API를 무작정 사용하지 않는다. 외부 작업은 Activity에 두고 시간·대기 등은 SDK가 제공하는 방식을 사용한다. 실행 중인 Workflow가 있을 때 코드를 바꾸는 문제도 이 재생 호환성과 연결된다. ([Workflow의 결정성](https://docs.temporal.io/workflow-definition))
-
-## 재시도뿐 아니라 기다리는 업무도 표현한다
-
-Temporal이 다루는 업무에는 “지금 실행할 일”만 있는 것이 아니다. 실패 뒤 잠시 기다렸다가 다시 조회하거나, 사용자가 승인할 때까지 기다리거나, 정해진 기한이 지나면 다른 처리를 해야 할 수 있다.
-
-**재시도 정책**에는 다음 시도까지의 간격, 증가 비율, 최대 간격·횟수, 재시도하지 않을 오류 등을 지정할 수 있다. 다만 카드 거절 같은 업무 결과와 일시적인 연결 실패를 어떻게 구분할지는 개발자가 정해야 한다. Activity 재시도와 Workflow 실행 전체의 재시도도 서로 다른 설정이다. ([재시도 정책](https://docs.temporal.io/encyclopedia/retry-policies))
-
-**영속 타이머**를 사용하면 Worker 프로세스가 계속 살아서 시간을 세고 있을 필요가 없다. Workflow가 기다리는 동안 Worker가 바뀌어도 기록된 타이머를 바탕으로 이어갈 수 있다. 다만 타이머가 만료됐다고 실제 후속 코드가 그 시각에 즉시 실행된다는 뜻은 아니다. 처리할 Worker의 가용성과 작업 지연도 영향을 준다. ([타이머와 대기](https://docs.temporal.io/workflow-execution/timers-delays))
-
-**외부 메시지**로는 실행 중인 업무에 새로운 정보를 전달할 수 있다. 예를 들어 사용자 승인이나 취소 의도를 Signal로 전달하고 Workflow가 그 정보를 반영하도록 작성할 수 있다. Signal을 접수했다는 사실과 요청한 업무 처리가 끝났다는 사실은 구분해야 한다. ([Java SDK 메시지 전달](https://docs.temporal.io/develop/java/workflows/message-passing))
-
-예매에 적용한다면 “확인 중인 결제를 일정 간격으로 조회하다가 결과를 받으면 다음 단계로 진행한다”는 흐름을 표현할 수 있다. 몇 번까지 조회할지, 언제 사람에게 넘길지, 늦게 도착한 승인 결과를 어떻게 처리할지는 별도로 정해야 한다.
-
-## 실제로 어떤 문제에 사용했는가
-
-공개 사례는 회사 이름보다 적용한 업무를 살펴보는 편이 도움이 된다. 다음은 각 자료가 발표됐을 때 공개한 범위다.
-
-### Snap — 여러 서비스를 연결하는 처리와 배포
-
-Snap은 2021년 엔지니어링 글에서 광고 보고서의 데이터 조회·보고서 생성·알림을 예로 들어, 여러 서비스 사이의 상태 추적과 장애 처리를 설명했다. 실제 활용 사례로는 여러 빌드 시스템과 배포 서비스를 연결하는 CI/CD 파이프라인도 소개했다. 서비스별 기능은 이미 있어도 전체 순서와 복구를 관리하는 일이 별도로 남는다는 점을 보여 준다. ([Snap 엔지니어링 글](https://eng.snap.com/build_a_reliable_system_in_a_microservices_world_at_snap))
-
-### Descript — 음성을 글로 바꾸는 여러 단계의 처리
-
-Descript의 2024년 공개 사례는 음성 전사 과정의 재인코딩·청크 분할·외부 API 호출·결과 병합을 다룬다. 여러 단계를 조합하고 테스트하며, 문제가 생긴 실행의 상태를 추적하는 데 Temporal을 활용했다. 오래 걸리는 데이터 처리에서 중간 결과와 후속 작업을 관리하는 사례다. ([Descript 사례](https://temporal.io/resources/case-studies/descript))
-
-### Stripe — Kafka 운영 작업의 조정
-
-Stripe의 Current 2024 발표는 Kafka 제어판에서 브로커 교체·클러스터 재균형·토픽 설정 등을 조정한 사례다. 오랫동안 실행되면서 시스템 상태를 바꾸는 운영 작업을 안전하게 관리하려는 맥락이다. 이 발표를 Stripe의 결제 처리 전체가 Temporal에서 동작한다는 근거로 확대해서는 안 된다. ([Stripe 발표](https://current.confluent.io/2024-sessions/mastering-kafka-at-scale-unleashing-the-power-of-temporal-at-stripe))
-
-### Netflix — 클라우드 인프라 작업의 복구
-
-Netflix는 2025-12-15 자체 기술 글에서 내부 Spinnaker의 Clouddriver가 수행하는 클라우드 운영 작업에 Temporal을 적용했다고 설명했다. 클라우드 API 호출을 Activity로 분리하고 진행 상태와 재시도를 관리한 사례다. Netflix의 비공개 Spinnaker 변경에 관한 설명이므로 공개 Spinnaker 전체나 영상 스트리밍 전체가 Temporal로 동작한다고 확대해서는 안 된다. ([Netflix 기술 글](https://netflixtechblog.com/how-temporal-powers-reliable-cloud-operations-at-netflix-73c69ccb5953))
-
-### Airbnb — 개인화 알림의 진행 관리
-
-Airbnb는 2023-05-11 자체 기술 글에서 Journey Platform을 소개했다. 이메일·앱 알림 등 개인화된 사용자 안내 흐름을 작성하는 내부 도구이며, Temporal을 상태 유지와 실행 관리에 사용한다. 승인이나 사용자 행동을 기다리는 업무와 연결해 볼 수 있는 사례다. 이 발표는 Airbnb의 모든 예약·결제 처리가 Temporal이라는 근거는 아니다. ([Airbnb 기술 글](https://medium.com/airbnb-engineering/journey-platform-a-low-code-tool-for-creating-interactive-user-workflows-9954f51fa3f8))
-
-### OpenAI — 공급사가 공개한 Codex 웹 에이전트 사례
-
-Temporal의 2025-11-12 공식 글은 OpenAI의 Codex 웹 에이전트를 도입 사례로 든다. 이는 **공급사인 Temporal의 설명**이며, 이번 조사에서 OpenAI 자체의 상세 아키텍처 자료까지 확인한 것은 아니다. ChatGPT 전체나 모든 Codex 실행 방식에 적용되는 설명으로 넓히지 않는다. ([Temporal의 AI 에이전트 설명](https://temporal.io/blog/of-course-you-can-build-dynamic-ai-agents-with-temporal))
-
-이 사례들은 발표 당시 공개한 적용 범위다. Snap·Netflix·Airbnb는 고객 자체 기술 글, Stripe는 해당 기업의 콘퍼런스 발표, Descript·OpenAI는 Temporal이 공개한 자료라는 차이가 있다. 발표 이후 내부 구조가 계속 같은지는 외부에서 확정하기 어렵다. 사례를 비교하면 여러 작업의 순서와 중간 상태, 실패 뒤 복구를 함께 관리한다는 공통점을 찾을 수 있다. 이것은 사례를 읽고 정리한 해석이며, 유명 기업의 도입 자체가 우리 서비스의 도입 근거가 되지는 않는다.
-
-## 비슷한 도구는 무엇이 다르고 얼마나 관심을 받는가
-
-업무 흐름을 관리하는 도구는 여러 종류다. 코드로 실행 순서를 작성하는 Temporal·Cadence·Restate·DBOS, 클라우드 서비스 연결에 초점을 맞춘 AWS Step Functions·Azure Durable Functions, BPMN으로 업무 절차를 모델링하는 Camunda를 비교할 수 있다. BPMN은 업무의 작업·분기·참여자를 정해진 기호로 표현하는 표준이다. 아래 적합 조건은 각 제품의 공식 구조를 바탕으로 한 이 글의 판단이며, 성능 측정 순위는 아니다.
-
-### 7개 도구의 작성 방식과 운영 부담 비교
-
-| 도구·공식 근거                                                                                                               | 작성·복구 방식                                                                                | 운영 형태와 검토할 조건                                                                                                              |
-| ---------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| [Temporal](https://docs.temporal.io/)                                                                                        | SDK로 Workflow·Activity 작성. Temporal Service의 이력을 이용해 Worker가 실행 상태를 복구한다. | 자체 운영 또는 Temporal Cloud. 장기 대기·분기·복구를 코드로 표현할 때 검토한다. Worker 배포·재생 호환성·멱등성 관리가 필요하다.      |
-| [Cadence](https://cadenceworkflow.io/docs/concepts/workflows)                                                                | 코드 Workflow와 Activity, 실행 이력에 기반한 복구를 제공한다.                                 | 서비스와 Worker를 운영한다. 기존 Cadence 자산·경험을 활용할 때 비교하며 결정성 규칙과 운영 구성을 살핀다.                            |
-| [Restate](https://docs.restate.dev/)                                                                                         | 서비스 코드에 SDK를 적용하고 완료한 단계의 결과를 기록해 재사용한다.                          | 자체 운영·Cloud·자체 클라우드 계정 배포 선택이 있다. 서비스 호출과 상태 관리를 함께 다룰 때 런타임·SDK 제약을 비교한다.              |
-| [DBOS](https://docs.dbos.dev/architecture)                                                                                   | 라이브러리로 Workflow·Step을 정의하고 PostgreSQL에 단계 결과를 저장한다.                      | 별도 오케스트레이션 서버 없이 앱과 PostgreSQL로 시작한다. 분산 복구는 Conductor 또는 별도 조정이 필요하며 DB 가용성·성능도 검토한다. |
-| [AWS Step Functions](https://docs.aws.amazon.com/step-functions/latest/dg/welcome.html)                                      | 상태 머신을 정의하고 AWS가 실행 상태를 관리한다. Retry·Catch로 오류 정책을 지정한다.          | AWS 관리형. AWS 서비스 연동이 중심일 때 검토하며 실행 유형·시간·과금 조건을 확인한다.                                                |
-| [Azure Durable Functions](https://learn.microsoft.com/en-us/azure/durable-task/durable-functions/durable-functions-overview) | Functions 코드로 orchestrator·activity 등을 작성하며 런타임이 상태와 복구를 관리한다.         | Azure Functions와 저장소 구성을 사용한다. 기존 Functions 환경과 잘 맞는지, 호스팅·저장소·코드 규칙을 살핀다.                         |
-| [Camunda 8](https://docs.camunda.io/docs/components/concepts/concepts-overview/)                                             | BPMN 업무 모델과 Job Worker를 연결하며 엔진이 프로세스 상태를 관리한다.                       | SaaS 또는 자체 운영. 사람의 승인·업무 담당자와의 공동 설계가 중요할 때 검토하며 모델·운영·라이선스 조건을 확인한다.                  |
-
-Airflow·Prefect·n8n도 비교 후보가 될 수 있지만 주된 출발점이 다르다. Airflow는 배치와 데이터 파이프라인, Prefect는 Python 데이터 작업, n8n은 업무 자동화의 관점에서 먼저 살펴보는 편이 유용하다. 이름에 Workflow가 들어간다는 이유만으로 같은 요구를 해결한다고 보면 선택 기준이 흐려진다. ([Airflow](https://airflow.apache.org/docs/apache-airflow/stable/index.html), [Prefect](https://docs.prefect.io/v3/get-started), [n8n](https://docs.n8n.io/))
-
-### 전체 시장 순위와 GitHub 관심도는 다르다
-
-실제 사용 기업 수나 시장점유율을 같은 방식으로 집계한 공통 통계는 이번 조사에서 확보하지 못했다. 대신 **2026-10-05 14:08 KST에 공개 서버·엔진 저장소 네 곳의 GitHub 별 수를 같은 API 필드로 조회**했다.
-
-| 이 네 저장소 안의 순서 | 공개 서버·엔진 저장소                                                             | 별 수  |
-| ---------------------- | --------------------------------------------------------------------------------- | ------ |
-| 1                      | [temporalio/temporal](https://api.github.com/repos/temporalio/temporal)           | 23,468 |
-| 2                      | [cadence-workflow/cadence](https://api.github.com/repos/cadence-workflow/cadence) | 9,469  |
-| 3                      | [restatedev/restate](https://api.github.com/repos/restatedev/restate)             | 4,520  |
-| 4                      | [camunda/camunda](https://api.github.com/repos/camunda/camunda)                   | 4,310  |
-
-**이 표에서는 Temporal에 대한 관심이 가장 높지만, 이를 전체 시장 1위라고 해석할 수는 없다.** 별은 관심 표시이며 저장소의 운영 기간·이관 이력·포함 범위도 다르다. 사용량·유료 고객 수·성능·팀 적합성을 직접 측정하지 않는다. DBOS는 언어별 라이브러리가 핵심이라 같은 단위에 넣지 않았고, AWS·Azure 관리형 서비스에도 대응하는 공개 서버 저장소 수치가 없어 순위를 매기지 않았다. 제외된 제품의 인기가 낮다는 뜻은 아니다. ([DBOS 구조](https://docs.dbos.dev/architecture))
-
-## 2026년 10월에도 릴리스와 개선이 이어지고 있다
-
-관리 주체가 있다는 사실만으로 유지보수가 활발하다고 판단할 수는 없다. 실제 릴리스를 확인하면 **Server와 Java·TypeScript·Python SDK 모두 2026년 9월 정식 배포가 확인된다.** 다음은 2026-10-05에 확인한 GitHub 최신 정식 릴리스 표기이며 날짜는 UTC 기준이다.
-
-| 구성 요소      | 확인한 버전                                                                  | UTC 공개일 |
-| -------------- | ---------------------------------------------------------------------------- | ---------- |
-| Server         | [v1.32.0](https://github.com/temporalio/temporal/releases/tag/v1.32.0)       | 2026-09-11 |
-| Java SDK       | [v1.40.0](https://github.com/temporalio/sdk-java/releases/tag/v1.40.0)       | 2026-09-29 |
-| TypeScript SDK | [v1.24.0](https://github.com/temporalio/sdk-typescript/releases/tag/v1.24.0) | 2026-09-15 |
-| Python SDK     | [1.34.0](https://github.com/temporalio/sdk-python/releases/tag/1.34.0)       | 2026-09-30 |
-
-Server 1.32.0은 Workflow에 넣지 않고 별도로 Activity를 실행하는 Standalone Activities를 정식 지원으로 전환했고 Worker 버전 관리·작업 수신량 자동 조절·관측 지표도 개선했다. 이 글은 구성 이해를 위해 Workflow 안에서 Activity를 실행하는 기본 경로를 설명한다. 최신 릴리스에 포함됐더라도 개별 기능의 설정과 미리보기 여부는 따로 확인해야 한다. ([Server 1.32.0 변경 내역](https://github.com/temporalio/temporal/releases/tag/v1.32.0))
-
-SDK도 같은 시기에 발전했다. TypeScript 1.24.0은 Standalone Activities API를 안정화하고 작업 수신 관련 오류를 수정했다. Java 1.40.0과 Python 1.34.0은 Cloud Run 인증 연동과 직렬화·역직렬화 등의 개선을 포함한다. 즉 신기능뿐 아니라 배포 환경 연동과 오류 수정도 이어지고 있다. ([TypeScript 변경 내역](https://github.com/temporalio/sdk-typescript/releases/tag/v1.24.0), [Java 변경 내역](https://github.com/temporalio/sdk-java/releases/tag/v1.40.0), [Python 변경 내역](https://github.com/temporalio/sdk-python/releases/tag/1.34.0))
-
-최신 기능 계열과 가장 늦게 공개된 패치도 구분해야 한다. Server의 이전 계열인 1.31.3·1.30.7 보안 패치는 1.32.0보다 늦은 2026-09-18에 공개됐다. 따라서 버전 번호 하나보다 사용 계열의 보안 수정과 업그레이드 안내를 함께 읽어야 한다. 이 표는 공개 릴리스의 존재와 변경 내용을 확인한 결과이며, 해당 버전을 이 글의 예매 서비스에서 실행해 검증한 결과는 아니다. ([Server 릴리스 목록](https://github.com/temporalio/temporal/releases))
-
-## Temporal을 써도 직접 정해야 하는 것
-
-먼저 업무의 성공 조건이 남는다. 예매에서 결제가 승인됐다는 사실만으로 좌석 확정과 티켓 발급까지 끝난 것은 아니다. 무엇이 모두 충족돼야 “예매 완료”인지 애플리케이션이 정해야 한다.
-
-이미 완료한 외부 작업을 되돌려야 한다면 **보상 작업**도 설계한다. 결제 승인 뒤 티켓을 발급하지 못했다면 결제 취소가 보상 후보가 될 수 있다. 보상은 여러 DB를 한꺼번에 원래 상태로 돌리는 rollback과 다르다. 취소 요청도 실패할 수 있고, 그 결과를 다시 확인해야 할 수도 있다. Temporal에서 보상을 실행하도록 작성할 수 있지만 무엇을 어떤 순서로 보상할지는 업무 규칙이다. ([Saga와 보상](https://temporal.io/blog/saga-pattern-made-easy))
-
-운영 책임도 살펴야 한다. Temporal Service를 직접 운영할 수도 있고 Temporal Cloud를 사용할 수도 있다. Cloud를 이용하면 Service 운영을 맡길 수 있지만, 일반적인 구성에서 업무 코드를 실행하는 Worker와 그 코드의 배포·외부 시스템 접근은 여전히 사용자가 관리한다. ([자체 운영과 Cloud](https://docs.temporal.io/temporal))
-
-기록이 영속적으로 남는다는 점은 저장할 데이터를 검토해야 한다는 뜻이기도 하다. Activity 입력·결과 등 이력에 남는 자료의 크기와 민감정보를 고려해야 한다. 실행 이력에도 제한이 있으므로 아주 오래 실행되는 업무는 이력을 나누는 방법까지 검토하게 된다. ([이력과 제한](https://docs.temporal.io/workflow-execution/event))
-
-이런 특성을 기준으로 보면, 긴 대기와 여러 외부 작업의 재시작 복구를 반복 구현하는 시스템에서 Temporal을 검토할 이유가 생긴다. 반대로 짧은 단일 DB 트랜잭션이나 기존 작업 큐로 요구를 충족한다면 추가 구성과 학습·운영 비용이 더 클 수 있다. 이는 이 글의 도입 판단 기준이며, 특정 규모부터 반드시 유리하다는 성능 측정 결과는 아니다.
-
-## 다음 글에서는 로컬에서 Temporal의 구성 요소를 직접 확인한다
-
-2편에서는 로컬에 Temporal Service를 실행하고, 아주 간단한 예제로 **Client·Workflow·Activity·Worker·Task Queue가 각각 무엇을 하고 어떻게 연결되는지** 직접 확인한다. 복잡한 예매 업무를 구현하기 전에, 이 글에서 설명한 구성 요소를 실제 코드와 실행 화면에서 구별하는 것이 목표다.
-
-실습은 다음 순서로 진행한다.
-
-1. 로컬에서 Temporal Service를 실행하고 접속을 확인한다.
-2. 간단한 작업 하나를 수행하는 Activity와 이를 호출하는 Workflow를 작성한다.
-3. 두 코드를 등록한 Worker를 실행하고, Worker가 작업을 가져갈 Task Queue를 지정한다.
-4. Client로 Workflow를 시작한 뒤 결과를 확인한다. Worker 로그와 Temporal Web UI의 실행 이력을 보며 작업이 어떤 순서로 진행됐는지 살펴본다.
-
-실습을 마치면 **Client는 시작을 요청하고, Temporal Service는 이력과 작업 전달을 관리하며, Worker는 Workflow·Activity 코드를 실행한다**는 관계를 자신의 실행 결과로 설명할 수 있어야 한다. 예매 서비스와 복잡한 실패 처리는 이 기본 동작을 확인한 이후에 다룬다.
+그 뒤에는 비교 기준이 될 예매 서비스를 먼저 Temporal 없이 만들어 실패를 직접 처리해 보고, 그 조정 부분에 Temporal을 점진적으로 넣는다.
 
 ---
 
-공식 자료 확인일: 2026-10-05. 이 글은 개념 소개 초안이며, 본문의 예매 상황은 실측 보고가 아닌 설명용 가정이다.
+공식 자료 확인일: 2026-10-05. 이 글은 개념 소개 글이며, 본문의 예매 상황은 실측 보고가 아닌 설명용 가정이다.

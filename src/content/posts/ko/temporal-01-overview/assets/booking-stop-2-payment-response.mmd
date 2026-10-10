@@ -1,0 +1,17 @@
+sequenceDiagram
+    accTitle: 멈춘 지점 2 — 결제는 승인됐지만 승인 응답을 받기 전에 예매 서비스가 종료된다
+    accDescr: 예매 서비스가 결제 서비스에 결제 승인을 요청한다. 결제 서비스는 승인을 끝내지만, 그 응답이 도착하기 전에 예매 서비스 프로세스가 종료된다. 결제 서비스는 승인했고 예매 서비스는 결과를 모른다.
+    actor U as 관람객
+    participant B as 예매 서비스
+    participant S as 좌석 서비스
+    participant P as 결제 서비스
+    U->>B: 1. 예매 요청
+    B->>S: 2. 좌석 임시 확보
+    S-->>B: holdId · 10분 유지
+    B->>P: 3. 결제 승인
+    Note over P: 승인 처리 완료<br/>관람객의 돈이 결제됨
+    rect rgba(220, 38, 38, 0.15)
+    Note over B: CRASH<br/>예매 서비스 프로세스 종료
+    P--xB: 승인 완료 (받지 못함)
+    end
+    Note over B,P: 결제 서비스는 승인했지만<br/>예매 서비스는 결과를 모름

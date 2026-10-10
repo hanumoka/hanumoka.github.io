@@ -1,0 +1,18 @@
+sequenceDiagram
+    accTitle: 공연 예매가 정상적으로 끝나는 순서
+    accDescr: 관람객이 예매를 요청하면 예매 서비스가 좌석 임시 확보, 결제 승인, 좌석 확정, 티켓 발급을 차례로 다른 서비스에 요청한다. 모든 응답을 받으면 관람객에게 예매 완료를 알린다.
+    actor U as 관람객
+    participant B as 예매 서비스
+    participant S as 좌석 서비스
+    participant P as 결제 서비스
+    participant T as 티켓 서비스
+    U->>B: 1. 예매 요청 (POST /bookings)
+    B->>S: 2. 좌석 임시 확보 (POST /seat-holds)
+    S-->>B: holdId · 10분 유지
+    B->>P: 3. 결제 승인 (POST /payments)
+    P-->>B: 승인 완료
+    B->>S: 4. 좌석 확정 (POST /seat-holds/{holdId}/confirm)
+    S-->>B: 확정 완료
+    B->>T: 5. 티켓 발급 (POST /tickets)
+    T-->>B: ticketId
+    B-->>U: 6. 예매 완료

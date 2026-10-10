@@ -1,0 +1,35 @@
+flowchart LR
+    accTitle: 예매 예제를 서버 다섯 개로 나눠 실행한 구성
+    accDescr: 관람객이 booking-api(포트 8080)에 예매를 요청한다. booking-api의 Temporal Client는 Temporal Service의 요청 입구인 Frontend(포트 7233)에 예매 Workflow 시작과 상태 조회를 요청한다. booking-worker도 Frontend에 접속해 할 일을 가져가고 결과를 보고한다. Temporal Service 안에서 할 일은 Task Queue에 쌓이고 일어난 사실은 Event History에 기록된다. booking-worker의 Activity는 hold·confirm으로 seat-api를, approve로 payment-api를, issue로 ticket-api를 HTTP로 호출하며, 이 세 서버는 Temporal을 모른다. Temporal Service에서 서버로 먼저 향하는 화살표는 없다.
+    U(["관람객"])
+    subgraph USE["Temporal SDK를 쓰는 서버"]
+        BA["booking-api
+포트 8080
+Controller + Client"]
+        BW["booking-worker
+Worker
+Workflow + Activity"]
+    end
+    subgraph TS["Temporal Service"]
+        FE["Frontend
+포트 7233"]
+        TQ["Task Queue
+booking-tasks"]
+        EH[("Event History")]
+    end
+    subgraph PLAIN["Temporal을 모르는 API 서버"]
+        SA["seat-api
+포트 8081"]
+        PA["payment-api
+포트 8082"]
+        TA["ticket-api
+포트 8083"]
+    end
+    U -->|"예매 요청"| BA
+    BA -->|"시작 요청 · 상태 조회"| FE
+    BW -->|"할 일 가져가기 · 결과 보고"| FE
+    FE -.->|"할 일 보관"| TQ
+    FE -.->|"사실 기록"| EH
+    BW -->|"HTTP로 hold · confirm"| SA
+    BW -->|"HTTP로 approve"| PA
+    BW -->|"HTTP로 issue"| TA

@@ -1,0 +1,9 @@
+{
+  "assets": [
+    {
+      "file": "./assets/temporal-polyglot.png",
+      "source": "./assets/temporal-polyglot.mmd",
+      "alt": "Node.js·Java·Python의 실행 순서"
+    }
+  ]
+}

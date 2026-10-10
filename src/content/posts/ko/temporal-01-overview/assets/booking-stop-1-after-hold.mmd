@@ -1,0 +1,15 @@
+sequenceDiagram
+    accTitle: 멈춘 지점 1 — 좌석 임시 확보 뒤 결제 요청 전에 예매 서비스가 종료된다
+    accDescr: 예매 서비스가 좌석 서비스에서 좌석 임시 확보 응답을 받은 직후 프로세스가 종료된다. 결제 승인 요청은 보내지 못한다. 좌석은 10분 동안 임시 확보된 채 남는다.
+    actor U as 관람객
+    participant B as 예매 서비스
+    participant S as 좌석 서비스
+    participant P as 결제 서비스
+    U->>B: 1. 예매 요청
+    B->>S: 2. 좌석 임시 확보
+    S-->>B: holdId · 10분 유지
+    rect rgba(220, 38, 38, 0.15)
+    Note over B: CRASH<br/>예매 서비스 프로세스 종료
+    B-xP: 3. 결제 승인 (보내지 못함)
+    end
+    Note over S: 좌석이 임시 확보된 채 남음

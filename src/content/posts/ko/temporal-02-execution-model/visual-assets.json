@@ -1,0 +1,19 @@
+{
+  "assets": [
+    {
+      "file": "./assets/booking-modules.png",
+      "source": "./assets/booking-modules.mmd",
+      "alt": "예매 예제를 서버 다섯 개로 나눠 실행한 구성: Temporal SDK를 쓰는 booking-api·booking-worker, Task Queue와 Event History를 가진 Temporal Service, Temporal을 모르는 seat-api·payment-api·ticket-api"
+    },
+    {
+      "file": "./assets/booking-flow-start.png",
+      "source": "./assets/booking-flow-start.mmd",
+      "alt": "관람객의 예매 요청부터 Workflow 시작 접수, booking-worker의 Workflow Task 실행과 hold Activity 예약까지의 순서"
+    },
+    {
+      "file": "./assets/booking-flow-hold.png",
+      "source": "./assets/booking-flow-hold.mmd",
+      "alt": "booking-worker가 hold Activity로 seat-api를 호출하고 결과를 보고한 뒤 Workflow가 approve 예약으로 넘어가며, 관람객이 진행 상태를 조회하는 순서"
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+sequenceDiagram
+    accTitle: hold Activity가 seat-api를 호출하고 Workflow가 다음 단계로 넘어가는 순서
+    accDescr: booking-worker가 Activity Task를 가져와 seat-api에 좌석 임시 확보를 HTTP로 요청하고 holdId를 받는다. 결과를 Temporal Service에 보고하면 Service가 기록하고 다음 Workflow Task를 준비한다. booking-worker가 그 작업을 가져와 reserve()를 이어 실행하고 approve Activity 예약 명령을 보낸다. 관람객은 booking-api의 조회 API로 예매 상태를 확인한다.
+    actor U as 관람객
+    participant BA as booking-api<br/>Controller + Client
+    participant S as Temporal Service
+    participant BW as booking-worker<br/>Worker
+    participant SA as seat-api
+    BW->>S: 5. Activity Task 요청 (poll)
+    S-->>BW: hold 작업 + 입력
+    BW->>SA: 6. POST /seat-holds
+    SA-->>BW: holdId
+    BW->>S: 7. hold 완료 보고 (holdId)
+    Note over S: 결과 기록 · 다음 Workflow Task 준비
+    BW->>S: 8. 다음 Workflow Task 요청 (poll)
+    S-->>BW: hold 결과가 포함된 이력
+    Note over BW: reserve()가 holdId를 받아<br/>approve 호출 지점까지 진행
+    BW->>S: 9. approve Activity 예약 명령
+    Note over BW,S: approve·confirm·issue도 5~9를 반복한다<br/>issue 뒤 reserve()가 끝나면 Worker가 완료를 보고한다
+    U->>BA: 10. GET /bookings/{bookingId}
+    BA->>S: 실행 상태 조회
+    S-->>BA: 진행 중 또는 완료 결과
+    BA-->>U: 예매 상태

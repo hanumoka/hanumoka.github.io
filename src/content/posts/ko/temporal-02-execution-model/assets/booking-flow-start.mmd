@@ -1,0 +1,17 @@
+sequenceDiagram
+    accTitle: 예매 요청이 Workflow 시작과 첫 Activity 예약으로 이어지는 순서
+    accDescr: 관람객이 booking-api에 예매를 요청한다. booking-api의 Client가 Temporal Service에 예매 Workflow 시작을 요청하고, 접수 응답을 받으면 관람객에게 예매 번호(bookingId)와 함께 접수됐다고 응답한다. booking-worker가 Workflow Task를 가져와 reserve()를 실행하고 hold Activity 예약 명령을 보내면 Temporal Service가 Activity Task를 준비한다.
+    actor U as 관람객
+    participant BA as booking-api<br/>Controller + Client
+    participant S as Temporal Service
+    participant BW as booking-worker<br/>Worker
+    U->>BA: 1. POST /bookings
+    BA->>S: 2. 예매 Workflow 시작 요청<br/>Workflow ID = bookingId
+    Note over S: 시작 기록 · Workflow Task 준비
+    S-->>BA: 시작 접수 (완료 아님)
+    BA-->>U: 202 접수 + bookingId
+    BW->>S: 3. Workflow Task 요청 (poll)
+    S-->>BW: 작업 + 실행 이력 + 입력
+    Note over BW: reserve() 실행<br/>hold 호출 지점까지 진행
+    BW->>S: 4. hold Activity 예약 명령
+    Note over S: Activity 예약 기록 · Activity Task 준비
