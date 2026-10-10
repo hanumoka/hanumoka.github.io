@@ -14,7 +14,17 @@ tags:
   - backend
 ---
 
-앞 글에서는 Temporal이 무엇을 해 주고([1편](/posts/temporal-01-overview/)), 어떻게 실행되며([2편](/posts/temporal-02-execution-model/)), 무엇이 개발자에게 남는지([4편](/posts/temporal-04-what-it-solves/)) 봤다. 이 글은 Temporal을 둘러싼 환경을 본다.
+## 개요
+
+### 앞 편에서 배운 것
+
+1. [1편](/posts/temporal-01-overview/): Temporal이 진행을 기록해 멈춘 업무를 이어 가는 방식
+2. [2편](/posts/temporal-02-execution-model/): 구성 요소가 나눠 맡는 일과 실행 순서, 재생의 조건
+3. [4편](/posts/temporal-04-what-it-solves/): Temporal이 맡는 일과 개발자에게 남는 일(멱등성·보상·완료 조건)
+
+### 이번 편에서 배울 것
+
+앞 편은 Temporal 자체를 봤다. 이번 편은 Temporal을 둘러싼 환경을 본다.
 
 1. 누가 만들고 어떤 라이선스로 공개하는가
 2. Java·Kotlin이 아닌 서버를 함께 연결하는 방법
